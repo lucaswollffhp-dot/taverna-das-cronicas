@@ -2139,86 +2139,182 @@ function openSpellManager(){
   var clsBase=cls.split(' — ')[0];
   var available=SPELLS_BY_CLASS[clsBase]||{truques:[],nivel1:[],nivel2:[],nivel3:[]};
 
-  // Official LdJ spell limits per class per level
-  var SPELL_LIMITS={
-    'Mago':     {truques:[3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5], nivel1:99, nivel2:99, nivel3:99}, // prepara INT+nível, grimório tem tudo
-    'Feiticeiro':{truques:[4,4,4,5,5,6,6,7,7,8,8,8,9,9,9,9,9,9,9,9], nivel1:[2,3,4,5,6,7,8,9,10,11,12,12,13,13,14,14,15,15,15,15]},
-    'Bruxo':    {truques:[2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4], nivel1:[2,3,4,5,6,7,8,9,10,10,11,11,12,12,13,13,14,14,14,15]},
-    'Clérigo':  {truques:[3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5], nivel1:99, nivel2:99, nivel3:99}, // prepara SAB+nível
-    'Druida':   {truques:[2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4], nivel1:99, nivel2:99, nivel3:99},
-    'Bardo':    {truques:[2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4], nivel1:[4,5,6,7,8,9,10,11,12,14,15,15,16,18,19,19,20,22,22,22]},
-    'Paladino': {truques:[], nivel1:[0,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]}, // nenhuma a nv1
-    'Patrulheiro':{truques:[], nivel1:[0,0,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11]},
+  // LdJ limits per class/level
+  var LIMITS={
+    'Mago':{t:[3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5],n1:99,n2:99,n3:99},
+    'Feiticeiro':{t:[4,4,4,5,5,6,6,7,7,8,8,8,9,9,9,9,9,9,9,9],n1:[2,3,4,5,6,7,8,9,10,11,12,12,13,13,14,14,15,15,15,15],n2:99,n3:99},
+    'Bruxo':{t:[2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4],n1:[2,3,4,5,6,7,8,9,10,10,11,11,12,12,13,13,14,14,14,15],n2:99,n3:99},
+    'Clérigo':{t:[3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5],n1:99,n2:99,n3:99},
+    'Druida':{t:[2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4],n1:99,n2:99,n3:99},
+    'Bardo':{t:[2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4],n1:[4,5,6,7,8,9,10,11,12,14,15,15,16,18,19,19,20,22,22,22],n2:99,n3:99},
+    'Paladino':{t:[],n1:99,n2:99,n3:99},
+    'Patrulheiro':{t:[],n1:99,n2:99,n3:99},
   };
+  function lim(cat){
+    var L=LIMITS[clsBase];if(!L)return 99;
+    var k={0:'t',1:'n1',2:'n2',3:'n3'}[cat];
+    var v=L[k];
+    if(v===undefined)return 0;
+    if(typeof v==='number')return v;
+    return v[charLevel-1]||0;
+  }
+  // Level unlocks: nv2 spells at class level 3, nv3 at level 5
+  var showNv1=charLevel>=1;
+  var showNv2=charLevel>=3;
+  var showNv3=charLevel>=5;
+  var showNv1Pal=(clsBase==='Paladino'||clsBase==='Patrulheiro')?charLevel>=2:true;
 
-  function getLimit(cat){
-    var lim=SPELL_LIMITS[clsBase];
-    if(!lim) return 99;
-    var arr=lim[cat];
-    if(!arr) return 0;
-    if(typeof arr==='number') return arr;
-    return arr[charLevel-1]||0;
+  // Build a flat list of all spells with selection state
+  // Store in window._smSpells = [{name, level, selected}]
+  window._smSpells=[];
+  function addCat(list,lvl){
+    (list||[]).forEach(function(n){
+      var sel=!!spells.find(function(s){return s.name===n&&s.level===lvl;});
+      window._smSpells.push({name:n,level:lvl,selected:sel});
+    });
+  }
+  addCat(available.truques,0);
+  addCat(available.nivel1,1);
+  addCat(available.nivel2,2);
+  addCat(available.nivel3,3);
+
+  function countSelected(lvl){
+    return window._smSpells.filter(function(s){return s.level===lvl&&s.selected;}).length;
   }
 
-  var lv=charLevel-1;
-  var limTruques=getLimit('truques');
-  var limNv1=getLimit('nivel1');
-  var limNv2=getLimit('nivel2')||0;
-  var limNv3=getLimit('nivel3')||0;
+  function buildSection(lvl,title,show){
+    if(!show) return '';
+    var L=lim(lvl);
+    var list=window._smSpells.filter(function(s){return s.level===lvl;});
+    if(!list.length) return '';
+    var locked=(L===0);
+    var sel=countSelected(lvl);
+    var limitTxt=locked?'🔒 Nível '+(lvl===1?2:lvl*2)+' necessário':L===99?'ilimitado':sel+'/'+L;
+    var limitColor=locked?'var(--blood2)':sel>=L&&L<99?'var(--gold2)':'var(--text3)';
 
-  // Build rows per category with limits
-  function rows(list,cat,lvlNum,lim){
-    if(!list||!list.length) return '';
-    var known=spells.filter(function(s){return s.level===lvlNum;}).length;
-    var locked=(lim===0);
-    var header='<div style="display:flex;align-items:center;justify-content:space-between;font-family:Cinzel,serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);padding-bottom:3px;margin-bottom:4px;margin-top:.5rem">'
-      +(cat==='truques'?'⊙ Truques':'Nível '+lvlNum)
-      +'<span style="font-size:.52rem;color:'+(locked?'var(--blood2)':known>=lim&&lim<99?'var(--gold2)':'var(--text3)')+'">'
-      +(locked?'🔒 Disponível nível '+(lvlNum===1?2:lvlNum*2):lim===99?'Prepara '+(lvlNum===0?'SAB/INT':'SAB/INT+Nv'):known+'/'+lim+' selecionadas')
-      +'</span></div>';
-    var r=list.map(function(n){
-      var isKnown=!!spells.find(function(s){return s.name===n&&s.level===lvlNum;});
-      var countCat=spells.filter(function(s){return s.level===lvlNum;}).length;
-      var atLimit=!isKnown&&lim<99&&countCat>=lim;
-      return'<label style="display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px solid var(--border);cursor:'+(locked||atLimit?'not-allowed':'pointer')+';opacity:'+(locked?'.4':'1')+'">'
-        +'<input type="checkbox" name="spell_pick" value="'+cat+'|'+n+'|'+lvlNum+'" '
-        +(isKnown?'checked':'')
-        +((locked||atLimit)&&!isKnown?' disabled':'')
-        +' style="width:16px;height:16px;accent-color:var(--arc2);cursor:'+(locked||atLimit?'not-allowed':'pointer')+'">'
-        +'<span style="flex:1;font-family:Cormorant Garamond,serif;font-size:.88rem;color:var(--text2)">'+n+'</span>'
-        +'</label>';
+    var rows=list.map(function(sp){
+      var i=window._smSpells.indexOf(sp);
+      var atLimit=!sp.selected&&L<99&&sel>=L;
+      var canClick=!locked&&(!atLimit||sp.selected);
+      var bg=sp.selected?'var(--arc2)':'transparent';
+      var bc=sp.selected?'var(--arc2)':canClick?'rgba(165,105,189,.5)':'rgba(200,168,74,.15)';
+      var tc=sp.selected?'var(--arc3)':canClick?'var(--text2)':'var(--text3)';
+      var dot=sp.selected?'<div style="width:8px;height:8px;border-radius:50%;background:#fff;margin:auto"></div>':'';
+      return'<div data-idx="'+i+'" onclick="smToggle('+i+')" style="'
+        +'display:flex;align-items:center;gap:10px;'
+        +'padding:8px 6px;border-bottom:1px solid var(--border);'
+        +'cursor:'+(canClick?'pointer':'not-allowed')+';'
+        +'opacity:'+(locked?.4:atLimit?.5:1)+'">'
+        +'<div id="sm-circle-'+i+'" style="'
+        +'width:18px;height:18px;border-radius:50%;'
+        +'border:2px solid '+bc+';background:'+bg+';'
+        +'flex-shrink:0;display:flex;align-items:center;justify-content:center;'
+        +'box-shadow:'+(sp.selected?'0 0 6px rgba(144,96,204,.5)':'none')+'">'+dot+'</div>'
+        +'<span style="flex:1;font-family:Cormorant Garamond,serif;font-size:.9rem;color:'+tc+'">'+sp.name+'</span>'
+        +'<span style="font-family:Cinzel,serif;font-size:.48rem;color:var(--arc);text-transform:uppercase">'
+        +(lvl===0?'Truque':'Nv '+lvl)+'</span>'
+        +'</div>';
     }).join('');
-    return header+r;
+
+    return'<div style="margin-bottom:.5rem">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 6px;background:rgba(107,63,160,.06);border-radius:6px;margin-bottom:2px">'
+      +'<span style="font-family:Cinzel,serif;font-size:.6rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px">'+title+'</span>'
+      +'<span id="sm-lim-'+lvl+'" style="font-size:.6rem;color:'+limitColor+'">'+limitTxt+'</span>'
+      +'</div>'
+      +rows+'</div>';
   }
 
-  var limInfo='<div style="background:rgba(107,63,160,.08);border:1px solid rgba(107,63,160,.2);border-radius:6px;padding:.4rem .6rem;margin-bottom:.5rem;font-size:.72rem;color:var(--arc3)">'
-    +clsBase+' Nv.'+charLevel+' — '
-    +(limTruques===99?'Truques: ilimitados':limTruques>0?'Truques: até '+limTruques:'Truques: —')
-    +(limNv1>0?(', Nv1: '+(limNv1===99?'ilimitado':limNv1)):'')
-    +(limNv2>0?(', Nv2: '+(limNv2===99?'ilimitado':limNv2)):'')
-    +'</div>';
 
-  var html='<div class="modal-title">✚ Gerenciar Magias</div>'
-    +limInfo
-    +'<div style="max-height:58vh;overflow-y:auto;padding-right:2px">'
-    +rows(available.truques,'truques',0,limTruques)
-    +rows(available.nivel1,'nivel1',1,limNv1)
-    +(charLevel>=3?rows(available.nivel2,'nivel2',2,limNv2):'')
-    +(charLevel>=5?rows(available.nivel3,'nivel3',3,limNv3):'')
+  var html='<div class="modal-title">✨ Gerenciar Magias — '+clsBase+'</div>'
+    +'<div style="font-size:.74rem;color:var(--text3);margin-bottom:.6rem;text-align:center;font-style:italic">Clique nas bolinhas para selecionar/desmarcar magias</div>'
+    +'<div style="max-height:60vh;overflow-y:auto;padding-right:2px" id="sm-list">'
+    +buildSection(0,'⊙ Truques',true)
+    +buildSection(1,'I Nível 1',showNv1&&showNv1Pal)
+    +buildSection(2,'II Nível 2',showNv2)
+    +buildSection(3,'III Nível 3',showNv3)
     +'</div>'
     +'<div class="modal-row">'
     +'<button class="mbtn secondary" onclick="closeDynModal()">Cancelar</button>'
-    +'<button class="mbtn primary" onclick="saveSpellSelection()">✓ Salvar</button>'
+    +'<button class="mbtn primary" onclick="smSave()">✓ Salvar</button>'
     +'</div>';
   openDynModal(html);
-  window._spellsFlat=[];
-  ['truques','nivel1','nivel2','nivel3'].forEach(function(t){
-    var ti={'truques':0,'nivel1':1,'nivel2':2,'nivel3':3}[t];
-    (available[t]||[]).forEach(function(n){
-      window._spellsFlat.push({id:t+'_'+n.replace(/\s/g,'_'),name:n,level:ti,school:t==='truques'?'Truque':'Nível '+ti,cat:t});
-    });
+}
+
+function smToggle(idx){
+  var sp=window._smSpells[idx];
+  if(!sp) return;
+  var cls=(window.CHAR_CLASS||'').split(' — ')[0];
+  var LIMITS_T={
+    'Mago':{t:[3,3,3,4,4,4,4,4,4,5],n1:99,n2:99,n3:99},
+    'Feiticeiro':{t:[4,4,4,5,5,6,6,7,7,8],n1:[2,3,4,5,6,7,8,9,10,11],n2:99,n3:99},
+    'Bruxo':{t:[2,2,2,3,3,3,3,3,3,4],n1:[2,3,4,5,6,7,8,9,10,10],n2:99,n3:99},
+    'Clérigo':{t:[3,3,3,4,4,4,4,4,4,5],n1:99,n2:99,n3:99},
+    'Druida':{t:[2,2,2,3,3,3,3,3,3,4],n1:99,n2:99,n3:99},
+    'Bardo':{t:[2,2,2,3,3,3,3,3,3,4],n1:[4,5,6,7,8,9,10,11,12,14],n2:99,n3:99},
+    'Paladino':{t:[],n1:99,n2:99,n3:99},
+    'Patrulheiro':{t:[],n1:99,n2:99,n3:99},
+  };
+  function getL(lvl){
+    var L=LIMITS_T[cls];if(!L)return 99;
+    var k={0:'t',1:'n1',2:'n2',3:'n3'}[lvl];
+    var v=L[k];if(v===undefined)return 0;
+    if(typeof v==='number')return v;
+    return v[charLevel-1]||0;
+  }
+  var L=getL(sp.level);
+  if(L===0) return; // locked
+  if(!sp.selected){
+    var sel=window._smSpells.filter(function(s){return s.level===sp.level&&s.selected;}).length;
+    if(L<99&&sel>=L){
+      showRollToast('⚠ Limite de '+(sp.level===0?'truques':'magias de nível '+sp.level)+' atingido ('+L+')');
+      return;
+    }
+  }
+  sp.selected=!sp.selected;
+  // Rebuild the modal content
+  var sel=window._smSpells.filter(function(s){return s.level===sp.level&&s.selected;}).length;
+  var L2=getL(sp.level);
+  var limitTxt=L2===99?'ilimitado':sel+'/'+L2+' selecionadas';
+  var limEl=document.getElementById('sm-lim-'+sp.level);
+  if(limEl){limEl.textContent=limitTxt;limEl.style.color=sel>=L2&&L2<99?'var(--gold2)':'var(--text3)';}
+  // Update just this circle
+  var circleEl=document.getElementById('sm-circle-'+idx);
+  if(circleEl){
+    circleEl.style.background=sp.selected?'var(--arc2)':'transparent';
+    circleEl.style.borderColor=sp.selected?'var(--arc2)':'rgba(165,105,189,.5)';
+    circleEl.style.boxShadow=sp.selected?'0 0 6px rgba(144,96,204,.5)':'none';
+    circleEl.innerHTML=sp.selected?'<div style="width:8px;height:8px;border-radius:50%;background:#fff"></div>':'';
+  }
+  // Update row opacity/cursor for at-limit items
+  var newSel=window._smSpells.filter(function(s){return s.level===sp.level&&s.selected;}).length;
+  var atLimitNow=L2<99&&newSel>=L2;
+  window._smSpells.forEach(function(s2,i2){
+    if(s2.level!==sp.level||s2.selected) return;
+    var row=document.querySelector('[data-idx="'+i2+'"]');
+    if(row) row.style.opacity=atLimitNow?'.45':'1';
+    var c2=document.getElementById('sm-circle-'+i2);
+    if(c2&&!s2.selected) c2.style.borderColor=atLimitNow?'rgba(200,168,74,.2)':'rgba(165,105,189,.5)';
   });
 }
+
+function smSave(){
+  if(!window._smSpells) return;
+  spells=[];
+  window._smSpells.forEach(function(sp){
+    if(sp.selected){
+      spells.push({
+        id:(sp.level===0?'t':'n'+sp.level)+'_'+sp.name.replace(/\s/g,'_'),
+        name:sp.name,level:sp.level,
+        school:sp.level===0?'Truque':'Nível '+sp.level,
+        desc:'CD = 8 + bônus prof + mod conjuração.'
+      });
+    }
+  });
+  renderSpells();
+  closeDynModal();
+  showSaveToast(spells.length+' magia(s) salva(s)!');
+}
+
 
 
 function longRest(){
@@ -2331,22 +2427,8 @@ function openSpellPanel(){
 
 
 function saveSpellSelection(){
-  spells=[];
-  var checked=document.querySelectorAll('input[name="spell_pick"]:checked');
-  checked.forEach(function(cb){
-    var parts=cb.value.split('|');
-    if(parts.length===3){
-      var cat=parts[0],name=parts[1],lvl=parseInt(parts[2]);
-      spells.push({id:cat+'_'+name.replace(/\s/g,'_'),name:name,level:lvl,school:lvl===0?'Truque':'Nível '+lvl,desc:'CD = 8 + bônus prof + mod conjuração.'});
-    } else if(window._spellsFlat){
-      // fallback old format
-      var sp=window._spellsFlat.find(function(x){return x.id===cb.value;});
-      if(sp) spells.push({id:sp.id,name:sp.name,level:sp.level,school:sp.school,desc:'CD = 8 + bônus prof + mod conjuração.'});
-    }
-  });
-  renderSpells();
-  closeDynModal();
-  showSaveToast(spells.length+' magia(s) selecionada(s)!');
+  if(window._smSpells){smSave();return;}
+  renderSpells();closeDynModal();
 }
 function openAbilityModal(){
   const html=`<div class="modal-title">🌟 Nova Habilidade</div>
