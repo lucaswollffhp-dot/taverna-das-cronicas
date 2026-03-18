@@ -1097,7 +1097,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
         <div class="hdr-sub" id="campaign-sub">Narrador IA · D&D 5e · Forgotten Realms</div>
       </div>
       <!-- XP mini bar in header -->
-      <div id="hdr-xp" style="display:none;flex-direction:column;gap:2px;margin-left:.5rem;min-width:80px">
+      <div id="hdr-xp" style="display:none;flex-direction:column;gap:2px;margin-left:.5rem;min-width:80px;background:rgba(200,168,74,.05);border:1px solid rgba(200,168,74,.3);border-radius:8px;padding:4px 8px;position:relative" title="Progresso de XP">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:4px">
           <span style="font-family:Cinzel,serif;font-size:.52rem;color:var(--gold)">Nv.<span id="hdr-level">1</span></span>
           <span style="font-family:Cinzel,serif;font-size:.5rem;color:var(--text3)"><span id="hdr-xp-cur">0</span> XP</span>
@@ -1168,7 +1168,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
       </div>
       <hr class="sdiv">
       <div>
-        <div class="slbl">🗡 Equipamentos <button style="background:rgba(41,128,185,.1);border:1px solid rgba(93,173,226,.3);border-radius:4px;color:var(--blue2);font-size:.56rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:4px" onclick="openEquipModal()">+</button></div>
+        <div class="slbl">🗡 Equipamentos <button style="background:rgba(41,128,185,.1);border:1px solid rgba(93,173,226,.3);border-radius:4px;color:var(--blue2);font-size:.56rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:4px" onclick="openNewItemModal()" title="Criar novo item">+</button></div>
         <div class="equip-slots" id="equip-slots-d"></div>
         <div class="ca-display"><div class="ca-num" id="ca-display">16</div><div class="ca-lbl">Classe de Armadura</div></div>
       </div>
@@ -1179,10 +1179,17 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
       </div>
       <hr class="sdiv">
       <div>
+        <!-- Rest bar -->
+        <div style="display:flex;gap:.3rem;margin-bottom:.4rem">
+          <button onclick="shortRest()" style="flex:1;background:rgba(41,128,185,.07);border:1px solid rgba(41,128,185,.25);border-radius:6px;padding:4px;font-family:Cinzel,serif;font-size:.56rem;color:var(--ocean2);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:3px" onmouseover="this.style.background='rgba(41,128,185,.16)'" onmouseout="this.style.background='rgba(41,128,185,.07)'">
+            ☕ <span>Descanso Curto</span>
+          </button>
+          <button onclick="longRest()" style="flex:1;background:rgba(107,63,160,.07);border:1px solid rgba(107,63,160,.25);border-radius:6px;padding:4px;font-family:Cinzel,serif;font-size:.56rem;color:var(--arc2);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:3px" onmouseover="this.style.background='rgba(107,63,160,.16)'" onmouseout="this.style.background='rgba(107,63,160,.07)'">
+            🌙 <span>Descanso Longo</span>
+          </button>
+        </div>
         <div class="slbl">🌟 Habilidades
           <button style="background:rgba(125,60,152,.1);border:1px solid rgba(165,105,189,.3);border-radius:4px;color:var(--purple2);font-size:.56rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:2px" onclick="openAbilityModal()">+</button>
-          <button style="background:rgba(41,128,185,.08);border:1px solid rgba(93,173,226,.2);border-radius:4px;color:var(--ocean2);font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:2px;cursor:pointer" onclick="shortRest()" title="Descanso Curto">☕</button>
-          <button style="background:rgba(125,60,152,.08);border:1px solid rgba(165,105,189,.2);border-radius:4px;color:var(--arc2);font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:2px;cursor:pointer" onclick="longRest()" title="Descanso Longo">🌙</button>
         </div>
         <div class="ability-list" id="ability-list-d"></div>
       </div>
@@ -1981,50 +1988,88 @@ function openSpellManager(){
   var cls=window.CHAR_CLASS||'';
   var clsBase=cls.split(' — ')[0];
   var available=SPELLS_BY_CLASS[clsBase]||{truques:[],nivel1:[],nivel2:[],nivel3:[]};
-  var known=spells.map(function(s){return s.id;});
 
-  var tabs=['truques','nivel1','nivel2','nivel3'];
-  var tabLabels=['Truques','Nível 1','Nível 2','Nível 3'];
-  var allSpellsFlat=[];
-  tabs.forEach(function(t,ti){
+  // Official LdJ spell limits per class per level
+  var SPELL_LIMITS={
+    'Mago':     {truques:[3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5], nivel1:99, nivel2:99, nivel3:99}, // prepara INT+nível, grimório tem tudo
+    'Feiticeiro':{truques:[4,4,4,5,5,6,6,7,7,8,8,8,9,9,9,9,9,9,9,9], nivel1:[2,3,4,5,6,7,8,9,10,11,12,12,13,13,14,14,15,15,15,15]},
+    'Bruxo':    {truques:[2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4], nivel1:[2,3,4,5,6,7,8,9,10,10,11,11,12,12,13,13,14,14,14,15]},
+    'Clérigo':  {truques:[3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5], nivel1:99, nivel2:99, nivel3:99}, // prepara SAB+nível
+    'Druida':   {truques:[2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4], nivel1:99, nivel2:99, nivel3:99},
+    'Bardo':    {truques:[2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4], nivel1:[4,5,6,7,8,9,10,11,12,14,15,15,16,18,19,19,20,22,22,22]},
+    'Paladino': {truques:[], nivel1:[0,0,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4]}, // nenhuma a nv1
+    'Patrulheiro':{truques:[], nivel1:[0,0,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11]},
+  };
+
+  function getLimit(cat){
+    var lim=SPELL_LIMITS[clsBase];
+    if(!lim) return 99;
+    var arr=lim[cat];
+    if(!arr) return 0;
+    if(typeof arr==='number') return arr;
+    return arr[charLevel-1]||0;
+  }
+
+  var lv=charLevel-1;
+  var limTruques=getLimit('truques');
+  var limNv1=getLimit('nivel1');
+  var limNv2=getLimit('nivel2')||0;
+  var limNv3=getLimit('nivel3')||0;
+
+  // Build rows per category with limits
+  function rows(list,cat,lvlNum,lim){
+    if(!list||!list.length) return '';
+    var known=spells.filter(function(s){return s.level===lvlNum;}).length;
+    var locked=(lim===0);
+    var header='<div style="display:flex;align-items:center;justify-content:space-between;font-family:Cinzel,serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);padding-bottom:3px;margin-bottom:4px;margin-top:.5rem">'
+      +(cat==='truques'?'⊙ Truques':'Nível '+lvlNum)
+      +'<span style="font-size:.52rem;color:'+(locked?'var(--blood2)':known>=lim&&lim<99?'var(--gold2)':'var(--text3)')+'">'
+      +(locked?'🔒 Disponível nível '+(lvlNum===1?2:lvlNum*2):lim===99?'Prepara '+(lvlNum===0?'SAB/INT':'SAB/INT+Nv'):known+'/'+lim+' selecionadas')
+      +'</span></div>';
+    var r=list.map(function(n){
+      var isKnown=!!spells.find(function(s){return s.name===n&&s.level===lvlNum;});
+      var countCat=spells.filter(function(s){return s.level===lvlNum;}).length;
+      var atLimit=!isKnown&&lim<99&&countCat>=lim;
+      return'<label style="display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px solid var(--border);cursor:'+(locked||atLimit?'not-allowed':'pointer')+';opacity:'+(locked?'.4':'1')+'">'
+        +'<input type="checkbox" name="spell_pick" value="'+cat+'|'+n+'|'+lvlNum+'" '
+        +(isKnown?'checked':'')
+        +((locked||atLimit)&&!isKnown?' disabled':'')
+        +' style="width:16px;height:16px;accent-color:var(--arc2);cursor:'+(locked||atLimit?'not-allowed':'pointer')+'">'
+        +'<span style="flex:1;font-family:Cormorant Garamond,serif;font-size:.88rem;color:var(--text2)">'+n+'</span>'
+        +'</label>';
+    }).join('');
+    return header+r;
+  }
+
+  var limInfo='<div style="background:rgba(107,63,160,.08);border:1px solid rgba(107,63,160,.2);border-radius:6px;padding:.4rem .6rem;margin-bottom:.5rem;font-size:.72rem;color:var(--arc3)">'
+    +clsBase+' Nv.'+charLevel+' — '
+    +(limTruques===99?'Truques: ilimitados':limTruques>0?'Truques: até '+limTruques:'Truques: —')
+    +(limNv1>0?(', Nv1: '+(limNv1===99?'ilimitado':limNv1)):'')
+    +(limNv2>0?(', Nv2: '+(limNv2===99?'ilimitado':limNv2)):'')
+    +'</div>';
+
+  var html='<div class="modal-title">✚ Gerenciar Magias</div>'
+    +limInfo
+    +'<div style="max-height:58vh;overflow-y:auto;padding-right:2px">'
+    +rows(available.truques,'truques',0,limTruques)
+    +rows(available.nivel1,'nivel1',1,limNv1)
+    +(charLevel>=3?rows(available.nivel2,'nivel2',2,limNv2):'')
+    +(charLevel>=5?rows(available.nivel3,'nivel3',3,limNv3):'')
+    +'</div>'
+    +'<div class="modal-row">'
+    +'<button class="mbtn secondary" onclick="closeDynModal()">Cancelar</button>'
+    +'<button class="mbtn primary" onclick="saveSpellSelection()">✓ Salvar</button>'
+    +'</div>';
+  openDynModal(html);
+  window._spellsFlat=[];
+  ['truques','nivel1','nivel2','nivel3'].forEach(function(t){
+    var ti={'truques':0,'nivel1':1,'nivel2':2,'nivel3':3}[t];
     (available[t]||[]).forEach(function(n){
-      allSpellsFlat.push({id:t+'_'+n.replace(/\s/g,'_'),name:n,level:ti,school:t==='truques'?'Truque':'Nível '+ti,cat:t});
+      window._spellsFlat.push({id:t+'_'+n.replace(/\s/g,'_'),name:n,level:ti,school:t==='truques'?'Truque':'Nível '+ti,cat:t});
     });
   });
-
-  var rows=allSpellsFlat.map(function(sp){
-    var isKnown=!!spells.find(function(s){return s.name===sp.name;});
-    var lvlColor=sp.level===0?'var(--arc)':sp.level===1?'var(--arc2)':'#70a8e8';
-    return'<label style="display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px solid var(--border);cursor:pointer">'
-      +'<input type="checkbox" name="spell_pick" value="'+sp.id+'" '+(isKnown?'checked':'')+' '
-      +'style="width:16px;height:16px;accent-color:var(--arc2);flex-shrink:0;cursor:pointer">'
-      +'<span style="flex:1;font-family:Cormorant Garamond,serif;font-size:.9rem;color:var(--text2)">'+sp.name+'</span>'
-      +'<span style="font-family:Cinzel,serif;font-size:.5rem;color:'+lvlColor+';text-transform:uppercase">'
-      +(sp.level===0?'Truque':'Nv '+sp.level)+'</span>'
-      +'</label>';
-  }).join('');
-
-  // Calculate how many spells player can know
-  var knownLimits={
-    'Mago':'Grimório: prepare SAB+nível. Truques: '+([3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5][charLevel-1]||3),
-    'Feiticeiro':'Conhecidas: '+([2,3,4,5,6,7,8,9,10,11,12,12,13,13,14,14,15,15,15,15][charLevel-1]||2)+'. Truques: '+([4,4,4,5,5,6,6,7,7,8,8,8,9,9,9,9,9,9,9,9][charLevel-1]||4),
-    'Bruxo':'Conhecidas: '+([2,3,4,5,6,7,8,9,10,10,11,11,12,12,13,13,14,14,14,15][charLevel-1]||2)+'. Truques: '+([2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4][charLevel-1]||2),
-    'Clérigo':'Prepare SAB+nível. Truques: '+([3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5][charLevel-1]||3),
-    'Druida':'Prepare SAB+nível. Truques: '+([2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4][charLevel-1]||2),
-    'Bardo':'Conhecidas: '+([4,5,6,7,8,9,10,11,12,14,15,15,16,18,19,19,20,22,22,22][charLevel-1]||4)+'. Truques: '+([2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4][charLevel-1]||2),
-    'Paladino':'Prepare CAR+metade nível (mín 1). Disponível a partir nível 2.',
-    'Patrulheiro':'Conhecidas: '+([0,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11][charLevel-1]||0)+'. Disponível a partir nível 2.',
-  };
-  var limitInfo=knownLimits[clsBase]||'Selecione suas magias conhecidas.';
-  var html='<div class="modal-title">✨ Magias — '+clsBase+'</div>'
-    +'<div style="background:rgba(107,63,160,.08);border:1px solid rgba(107,63,160,.2);border-radius:6px;padding:.4rem .6rem;margin-bottom:.6rem;font-size:.74rem;color:var(--arc3)">'+limitInfo+'</div>'
-    +'<p style="font-size:.74rem;color:var(--text3);margin-bottom:.5rem">Marque as magias que seu personagem conhece/prepara.</p>'
-    +'<div style="max-height:55vh;overflow-y:auto;padding-right:4px">'+rows+'</div>'
-    +'<div class="modal-row"><button class="mbtn secondary" onclick="closeDynModal()">Cancelar</button>'
-    +'<button class="mbtn primary" onclick="saveSpellSelection()">Salvar</button></div>';
-  openDynModal(html);
-  window._spellsFlat=allSpellsFlat;
 }
+
 
 function longRest(){
   // Full HP recovery
@@ -2075,72 +2120,79 @@ function shortRest(){
 function openSpellPanel(){
   var cls=window.CHAR_CLASS||'';
   var clsBase=cls.split(' — ')[0];
-  var allSpells=spells.length?spells:[];
-  var truques=allSpells.filter(function(s){return s.level===0;});
-  var niv1=allSpells.filter(function(s){return s.level===1;});
-  var niv2=allSpells.filter(function(s){return s.level===2;});
-  var niv3=allSpells.filter(function(s){return s.level===3;});
+  var available=SPELLS_BY_CLASS[clsBase]||{truques:[],nivel1:[],nivel2:[],nivel3:[]};
 
-  function spellRow(s){
-    var slotInfo='';
-    if(s.level>0){
-      var slot=spellSlots&&spellSlots[s.level];
-      var avail=slot?(slot.total-(slot.used||0)):0;
-      slotInfo='<span style="font-size:.56rem;color:'+(avail>0?'var(--green2)':'rgba(192,57,43,.7)')+';margin-left:4px">'+(avail>0?avail+' slot(s)':'sem slots')+'</span>';
-    }
-    return'<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 6px;background:rgba(125,60,152,.05);border:1px solid rgba(165,105,189,.15);border-radius:5px;margin-bottom:3px">'
-      +'<div>'
-      +'<div style="font-family:Cinzel,serif;font-size:.7rem;color:var(--gold2)">'+s.name+slotInfo+'</div>'
-      +'<div style="font-size:.68rem;color:var(--parch2)">'+s.school+(s.level===0?' · Truque':' · Nível '+s.level)+'</div>'
-      +'</div>'
-      +'<button data-sid="'+s.id+'" onclick="castSpell(this.dataset.sid);closeDynModal()" style="background:rgba(125,60,152,.2);border:1px solid rgba(165,105,189,.4);border-radius:4px;color:var(--purple2);font-family:Cinzel,serif;font-size:.6rem;padding:2px 7px;cursor:pointer">Usar</button>'
+  // Build section helper
+  function section(title,list,lvl){
+    if(!list||!list.length) return '';
+    return '<div style="margin-bottom:.6rem">'
+      +'<div style="font-family:Cinzel,serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);padding-bottom:3px;margin-bottom:5px">'+title+'</div>'
+      +list.map(function(n){
+        var prepared=!!spells.find(function(s){return s.name===n;});
+        var slot=lvl>0&&spellSlots?spellSlots[lvl]:null;
+        var avail=slot?(slot.total-(slot.used||0)):0;
+        return'<div style="display:flex;align-items:center;gap:6px;padding:4px 6px;background:'+(prepared?'rgba(107,63,160,.1)':'var(--surface)')+';border:1px solid '+(prepared?'rgba(107,63,160,.35)':'var(--border)')+';border-radius:6px;margin-bottom:3px">'
+          +'<span style="flex:1;font-family:Cormorant Garamond,serif;font-size:.88rem;color:'+(prepared?'var(--arc3)':'var(--text2)')+'">'+n+'</span>'
+          +(prepared
+            ?'<span style="font-size:.52rem;font-family:Cinzel,serif;color:var(--arc2)">✓ preparada</span>'
+            +(lvl>0?'<span style="font-size:.52rem;color:'+(avail>0?'var(--nat2)':'var(--text3)')+'">'+(avail>0?avail+' slot':'sem slot')+'</span>':''  )
+            :'<span style="font-size:.52rem;color:var(--text3)">não preparada</span>'
+          )
+          +'</div>';
+      }).join('')
       +'</div>';
   }
 
-  function section(title, list){
-    if(!list.length) return '';
-    return'<div style="margin-bottom:.5rem">'
-      +'<div style="font-family:Cinzel,serif;font-size:.6rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;border-bottom:1px solid var(--border);padding-bottom:2px">'+title+'</div>'
-      +list.map(spellRow).join('')
-      +'</div>';
+  // Slots summary
+  var slotsHtml='';
+  if(spellSlots&&Object.keys(spellSlots).some(function(l){return spellSlots[l]&&spellSlots[l].total>0;})){
+    slotsHtml='<div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.7rem">';
+    Object.keys(spellSlots).forEach(function(lv){
+      var s=spellSlots[lv];if(!s||!s.total)return;
+      var avail=s.total-(s.used||0);
+      slotsHtml+='<div style="background:rgba(107,63,160,.08);border:1px solid rgba(107,63,160,.25);border-radius:6px;padding:3px 9px;text-align:center;cursor:pointer" onclick="toggleSpellSlot('+lv+',0)">'
+        +'<div style="font-family:Cinzel,serif;font-size:.46rem;color:var(--arc);text-transform:uppercase">Nv '+lv+'</div>'
+        +'<div style="display:flex;gap:3px;margin-top:2px;justify-content:center">';
+      for(var i=0;i<s.total;i++){
+        var used=i<(s.used||0);
+        slotsHtml+='<div style="width:9px;height:9px;border-radius:50%;border:1.5px solid var(--arc2);background:'+(used?'rgba(107,63,160,.15)':'var(--arc2)')+';box-shadow:'+(used?'none':'0 0 4px rgba(144,96,204,.5)')+'" onclick="toggleSpellSlot('+lv+','+i+');event.stopPropagation()"></div>';
+      }
+      slotsHtml+='</div></div>';
+    });
+    slotsHtml+='</div>';
   }
 
-  // Spell slots summary at top
-  var slotsHtml='<div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.7rem">';
-  if(spellSlots){Object.keys(spellSlots).forEach(function(lv){
-    var s=spellSlots[lv];if(!s||!s.total)return;
-    var avail=s.total-(s.used||0);
-    slotsHtml+='<div style="background:rgba(125,60,152,.08);border:1px solid rgba(165,105,189,.25);border-radius:5px;padding:3px 8px;text-align:center">'
-      +'<div style="font-family:Cinzel,serif;font-size:.5rem;color:var(--purple);text-transform:uppercase">Nv '+lv+'</div>'
-      +'<div style="font-family:Cinzel,serif;font-size:.75rem;color:'+(avail>0?'var(--purple2)':'rgba(165,105,189,.3)')+'">'+avail+'/'+s.total+'</div>'
-      +'</div>';
-  });}
-  slotsHtml+='</div>';
-
-  var html='<div class="modal-title">✨ Magias de '+clsBase+'</div>'
-    +(allSpells.length?slotsHtml+'<div style="max-height:60vh;overflow-y:auto">'
-      +section('⊙ Truques (à vontade)',truques)
-      +section('I Nível 1',niv1)
-      +section('II Nível 2',niv2)
-      +section('III Nível 3',niv3)
-      +'</div>'
-      :'<p style="text-align:center;color:rgba(165,105,189,.4);font-style:italic;padding:1rem">Nenhuma magia preparada.<br>Use o botão ✚ Gerenciar para escolher.</p>')
-    +'<div style="margin-top:.5rem;display:flex;gap:.4rem">'
+  var html='<div class="modal-title">✨ Magias — '+clsBase+'</div>'
+    +slotsHtml
+    +'<div style="max-height:58vh;overflow-y:auto;padding-right:2px">'
+    +section('⊙ Truques (à vontade)',available.truques,0)
+    +section('I Nível 1',available.nivel1,1)
+    +section('II Nível 2',available.nivel2,2)
+    +section('III Nível 3',available.nivel3,3)
+    +'</div>'
+    +'<div style="display:flex;gap:.4rem;margin-top:.6rem">'
     +'<button class="mbtn secondary" style="flex:1" onclick="shortRest()">☕ Curto</button>'
     +'<button class="mbtn secondary" style="flex:1" onclick="longRest()">🌙 Longo</button>'
     +'<button class="mbtn secondary" style="flex:1" onclick="openSpellManager();closeDynModal()">✚ Gerenciar</button>'
-    +'<button class="mbtn secondary" onclick="closeDynModal()">Fechar</button>'
+    +'<button class="mbtn secondary" onclick="closeDynModal()">✕</button>'
     +'</div>';
   openDynModal(html);
 }
 
+
 function saveSpellSelection(){
   spells=[];
   var checked=document.querySelectorAll('input[name="spell_pick"]:checked');
-  if(!window._spellsFlat) return;
   checked.forEach(function(cb){
-    var sp=window._spellsFlat.find(function(x){return x.id===cb.value;});
-    if(sp) spells.push({id:sp.id,name:sp.name,level:sp.level,school:sp.school,desc:'CD = 8 + bônus prof + mod conjuração.'});
+    var parts=cb.value.split('|');
+    if(parts.length===3){
+      var cat=parts[0],name=parts[1],lvl=parseInt(parts[2]);
+      spells.push({id:cat+'_'+name.replace(/\s/g,'_'),name:name,level:lvl,school:lvl===0?'Truque':'Nível '+lvl,desc:'CD = 8 + bônus prof + mod conjuração.'});
+    } else if(window._spellsFlat){
+      // fallback old format
+      var sp=window._spellsFlat.find(function(x){return x.id===cb.value;});
+      if(sp) spells.push({id:sp.id,name:sp.name,level:sp.level,school:sp.school,desc:'CD = 8 + bônus prof + mod conjuração.'});
+    }
   });
   renderSpells();
   closeDynModal();
@@ -2183,14 +2235,20 @@ function renderCoins(suffix='d'){
   const tel=document.getElementById('coin-total-'+suffix);
   if(!el)return;
   el.innerHTML=COIN_DATA.map(c=>`
-    <div class="coin-box" style="border-color:${c.border};background:${c.bg}">
-      <div style="width:14px;height:14px;border-radius:50%;background:${c.color};margin:0 auto 1px;box-shadow:0 0 6px ${c.color}88"></div>
-      <div class="coin-lbl" style="color:${c.color}">${c.k}</div>
-      <input class="coin-inp" type="number" min="0" value="${coins[c.k]}" style="color:${c.color};border-bottom-color:${c.border}" onchange="updCoin('${c.k}',this.value,'${suffix}')"/>
+    <div class="coin-box" style="border-color:${c.border};background:${c.bg};padding:4px 3px">
+      <div style="width:13px;height:13px;border-radius:50%;background:${c.color};margin:0 auto 1px;box-shadow:0 0 6px ${c.color}88"></div>
+      <div class="coin-lbl" style="color:${c.color};margin-bottom:2px">${c.k}</div>
+      <button onclick="updCoin('${c.k}',coins['${c.k}']+1,'${suffix}')" style="background:none;border:none;color:${c.color};font-size:.7rem;line-height:1;cursor:pointer;padding:0;width:100%;opacity:.7">▲</button>
+      <input class="coin-inp" type="number" min="0" value="${coins[c.k]}" style="color:${c.color};border-bottom-color:${c.border};width:100%;text-align:center" onchange="updCoin('${c.k}',this.value,'${suffix}')"/>
+      <button onclick="updCoin('${c.k}',Math.max(0,coins['${c.k}']-1),'${suffix}')" style="background:none;border:none;color:${c.color};font-size:.7rem;line-height:1;cursor:pointer;padding:0;width:100%;opacity:.7">▼</button>
     </div>`).join('');
   if(tel) updCoinTotal(suffix);
 }
-function updCoin(k,v,suffix){coins[k]=Math.max(0,parseInt(v)||0);updCoinTotal(suffix);}
+function updCoin(k,v,suffix){
+  coins[k]=Math.max(0,typeof v==='number'?Math.round(v):(parseInt(v)||0));
+  renderCoins(suffix||'d');
+  if(suffix!=='m') renderCoins('m');
+}
 function updCoinTotal(suffix){
   const el=document.getElementById('coin-total-'+suffix);
   if(!el)return;
