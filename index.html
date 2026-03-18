@@ -913,7 +913,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
       <div id="equip-preview" style="background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.2);border-radius:6px;padding:.5rem .7rem;margin-bottom:.6rem;font-size:.78rem;color:#ede0bc"></div>
 
       <div style="display:flex;gap:.5rem">
-        <button onclick="showStep('step-menu')" style="flex:1;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.3);border-radius:6px;color:#c9a84c;font-family:'Cinzel',serif;font-size:.75rem;padding:.55rem;cursor:pointer">← Voltar</button>
+        <button onclick="showStep('step-menu')" style="flex:1;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.3);border-radius:6px;color:#c9a84c;font-family:'Cinzel',serif;font-size:.75rem;padding:.55rem;cursor:pointer">← Menu Inicial</button>
         <button onclick="startNewGame()" style="flex:2;background:linear-gradient(135deg,#c0392b,#d4500a);border:1px solid #c9a84c;border-radius:6px;color:#f5d98a;font-family:'Cinzel',serif;font-size:.8rem;padding:.55rem;cursor:pointer;letter-spacing:.5px">⚔ Iniciar Aventura!</button>
       </div>
     </div>
@@ -1072,8 +1072,11 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
       </div>
       <hr class="sdiv">
       <div>
-        <div class="slbl">📝 Anotações</div>
-        <textarea class="notes-area" id="notes-d" placeholder="Pistas, NPCs, locais..."></textarea>
+        <div class="slbl">📝 Anotações
+          <button style="background:rgba(200,168,74,.1);border:1px solid var(--border2);border-radius:4px;color:var(--gold);font-size:.52rem;padding:1px 6px;font-family:Cinzel,serif;margin-left:4px;cursor:pointer" onclick="saveNote()">💾</button>
+          <button style="background:rgba(41,128,185,.08);border:1px solid rgba(93,173,226,.2);border-radius:4px;color:var(--ocean2);font-size:.52rem;padding:1px 6px;font-family:Cinzel,serif;margin-left:2px;cursor:pointer" onclick="openNotesHistory()">📋 Ver</button>
+        </div>
+        <textarea class="notes-area" id="notes-d" placeholder="Pistas, NPCs, locais, itens importantes..."></textarea>
       </div>
       <hr class="sdiv">
       <div>
@@ -1099,7 +1102,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
       <div class="input-area">
         <div class="quick-acts" id="qas"></div>
         <div class="inp-row">
-          <textarea class="ainp" id="inp" placeholder="O que Killyn faz?" rows="2" onkeydown="kdown(event)"></textarea>
+          <textarea class="ainp" id="inp" placeholder="O que você faz?" rows="2" onkeydown="kdown(event)"></textarea>
           <button class="sbtn" id="sbtn" onclick="send()">Agir ↗</button>
         </div>
       </div>
@@ -1157,7 +1160,13 @@ var CONQUISTAS=[];
 const XP_TABLE=[0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,120000,140000,165000,195000,225000,265000,305000,355000];
 
 // SYSTEM PROMPT
-const SYSTEM=`Você é o Narrador de D&D 5e em português do Brasil conduzindo as aventuras de Killyn.
+const SYSTEM=`Você é o Narrador de D&D 5e em português do Brasil.
+REGRAS OBRIGATÓRIAS:
+- NUNCA mencione o estado oculto do personagem no texto narrativo.
+- NPCs devem ter nomes únicos e variados. Nunca repita nomes de campanhas anteriores.
+- Ao pedir rolagens, SEMPRE inclua o modificador somado. Ex: "Role d20+5 de Percepção" ou "Role d20+3 para atacar". NUNCA peça só "role d20".
+- Narre em português do Brasil, estilo épico. 2-4 parágrafos. Termine pedindo ação.
+- NUNCA resolva combate sem pedir rolagens.
 HISTÓRIA: Killyn (anão guerreiro nv.2) resolveu "Diadema Deslocada" em Margem do Junco. Derrotou Morgok, salvou Janus, aliou-se a Skint (goblin). Companheiros: Vessa (arqueira), Pip (mago), Soren (clérigo).
 DIRETRIZES: Narre em português épico. 2-4 parágrafos. Para testes peça rolls d20+bônus. Termine pedindo ação. Nunca resolva combate sem rolls.
 SISTEMA DE ATUALIZAÇÃO — ao final se houver mudanças inclua:
@@ -1540,6 +1549,32 @@ function saveMagicItems(){
 }
 
 // ====== DIÁRIO AUTOMÁTICO ======
+var savedNotes=[];
+
+function saveNote(){
+  var el=document.getElementById('notes-d');
+  if(!el||!el.value.trim()){showSaveToast('Escreva algo para salvar!');return;}
+  savedNotes.push({id:'n'+Date.now(),text:el.value.trim(),ts:Date.now(),level:charLevel});
+  el.value='';
+  showSaveToast('Anotação salva!');
+}
+
+function openNotesHistory(){
+  var rows=savedNotes.length
+    ?savedNotes.slice().reverse().map(function(n){
+        var d=new Date(n.ts);
+        var ts=d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+        return'<div style="background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:8px 10px;margin-bottom:5px">'
+          +'<div style="font-family:Cinzel,serif;font-size:.5rem;color:var(--text3);margin-bottom:3px">Nv.'+n.level+' · '+ts+'</div>'
+          +'<div style="font-size:.8rem;color:var(--text2);line-height:1.5">'+n.text.replace(/\n/g,'<br>')+'</div>'
+          +'</div>';
+      }).join('')
+    :'<div style="text-align:center;color:var(--text3);font-style:italic;padding:1rem">Nenhuma anotação salva</div>';
+  openDynModal('<div class="modal-title">📋 Anotações Salvas</div>'
+    +'<div style="max-height:60vh;overflow-y:auto">'+rows+'</div>'
+    +'<div class="modal-row"><button class="mbtn secondary" onclick="closeDynModal()">Fechar</button></div>');
+}
+
 function addDiaryEntry(text){
   if(!text||!text.trim()) return;
   var entry={
@@ -1810,7 +1845,7 @@ function saveAbility(){
 
 // ─── MAGIAS ───
 // ─── MOEDAS ───
-const COIN_DATA=[{k:'PP',icon:'🪙',lbl:'Platina',val:10},{k:'PO',icon:'💛',lbl:'Ouro',val:1},{k:'PE',icon:'🔵',lbl:'Electrum',val:.5},{k:'PA',icon:'⚪',lbl:'Prata',val:.1},{k:'PC',icon:'🟤',lbl:'Cobre',val:.01}];
+const COIN_DATA=[{k:'PP',lbl:'Platina',val:10,color:'#dde4f0',bg:'rgba(210,220,240,.12)',border:'rgba(210,220,240,.4)'},{k:'PO',lbl:'Ouro',val:1,color:'#f0c040',bg:'rgba(240,192,64,.12)',border:'rgba(240,192,64,.45)'},{k:'PE',lbl:'Eletr.',val:.5,color:'#6ecfa0',bg:'rgba(110,207,160,.1)',border:'rgba(110,207,160,.4)'},{k:'PA',lbl:'Prata',val:.1,color:'#b8c8d8',bg:'rgba(180,200,220,.1)',border:'rgba(180,200,220,.4)'},{k:'PC',lbl:'Cobre',val:.01,color:'#d08850',bg:'rgba(200,136,80,.1)',border:'rgba(200,136,80,.4)'}];
 function autoConvertCoins(){
   if(coins.PC>=10){var c=Math.floor(coins.PC/10);coins.PC-=c*10;coins.PA+=c;}
   if(coins.PA>=10){var c=Math.floor(coins.PA/10);coins.PA-=c*10;coins.PP+=c;}
@@ -1823,10 +1858,10 @@ function renderCoins(suffix='d'){
   const tel=document.getElementById('coin-total-'+suffix);
   if(!el)return;
   el.innerHTML=COIN_DATA.map(c=>`
-    <div class="coin-box">
-      <div class="coin-icon">${c.icon}</div>
-      <div class="coin-lbl">${c.k}</div>
-      <input class="coin-inp" type="number" min="0" value="${coins[c.k]}" onchange="updCoin('${c.k}',this.value,'${suffix}')"/>
+    <div class="coin-box" style="border-color:${c.border};background:${c.bg}">
+      <div style="width:14px;height:14px;border-radius:50%;background:${c.color};margin:0 auto 1px;box-shadow:0 0 6px ${c.color}88"></div>
+      <div class="coin-lbl" style="color:${c.color}">${c.k}</div>
+      <input class="coin-inp" type="number" min="0" value="${coins[c.k]}" style="color:${c.color};border-bottom-color:${c.border}" onchange="updCoin('${c.k}',this.value,'${suffix}')"/>
     </div>`).join('');
   if(tel) updCoinTotal(suffix);
 }
@@ -2039,7 +2074,7 @@ function openCombat(){
     <p style="font-size:.84rem;color:var(--parch2);margin-bottom:.8rem">Adicione os combatentes e suas iniciativas.</p>
     <div id="comb-list" style="display:flex;flex-direction:column;gap:.4rem;margin-bottom:.6rem">
       <div style="display:grid;grid-template-columns:1fr auto;gap:.4rem;align-items:center;background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.2);border-radius:5px;padding:5px 8px">
-        <span style="font-family:'Cinzel',serif;font-size:.74rem;color:var(--blood2)">⚔ Killyn (você)</span>
+        <span style="font-family:'Cinzel',serif;font-size:.74rem;color:var(--blood2)">⚔ ${window.CHAR_NAME||'Personagem'} (você)</span>
         <input type="number" id="init-killyn" placeholder="d20+1" style="width:60px;background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:4px;padding:3px 5px;font-family:Cinzel,serif;font-size:.74rem;color:var(--parch);text-align:center;outline:none" value="${Math.floor(Math.random()*20)+1+modNum(ATTRS.DES)}"/>
       </div>
     </div>
@@ -2341,7 +2376,7 @@ async function callAI(userMsg){
   var gemHist=hist.map(function(m){
     return{role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]};
   });
-  gemHist.push({role:'user',parts:[{text:userMsg+'\n\n'+ctx}]});
+  gemHist.push({role:'user',parts:[{text:userMsg}]});
   var models=['gemini-2.5-flash','gemini-2.0-flash','gemini-flash-latest'];
   var response=null,lastErr='connection error';
   for(var i=0;i<models.length;i++){
@@ -2352,11 +2387,27 @@ async function callAI(userMsg){
         contents:gemHist,
         generationConfig:{maxOutputTokens:2048,temperature:0.9}
       });
-      var r=await fetch(url,{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:body});
+      var controller=new AbortController();
+      var timeoutId=setTimeout(function(){controller.abort();},30000);
+      var r=await fetch(url,{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:body,signal:controller.signal});
+      clearTimeout(timeoutId);
       if(r.ok){response=r;break;}
       var eb=await r.json().catch(function(){return{};});
       lastErr=eb&&eb.error&&eb.error.message?eb.error.message:String(r.status);
     }catch(ex){lastErr=ex.message;}
+  }
+  // If all models failed, wait 2s and retry once
+  if(!response){
+    await new Promise(function(r){setTimeout(r,2000);});
+    for(var ri=0;ri<2;ri++){
+      try{
+        var rurl='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+apiKey;
+        var rc=new AbortController();
+        setTimeout(function(){rc.abort();},25000);
+        var rr=await fetch(rurl,{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({system_instruction:{parts:[{text:sys||SYSTEM}]},contents:gemHist,generationConfig:{maxOutputTokens:2048,temperature:0.9}}),signal:rc.signal});
+        if(rr.ok){response=rr;break;}
+      }catch(re){lastErr=re.message;}
+    }
   }
   if(!response) throw new Error(lastErr);
   var data=await response.json();
@@ -2367,7 +2418,7 @@ async function callAI(userMsg){
   }
   var clean=parseAndApplyUpdates(txt);
   hist.push({role:'user',content:userMsg},{role:'assistant',content:txt});
-  if(hist.length>40) hist=hist.slice(-40);
+  if(hist.length>30) hist=hist.slice(-30);
   return clean;
 }
 
@@ -2383,25 +2434,47 @@ async function send(){
   busy=true;document.getElementById('sbtn').disabled=true;inp.value='';
   addMsg('pl',txt);addLoad();
   try{const r=await callAI(txt);rmLoad();addMsg('dm',r.replace(/\n/g,'<br>'));}
-  catch(e){rmLoad();addMsg('sys','A névoa engoliu as palavras... tente novamente.');console.error(e);}
+  catch(e){
+    rmLoad();
+    console.error('API error:',e);
+    var errMsg=e.message||'erro desconhecido';
+    var isTimeout=errMsg.includes('timeout')||errMsg.includes('TimeoutError');
+    var isNetwork=errMsg.includes('fetch')||errMsg.includes('Load failed')||errMsg.includes('network')||errMsg.includes('Failed to fetch');
+    var msg='';
+    if(isTimeout) msg='⏱ O Narrador demorou demais para responder. A conexão pode estar lenta. Tente novamente.';
+    else if(isNetwork) msg='📡 Falha de conexão com o Narrador. Verifique sua internet e tente novamente.';
+    else if(errMsg.includes('429')||errMsg.includes('quota')) msg='⏳ Muitas requisições. Aguarde alguns segundos e tente novamente.';
+    else if(errMsg.includes('key')||errMsg.includes('API_KEY')||errMsg.includes('403')) msg='🔑 Chave de API inválida. Clique em 🔑 para verificar sua chave.';
+    else msg='🌫 O Narrador tropecou: '+errMsg+'. Tente novamente.';
+    addMsg('sys',msg+'<br><button onclick="retryLast()" style="margin-top:5px;background:rgba(200,168,74,.15);border:1px solid var(--border2);border-radius:5px;color:var(--gold);font-family:Cinzel,serif;font-size:.65rem;padding:3px 10px;cursor:pointer">↺ Tentar novamente</button>');
+    window._lastMsg=txt;
+  }
   busy=false;document.getElementById('sbtn').disabled=false;inp.focus();
   scheduleAutoSave();
+}
+
+function retryLast(){
+  if(window._lastMsg){
+    document.getElementById('inp').value=window._lastMsg;
+    send();
+  }
 }
 function kdown(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
 
 // ─── SAVE ───
 const SAVE_KEY='killyn_v3';let autoSaveTimer=null;
 function getState(){
-  return{hpC,HP_MAX,hist,inventory,quests,attacks,abilities,equipped,coins,
+  return{hpC,HP_MAX,hist,inventory,quests,attacks,abilities,equipped,coins,attrs:{FOR:ATTRS.FOR,DES:ATTRS.DES,CON:ATTRS.CON,INT:ATTRS.INT,SAB:ATTRS.SAB,CAR:ATTRS.CAR},
     charLevel,charXP,saveProficiencies,mapSrc,conquistas:CONQUISTAS,
     charName:window.CHAR_NAME||'',charRace:window.CHAR_RACE||'',
-    charClass:window.CHAR_CLASS||'',charRegion:window.CHAR_REGION||'',
+    charClass:window.CHAR_CLASS||'',
+    charSubclass:window.CHAR_SUBCLASS||'',charRegion:window.CHAR_REGION||'',
     campaignTitle:window.CAMPAIGN_TITLE||'',
     systemOverride:window.SYSTEM_OVERRIDE||'',
     spells:spells,spellSlots:spellSlots,
     notas:document.getElementById('notes-d')?.value||'',
     chat:document.getElementById('chat')?.innerHTML||'',
-    magicItems:magicItems,diary:diary,
+    magicItems:magicItems,diary:diary,savedNotes:savedNotes||[],
     ts:Date.now()};
 }
 function saveProgress(slot='auto',showToast=false){
@@ -2419,23 +2492,37 @@ function loadProgress(slot='auto'){
   charLevel=s.charLevel||2;charXP=s.charXP||300;
   saveProficiencies=s.saveProficiencies||{FOR:true,CON:true,DES:false,INT:false,SAB:false,CAR:false};
   mapSrc=s.mapSrc||null;
-  updHP();updCA();updXP();renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderCoins();renderInv();renderQuests();
-  if(s.notas){const el=document.getElementById('notes-d');if(el)el.value=s.notas;}
-  if(s.chat){const el=document.getElementById('chat');if(el){el.innerHTML=s.chat;el.scrollTop=99999;}}
-  if(mapSrc){const img=document.getElementById('map-img');if(img)img.src=mapSrc;}
-  return true;
-  // Restore char globals
+  // Restore all character data
   if(s.spells) spells=s.spells;
   if(s.spellSlots) spellSlots=s.spellSlots;
   if(s.magicItems) magicItems=s.magicItems;
   if(s.diary) diary=s.diary;
-  if(s.charName){window.CHAR_NAME=s.charName;window.CHAR_RACE=s.charRace;window.CHAR_CLASS=s.charClass;window.CHAR_REGION=s.charRegion;}
+  if(s.savedNotes) savedNotes=s.savedNotes;
+  if(s.conquistas) CONQUISTAS=s.conquistas;
+  if(s.attrs) Object.assign(ATTRS,s.attrs);
+  if(s.charName){
+    window.CHAR_NAME=s.charName;
+    window.CHAR_RACE=s.charRace||'';
+    window.CHAR_CLASS=s.charClass||'';
+    window.CHAR_REGION=s.charRegion||'';
+    window.CHAR_SUBCLASS=s.charSubclass||'';
+  }
   if(s.campaignTitle) window.CAMPAIGN_TITLE=s.campaignTitle;
   if(s.systemOverride) window.SYSTEM_OVERRIDE=s.systemOverride;
-  if(s.conquistas) CONQUISTAS=s.conquistas;
-  if(window.CHAR_NAME) updateHeader(window.CHAR_NAME,window.CHAR_RACE,window.CHAR_CLASS,charLevel,window.CHAR_REGION);
-  if(window.CAMPAIGN_TITLE) setCampaignTitle(window.CAMPAIGN_TITLE,(window.CHAR_RACE||'')+' '+(window.CHAR_CLASS||'')+' · Nível '+charLevel+' · '+(window.CHAR_REGION||''));
+  // Render everything
+  updHP();updCA();updXP();renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderCoins();renderInv();renderQuests();
   renderSpells();renderMagicItems();renderDiary();
+  if(s.notas){const el=document.getElementById('notes-d');if(el)el.value=s.notas;}
+  if(s.chat){const el=document.getElementById('chat');if(el){el.innerHTML=s.chat;el.scrollTop=99999;}}
+  if(mapSrc){const img=document.getElementById('map-img');if(img)img.src=mapSrc;}
+  // Update header with correct char info
+  if(window.CHAR_NAME){
+    var cls=window.CHAR_CLASS+(window.CHAR_SUBCLASS?' — '+window.CHAR_SUBCLASS:'');
+    updateHeader(window.CHAR_NAME,window.CHAR_RACE,cls,charLevel,window.CHAR_REGION);
+    setCampaignTitle(window.CAMPAIGN_TITLE||(window.CHAR_NAME+' — '+window.CHAR_REGION),(window.CHAR_RACE||'')+' '+window.CHAR_CLASS+' · Nível '+charLevel+' · '+(window.CHAR_REGION||''));
+  }
+  document.getElementById('achiev-d').innerHTML=CONQUISTAS.map(function(c){return'<div class="ach">'+c+'</div>';}).join('');
+  return true;
 }
 function scheduleAutoSave(){clearTimeout(autoSaveTimer);autoSaveTimer=setTimeout(()=>saveProgress('auto',true),8000);}
 function formatTs(ts){if(!ts)return'—';const d=new Date(ts);return d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
@@ -3280,7 +3367,7 @@ async function callAIWithSystem(userMsg,systemOverride){
   var gemHist=hist.map(function(m){
     return{role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]};
   });
-  gemHist.push({role:'user',parts:[{text:userMsg+'\n\n'+ctx}]});
+  gemHist.push({role:'user',parts:[{text:userMsg}]});
   var sys=systemOverride||window.SYSTEM_OVERRIDE||SYSTEM;
   var models=['gemini-2.5-flash','gemini-2.0-flash','gemini-flash-latest'];
   var response=null,lastErr='connection error';
@@ -3292,7 +3379,10 @@ async function callAIWithSystem(userMsg,systemOverride){
         contents:gemHist,
         generationConfig:{maxOutputTokens:2048,temperature:0.9}
       });
-      var r=await fetch(url,{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:body});
+      var controller=new AbortController();
+      var timeoutId=setTimeout(function(){controller.abort();},30000);
+      var r=await fetch(url,{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:body,signal:controller.signal});
+      clearTimeout(timeoutId);
       if(r.ok){response=r;break;}
       var eb=await r.json().catch(function(){return{};});
       lastErr=eb&&eb.error&&eb.error.message?eb.error.message:String(r.status);
@@ -3307,7 +3397,7 @@ async function callAIWithSystem(userMsg,systemOverride){
   }
   var clean=parseAndApplyUpdates(txt);
   hist.push({role:'user',content:userMsg},{role:'assistant',content:txt});
-  if(hist.length>40) hist=hist.slice(-40);
+  if(hist.length>30) hist=hist.slice(-30);
   return clean;
 }
 
