@@ -186,20 +186,10 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
   border-left:1px solid var(--border);
   display:flex;flex-direction:column;
   overflow-y:auto;
-  transition:width .25s cubic-bezier(.4,0,.2,1),opacity .25s;
-  position:relative;
+  overflow-x:hidden;
+  transition:width .28s cubic-bezier(.4,0,.2,1),opacity .28s;
 }
-.ability-sidebar.collapsed{width:0;overflow:hidden;opacity:0;border:none}
-.ability-sidebar-toggle{
-  position:absolute;top:50%;left:-12px;transform:translateY(-50%);
-  width:22px;height:40px;
-  background:var(--bg3);border:1px solid var(--border2);
-  border-radius:4px 0 0 4px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:var(--gold);font-size:.65rem;z-index:5;
-  transition:background .15s;
-}
-.ability-sidebar-toggle:hover{background:var(--gold-glow)}
+.ability-sidebar.collapsed{width:0;opacity:0;border:none}
 .ability-panel-inner{padding:.8rem .7rem;flex:1;display:flex;flex-direction:column;gap:.5rem;min-width:220px}
 
 .abl-card{
@@ -828,20 +818,10 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   border-left:1px solid var(--border);
   display:flex;flex-direction:column;
   overflow-y:auto;
-  transition:width .25s cubic-bezier(.4,0,.2,1),opacity .25s;
-  position:relative;
+  overflow-x:hidden;
+  transition:width .28s cubic-bezier(.4,0,.2,1),opacity .28s;
 }
-.ability-sidebar.collapsed{width:0;overflow:hidden;opacity:0;border:none}
-.ability-sidebar-toggle{
-  position:absolute;top:50%;left:-12px;transform:translateY(-50%);
-  width:22px;height:40px;
-  background:var(--bg3);border:1px solid var(--border2);
-  border-radius:4px 0 0 4px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:var(--gold);font-size:.65rem;z-index:5;
-  transition:background .15s;
-}
-.ability-sidebar-toggle:hover{background:var(--gold-glow)}
+.ability-sidebar.collapsed{width:0;opacity:0;border:none}
 .ability-panel-inner{padding:.8rem .7rem;flex:1;display:flex;flex-direction:column;gap:.5rem;min-width:220px}
 
 .abl-card{
@@ -869,7 +849,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   .chat-box{padding:.7rem .8rem}
 }
 .ability-sidebar{}
-@media(max-width:740px){.ability-sidebar{display:none!important}}
+@media(max-width:740px){.ability-sidebar{display:none!important}#abl-toggle-tab{display:none!important}}
 @media(min-width:741px){
   .mob-nav,.mob-drawer{display:none!important}
   #app{padding-bottom:0}
@@ -1317,8 +1297,26 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
     </div>
 
     <!-- ABILITY SIDEBAR -->
+    <!-- Toggle tab — always visible, outside sidebar overflow -->
+    <div id="abl-toggle-tab" onclick="toggleAbilitySidebar()" title="Habilidades" style="
+      position:relative;z-index:10;
+      width:18px;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;
+      background:var(--bg3);
+      border-left:1px solid var(--border2);
+      cursor:pointer;
+      transition:background .15s;
+      user-select:none;
+    " onmouseover="this.style.background='var(--gold-glow)'" onmouseout="this.style.background='var(--bg3)'">
+      <span id="abl-toggle-btn" style="
+        font-family:Cinzel,serif;font-size:.58rem;color:var(--gold);
+        writing-mode:vertical-rl;text-orientation:mixed;
+        letter-spacing:1.5px;text-transform:uppercase;
+        padding:.5rem 0;
+        display:flex;align-items:center;gap:4px;
+      ">🌟 Habilidades</span>
+    </div>
     <div class="ability-sidebar" id="ability-sidebar">
-      <div class="ability-sidebar-toggle" onclick="toggleAbilitySidebar()" id="abl-toggle-btn" title="Habilidades">◀</div>
       <div class="ability-panel-inner">
         <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:.4rem;border-bottom:1px solid var(--border)">
           <span style="font-family:Cinzel,serif;font-size:.6rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px">🌟 Habilidades</span>
@@ -1848,10 +1846,16 @@ function saveAttack(){
 // ─── HABILIDADES ───
 function toggleAbilitySidebar(){
   var sb=document.getElementById('ability-sidebar');
-  var btn=document.getElementById('abl-toggle-btn');
+  var tab=document.getElementById('abl-toggle-tab');
   if(!sb) return;
   sb.classList.toggle('collapsed');
-  if(btn) btn.textContent=sb.classList.contains('collapsed')?'▶':'◀';
+  var collapsed=sb.classList.contains('collapsed');
+  // Update tab border side to show it can be opened
+  if(tab){
+    tab.style.borderLeft=collapsed?'1px solid var(--border2)':'1px solid var(--border)';
+    tab.style.borderRight=collapsed?'1px solid var(--border2)':'none';
+    tab.title=collapsed?'Abrir Habilidades':'Fechar Habilidades';
+  }
 }
 
 function renderAbilitySidebar(){
