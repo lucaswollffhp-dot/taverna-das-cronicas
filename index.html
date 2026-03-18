@@ -1238,6 +1238,10 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
           <span class="hp-num" id="hp-num">16</span>
           <button class="hpadj" onclick="adjHP(1)">+</button>
         </div>
+        <div style="display:flex;gap:.3rem;margin-top:.5rem">
+          <button onclick="shortRest()" style="flex:1;background:rgba(41,128,185,.07);border:1px solid rgba(41,128,185,.25);border-radius:6px;padding:5px;font-family:Cinzel,serif;font-size:.58rem;color:var(--ocean2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px;transition:background .15s">☕ Curto</button>
+          <button onclick="longRest()" style="flex:1;background:rgba(107,63,160,.07);border:1px solid rgba(107,63,160,.25);border-radius:6px;padding:5px;font-family:Cinzel,serif;font-size:.58rem;color:var(--arc2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:3px;transition:background .15s">🌙 Longo</button>
+        </div>
       </div>
       <hr class="sdiv">
       <div>
@@ -1257,15 +1261,6 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
       </div>
       <hr class="sdiv">
       <div>
-        <!-- Rest bar -->
-        <div style="display:flex;gap:.3rem;margin-bottom:.4rem">
-          <button onclick="shortRest()" style="flex:1;background:rgba(41,128,185,.07);border:1px solid rgba(41,128,185,.25);border-radius:6px;padding:4px;font-family:Cinzel,serif;font-size:.56rem;color:var(--ocean2);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:3px" onmouseover="this.style.background='rgba(41,128,185,.16)'" onmouseout="this.style.background='rgba(41,128,185,.07)'">
-            ☕ <span>Descanso Curto</span>
-          </button>
-          <button onclick="longRest()" style="flex:1;background:rgba(107,63,160,.07);border:1px solid rgba(107,63,160,.25);border-radius:6px;padding:4px;font-family:Cinzel,serif;font-size:.56rem;color:var(--arc2);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:3px" onmouseover="this.style.background='rgba(107,63,160,.16)'" onmouseout="this.style.background='rgba(107,63,160,.07)'">
-            🌙 <span>Descanso Longo</span>
-          </button>
-        </div>
         <div class="slbl">🌟 Habilidades
           <button style="background:rgba(125,60,152,.1);border:1px solid rgba(165,105,189,.3);border-radius:4px;color:var(--purple2);font-size:.56rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:2px" onclick="openAbilityModal()">+</button>
         </div>
@@ -1281,8 +1276,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
         <div id="spell-slots-display" style="margin-bottom:.3rem"></div>
         <!-- Lista compacta de magias preparadas -->
         <div id="spell-list-d" style="max-height:130px;overflow-y:auto"></div>
-        <!-- Botão descanso longo -->
-        <button onclick="longRest()" style="width:100%;background:rgba(41,128,185,.08);border:1px solid rgba(93,173,226,.2);border-radius:4px;color:var(--blue2);font-family:Cinzel,serif;font-size:.56rem;padding:3px;margin-top:.3rem;cursor:pointer">🌙 Descanso Longo (recuperar slots)</button>
+
       </div>
       <hr class="sdiv">
       <div>
@@ -2197,21 +2191,14 @@ function openSpellManager(){
       var atLimit=!sp.selected&&L<99&&sel>=L;
       var canClick=!locked&&(!atLimit||sp.selected);
       var bg=sp.selected?'var(--arc2)':'transparent';
-      var bc=sp.selected?'var(--arc2)':canClick?'rgba(165,105,189,.5)':'rgba(200,168,74,.15)';
+      var bc=sp.selected?'var(--arc2)':canClick?'rgba(165,105,189,.6)':'rgba(200,168,74,.15)';
       var tc=sp.selected?'var(--arc3)':canClick?'var(--text2)':'var(--text3)';
-      var dot=sp.selected?'<div style="width:8px;height:8px;border-radius:50%;background:#fff;margin:auto"></div>':'';
-      return'<div data-idx="'+i+'" onclick="smToggle('+i+')" style="'
-        +'display:flex;align-items:center;gap:10px;'
-        +'padding:8px 6px;border-bottom:1px solid var(--border);'
-        +'cursor:'+(canClick?'pointer':'not-allowed')+';'
-        +'opacity:'+(locked?.4:atLimit?.5:1)+'">'
-        +'<div id="sm-circle-'+i+'" style="'
-        +'width:18px;height:18px;border-radius:50%;'
-        +'border:2px solid '+bc+';background:'+bg+';'
-        +'flex-shrink:0;display:flex;align-items:center;justify-content:center;'
-        +'box-shadow:'+(sp.selected?'0 0 6px rgba(144,96,204,.5)':'none')+'">'+dot+'</div>'
-        +'<span style="flex:1;font-family:Cormorant Garamond,serif;font-size:.9rem;color:'+tc+'">'+sp.name+'</span>'
-        +'<span style="font-family:Cinzel,serif;font-size:.48rem;color:var(--arc);text-transform:uppercase">'
+      var glow=sp.selected?'0 0 8px rgba(144,96,204,.6)':'none';
+      var inner=sp.selected?'<div style="width:9px;height:9px;border-radius:50%;background:#fff;margin:auto"></div>':'';
+      return'<div data-idx="'+i+'" onclick="smToggle('+i+')" style="display:flex;align-items:center;gap:10px;padding:9px 8px;border-bottom:1px solid var(--border);cursor:'+(canClick?'pointer':'not-allowed')+';opacity:'+(locked?.4:atLimit&&!sp.selected?.5:1)+'">'
+        +'<div id="sm-circle-'+i+'" style="width:22px;height:22px;border-radius:50%;border:2.5px solid '+bc+';background:'+bg+';flex-shrink:0;display:flex;align-items:center;justify-content:center;box-shadow:'+glow+';transition:all .2s;">'+inner+'</div>'
+        +'<span style="flex:1;font-family:Cormorant Garamond,serif;font-size:.92rem;color:'+tc+'">'+sp.name+'</span>'
+        +'<span style="font-family:Cinzel,serif;font-size:.5rem;color:var(--arc);text-transform:uppercase;">'
         +(lvl===0?'Truque':'Nv '+lvl)+'</span>'
         +'</div>';
     }).join('');
