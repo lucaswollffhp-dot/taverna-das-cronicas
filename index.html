@@ -765,6 +765,8 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 /* ══════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════ */
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes glow{0%,100%{opacity:.4}50%{opacity:.8}}
 @media(max-width:740px){
   /* Start screen full scroll on mobile */
   #start-screen{
@@ -800,136 +802,269 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 <body>
 
 <!-- TELA INICIAL -->
-<div id="start-screen" style="position:fixed;inset:0;background:var(--bg);z-index:600;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:1.5rem;overflow-y:auto;-webkit-overflow-scrolling:touch">
-  <div style="max-width:520px;width:100%;text-align:center;padding-top:1rem;padding-bottom:3rem">
-    <!-- LOGO -->
-    <div style="font-size:3rem;margin-bottom:.5rem">⚔</div>
-    <div style="font-family:'Cinzel Decorative',serif;font-size:1.6rem;color:#e6c76a;letter-spacing:2px;margin-bottom:.2rem">Taverna das Crônicas</div>
-    <div style="font-family:'Crimson Text',serif;font-style:italic;font-size:1rem;color:#c9a84c;margin-bottom:.3rem">Narrador de RPG • D&D 5e • Forgotten Realms</div>
-    <div style="width:80%;height:1px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:.8rem auto 1.5rem"></div>
+<div id="start-screen" style="position:fixed;inset:0;z-index:600;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#060408;">
 
-    <!-- ETAPA 1: CHAVE API -->
-    <div id="step-api" style="display:block">
-      <p style="font-size:.9rem;color:#ede0bc;margin-bottom:1rem;line-height:1.6">Para começar, insira sua chave gratuita do Google AI Studio.</p>
-      <div style="margin-bottom:.7rem">
-        <input id="api-inp" type="password" placeholder="AIza..." style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.5);border-radius:6px;padding:.65rem .9rem;font-family:'Crimson Text',serif;font-size:.95rem;color:#f5edd6;outline:none;margin-bottom:.5rem"/>
-        <a href="https://aistudio.google.com/app/apikey" target="_blank" style="font-size:.72rem;color:#c9a84c;font-style:italic">Obter chave gratuita →</a>
+  <!-- Animated background layers -->
+  <div style="position:fixed;inset:0;pointer-events:none;z-index:0">
+    <!-- Radial glow center -->
+    <div style="position:absolute;top:20%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(ellipse,rgba(180,130,40,.07) 0%,transparent 70%);pointer-events:none"></div>
+    <!-- Top edge glow -->
+    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 0%,rgba(200,168,74,.6) 30%,rgba(200,168,74,.9) 50%,rgba(200,168,74,.6) 70%,transparent 100%)"></div>
+    <!-- Corner ornaments -->
+    <div style="position:absolute;top:12px;left:12px;width:40px;height:40px;border-top:1px solid rgba(200,168,74,.4);border-left:1px solid rgba(200,168,74,.4)"></div>
+    <div style="position:absolute;top:12px;right:12px;width:40px;height:40px;border-top:1px solid rgba(200,168,74,.4);border-right:1px solid rgba(200,168,74,.4)"></div>
+    <div style="position:absolute;bottom:12px;left:12px;width:40px;height:40px;border-bottom:1px solid rgba(200,168,74,.4);border-left:1px solid rgba(200,168,74,.4)"></div>
+    <div style="position:absolute;bottom:12px;right:12px;width:40px;height:40px;border-bottom:1px solid rgba(200,168,74,.4);border-right:1px solid rgba(200,168,74,.4)"></div>
+    <!-- Subtle grid pattern -->
+    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(200,168,74,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(200,168,74,.025) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%)"></div>
+  </div>
+
+  <!-- Main content container -->
+  <div style="position:relative;z-index:1;max-width:560px;width:100%;margin:0 auto;padding:2.5rem 1.5rem 4rem;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start">
+
+    <!-- ══ LOGO SECTION ══ -->
+    <div style="text-align:center;margin-bottom:2rem;width:100%">
+
+      <!-- Emblem -->
+      <div style="position:relative;display:inline-flex;align-items:center;justify-content:center;margin-bottom:1.2rem">
+        <div style="width:88px;height:88px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(200,168,74,.2),rgba(6,4,8,.8));border:1px solid rgba(200,168,74,.35);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(200,168,74,.15),inset 0 1px 0 rgba(200,168,74,.2)">
+          <span style="font-size:2.6rem;filter:drop-shadow(0 0 12px rgba(200,168,74,.5))">⚔</span>
+        </div>
+        <!-- Orbit ring -->
+        <div style="position:absolute;width:104px;height:104px;border-radius:50%;border:1px solid rgba(200,168,74,.15);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+        <div style="position:absolute;width:120px;height:120px;border-radius:50%;border:1px dashed rgba(200,168,74,.08);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
       </div>
-      <button onclick="confirmApiKey()" style="width:100%;background:linear-gradient(135deg,#c0392b,#d4500a);border:1px solid #c9a84c;border-radius:8px;color:#f5d98a;font-family:'Cinzel',serif;font-size:.9rem;padding:.75rem;letter-spacing:1px;cursor:pointer;transition:all .2s">⚔ Confirmar Chave</button>
+
+      <!-- Title -->
+      <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(1.4rem,5vw,2rem);color:#e8c860;letter-spacing:3px;line-height:1.2;margin-bottom:.4rem;text-shadow:0 0 30px rgba(200,168,74,.4),0 2px 4px rgba(0,0,0,.8)">
+        Taverna das Crônicas
+      </div>
+
+      <!-- Subtitle with ornaments -->
+      <div style="display:flex;align-items:center;gap:.6rem;justify-content:center;margin-bottom:1rem">
+        <div style="height:1px;flex:1;max-width:60px;background:linear-gradient(90deg,transparent,rgba(200,168,74,.5))"></div>
+        <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.88rem;color:rgba(200,168,74,.65);letter-spacing:1px">Narrador IA · D&D 5e · Forgotten Realms</span>
+        <div style="height:1px;flex:1;max-width:60px;background:linear-gradient(90deg,rgba(200,168,74,.5),transparent)"></div>
+      </div>
+
+      <!-- Decorative divider -->
+      <div style="display:flex;align-items:center;gap:.5rem;justify-content:center">
+        <div style="height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(200,168,74,.3))"></div>
+        <span style="color:rgba(200,168,74,.35);font-size:.7rem">✦</span>
+        <span style="color:rgba(200,168,74,.55);font-size:.6rem">✦</span>
+        <span style="color:rgba(200,168,74,.35);font-size:.7rem">✦</span>
+        <div style="height:1px;flex:1;background:linear-gradient(90deg,rgba(200,168,74,.3),transparent)"></div>
+      </div>
     </div>
 
-    <!-- ETAPA 2: MENU PRINCIPAL -->
-    <div id="step-menu" style="display:none">
-      <p style="font-size:.85rem;color:#c9a84c;font-style:italic;margin-bottom:1.2rem">Bem-vindo de volta, aventureiro. Qual é o seu destino?</p>
-      <div style="display:flex;flex-direction:column;gap:.7rem">
+    <!-- ══ STEP 1: API KEY ══ -->
+    <div id="step-api" style="display:block;width:100%">
+      <div style="background:rgba(255,255,255,.02);border:1px solid rgba(200,168,74,.18);border-radius:14px;padding:1.5rem;backdrop-filter:blur(10px)">
+        <div style="font-family:'Cinzel',serif;font-size:.65rem;color:rgba(200,168,74,.6);text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:.8rem">Acesso ao Oráculo</div>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:1rem;color:rgba(232,223,200,.7);line-height:1.6;text-align:center;margin-bottom:1.2rem">
+          Insira sua chave gratuita do Google AI Studio para invocar o Narrador.
+        </p>
+        <div style="margin-bottom:.6rem">
+          <input id="api-inp" type="password" placeholder="AIza..." style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(200,168,74,.3);border-radius:8px;padding:.7rem 1rem;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#e8dfc8;outline:none;transition:border .2s;letter-spacing:1px"/>
+        </div>
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" style="display:block;text-align:center;font-family:'Cinzel',serif;font-size:.6rem;color:rgba(200,168,74,.5);letter-spacing:1px;text-decoration:none;margin-bottom:1rem">
+          OBTER CHAVE GRATUITA →
+        </a>
+        <button onclick="confirmApiKey()" style="width:100%;background:linear-gradient(135deg,#8b1a2a 0%,#c0392b 50%,#8b1a2a 100%);border:1px solid rgba(200,168,74,.45);border-radius:10px;color:#f5db96;font-family:'Cinzel',serif;font-size:.85rem;padding:.8rem;letter-spacing:2px;cursor:pointer;transition:all .25s;text-transform:uppercase;box-shadow:0 4px 20px rgba(155,35,53,.3)">
+          ⚔ &nbsp; Entrar na Taverna
+        </button>
+      </div>
+    </div>
 
-        <button onclick="showStep('step-new')" style="background:rgba(192,57,43,.12);border:1.5px solid rgba(192,57,43,.5);border-radius:10px;padding:1rem 1.2rem;text-align:left;transition:all .2s;cursor:pointer" onmouseover="this.style.borderColor='#e74c3c'" onmouseout="this.style.borderColor='rgba(192,57,43,.5)'">
-          <div style="font-family:'Cinzel',serif;font-size:.9rem;color:#e74c3c;margin-bottom:.3rem">⚔ Nova Aventura</div>
-          <div style="font-size:.8rem;color:#ede0bc;font-style:italic">Criar personagem e gerar campanha nos Forgotten Realms</div>
+    <!-- ══ STEP 2: MAIN MENU ══ -->
+    <div id="step-menu" style="display:none;width:100%">
+      <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:rgba(200,168,74,.6);text-align:center;margin-bottom:1.4rem;line-height:1.5">
+        "As portas da taverna se abrem. O que traz você até aqui?"
+      </p>
+
+      <div style="display:flex;flex-direction:column;gap:.8rem">
+
+        <!-- Nova Aventura -->
+        <button onclick="showStep('step-new')" style="background:rgba(155,35,53,.08);border:1px solid rgba(155,35,53,.35);border-radius:12px;padding:1.1rem 1.3rem;text-align:left;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;display:block;width:100%"
+          onmouseover="this.style.borderColor='rgba(200,64,64,.7)';this.style.background='rgba(155,35,53,.15)'"
+          onmouseout="this.style.borderColor='rgba(155,35,53,.35)';this.style.background='rgba(155,35,53,.08)'">
+          <div style="position:absolute;top:0;right:0;width:80px;height:100%;background:linear-gradient(270deg,rgba(155,35,53,.15),transparent);pointer-events:none"></div>
+          <div style="display:flex;align-items:center;gap:.8rem">
+            <div style="width:38px;height:38px;border-radius:8px;background:rgba(155,35,53,.2);border:1px solid rgba(155,35,53,.4);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0">⚔</div>
+            <div>
+              <div style="font-family:'Cinzel',serif;font-size:.88rem;color:#e06060;margin-bottom:.25rem;letter-spacing:.5px">Nova Aventura</div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:.84rem;color:rgba(232,223,200,.55);font-style:italic">Criar personagem e iniciar campanha nos Forgotten Realms</div>
+            </div>
+          </div>
         </button>
 
-        <button onclick="continueFromStorage()" id="btn-continue" style="background:rgba(201,168,76,.08);border:1.5px solid rgba(201,168,76,.35);border-radius:10px;padding:1rem 1.2rem;text-align:left;transition:all .2s;cursor:pointer" onmouseover="this.style.borderColor='#e6c76a'" onmouseout="this.style.borderColor='rgba(201,168,76,.35)'">
-          <div style="font-family:'Cinzel',serif;font-size:.9rem;color:#e6c76a;margin-bottom:.3rem">📖 Continuar Jogo</div>
-          <div id="continue-info" style="font-size:.8rem;color:#ede0bc;font-style:italic">Retomar save do navegador</div>
+        <!-- Continuar -->
+        <button onclick="continueFromStorage()" id="btn-continue" style="background:rgba(200,168,74,.06);border:1px solid rgba(200,168,74,.28);border-radius:12px;padding:1.1rem 1.3rem;text-align:left;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;display:block;width:100%"
+          onmouseover="this.style.borderColor='rgba(200,168,74,.6)';this.style.background='rgba(200,168,74,.12)'"
+          onmouseout="this.style.borderColor='rgba(200,168,74,.28)';this.style.background='rgba(200,168,74,.06)'">
+          <div style="position:absolute;top:0;right:0;width:80px;height:100%;background:linear-gradient(270deg,rgba(200,168,74,.08),transparent);pointer-events:none"></div>
+          <div style="display:flex;align-items:center;gap:.8rem">
+            <div style="width:38px;height:38px;border-radius:8px;background:rgba(200,168,74,.12);border:1px solid rgba(200,168,74,.3);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0">📖</div>
+            <div>
+              <div style="font-family:'Cinzel',serif;font-size:.88rem;color:#e8c860;margin-bottom:.25rem;letter-spacing:.5px">Continuar Aventura</div>
+              <div id="continue-info" style="font-family:'Cormorant Garamond',serif;font-size:.84rem;color:rgba(232,223,200,.55);font-style:italic">Retomar save do navegador</div>
+            </div>
+          </div>
         </button>
 
-        <label style="background:rgba(74,154,74,.08);border:1.5px solid rgba(74,154,74,.35);border-radius:10px;padding:1rem 1.2rem;text-align:left;cursor:pointer;display:block;transition:all .2s" onmouseover="this.style.borderColor='#6dbf6d'" onmouseout="this.style.borderColor='rgba(74,154,74,.35)'">
-          <div style="font-family:'Cinzel',serif;font-size:.9rem;color:#6dbf6d;margin-bottom:.3rem">📥 Importar Save</div>
-          <div style="font-size:.8rem;color:#ede0bc;font-style:italic">Carregar arquivo .json de outro dispositivo</div>
+        <!-- Importar Save -->
+        <label style="background:rgba(45,122,74,.06);border:1px solid rgba(45,122,74,.28);border-radius:12px;padding:1.1rem 1.3rem;text-align:left;cursor:pointer;display:block;transition:all .25s;position:relative;overflow:hidden"
+          onmouseover="this.style.borderColor='rgba(45,122,74,.6)';this.style.background='rgba(45,122,74,.12)'"
+          onmouseout="this.style.borderColor='rgba(45,122,74,.28)';this.style.background='rgba(45,122,74,.06)'">
+          <div style="position:absolute;top:0;right:0;width:80px;height:100%;background:linear-gradient(270deg,rgba(45,122,74,.08),transparent);pointer-events:none"></div>
+          <div style="display:flex;align-items:center;gap:.8rem">
+            <div style="width:38px;height:38px;border-radius:8px;background:rgba(45,122,74,.12);border:1px solid rgba(45,122,74,.3);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0">📥</div>
+            <div>
+              <div style="font-family:'Cinzel',serif;font-size:.88rem;color:#6dbf6d;margin-bottom:.25rem;letter-spacing:.5px">Importar Save</div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:.84rem;color:rgba(232,223,200,.55);font-style:italic">Carregar arquivo .json de outro dispositivo</div>
+            </div>
+          </div>
           <input type="file" accept=".json" style="display:none" onchange="importSaveFromMenu(event)"/>
         </label>
 
       </div>
-      <div style="margin-top:1rem">
-        <button onclick="showStep('step-api')" style="background:none;border:none;color:rgba(201,168,76,.4);font-size:.72rem;font-family:'Cinzel',serif;cursor:pointer">🔑 Trocar chave de API</button>
+
+      <div style="text-align:center;margin-top:1.2rem">
+        <button onclick="showStep('step-api')" style="background:none;border:none;color:rgba(200,168,74,.3);font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:color .2s"
+          onmouseover="this.style.color='rgba(200,168,74,.7)'" onmouseout="this.style.color='rgba(200,168,74,.3)'">
+          🔑 Trocar chave de API
+        </button>
       </div>
     </div>
 
-    <!-- ETAPA 3: NOVO JOGO - CRIAÇÃO DE PERSONAGEM -->
-    <div id="step-new" style="display:none;text-align:left;padding-bottom:2rem">
-      <div style="font-family:'Cinzel',serif;font-size:1rem;color:#e6c76a;text-align:center;margin-bottom:1rem">📜 Criar Personagem</div>
+    <!-- ══ STEP 3: CHARACTER CREATION ══ -->
+    <div id="step-new" style="display:none;text-align:left;width:100%;padding-bottom:2rem">
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem">
-        <div>
-          <label style="font-family:'Cinzel',serif;font-size:.6rem;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Nome *</label>
-          <input id="new-name" placeholder="Nome do herói" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.4);border-radius:5px;padding:.5rem .7rem;font-family:'Crimson Text',serif;font-size:.9rem;color:#f5edd6;outline:none"/>
-        </div>
-        <div>
-          <label style="font-family:'Cinzel',serif;font-size:.6rem;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Raça</label>
-          <select id="new-race" style="width:100%;background:#161009;border:1px solid rgba(201,168,76,.4);border-radius:5px;padding:.5rem .7rem;font-family:'Crimson Text',serif;font-size:.9rem;color:#f5edd6;outline:none">
-            <option>Humano</option><option>Elfo</option><option>Meio-Elfo</option><option>Anão</option>
-            <option>Halfling</option><option>Gnomo</option><option>Meio-Orc</option><option>Tiefling</option><option>Draconato</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-family:'Cinzel',serif;font-size:.6rem;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Classe</label>
-          <select id="new-class" style="width:100%;background:#161009;border:1px solid rgba(201,168,76,.4);border-radius:5px;padding:.5rem .7rem;font-family:'Crimson Text',serif;font-size:.9rem;color:#f5edd6;outline:none" onchange="updateClassDefaults()">
-            <option>Guerreiro</option><option>Paladino</option><option>Bárbaro</option><option>Ladino</option>
-            <option>Mago</option><option>Feiticeiro</option><option>Bruxo</option><option>Clérigo</option>
-            <option>Druida</option><option>Bardo</option><option>Monge</option><option>Patrulheiro</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-family:'Cinzel',serif;font-size:.6rem;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Antecedente</label>
-          <select id="new-bg" style="width:100%;background:#161009;border:1px solid rgba(201,168,76,.4);border-radius:5px;padding:.5rem .7rem;font-family:'Crimson Text',serif;font-size:.9rem;color:#f5edd6;outline:none">
-            <option>Forasteiro</option><option>Soldado</option><option>Criminoso</option><option>Sábio</option>
-            <option>Nobre</option><option>Herói do Povo</option><option>Eremita</option><option>Marinheiro</option>
-            <option>Charlatão</option><option>Artesão de Guilda</option>
-          </select>
+      <!-- Header -->
+      <div style="text-align:center;margin-bottom:1.2rem">
+        <div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(200,168,74,.06);border:1px solid rgba(200,168,74,.2);border-radius:8px;padding:.4rem .9rem">
+          <span style="color:rgba(200,168,74,.7)">📜</span>
+          <span style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold2);letter-spacing:1px">Criar Personagem</span>
         </div>
       </div>
 
-      <div>
-        <label style="font-family:'Cinzel',serif;font-size:.6rem;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Atributos — Método: Array Padrão (15,14,13,12,10,8)</label>
-        <div id="attr-builder" style="display:grid;grid-template-columns:repeat(6,1fr);gap:.3rem;margin-bottom:.6rem"></div>
+      <!-- Section: Identity -->
+      <div style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:12px;padding:1rem;margin-bottom:.8rem">
+        <div style="font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:.7rem">Identidade</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+          <div style="grid-column:1/-1">
+            <label style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Nome do Personagem *</label>
+            <input id="new-name" placeholder="Como você é chamado?" style="width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(200,168,74,.3);border-radius:7px;padding:.55rem .8rem;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#e8dfc8;outline:none;transition:border .2s"/>
+          </div>
+          <div>
+            <label style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Raça</label>
+            <select id="new-race" style="width:100%;background:#0d0a10;border:1px solid rgba(200,168,74,.3);border-radius:7px;padding:.55rem .8rem;font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#e8dfc8;outline:none">
+              <option>Humano</option><option>Elfo</option><option>Meio-Elfo</option><option>Anão</option>
+              <option>Halfling</option><option>Gnomo</option><option>Meio-Orc</option><option>Tiefling</option><option>Draconato</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Alinhamento</label>
+            <select id="new-align" style="width:100%;background:#0d0a10;border:1px solid rgba(200,168,74,.3);border-radius:7px;padding:.55rem .8rem;font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#e8dfc8;outline:none">
+              <option>Leal e Bom</option><option>Neutro e Bom</option><option>Caótico e Bom</option>
+              <option>Leal e Neutro</option><option>Neutro</option><option>Caótico e Neutro</option>
+              <option>Leal e Mau</option><option>Neutro e Mau</option><option>Caótico e Mau</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      <div style="margin-bottom:.6rem">
-        <label style="font-family:'Cinzel',serif;font-size:.6rem;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Subclasse <span style="color:rgba(201,168,76,.4);font-size:.55rem">(disponível no nível 3)</span></label>
-        <select id="new-subclass" style="width:100%;background:#161009;border:1px solid rgba(201,168,76,.4);border-radius:5px;padding:.5rem .7rem;font-family:'Crimson Text',serif;font-size:.9rem;color:#f5edd6;outline:none">
-          <option value="">Escolher mais tarde</option>
-        </select>
+      <!-- Section: Class -->
+      <div style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:12px;padding:1rem;margin-bottom:.8rem">
+        <div style="font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:.7rem">Classe & Vocação</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+          <div>
+            <label style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Classe</label>
+            <select id="new-class" style="width:100%;background:#0d0a10;border:1px solid rgba(200,168,74,.3);border-radius:7px;padding:.55rem .8rem;font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#e8dfc8;outline:none" onchange="updateClassDefaults()">
+              <option>Guerreiro</option><option>Paladino</option><option>Bárbaro</option><option>Ladino</option>
+              <option>Mago</option><option>Feiticeiro</option><option>Bruxo</option><option>Clérigo</option>
+              <option>Druida</option><option>Bardo</option><option>Monge</option><option>Patrulheiro</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Antecedente</label>
+            <select id="new-bg" style="width:100%;background:#0d0a10;border:1px solid rgba(200,168,74,.3);border-radius:7px;padding:.55rem .8rem;font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#e8dfc8;outline:none">
+              <option>Forasteiro</option><option>Soldado</option><option>Criminoso</option><option>Sábio</option>
+              <option>Nobre</option><option>Herói do Povo</option><option>Eremita</option><option>Marinheiro</option>
+              <option>Charlatão</option><option>Artesão de Guilda</option>
+            </select>
+          </div>
+          <div style="grid-column:1/-1">
+            <label style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Subclasse <span style="color:rgba(200,168,74,.35);font-size:.52rem;text-transform:none">(nível 3)</span></label>
+            <select id="new-subclass" style="width:100%;background:#0d0a10;border:1px solid rgba(200,168,74,.3);border-radius:7px;padding:.55rem .8rem;font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#e8dfc8;outline:none">
+              <option value="">Escolher após nível 3</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      <div>
-        <label style="font-family:'Cinzel',serif;font-size:.6rem;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Alinhamento</label>
-        <select id="new-align" style="width:100%;background:#161009;border:1px solid rgba(201,168,76,.4);border-radius:5px;padding:.5rem .7rem;font-family:'Crimson Text',serif;font-size:.9rem;color:#f5edd6;outline:none;margin-bottom:.6rem">
-          <option>Leal e Bom</option><option>Neutro e Bom</option><option>Caótico e Bom</option>
-          <option>Leal e Neutro</option><option>Neutro</option><option>Caótico e Neutro</option>
-          <option>Leal e Mau</option><option>Neutro e Mau</option><option>Caótico e Mau</option>
-        </select>
+      <!-- Section: Attributes -->
+      <div style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:12px;padding:1rem;margin-bottom:.8rem">
+        <div style="font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:.4rem">Atributos</div>
+        <div style="font-size:.7rem;color:rgba(200,168,74,.35);font-style:italic;margin-bottom:.6rem">Array padrão: 15, 14, 13, 12, 10, 8</div>
+        <div id="attr-builder" style="display:grid;grid-template-columns:repeat(6,1fr);gap:.3rem"></div>
       </div>
 
-      <div>
-        <label style="font-family:'Cinzel',serif;font-size:.6rem;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Motivação / História (opcional)</label>
-        <textarea id="new-story" placeholder="De onde vem seu personagem? O que busca?" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.4);border-radius:5px;padding:.5rem .7rem;font-family:'Crimson Text',serif;font-size:.88rem;color:#f5edd6;outline:none;resize:none;min-height:54px;margin-bottom:.6rem"></textarea>
+      <!-- Section: Story -->
+      <div style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:12px;padding:1rem;margin-bottom:.8rem">
+        <div style="font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:.7rem">História</div>
+        <label style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Motivação (opcional)</label>
+        <textarea id="new-story" placeholder="De onde vem? O que busca? Qual seu maior medo?" style="width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(200,168,74,.3);border-radius:7px;padding:.55rem .8rem;font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#e8dfc8;outline:none;resize:none;min-height:60px;line-height:1.5"></textarea>
       </div>
 
-      <div style="margin-bottom:.6rem">
-        <label style="font-family:'Cinzel',serif;font-size:.6rem;color:#c9a84c;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:.4rem">🗺 Região de Início nos Forgotten Realms</label>
+      <!-- Section: Region -->
+      <div style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:12px;padding:1rem;margin-bottom:.8rem">
+        <div style="font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:.7rem">🗺 Região de Início</div>
         <div id="region-list" style="display:flex;flex-wrap:wrap;gap:.35rem"></div>
       </div>
 
-      <div id="equip-preview" style="background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.2);border-radius:6px;padding:.5rem .7rem;margin-bottom:.6rem;font-size:.78rem;color:#ede0bc"></div>
+      <!-- Equipment Preview -->
+      <div id="equip-preview" style="background:rgba(58,144,200,.04);border:1px solid rgba(58,144,200,.18);border-radius:10px;padding:.7rem .9rem;margin-bottom:1rem;font-size:.78rem;color:#e8dfc8"></div>
 
-      <div style="display:flex;gap:.5rem">
-        <button onclick="showStep('step-menu')" style="flex:1;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.3);border-radius:6px;color:#c9a84c;font-family:'Cinzel',serif;font-size:.75rem;padding:.55rem;cursor:pointer">← Menu Inicial</button>
-        <button onclick="startNewGame()" style="flex:2;background:linear-gradient(135deg,#c0392b,#d4500a);border:1px solid #c9a84c;border-radius:6px;color:#f5d98a;font-family:'Cinzel',serif;font-size:.8rem;padding:.55rem;cursor:pointer;letter-spacing:.5px">⚔ Iniciar Aventura!</button>
+      <!-- Action buttons -->
+      <div style="display:flex;gap:.6rem">
+        <button onclick="showStep('step-menu')" style="flex:1;background:rgba(200,168,74,.06);border:1px solid rgba(200,168,74,.25);border-radius:10px;color:rgba(200,168,74,.7);font-family:'Cinzel',serif;font-size:.72rem;padding:.65rem;cursor:pointer;letter-spacing:.5px;transition:all .2s"
+          onmouseover="this.style.borderColor='rgba(200,168,74,.5)'" onmouseout="this.style.borderColor='rgba(200,168,74,.25)'">
+          ← Menu Inicial
+        </button>
+        <button onclick="startNewGame()" style="flex:2;background:linear-gradient(135deg,#8b1a2a 0%,#c0392b 60%,#8b1a2a 100%);border:1px solid rgba(200,168,74,.5);border-radius:10px;color:#f5db96;font-family:'Cinzel',serif;font-size:.8rem;padding:.65rem;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 20px rgba(155,35,53,.35);transition:all .2s"
+          onmouseover="this.style.boxShadow='0 6px 28px rgba(155,35,53,.55)'" onmouseout="this.style.boxShadow='0 4px 20px rgba(155,35,53,.35)'">
+          ⚔ Iniciar Aventura
+        </button>
       </div>
     </div>
 
-    <!-- ETAPA 4: GERANDO CAMPANHA -->
-    <div id="step-generating" style="display:none;text-align:center">
-      <div style="font-size:2rem;margin-bottom:.8rem">🎲</div>
-      <div style="font-family:'Cinzel',serif;font-size:1rem;color:#e6c76a;margin-bottom:.5rem">Gerando sua campanha...</div>
-      <div id="gen-status" style="font-size:.85rem;color:#c9a84c;font-style:italic;margin-bottom:1rem">O Mestre consulta os tomos antigos...</div>
-      <div style="width:200px;height:4px;background:rgba(201,168,76,.15);border-radius:2px;margin:0 auto;overflow:hidden">
-        <div id="gen-bar" style="height:100%;background:var(--gold2);border-radius:2px;width:0%;transition:width 1.5s ease"></div>
+    <!-- ══ STEP 4: GENERATING ══ -->
+    <div id="step-generating" style="display:none;text-align:center;width:100%;padding:2rem 0">
+      <div style="margin-bottom:1.5rem">
+        <div style="width:72px;height:72px;border-radius:50%;border:2px solid rgba(200,168,74,.3);border-top-color:var(--gold2);display:inline-flex;align-items:center;justify-content:center;animation:spin 1.5s linear infinite">
+          <span style="font-size:1.8rem">🎲</span>
+        </div>
+      </div>
+      <div style="font-family:'Cinzel Decorative',serif;font-size:1rem;color:var(--gold2);margin-bottom:.5rem;letter-spacing:1px">Tecendo o Destino</div>
+      <div id="gen-status" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(200,168,74,.55);margin-bottom:1.4rem">O Mestre consulta os tomos antigos...</div>
+      <div style="width:220px;height:3px;background:rgba(200,168,74,.1);border-radius:2px;margin:0 auto;overflow:hidden">
+        <div id="gen-bar" style="height:100%;background:linear-gradient(90deg,var(--blood),var(--gold2));border-radius:2px;width:0%;transition:width 1.5s ease;box-shadow:0 0 8px rgba(200,168,74,.4)"></div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(200,168,74,.08)">
+      <div style="display:flex;align-items:center;justify-content:center;gap:.4rem">
+        <div style="height:1px;width:30px;background:rgba(200,168,74,.2)"></div>
+        <span style="font-family:'Cinzel',serif;font-size:.5rem;color:rgba(200,168,74,.25);letter-spacing:2px;text-transform:uppercase">Forgotten Realms · D&D 5e</span>
+        <div style="height:1px;width:30px;background:rgba(200,168,74,.2)"></div>
       </div>
     </div>
 
   </div>
 </div>
+
 
 <!-- API modal (oculto, mantido para compatibilidade) -->
 <div class="overlay" id="overlay" style="display:none">
