@@ -2249,12 +2249,15 @@ function smToggle(idx){
     return v[charLevel-1]||0;
   }
   var L=getL(sp.level);
-  if(L===0) return; // locked
+  if(L===0) return; // level-locked (e.g. Paladino nv1)
+  // Allow deselect always; for select, check limit
   if(!sp.selected){
     var sel=window._smSpells.filter(function(s){return s.level===sp.level&&s.selected;}).length;
     if(L<99&&sel>=L){
-      showRollToast('⚠ Limite de '+(sp.level===0?'truques':'magias de nível '+sp.level)+' atingido ('+L+')');
-      return;
+      // Don't block — just show a warning and allow swap
+      showRollToast('⚠ Limite atingido ('+L+'). Desmarque outro para trocar.');
+      // Still allow — player may want to deselect something else first
+      // For truques (level 0) especially, allow freely editing
     }
   }
   sp.selected=!sp.selected;
@@ -2270,17 +2273,18 @@ function smToggle(idx){
     circleEl.style.background=sp.selected?'var(--arc2)':'transparent';
     circleEl.style.borderColor=sp.selected?'var(--arc2)':'rgba(165,105,189,.5)';
     circleEl.style.boxShadow=sp.selected?'0 0 6px rgba(144,96,204,.5)':'none';
-    circleEl.innerHTML=sp.selected?'<div style="width:8px;height:8px;border-radius:50%;background:#fff"></div>':'';
+    circleEl.innerHTML=sp.selected?'<div style="width:9px;height:9px;border-radius:50%;background:#fff;margin:auto"></div>':'';
   }
-  // Update row opacity/cursor for at-limit items
+  // Update row opacity — soft warning only, never hard-block
   var newSel=window._smSpells.filter(function(s){return s.level===sp.level&&s.selected;}).length;
   var atLimitNow=L2<99&&newSel>=L2;
   window._smSpells.forEach(function(s2,i2){
     if(s2.level!==sp.level||s2.selected) return;
     var row=document.querySelector('[data-idx="'+i2+'"]');
-    if(row) row.style.opacity=atLimitNow?'.45':'1';
+    // Soft dim (not disabled) when at limit — still clickable
+    if(row) row.style.opacity=atLimitNow?'.6':'1';
     var c2=document.getElementById('sm-circle-'+i2);
-    if(c2&&!s2.selected) c2.style.borderColor=atLimitNow?'rgba(200,168,74,.2)':'rgba(165,105,189,.5)';
+    if(c2&&!s2.selected) c2.style.borderColor=atLimitNow?'rgba(165,105,189,.3)':'rgba(165,105,189,.6)';
   });
 }
 
@@ -2406,7 +2410,7 @@ function openSpellPanel(){
     +'<div style="display:flex;gap:.4rem;margin-top:.6rem">'
     +'<button class="mbtn secondary" style="flex:1" onclick="shortRest()">☕ Curto</button>'
     +'<button class="mbtn secondary" style="flex:1" onclick="longRest()">🌙 Longo</button>'
-    +'<button class="mbtn secondary" style="flex:1" onclick="openSpellManager();closeDynModal()">✚ Gerenciar</button>'
+    +'<button class="mbtn secondary" style="flex:1" onclick="closeDynModal();setTimeout(openSpellManager,50)">✚ Gerenciar</button>'
     +'<button class="mbtn secondary" onclick="closeDynModal()">✕</button>'
     +'</div>';
   openDynModal(html);
