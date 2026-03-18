@@ -4350,11 +4350,54 @@ async function startNewGame(){
     attacks=[{id:'a1',name:atkDef.name,bonus:2+atkMod,dmg:atkDef.dmg,dmgBonus:atkMod,type:atkDef.type}];
   }
 
-  // Setup abilities
-  abilities=[{id:'ab1',name:'Segunda Rajada',desc:'Ataque extra como ação bônus após atacar.',use:'Ação Bônus',remaining:1,max:1}];
-  if(cls==='Guerreiro'||cls==='Paladino') abilities.push({id:'ab2',name:'Action Surge',desc:'Ação adicional no turno. Recupera em descanso curto.',use:'1x/Descanso Curto',remaining:1,max:1});
-  if(cls==='Bárbaro') abilities.push({id:'ab3',name:'Fúria',desc:'+2 dano e resistência a físico por 1 minuto.',use:'2x/Dia',remaining:2,max:2});
-  if(cls==='Paladino') abilities.push({id:'ab4',name:'Imposição de Mãos',desc:'Cura '+charLevel*5+' PV por toque.',use:charLevel*5+' PV/Dia',remaining:charLevel*5,max:charLevel*5});
+  // Setup abilities — habilidades iniciais oficiais por classe (LdJ nível 1)
+  abilities=[];
+  var STARTING_ABILITIES={
+    'Guerreiro':[
+      {id:'ab_estilo',name:'Estilo de Combate',desc:'Escolha um estilo: Arqueiro, Defesa, Duelo, Luta com Duas Armas, Proteção ou Armas Grandes.',use:'Passivo',max:0,remaining:0},
+      {id:'ab_rajada',name:'Segunda Rajada',desc:'Quando atacar com Ação, pode atacar novamente como Ação Bônus.',use:'1x/Turno',max:0,remaining:0},
+    ],
+    'Paladino':[
+      {id:'ab_sentido',name:'Sentido Divino',desc:'Detecta criaturas celestiais, infernais ou mortos-vivos a 18m. Usos = 1 + mod CAR.',use:'1x/Descanso Longo',max:Math.max(1,1+Math.floor((ATTRS.CAR-10)/2)),remaining:Math.max(1,1+Math.floor((ATTRS.CAR-10)/2))},
+      {id:'ab_maos',name:'Imposição de Mãos',desc:'Cura até '+(5)+' PV por toque (pool de 5 PV por nível).',use:'Pool de 5 PV/Descanso Longo',max:5,remaining:5},
+    ],
+    'Bárbaro':[
+      {id:'ab_furia',name:'Fúria',desc:'+2 dano corpo-a-corpo, resistência a dano físico por 1 minuto. Encerra se não atacar/receber dano.',use:'2x/Descanso Longo',max:2,remaining:2},
+      {id:'ab_defesa',name:'Defesa sem Armadura',desc:'CA = 10 + mod DES + mod CON quando sem armadura.',use:'Passivo',max:0,remaining:0},
+    ],
+    'Ladino':[
+      {id:'ab_furtivo',name:'Ataque Furtivo 1d6',desc:'Dano extra 1d6 ao atacar com vantagem ou com aliado adjacente ao alvo.',use:'1x/Turno',max:0,remaining:0},
+      {id:'ab_ardilosa',name:'Ação Ardilosa',desc:'Pode Disparar, Desengajar ou Esconder como Ação Bônus.',use:'Ação Bônus',max:0,remaining:0},
+    ],
+    'Mago':[
+      {id:'ab_recuperacao',name:'Recuperação Arcana',desc:'Recupera espaços de magia totalizando metade do nível (arred. acima) por Descanso Curto.',use:'1x/Descanso Curto',max:1,remaining:1},
+    ],
+    'Feiticeiro':[
+      {id:'ab_feiticaria',name:'Feitiçaria',desc:'Pontos de feitiçaria para Metamagia e fontes de poder. Disponível a partir do nível 2.',use:'Passivo',max:0,remaining:0},
+    ],
+    'Bruxo':[
+      {id:'ab_patrono',name:'Magia de Pacto',desc:'Espaços de magia recuperados em Descanso Curto. Número reduzido, mas poderosos.',use:'Passivo',max:0,remaining:0},
+    ],
+    'Clérigo':[
+      {id:'ab_dominio',name:'Domínio Divino',desc:'Habilidades especiais de domínio concedidas pelo deus. Consulte a subclasse.',use:'Passivo',max:0,remaining:0},
+    ],
+    'Druida':[
+      {id:'ab_selvagem',name:'Forma Selvagem',desc:'Transforma-se em animal com ND 1/4 (sem nado/voo) por 1 hora. Disponível nível 2.',use:'Passivo',max:0,remaining:0},
+    ],
+    'Bardo':[
+      {id:'ab_inspiracao',name:'Inspiração de Bardo 1d6',desc:'Dá dado de inspiração 1d6 a aliado como Ação Bônus. Aliado usa em até 10 min.',use:'Mod CAR/Descanso Longo',max:Math.max(1,Math.floor((ATTRS.CAR-10)/2)),remaining:Math.max(1,Math.floor((ATTRS.CAR-10)/2))},
+    ],
+    'Monge':[
+      {id:'ab_artes',name:'Artes Marciais 1d4',desc:'Ataques desarmados usam 1d4 + DES/FOR. Ataque desarmado como Ação Bônus após atacar.',use:'Passivo',max:0,remaining:0},
+      {id:'ab_defesa_m',name:'Defesa sem Armadura',desc:'CA = 10 + mod DES + mod SAB quando sem armadura e escudo.',use:'Passivo',max:0,remaining:0},
+    ],
+    'Patrulheiro':[
+      {id:'ab_inimigo',name:'Inimigo Favorito',desc:'Vantagem em Sobrevivência para rastrear tipo de criatura escolhida. Idioma extra.',use:'Passivo',max:0,remaining:0},
+      {id:'ab_favorito',name:'Favorito Natural',desc:'Dupla proficiência em Natureza ou Sobrevivência em terreno favorito.',use:'Passivo',max:0,remaining:0},
+    ],
+  };
+  var startAbils=STARTING_ABILITIES[cls]||[];
+  startAbils.forEach(function(a){ abilities.push(Object.assign({},a)); });
 
   // Store char info for system prompt
   newCharData={name,cls,race,bg,align,story,region:region.name,regionDesc:region.desc,attrs:newAttrs};
