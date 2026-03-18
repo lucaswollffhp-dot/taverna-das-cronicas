@@ -180,6 +180,44 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
 /* ══════════════════════════════════════
    SIDEBAR
 ══════════════════════════════════════ */
+.ability-sidebar{
+  width:220px;flex-shrink:0;
+  background:var(--bg2);
+  border-left:1px solid var(--border);
+  display:flex;flex-direction:column;
+  overflow-y:auto;
+  transition:width .25s cubic-bezier(.4,0,.2,1),opacity .25s;
+  position:relative;
+}
+.ability-sidebar.collapsed{width:0;overflow:hidden;opacity:0;border:none}
+.ability-sidebar-toggle{
+  position:absolute;top:50%;left:-12px;transform:translateY(-50%);
+  width:22px;height:40px;
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:4px 0 0 4px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--gold);font-size:.65rem;z-index:5;
+  transition:background .15s;
+}
+.ability-sidebar-toggle:hover{background:var(--gold-glow)}
+.ability-panel-inner{padding:.8rem .7rem;flex:1;display:flex;flex-direction:column;gap:.5rem;min-width:220px}
+
+.abl-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:6px 8px;transition:border .15s;
+}
+.abl-card:hover{border-color:var(--border2)}
+.abl-card.has-uses{border-left:3px solid var(--arc2)}
+.abl-card.short-rest-only{border-left:3px solid var(--ocean2)}
+.abl-card.passive{border-left:3px solid var(--text3)}
+.abl-name{font-family:Cinzel,serif;font-size:.66rem;color:var(--arc3);margin-bottom:2px}
+.abl-desc{font-size:.68rem;color:var(--text3);line-height:1.35;margin-bottom:3px}
+.abl-uses-row{display:flex;align-items:center;gap:4px}
+.abl-pip{width:11px;height:11px;border-radius:50%;border:1.5px solid var(--arc2);cursor:pointer;transition:all .15s;flex-shrink:0}
+.abl-pip.used{background:rgba(107,63,160,.15);border-color:rgba(107,63,160,.3)}
+.abl-pip.avail{background:var(--arc2);box-shadow:0 0 5px rgba(144,96,204,.4)}
+.abl-rest-tag{font-family:Cinzel,serif;font-size:.48rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-left:auto}
+
 .sidebar{
   width:var(--sidebar-w);flex-shrink:0;
   background:var(--bg2);
@@ -784,7 +822,45 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
     max-height:none!important;
     overflow:visible!important;
   }
-  .sidebar{display:none}
+  .ability-sidebar{
+  width:220px;flex-shrink:0;
+  background:var(--bg2);
+  border-left:1px solid var(--border);
+  display:flex;flex-direction:column;
+  overflow-y:auto;
+  transition:width .25s cubic-bezier(.4,0,.2,1),opacity .25s;
+  position:relative;
+}
+.ability-sidebar.collapsed{width:0;overflow:hidden;opacity:0;border:none}
+.ability-sidebar-toggle{
+  position:absolute;top:50%;left:-12px;transform:translateY(-50%);
+  width:22px;height:40px;
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:4px 0 0 4px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--gold);font-size:.65rem;z-index:5;
+  transition:background .15s;
+}
+.ability-sidebar-toggle:hover{background:var(--gold-glow)}
+.ability-panel-inner{padding:.8rem .7rem;flex:1;display:flex;flex-direction:column;gap:.5rem;min-width:220px}
+
+.abl-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:6px 8px;transition:border .15s;
+}
+.abl-card:hover{border-color:var(--border2)}
+.abl-card.has-uses{border-left:3px solid var(--arc2)}
+.abl-card.short-rest-only{border-left:3px solid var(--ocean2)}
+.abl-card.passive{border-left:3px solid var(--text3)}
+.abl-name{font-family:Cinzel,serif;font-size:.66rem;color:var(--arc3);margin-bottom:2px}
+.abl-desc{font-size:.68rem;color:var(--text3);line-height:1.35;margin-bottom:3px}
+.abl-uses-row{display:flex;align-items:center;gap:4px}
+.abl-pip{width:11px;height:11px;border-radius:50%;border:1.5px solid var(--arc2);cursor:pointer;transition:all .15s;flex-shrink:0}
+.abl-pip.used{background:rgba(107,63,160,.15);border-color:rgba(107,63,160,.3)}
+.abl-pip.avail{background:var(--arc2);box-shadow:0 0 5px rgba(144,96,204,.4)}
+.abl-rest-tag{font-family:Cinzel,serif;font-size:.48rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-left:auto}
+
+.sidebar{display:none}
   .mob-nav{display:flex}
   .mob-drawer{display:block}
   #app{padding-bottom:var(--nav-h)}
@@ -792,6 +868,8 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   .hdr-sub,.char-badge{display:none}
   .chat-box{padding:.7rem .8rem}
 }
+.ability-sidebar{}
+@media(max-width:740px){.ability-sidebar{display:none!important}}
 @media(min-width:741px){
   .mob-nav,.mob-drawer{display:none!important}
   #app{padding-bottom:0}
@@ -1240,6 +1318,26 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
         <div class="slbl">📖 Diário <button style="background:rgba(41,128,185,.1);border:1px solid rgba(93,173,226,.3);border-radius:4px;color:var(--blue2);font-size:.56rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:4px" onclick="generateDiarySummary()">Gerar Resumo</button></div>
         <div id="diary-d" style="max-height:200px;overflow-y:auto;font-family:'Crimson Text',serif;font-size:.78rem;line-height:1.5;color:var(--parch2)">
           <div style="color:rgba(237,224,188,.3);font-style:italic;text-align:center;padding:.5rem">Diário vazio — avance na aventura</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABILITY SIDEBAR -->
+    <div class="ability-sidebar" id="ability-sidebar">
+      <div class="ability-sidebar-toggle" onclick="toggleAbilitySidebar()" id="abl-toggle-btn" title="Habilidades">◀</div>
+      <div class="ability-panel-inner">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:.4rem;border-bottom:1px solid var(--border)">
+          <span style="font-family:Cinzel,serif;font-size:.6rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px">🌟 Habilidades</span>
+          <button onclick="openAbilityModal()" style="background:rgba(107,63,160,.1);border:1px solid rgba(107,63,160,.3);border-radius:4px;color:var(--arc2);font-size:.56rem;padding:1px 6px;font-family:Cinzel,serif;cursor:pointer">+</button>
+        </div>
+        <!-- Rest buttons -->
+        <div style="display:flex;gap:.3rem">
+          <button onclick="shortRest()" style="flex:1;background:rgba(41,128,185,.07);border:1px solid rgba(41,128,185,.2);border-radius:6px;padding:5px 3px;font-family:Cinzel,serif;font-size:.54rem;color:var(--ocean2);cursor:pointer;text-align:center;transition:background .15s" onmouseover="this.style.background='rgba(41,128,185,.18)'" onmouseout="this.style.background='rgba(41,128,185,.07)'">☕<br>Curto</button>
+          <button onclick="longRest()" style="flex:1;background:rgba(107,63,160,.07);border:1px solid rgba(107,63,160,.2);border-radius:6px;padding:5px 3px;font-family:Cinzel,serif;font-size:.54rem;color:var(--arc2);cursor:pointer;text-align:center;transition:background .15s" onmouseover="this.style.background='rgba(107,63,160,.18)'" onmouseout="this.style.background='rgba(107,63,160,.07)'">🌙<br>Longo</button>
+        </div>
+        <!-- Ability cards -->
+        <div id="abl-sidebar-list" style="display:flex;flex-direction:column;gap:.35rem;overflow-y:auto;flex:1">
+          <div style="font-size:.7rem;color:var(--text3);font-style:italic;text-align:center;padding:.5rem">Nenhuma habilidade</div>
         </div>
       </div>
     </div>
@@ -1754,10 +1852,55 @@ function saveAttack(){
 }
 
 // ─── HABILIDADES ───
+function toggleAbilitySidebar(){
+  var sb=document.getElementById('ability-sidebar');
+  var btn=document.getElementById('abl-toggle-btn');
+  if(!sb) return;
+  sb.classList.toggle('collapsed');
+  if(btn) btn.textContent=sb.classList.contains('collapsed')?'▶':'◀';
+}
+
+function renderAbilitySidebar(){
+  var el=document.getElementById('abl-sidebar-list');
+  if(!el) return;
+  if(!abilities.length){
+    el.innerHTML='<div style="font-size:.7rem;color:var(--text3);font-style:italic;text-align:center;padding:.5rem">Nenhuma habilidade</div>';
+    return;
+  }
+  el.innerHTML=abilities.map(function(a){
+    var isShortRest=a.use&&(a.use.toLowerCase().includes('curto')||a.use.toLowerCase().includes('short'));
+    var isLongRest=a.use&&(a.use.toLowerCase().includes('longo')||a.use.toLowerCase().includes('long')||a.use.toLowerCase().includes('dia'));
+    var hasUses=a.max>0;
+    var cardClass='abl-card'+(hasUses?(isShortRest?' short-rest-only':' has-uses'):' passive');
+    var pips='';
+    if(hasUses){
+      for(var i=0;i<a.max;i++){
+        var used=i>=(a.remaining||0);
+        var pipDiv=document.createElement('div');
+        pipDiv.className='abl-pip '+(used?'used':'avail');
+        pipDiv.title=used?'Gasto':'Disponível';
+        pipDiv.dataset.aid=a.id;
+        pipDiv.onclick=function(){useAbility(this.dataset.aid);};
+        pips+=pipDiv.outerHTML;
+      }
+    }
+    var restTag=isShortRest?'☕ Curto':isLongRest?'🌙 Longo':hasUses?'🔄 Recuperável':'—';
+    return'<div class="'+cardClass+'">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between">'
+      +'<div class="abl-name">'+a.name+'</div>'
+      +'<button data-aid="'+a.id+'" onclick="delAbility(this.dataset.aid)" style="background:none;border:none;color:rgba(155,35,53,.35);font-size:.65rem;cursor:pointer;padding:0" title="Remover">✕</button>'
+      +'</div>'
+      +'<div class="abl-desc">'+a.desc+'</div>'
+      +(hasUses?'<div class="abl-uses-row">'+pips+'<span class="abl-rest-tag">'+restTag+'</span></div>':'')
+      +'</div>';
+  }).join('');
+}
+
 function renderAbilities(){
   const el=document.getElementById('ability-list-d');
   if(!el)return;
   if(!abilities.length){el.innerHTML='<div style="font-size:.72rem;color:rgba(201,168,76,.3);font-style:italic;text-align:center">Nenhuma habilidade</div>';return;}
+  renderAbilitySidebar();
   el.innerHTML=abilities.map(a=>`
     <div class="ability-item">
       <div style="display:flex;align-items:center;justify-content:space-between">
@@ -1773,7 +1916,14 @@ function renderAbilities(){
 }
 function useAbility(id){
   const a=abilities.find(x=>x.id===id);
-  if(a&&a.remaining>0){a.remaining--;renderAbilities();showRollToast('🌟 '+a.name+' ativada!');}
+  if(!a) return;
+  if(a.remaining>0){
+    a.remaining--;
+    renderAbilities();
+    showRollToast('🌟 '+a.name+' usada! ('+a.remaining+'/'+a.max+' restantes)');
+  } else {
+    showRollToast('❌ '+a.name+' sem usos disponíveis.');
+  }
 }
 function delAbility(id){abilities=abilities.filter(x=>x.id!==id);renderAbilities();}
 
@@ -2503,25 +2653,61 @@ function confirmLevelUp(newLvl){
   closeDynModal();
   window._hpGain=null;
   showRollToast('🌟 '+(window.CHAR_NAME||'Personagem')+' avançou para o Nível '+newLvl+'!');
-  // Prompt magic class to update spell selection
+  // Handle class features + magic for new level
   var MAGIC_CLS2=['Mago','Feiticeiro','Bruxo','Clérigo','Druida','Bardo','Paladino','Patrulheiro'];
   var clsLU=(window.CHAR_CLASS||'').split(' — ')[0];
+  var tblLU=CLASS_LEVEL_TABLE[clsLU]||CLASS_LEVEL_TABLE['Guerreiro'];
+  // Auto-add class features as abilities
+  var newFeats=tblLU.features[newLvl]||[];
+  newFeats.forEach(function(feat){
+    if(!abilities.find(function(a){return a.name===feat;})){
+      var isShort=feat.toLowerCase().includes('ação surpreendente')||feat.toLowerCase().includes('action surge');
+      var isLong=feat.toLowerCase().includes('rajada')||feat.toLowerCase().includes('fúria');
+      abilities.push({
+        id:'cls_'+newLvl+'_'+feat.replace(/\s/g,'_'),
+        name:feat,
+        desc:'Característica de classe obtida no nível '+newLvl+'.',
+        use:isShort?'1x/Descanso Curto':isLong?'1x/Descanso Longo':'Passivo',
+        max:isShort||isLong?1:0,
+        remaining:isShort||isLong?1:0
+      });
+    }
+  });
+  renderAbilities();
   if(MAGIC_CLS2.indexOf(clsLU)>=0){
-    // Update spell slots for new level (add new slot tiers)
-    var newSlots=SPELL_SLOTS_BY_CLASS[clsLU]||{};
-    // Add level 2 slots if reached level 3+
+    // Update spell slots for new level
+    if(newLvl>=2&&!spellSlots[1]) spellSlots[1]={total:2,used:0};
     if(newLvl>=3&&!spellSlots[2]) spellSlots[2]={total:2,used:0};
     if(newLvl>=5&&!spellSlots[3]) spellSlots[3]={total:2,used:0};
     renderSpells();
+    // Show level-up notification with features + open spell manager
     setTimeout(function(){
-      if(confirm('✨ '+clsLU+' de nível '+newLvl+': você pode aprender novas magias! Abrir gerenciador de magias?')){
-        openSpellManager();
-      }
+      openLevelUpSpellNotice(clsLU, newLvl, newFeats);
     },400);
   }
   addMsg('sys','🌟 '+(window.CHAR_NAME||'Personagem')+' avançou para o Nível '+newLvl+'!');
   saveProgress('auto');
 }
+function openLevelUpSpellNotice(cls, lvl, features){
+  var featHtml=features.length
+    ?'<div style="margin-bottom:.8rem"><div style="font-family:Cinzel,serif;font-size:.6rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">✨ Características obtidas no nível '+lvl+'</div>'
+      +features.map(function(f){
+        return'<div style="background:rgba(107,63,160,.06);border:1px solid rgba(107,63,160,.18);border-radius:5px;padding:4px 8px;margin-bottom:3px;font-family:Cinzel,serif;font-size:.68rem;color:var(--arc3)">'+f+'</div>';
+      }).join('')+'</div>'
+    :'';
+  var html='<div class="modal-title">⬆ '+cls+' — Nível '+lvl+'!</div>'
+    +featHtml
+    +'<div style="background:rgba(107,63,160,.06);border:1px solid rgba(107,63,160,.2);border-radius:8px;padding:.7rem;margin-bottom:.8rem">'
+    +'<div style="font-family:Cinzel,serif;font-size:.65rem;color:var(--arc2);margin-bottom:.3rem">✨ Magias disponíveis</div>'
+    +'<div style="font-size:.78rem;color:var(--text2);line-height:1.5">Seu nível aumentou — novas magias podem estar disponíveis. Revise sua seleção no Gerenciador para ajustar as magias preparadas conforme os novos limites da sua classe.</div>'
+    +'</div>'
+    +'<div class="modal-row">'
+    +'<button class="mbtn secondary" onclick="closeDynModal()">Fechar</button>'
+    +'<button class="mbtn primary" onclick="closeDynModal();setTimeout(openSpellManager,100)">✚ Gerenciar Magias</button>'
+    +'</div>';
+  openDynModal(html);
+}
+
 function openCombat(){
   const html=`<div class="modal-title">⚔ Iniciar Combate</div>
     <p style="font-size:.84rem;color:var(--parch2);margin-bottom:.8rem">Adicione os combatentes e suas iniciativas.</p>
@@ -3372,6 +3558,16 @@ const FEATS_DB=[
 ];
 
 // ─── LISTA DE MAGIAS POR CLASSE (Livro do Jogador cap. 11) ───
+const DEFAULT_SPELLS_LV1={
+  'Mago':{truques:['Luz','Raio de Fogo','Toque Arrepiante'],nivel1:['Mísseis Mágicos','Sono','Mãos Flamejantes']},
+  'Feiticeiro':{truques:['Raio de Fogo','Luz'],nivel1:['Mísseis Mágicos','Sono']},
+  'Bruxo':{truques:['Rajada Mística','Toque Arrepiante'],nivel1:['Repreensão Infernal','Enfeitiçar Pessoa']},
+  'Clérigo':{truques:['Chama Sagrada','Luz','Resistência'],nivel1:['Curar Ferimentos','Bênção']},
+  'Druida':{truques:['Produzir Chamas','Orientação'],nivel1:['Curar Ferimentos','Falar com Animais']},
+  'Bardo':{truques:['Zombaria Viciosa','Globos de Luz'],nivel1:['Curar Ferimentos','Sono']},
+  'Paladino':{truques:[],nivel1:['Bênção','Curar Ferimentos']},
+  'Patrulheiro':{truques:[],nivel1:['Marca do Caçador','Curar Ferimentos']},
+};
 const SPELLS_BY_CLASS={
   'Mago':{
     truques:['Mãos Flamejantes','Mísseis Mágicos','Raio de Gelo','Raio de Fogo','Toque Arrepiante','Toque Chocante','Globos de Luz','Ilusão Menor','Luz','Prestidigitação','Conservar','Leque Cromático','Rajada de Veneno','Espirro Ácido','Amizade','Ataque Certeiro','Proteção contra Lâminas','Mensagem'],
@@ -3834,14 +4030,20 @@ async function startNewGame(){
   var MAGIC_CLS=['Mago','Feiticeiro','Bruxo','Clérigo','Druida','Bardo','Paladino','Patrulheiro'];
   if(MAGIC_CLS.indexOf(cls)>=0){
     attacks=[{id:'a1',name:atkDef.name,bonus:2+atkMod,dmg:atkDef.dmg,dmgBonus:atkMod,type:atkDef.type}];
-    // Start with EMPTY spell list — player selects after creation
+    // Auto-assign default spells for level 1 per LdJ
+    var defSp=DEFAULT_SPELLS_LV1[cls]||{truques:[],nivel1:[]};
     spells=[];
+    defSp.truques.forEach(function(n){
+      spells.push({id:'t_'+n.replace(/\s/g,'_'),name:n,level:0,school:'Truque',desc:'Conjuração à vontade.'});
+    });
+    defSp.nivel1.forEach(function(n){
+      spells.push({id:'n1_'+n.replace(/\s/g,'_'),name:n,level:1,school:'Nível 1',desc:'CD = 8 + prof + mod.'});
+    });
     // Set official spell slots per class level 1
     var baseSlots=SPELL_SLOTS_BY_CLASS[cls]||{1:{total:2,used:0}};
     spellSlots={};
     Object.keys(baseSlots).forEach(function(lv){spellSlots[lv]={total:baseSlots[lv].total,used:0};});
-    // Flag to show spell panel even with empty spells
-    window.CHAR_NEEDS_SPELLS=true;
+    window.CHAR_NEEDS_SPELLS=true; // prompt to customize after start
   } else {
     attacks=[{id:'a1',name:atkDef.name,bonus:2+atkMod,dmg:atkDef.dmg,dmgBonus:atkMod,type:atkDef.type}];
   }
@@ -3912,15 +4114,17 @@ async function startNewGame(){
     setCampaignTitle(campTitle, race+' '+cls+' · Nível 1 · '+region.name);
     window.CAMPAIGN_TITLE=campTitle;
     addMsg('dm',r.replace(/\n/g,'<br>'));
-    // Prompt magic class to select starting spells
+    // Inform magic class about their starting spells and offer to customize
     if(window.CHAR_NEEDS_SPELLS){
       window.CHAR_NEEDS_SPELLS=false;
-      setTimeout(function(){
-        var cls2=(window.CHAR_CLASS||'').split(' — ')[0];
-        if(confirm('✨ Como '+cls2+', você começa com magias. Deseja escolher agora?')){
-          openSpellManager();
-        }
-      },600);
+      var cls2=(window.CHAR_CLASS||'').split(' — ')[0];
+      var MAGIC_CLS3=['Mago','Feiticeiro','Bruxo','Clérigo','Druida','Bardo','Paladino','Patrulheiro'];
+      if(MAGIC_CLS3.indexOf(cls2)>=0){
+        setTimeout(function(){
+          addMsg('sys','✨ '+cls2+' começa com magias padrão do LdJ já selecionadas. Use "✚ Gerenciar" no painel de Magias para personalizar sua seleção conforme os limites do seu nível.');
+          renderSpells();
+        },800);
+      }
     }
     // Add initial quest from opening
     if(!quests.length){
