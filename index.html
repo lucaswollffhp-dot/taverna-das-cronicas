@@ -1155,23 +1155,33 @@ let quests=[], attacks=[], abilities=[];
 let equipped={arma:null,armadura:null,escudo:null,acessorio:null};
 let coins={PP:0,PO:10,PE:0,PA:0,PC:0};
 let spells=[], spellSlots={1:{total:2,used:0}};
+
+// ─── ESPAÇOS DE MAGIA OFICIAIS POR CLASSE (LdJ) ─── 
+// Formato: {nivel: {total, usado}}
+const SPELL_SLOTS_BY_CLASS={
+  'Mago':{      1:{total:2,used:0}},
+  'Feiticeiro':{ 1:{total:2,used:0}},
+  'Bruxo':{     1:{total:1,used:0}},  // Pacto: 1 espaço nv1
+  'Clérigo':{   1:{total:2,used:0}},
+  'Druida':{    1:{total:2,used:0}},
+  'Bardo':{     1:{total:2,used:0}},
+  'Paladino':{  1:{total:0,used:0}},  // Paladino ganha magias nv2
+  'Patrulheiro':{1:{total:0,used:0}}, // Patrulheiro ganha magias nv2
+};
 let combatActive=false, combatants=[], currentTurn=0, roundNum=1;
 var CONQUISTAS=[];
 const XP_TABLE=[0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,120000,140000,165000,195000,225000,265000,305000,355000];
 
 // SYSTEM PROMPT
-const SYSTEM=`Você é o Narrador de D&D 5e em português do Brasil.
+const SYSTEM=`Você é o Mestre de D&D 5e narrando em português do Brasil.
 REGRAS OBRIGATÓRIAS:
-- NUNCA mencione o estado oculto do personagem no texto narrativo.
-- NPCs devem ter nomes únicos e variados. Nunca repita nomes de campanhas anteriores.
-- Ao pedir rolagens, SEMPRE inclua o modificador somado. Ex: "Role d20+5 de Percepção" ou "Role d20+3 para atacar". NUNCA peça só "role d20".
-- Narre em português do Brasil, estilo épico. 2-4 parágrafos. Termine pedindo ação.
-- NUNCA resolva combate sem pedir rolagens.
-HISTÓRIA: Killyn (anão guerreiro nv.2) resolveu "Diadema Deslocada" em Margem do Junco. Derrotou Morgok, salvou Janus, aliou-se a Skint (goblin). Companheiros: Vessa (arqueira), Pip (mago), Soren (clérigo).
-DIRETRIZES: Narre em português épico. 2-4 parágrafos. Para testes peça rolls d20+bônus. Termine pedindo ação. Nunca resolva combate sem rolls.
-SISTEMA DE ATUALIZAÇÃO — ao final se houver mudanças inclua:
-{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa"}],"quest_update":[{"id":"q1","status":"concluida"}],"xp_gain":150}}
-Só inclua se houver mudanças reais.`;
+1. NUNCA mencione dados internos como [PV], [CA], [ESTADO_OCULTO] no texto narrativo.
+2. NPCs com nomes únicos e variados. Nunca repita nomes já usados na sessão atual.
+3. Rolagens: SEMPRE inclua o modificador. Ex: "Role d20+3 de Percepção". NUNCA apenas "role d20".
+4. Linguagem clara e direta. Narre como um bom Mestre — sem palavras rebuscadas desnecessárias.
+5. AO FINAL: pergunte APENAS "O que você faz?" — não liste opções nem sugira ações ao jogador.
+6. Nunca resolva combates sem rolagens do jogador.
+7. Ouro: registre cada transação somente uma vez com gold_add ou gold_remove. Não duplique.`;
 
 function mod(v){const m=Math.floor((v-10)/2);return(m>=0?'+':'')+m;}
 function modNum(v){return Math.floor((v-10)/2);}
@@ -1658,7 +1668,13 @@ function renderSpells(){
   // Spell list
   var el=document.getElementById('spell-list-d');
   if(!el) return;
-  if(!spells.length){el.innerHTML='<div style="font-size:.7rem;color:rgba(165,105,189,.35);font-style:italic;text-align:center">Nenhuma magia</div>';return;}
+  if(!spells.length){
+    el.innerHTML='<div style="padding:.5rem;text-align:center">'
+      +'<div style="font-size:.72rem;color:var(--arc2);margin-bottom:.4rem">Nenhuma magia selecionada</div>'
+      +'<button onclick="openSpellManager()" style="background:rgba(107,63,160,.15);border:1px solid rgba(107,63,160,.35);border-radius:6px;color:var(--arc3);font-family:Cinzel,serif;font-size:.65rem;padding:4px 12px;cursor:pointer;width:100%">✨ Escolher Magias</button>'
+      +'</div>';
+    return;
+  }
   var spellDivs=[];
   spells.forEach(function(s){
     spellDivs.push('<div class="spell-item" data-sid="'+s.id+'" onclick="castSpell(this.dataset.sid)">'
@@ -1723,8 +1739,21 @@ function openSpellManager(){
       +'</div>';
   }).join('');
 
-  var html='<div class="modal-title">✨ Gerenciar Magias — '+clsBase+'</div>'
-    +'<p style="font-size:.76rem;color:var(--parch2);margin-bottom:.6rem">Selecione as magias conhecidas. O Mestre narra os efeitos quando você as usa.</p>'
+  // Calculate how many spells player can know
+  var knownLimits={
+    'Mago':'Grimório: prepare SAB+nível. Truques: '+([3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5][charLevel-1]||3),
+    'Feiticeiro':'Conhecidas: '+([2,3,4,5,6,7,8,9,10,11,12,12,13,13,14,14,15,15,15,15][charLevel-1]||2)+'. Truques: '+([4,4,4,5,5,6,6,7,7,8,8,8,9,9,9,9,9,9,9,9][charLevel-1]||4),
+    'Bruxo':'Conhecidas: '+([2,3,4,5,6,7,8,9,10,10,11,11,12,12,13,13,14,14,14,15][charLevel-1]||2)+'. Truques: '+([2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4][charLevel-1]||2),
+    'Clérigo':'Prepare SAB+nível. Truques: '+([3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5][charLevel-1]||3),
+    'Druida':'Prepare SAB+nível. Truques: '+([2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4][charLevel-1]||2),
+    'Bardo':'Conhecidas: '+([4,5,6,7,8,9,10,11,12,14,15,15,16,18,19,19,20,22,22,22][charLevel-1]||4)+'. Truques: '+([2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4][charLevel-1]||2),
+    'Paladino':'Prepare CAR+metade nível (mín 1). Disponível a partir nível 2.',
+    'Patrulheiro':'Conhecidas: '+([0,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11][charLevel-1]||0)+'. Disponível a partir nível 2.',
+  };
+  var limitInfo=knownLimits[clsBase]||'Selecione suas magias conhecidas.';
+  var html='<div class="modal-title">✨ Magias — '+clsBase+'</div>'
+    +'<div style="background:rgba(107,63,160,.08);border:1px solid rgba(107,63,160,.2);border-radius:6px;padding:.4rem .6rem;margin-bottom:.6rem;font-size:.74rem;color:var(--arc3)">'+limitInfo+'</div>'
+    +'<p style="font-size:.74rem;color:var(--text3);margin-bottom:.5rem">Marque as magias que seu personagem conhece/prepara.</p>'
     +'<div style="max-height:55vh;overflow-y:auto;padding-right:4px">'+rows+'</div>'
     +'<div class="modal-row"><button class="mbtn secondary" onclick="closeDynModal()">Cancelar</button>'
     +'<button class="mbtn primary" onclick="saveSpellSelection()">Salvar</button></div>';
@@ -2066,6 +2095,22 @@ function confirmLevelUp(newLvl){
   closeDynModal();
   window._hpGain=null;
   showRollToast('🌟 '+(window.CHAR_NAME||'Personagem')+' avançou para o Nível '+newLvl+'!');
+  // Prompt magic class to update spell selection
+  var MAGIC_CLS2=['Mago','Feiticeiro','Bruxo','Clérigo','Druida','Bardo','Paladino','Patrulheiro'];
+  var clsLU=(window.CHAR_CLASS||'').split(' — ')[0];
+  if(MAGIC_CLS2.indexOf(clsLU)>=0){
+    // Update spell slots for new level (add new slot tiers)
+    var newSlots=SPELL_SLOTS_BY_CLASS[clsLU]||{};
+    // Add level 2 slots if reached level 3+
+    if(newLvl>=3&&!spellSlots[2]) spellSlots[2]={total:2,used:0};
+    if(newLvl>=5&&!spellSlots[3]) spellSlots[3]={total:2,used:0};
+    renderSpells();
+    setTimeout(function(){
+      if(confirm('✨ '+clsLU+' de nível '+newLvl+': você pode aprender novas magias! Abrir gerenciador de magias?')){
+        openSpellManager();
+      }
+    },400);
+  }
   addMsg('sys','🌟 '+(window.CHAR_NAME||'Personagem')+' avançou para o Nível '+newLvl+'!');
   saveProgress('auto');
 }
@@ -2331,20 +2376,25 @@ function parseAndApplyUpdates(raw){
       updQuest(qu.id,qu.status);
     });
     if(u.xp_gain) addXP(u.xp_gain);
-    // Gold changes from narration
+    // Gold changes from narration — deduplicate via hash
     if(u.gold_add!==undefined||u.gold_remove!==undefined||u.coins){
-      if(u.coins){
-        // Full coin update {PP,PO,PE,PA,PC}
-        Object.assign(coins,u.coins);
-      } else {
-        // Simple PO change
-        if(u.gold_add) coins.PO+=parseInt(u.gold_add)||0;
-        if(u.gold_remove) coins.PO=Math.max(0,coins.PO-(parseInt(u.gold_remove)||0));
+      var goldKey=(u.gold_add||0)+'_'+(u.gold_remove||0)+'_'+JSON.stringify(u.coins||{});
+      var msgHash=goldKey+hist.length;
+      if(!window._processedGold) window._processedGold=new Set();
+      if(!window._processedGold.has(msgHash)){
+        window._processedGold.add(msgHash);
+        if(u.coins){
+          Object.assign(coins,u.coins);
+        } else {
+          if(u.gold_add) coins.PO+=parseInt(u.gold_add)||0;
+          if(u.gold_remove) coins.PO=Math.max(0,coins.PO-(parseInt(u.gold_remove)||0));
+        }
+        autoConvertCoins();
+        renderCoins();
+        renderCoins('m');
+        if(u.gold_add) msgs.push('💰 +'+u.gold_add+' po');
+        if(u.gold_remove) msgs.push('💸 −'+u.gold_remove+' po');
       }
-      autoConvertCoins();
-      renderCoins();
-      if(u.gold_add) msgs.push('💰 +'+u.gold_add+' po');
-      if(u.gold_remove) msgs.push('💸 −'+u.gold_remove+' po');
     }
     // Magic item received
     if(u.magic_item_add){
@@ -3224,6 +3274,7 @@ async function startNewGame(){
   // Reset global state for new character
   hist=[];quests=[];
   CONQUISTAS=[];
+  window._processedGold=new Set();
   inventory=[].concat(defs.equip||[]);
   equipped={arma:null,armadura:null,escudo:null,acessorio:null};
   // Auto-equip from class defaults
@@ -3260,19 +3311,14 @@ async function startNewGame(){
   var MAGIC_CLS=['Mago','Feiticeiro','Bruxo','Clérigo','Druida','Bardo','Paladino','Patrulheiro'];
   if(MAGIC_CLS.indexOf(cls)>=0){
     attacks=[{id:'a1',name:atkDef.name,bonus:2+atkMod,dmg:atkDef.dmg,dmgBonus:atkMod,type:atkDef.type}];
-    // Default spells and slots by class
-    var defSpells={
-      'Mago':[{id:'sp1',name:'Míssil Mágico',level:1,school:'Evocação'},{id:'sp2',name:'Sono',level:1,school:'Encantamento'},{id:'sp3',name:'Mãos Flamejantes',level:1,school:'Evocação'},{id:'sp4',name:'Luz',level:0,school:'Truque'},{id:'sp5',name:'Raio de Fogo',level:0,school:'Truque'}],
-      'Feiticeiro':[{id:'sp1',name:'Míssil Mágico',level:1,school:'Evocação'},{id:'sp2',name:'Sono',level:1,school:'Encantamento'},{id:'sp3',name:'Luz',level:0,school:'Truque'},{id:'sp4',name:'Raio de Fogo',level:0,school:'Truque'}],
-      'Bruxo':[{id:'sp1',name:'Repreensão Infernal',level:1,school:'Evocação'},{id:'sp2',name:'Enfeitiçar Pessoa',level:1,school:'Encantamento'},{id:'sp3',name:'Rajada Mística',level:0,school:'Truque'},{id:'sp4',name:'Toque Arrepiante',level:0,school:'Truque'}],
-      'Clérigo':[{id:'sp1',name:'Curar Ferimentos',level:1,school:'Evocação'},{id:'sp2',name:'Bênção',level:1,school:'Encantamento'},{id:'sp3',name:'Chama Sagrada',level:0,school:'Truque'},{id:'sp4',name:'Luz',level:0,school:'Truque'}],
-      'Druida':[{id:'sp1',name:'Curar Ferimentos',level:1,school:'Evocação'},{id:'sp2',name:'Falar com Animais',level:1,school:'Adivinhação'},{id:'sp3',name:'Produzir Chamas',level:0,school:'Truque'},{id:'sp4',name:'Orientação',level:0,school:'Truque'}],
-      'Bardo':[{id:'sp1',name:'Curar Ferimentos',level:1,school:'Evocação'},{id:'sp2',name:'Sono',level:1,school:'Encantamento'},{id:'sp3',name:'Zombaria Viciosa',level:0,school:'Encantamento'},{id:'sp4',name:'Globos de Luz',level:0,school:'Evocação'}],
-      'Paladino':[{id:'sp1',name:'Bênção',level:1,school:'Encantamento'},{id:'sp2',name:'Curar Ferimentos',level:1,school:'Evocação'},{id:'sp3',name:'Escudo da Fé',level:1,school:'Abjuração'}],
-      'Patrulheiro':[{id:'sp1',name:'Marca do Caçador',level:1,school:'Adivinhação'},{id:'sp2',name:'Névoa Obscurecente',level:1,school:'Conjuração'},{id:'sp3',name:'Curar Ferimentos',level:1,school:'Evocação'}],
-    };
-    spells=defSpells[cls]||defSpells['Mago'];
-    spellSlots={1:{total:2,used:0},2:{total:0,used:0},3:{total:0,used:0}};
+    // Start with EMPTY spell list — player selects after creation
+    spells=[];
+    // Set official spell slots per class level 1
+    var baseSlots=SPELL_SLOTS_BY_CLASS[cls]||{1:{total:2,used:0}};
+    spellSlots={};
+    Object.keys(baseSlots).forEach(function(lv){spellSlots[lv]={total:baseSlots[lv].total,used:0};});
+    // Flag to show spell panel even with empty spells
+    window.CHAR_NEEDS_SPELLS=true;
   } else {
     attacks=[{id:'a1',name:atkDef.name,bonus:2+atkMod,dmg:atkDef.dmg,dmgBonus:atkMod,type:atkDef.type}];
   }
@@ -3305,12 +3351,13 @@ async function startNewGame(){
     +'Região de início: '+region.name+' ('+region.desc+')\n\n'
     +'CAMPANHA: Gere uma campanha ORIGINAL mas baseada no universo oficial dos Forgotten Realms. Use localidades, facções, deuses, história e personagens CANÔNICOS do setting (Waterdeep, Zhentarim, Harpers, Sembia, deuses do Faerûn etc). A aventura deve ser coerente com o nível 1 do personagem.\n\n'
     +'DIRETRIZES:\n'
-    +'- Narre SEMPRE em português do Brasil, estilo épico\n'
-    +'- 2-4 parágrafos por resposta\n'
-    +'- Para testes peça rolls d20+bônus\n'
-    +'- Nunca resolva combates sem rolls\n'
-    +'- Termine sempre pedindo ação do jogador\n'
-    +'- Use nomes e locais CANÔNICOS dos Forgotten Realms\n\n'
+    +'- Narre em português claro e direto, como um bom Mestre. Sem palavras rebuscadas desnecessárias.\n'
+    +'- 2-4 parágrafos por resposta.\n'
+    +'- Para testes inclua o modificador: "Role d20+X de Y". Nunca só "role d20".\n'
+    +'- Nunca resolva combates sem rolls do jogador.\n'
+    +'- AO FINAL: pergunte somente "O que você faz?" — NÃO liste opções nem sugira ações.\n'
+    +'- Use nomes e locais CANÔNICOS dos Forgotten Realms.\n'
+    +'- NPCs com nomes únicos. Nunca repita nomes já usados.\n\n'
     +'SISTEMA DE ATUALIZAÇÃO — ao final se houver mudanças inclua (JSON puro, sem markdown):\n'
     +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa"}],"quest_update":[{"id":"q1","status":"concluida"}],"xp_gain":150,"gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena."}}\n'
     +'Use gold_add quando personagem recebe ouro/pagamento. gold_remove quando gasta. magic_item_add quando recebe item mágico. diary_entry a cada cena importante (máx 2 linhas). Só inclua campos que mudaram.';
@@ -3342,6 +3389,16 @@ async function startNewGame(){
     setCampaignTitle(campTitle, race+' '+cls+' · Nível 1 · '+region.name);
     window.CAMPAIGN_TITLE=campTitle;
     addMsg('dm',r.replace(/\n/g,'<br>'));
+    // Prompt magic class to select starting spells
+    if(window.CHAR_NEEDS_SPELLS){
+      window.CHAR_NEEDS_SPELLS=false;
+      setTimeout(function(){
+        var cls2=(window.CHAR_CLASS||'').split(' — ')[0];
+        if(confirm('✨ Como '+cls2+', você começa com magias. Deseja escolher agora?')){
+          openSpellManager();
+        }
+      },600);
+    }
     // Add initial quest from opening
     if(!quests.length){
       quests.push({id:'q_main',titulo:'A Chamada da Aventura',desc:'Sua jornada em '+region.name+' começa. Descubra o que o destino reserva.',status:'ativa'});
