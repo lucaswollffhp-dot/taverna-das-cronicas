@@ -1096,9 +1096,20 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
         <div class="hdr-title" id="campaign-title">Taverna das Crônicas</div>
         <div class="hdr-sub" id="campaign-sub">Narrador IA · D&D 5e · Forgotten Realms</div>
       </div>
+      <!-- XP mini bar in header -->
+      <div id="hdr-xp" style="display:none;flex-direction:column;gap:2px;margin-left:.5rem;min-width:80px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:4px">
+          <span style="font-family:Cinzel,serif;font-size:.52rem;color:var(--gold)">Nv.<span id="hdr-level">1</span></span>
+          <span style="font-family:Cinzel,serif;font-size:.5rem;color:var(--text3)"><span id="hdr-xp-cur">0</span> XP</span>
+        </div>
+        <div style="background:rgba(200,168,74,.12);border-radius:2px;height:3px;overflow:hidden">
+          <div id="hdr-xp-bar" style="height:100%;background:linear-gradient(90deg,var(--blood),var(--gold2));border-radius:2px;width:0%;transition:width .5s"></div>
+        </div>
+        <button onclick="openLevelUp()" style="background:none;border:none;font-family:Cinzel,serif;font-size:.46rem;color:var(--text3);cursor:pointer;text-align:left;padding:0;letter-spacing:.3px" id="hdr-lvlup-btn" title="Upar personagem">📈 Upar</button>
+      </div>
     </div>
     <div class="hdr-right">
-      <div id="char-info-badge" style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;background:rgba(201,168,76,.06);border:1px solid var(--border2);border-radius:8px;padding:.2rem .65rem">
+      <div id="char-info-badge" onclick="openCharSheet()" style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;background:rgba(201,168,76,.06);border:1px solid var(--border2);border-radius:8px;padding:.2rem .65rem;cursor:pointer;transition:border .2s" onmouseover="this.style.borderColor='var(--border3)'" onmouseout="this.style.borderColor='var(--border2)'" title="Ver ficha completa">
         <div style="display:flex;align-items:center;gap:.4rem">
           <span style="font-family:'Cinzel',serif;color:var(--gold2);font-size:.76rem" id="hdr-char-name">—</span>
           <span style="background:rgba(192,57,43,.2);border:1px solid rgba(192,57,43,.4);border-radius:10px;font-family:'Cinzel',serif;font-size:.56rem;color:var(--blood2);padding:1px 6px">Nv.<span id="level-badge">1</span></span>
@@ -1168,7 +1179,11 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
       </div>
       <hr class="sdiv">
       <div>
-        <div class="slbl">🌟 Habilidades <button style="background:rgba(125,60,152,.1);border:1px solid rgba(165,105,189,.3);border-radius:4px;color:var(--purple2);font-size:.56rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:4px" onclick="openAbilityModal()">+</button></div>
+        <div class="slbl">🌟 Habilidades
+          <button style="background:rgba(125,60,152,.1);border:1px solid rgba(165,105,189,.3);border-radius:4px;color:var(--purple2);font-size:.56rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:2px" onclick="openAbilityModal()">+</button>
+          <button style="background:rgba(41,128,185,.08);border:1px solid rgba(93,173,226,.2);border-radius:4px;color:var(--ocean2);font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:2px;cursor:pointer" onclick="shortRest()" title="Descanso Curto">☕</button>
+          <button style="background:rgba(125,60,152,.08);border:1px solid rgba(165,105,189,.2);border-radius:4px;color:var(--arc2);font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:2px;cursor:pointer" onclick="longRest()" title="Descanso Longo">🌙</button>
+        </div>
         <div class="ability-list" id="ability-list-d"></div>
       </div>
       <hr class="sdiv" id="spells-divider" style="display:none">
@@ -1218,15 +1233,6 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
         <div class="slbl">📖 Diário <button style="background:rgba(41,128,185,.1);border:1px solid rgba(93,173,226,.3);border-radius:4px;color:var(--blue2);font-size:.56rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:4px" onclick="generateDiarySummary()">Gerar Resumo</button></div>
         <div id="diary-d" style="max-height:200px;overflow-y:auto;font-family:'Crimson Text',serif;font-size:.78rem;line-height:1.5;color:var(--parch2)">
           <div style="color:rgba(237,224,188,.3);font-style:italic;text-align:center;padding:.5rem">Diário vazio — avance na aventura</div>
-        </div>
-      </div>
-      <hr class="sdiv">
-      <div>
-        <div class="slbl">📈 Progresso <button style="background:rgba(201,168,76,.1);border:1px solid var(--border2);border-radius:4px;color:var(--gold2);font-size:.56rem;padding:1px 6px;font-family:Cinzel,serif;margin-left:4px" onclick="openLevelUp()">Upar!</button></div>
-        <div style="background:rgba(201,168,76,.05);border:1px solid var(--border);border-radius:5px;padding:5px 7px">
-          <div style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold)">Nível <span id="xp-level">2</span> · XP <span id="xp-cur">300</span></div>
-          <div style="background:rgba(201,168,76,.15);border-radius:3px;height:5px;margin-top:3px;overflow:hidden"><div id="xp-bar" style="background:var(--gold2);height:100%;border-radius:3px;transition:width .5s;width:42%"></div></div>
-          <div style="font-size:.56rem;color:rgba(201,168,76,.5);font-style:italic;margin-top:2px">Próximo nível: <span id="xp-next">900</span> XP</div>
         </div>
       </div>
     </div>
@@ -1564,6 +1570,127 @@ function equipItem(slot,id){
   updCA();renderEquip();
 }
 function openEquipModal(){openEquipSlot('armadura');}
+function openEquipSlotModal(){
+  var html='<div class="modal-title">🛡 Qual slot equipar?</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.8rem">'
+    +['armadura','escudo','arma','acessorio'].map(function(s){
+      var labels={armadura:'🛡 Armadura',escudo:'🔰 Escudo',arma:'⚔ Arma',acessorio:'💎 Itens Mágicos'};
+      var btn=document.createElement('button');
+      btn.className='mbtn secondary';
+      btn.style.padding='.6rem';
+      btn.dataset.slot=s;
+      btn.textContent=labels[s];
+      btn.onclick=function(){openEquipSlot(this.dataset.slot);closeDynModal();};
+      return btn.outerHTML;
+    }).join('')
+    +'</div>'
+    +'<div class="modal-row"><button class="mbtn secondary" onclick="closeDynModal()">Cancelar</button></div>';
+  openDynModal(html);
+}
+
+function openNewItemModal(){
+  var html='<div class="modal-title">✨ Cadastrar Novo Item</div>'
+    +'<div class="mfield"><label>Tipo</label>'
+    +'<select id="ni-type" style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:.45rem .7rem;font-family:Cormorant Garamond,serif;font-size:.9rem;color:var(--text);outline:none" onchange="updateNewItemForm()">'
+    +'<option value="arma">⚔ Arma</option>'
+    +'<option value="armadura">🛡 Armadura</option>'
+    +'<option value="escudo">🔰 Escudo</option>'
+    +'<option value="magico">💎 Item Mágico</option>'
+    +'</select></div>'
+    +'<div id="ni-fields">'
+    +'<div class="mfield"><label>Nome</label><input id="ni-name" placeholder="Ex: Espada +1"/></div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">'
+    +'<div class="mfield"><label>Dado de Dano</label><input id="ni-dmg" placeholder="1d8"/></div>'
+    +'<div class="mfield"><label>Tipo de Dano</label><input id="ni-type2" placeholder="cortante"/></div>'
+    +'</div>'
+    +'<div class="mfield"><label>Bônus de Ataque</label><input id="ni-bonus" type="number" value="0"/></div>'
+    +'<div class="mfield"><label>Propriedades / Descrição</label><textarea id="ni-desc" placeholder="Leve, acuidade, +1 CA..."></textarea></div>'
+    +'</div>'
+    +'<div class="modal-row">'
+    +'<button class="mbtn secondary" onclick="closeDynModal()">Cancelar</button>'
+    +'<button class="mbtn primary" onclick="saveNewItem()">Salvar Item</button>'
+    +'</div>';
+  openDynModal(html);
+}
+
+function updateNewItemForm(){
+  var type=document.getElementById('ni-type')?.value;
+  var fields=document.getElementById('ni-fields');
+  if(!fields) return;
+  var nameField='<div class="mfield"><label>Nome</label><input id="ni-name" placeholder="Nome do item"/></div>';
+  var descField='<div class="mfield"><label>Descrição / Efeito</label><textarea id="ni-desc" placeholder="Descreva o item..."></textarea></div>';
+  if(type==='arma'){
+    fields.innerHTML=nameField
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">'
+      +'<div class="mfield"><label>Dado de Dano</label><input id="ni-dmg" placeholder="1d8"/></div>'
+      +'<div class="mfield"><label>Tipo</label><input id="ni-dmgtype" placeholder="cortante"/></div>'
+      +'</div>'
+      +'<div class="mfield"><label>Bônus de Ataque</label><input id="ni-bonus" type="number" value="0"/></div>'
+      +descField;
+  } else if(type==='armadura'){
+    fields.innerHTML=nameField
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">'
+      +'<div class="mfield"><label>CA Base</label><input id="ni-ca" type="number" value="12"/></div>'
+      +'<div class="mfield"><label>Bônus Des?</label><select id="ni-dex"><option value="1">Sim</option><option value="0">Não</option></select></div>'
+      +'</div>'
+      +descField;
+  } else if(type==='escudo'){
+    fields.innerHTML=nameField
+      +'<div class="mfield"><label>Bônus CA</label><input id="ni-ca" type="number" value="2"/></div>'
+      +descField;
+  } else { // magico
+    fields.innerHTML=nameField
+      +'<div class="mfield"><label>Raridade</label>'
+      +'<select id="ni-rarity"><option>comum</option><option>incomum</option><option>raro</option><option>muito raro</option><option>lendário</option></select></div>'
+      +'<div class="mfield"><label>Bônus de CA (se houver)</label><input id="ni-ca" type="number" value="0"/></div>'
+      +descField;
+  }
+}
+
+function saveNewItem(){
+  var type=document.getElementById('ni-type')?.value;
+  var name=(document.getElementById('ni-name')?.value||'').trim();
+  if(!name){alert('Dê um nome ao item!');return;}
+  var desc=document.getElementById('ni-desc')?.value||'';
+  if(type==='arma'){
+    var dmg=document.getElementById('ni-dmg')?.value||'1d6';
+    var dmgtype=document.getElementById('ni-dmgtype')?.value||'físico';
+    var bonus=parseInt(document.getElementById('ni-bonus')?.value)||0;
+    // Add to WEAPONS_DB and to inventory
+    var id='custom_'+Date.now();
+    WEAPONS_DB.push({id:id,name:name,dmg:dmg,type:dmgtype,price:'—',props:desc,stat:'FOR',cat:'marcial'});
+    addInvItem(name);
+    // Auto-equip if confirmed
+    if(confirm('Equipar "'+name+'" como arma principal?')){
+      equipped.arma=id;
+      attacks[0]={id:'a1',name:name,bonus:2+bonus,dmg:dmg,dmgBonus:bonus,type:dmgtype};
+      renderAttacks();renderEquip();
+    }
+  } else if(type==='armadura'){
+    var ca=parseInt(document.getElementById('ni-ca')?.value)||12;
+    var dex=document.getElementById('ni-dex')?.value==='1';
+    var id='custom_'+Date.now();
+    ARMOR_DB.push({id:id,name:name,ca:ca,dexBonus:dex,dexMax:dex?2:0,stealth:'—',price:'—',cat:'media'});
+    addInvItem(name);
+    if(confirm('Equipar "'+name+'" como armadura?')){equipped.armadura=id;updCA();renderEquip();}
+  } else if(type==='escudo'){
+    var ca=parseInt(document.getElementById('ni-ca')?.value)||2;
+    var id='custom_'+Date.now();
+    ARMOR_DB.push({id:id,name:name,ca:ca,shield:true,price:'—',cat:'escudo'});
+    addInvItem(name);
+    if(confirm('Equipar "'+name+'" como escudo?')){equipped.escudo=id;updCA();renderEquip();}
+  } else { // magico
+    var ca=parseInt(document.getElementById('ni-ca')?.value)||0;
+    var rarity=document.getElementById('ni-rarity')?.value||'comum';
+    var id='custom_'+Date.now();
+    MAGIC_ITEMS_DB.push({id:id,name:name,type:'outros',rarity:rarity,effect:desc,caBonus:ca});
+    magicItems.push({id:id,name:name,caBonus:ca,effect:desc});
+    renderMagicItems();updCA();
+  }
+  addInvItem(name);
+  closeDynModal();
+  showSaveToast('"'+name+'" adicionado!');
+}
 
 // ─── ATAQUES ───
 function renderAttacks(){
@@ -1866,12 +1993,15 @@ function openSpellManager(){
   });
 
   var rows=allSpellsFlat.map(function(sp){
-    var isKnown=spells.find(function(s){return s.name===sp.name;});
-    return'<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border)">'
-      +'<input type="checkbox" id="sp_'+sp.id+'" '+(isKnown?'checked':'')+' style="accent-color:var(--purple2)">'
-      +'<label for="sp_'+sp.id+'" style="flex:1;font-family:Crimson Text,serif;font-size:.85rem;color:var(--parch2);cursor:pointer">'+sp.name+'</label>'
-      +'<span style="font-family:Cinzel,serif;font-size:.56rem;color:var(--purple);text-transform:uppercase">'+sp.school+'</span>'
-      +'</div>';
+    var isKnown=!!spells.find(function(s){return s.name===sp.name;});
+    var lvlColor=sp.level===0?'var(--arc)':sp.level===1?'var(--arc2)':'#70a8e8';
+    return'<label style="display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px solid var(--border);cursor:pointer">'
+      +'<input type="checkbox" name="spell_pick" value="'+sp.id+'" '+(isKnown?'checked':'')+' '
+      +'style="width:16px;height:16px;accent-color:var(--arc2);flex-shrink:0;cursor:pointer">'
+      +'<span style="flex:1;font-family:Cormorant Garamond,serif;font-size:.9rem;color:var(--text2)">'+sp.name+'</span>'
+      +'<span style="font-family:Cinzel,serif;font-size:.5rem;color:'+lvlColor+';text-transform:uppercase">'
+      +(sp.level===0?'Truque':'Nv '+sp.level)+'</span>'
+      +'</label>';
   }).join('');
 
   // Calculate how many spells player can know
@@ -1897,18 +2027,49 @@ function openSpellManager(){
 }
 
 function longRest(){
-  // Recover all spell slots
+  // Full HP recovery
+  hpC=HP_MAX;
+  // Recover ALL spell slots
   if(spellSlots){
     Object.keys(spellSlots).forEach(function(lv){
       if(spellSlots[lv]) spellSlots[lv].used=0;
     });
   }
-  // Recover HP
-  hpC=HP_MAX;
-  updHP();
-  renderSpells();
-  addMsg('sys','🌙 '+(window.CHAR_NAME||'Personagem')+' descansou. PV e espaços de magia recuperados!');
+  // Recover ALL ability uses
+  abilities.forEach(function(a){if(a.max) a.remaining=a.max;});
+  renderAbilities();
+  // Recover Barbarian rages and similar long-rest resources
+  updHP();renderSpells();
+  var name=window.CHAR_NAME||'Personagem';
+  addMsg('sys','🌙 '+name+' completou um descanso longo. PV totalmente recuperados ('+HP_MAX+'), espaços de magia e habilidades restaurados!');
   showSaveToast('Descanso longo concluído!');
+  saveProgress('auto');
+}
+
+function shortRest(){
+  // Short rest: roll hit dice to recover HP
+  var cls=(window.CHAR_CLASS||'').split(' — ')[0];
+  var hpDie=CLASS_LEVEL_TABLE[cls]?CLASS_LEVEL_TABLE[cls].hpDie:8;
+  var conMod=modNum(ATTRS.CON);
+  var roll=Math.floor(Math.random()*hpDie)+1;
+  var gain=Math.max(1,roll+conMod);
+  hpC=Math.min(HP_MAX,hpC+gain);
+  // Recover short-rest abilities (e.g. Action Surge, Bardic Inspiration)
+  abilities.forEach(function(a){
+    if(a.use&&(a.use.toLowerCase().includes('curto')||a.use.toLowerCase().includes('short'))){
+      a.remaining=a.max;
+    }
+  });
+  // Warlocks recover spell slots on short rest
+  if(cls==='Bruxo'&&spellSlots){
+    Object.keys(spellSlots).forEach(function(lv){if(spellSlots[lv]) spellSlots[lv].used=0;});
+    renderSpells();
+  }
+  updHP();renderAbilities();
+  var name=window.CHAR_NAME||'Personagem';
+  addMsg('sys','☕ '+name+' descansou brevemente. Rolou 1d'+hpDie+' ('+roll+') +'+conMod+' CON = +'+gain+' PV. PV atual: '+hpC+'/'+HP_MAX+'.');
+  showSaveToast('Descanso curto: +'+gain+' PV');
+  saveProgress('auto');
 }
 
 function openSpellPanel(){
@@ -1965,7 +2126,8 @@ function openSpellPanel(){
       +'</div>'
       :'<p style="text-align:center;color:rgba(165,105,189,.4);font-style:italic;padding:1rem">Nenhuma magia preparada.<br>Use o botão ✚ Gerenciar para escolher.</p>')
     +'<div style="margin-top:.5rem;display:flex;gap:.4rem">'
-    +'<button class="mbtn secondary" style="flex:1" onclick="longRest()">🌙 Descanso Longo</button>'
+    +'<button class="mbtn secondary" style="flex:1" onclick="shortRest()">☕ Curto</button>'
+    +'<button class="mbtn secondary" style="flex:1" onclick="longRest()">🌙 Longo</button>'
     +'<button class="mbtn secondary" style="flex:1" onclick="openSpellManager();closeDynModal()">✚ Gerenciar</button>'
     +'<button class="mbtn secondary" onclick="closeDynModal()">Fechar</button>'
     +'</div>';
@@ -1973,17 +2135,16 @@ function openSpellPanel(){
 }
 
 function saveSpellSelection(){
-  if(!window._spellsFlat) return;
   spells=[];
-  window._spellsFlat.forEach(function(sp){
-    var cb=document.getElementById('sp_'+sp.id);
-    if(cb&&cb.checked){
-      spells.push({id:sp.id,name:sp.name,level:sp.level,school:sp.school,desc:'Use para narrar ao Mestre. CD = 8 + bônus prof + mod conjuração.'});
-    }
+  var checked=document.querySelectorAll('input[name="spell_pick"]:checked');
+  if(!window._spellsFlat) return;
+  checked.forEach(function(cb){
+    var sp=window._spellsFlat.find(function(x){return x.id===cb.value;});
+    if(sp) spells.push({id:sp.id,name:sp.name,level:sp.level,school:sp.school,desc:'CD = 8 + bônus prof + mod conjuração.'});
   });
   renderSpells();
   closeDynModal();
-  showSaveToast('Magias atualizadas!');
+  showSaveToast(spells.length+' magia(s) selecionada(s)!');
 }
 function openAbilityModal(){
   const html=`<div class="modal-title">🌟 Nova Habilidade</div>
@@ -2038,14 +2199,48 @@ function updCoinTotal(suffix){
 }
 
 // ─── INVENTÁRIO ───
+function normInv(){
+  // Normalize old string[] to {name,qty}[]
+  inventory=inventory.map(function(x){
+    if(typeof x==='string') return{name:x,qty:1};
+    return x;
+  });
+}
 function renderInv(){
-  const el=document.getElementById('inv-list-d');
+  normInv();
+  var el=document.getElementById('inv-list-d');
   if(!el)return;
-  el.innerHTML=inventory.length?inventory.map((item,i)=>`<div class="inv-item"><span class="inv-name">${item}</span><button class="inv-del" onclick="removeInv(${i})">✕</button></div>`).join(''):'<div style="font-size:.7rem;color:rgba(201,168,76,.3);font-style:italic;text-align:center;padding:.2rem 0">Vazio</div>';
+  if(!inventory.length){el.innerHTML='<div style="font-size:.7rem;color:var(--text3);font-style:italic;text-align:center;padding:.2rem 0">Vazio</div>';updateInvBadge();return;}
+  el.innerHTML=inventory.map(function(item,i){
+    return'<div class="inv-item">'
+      +'<span class="inv-name">'+item.name+'</span>'
+      +'<div style="display:flex;align-items:center;gap:3px;flex-shrink:0">'
+      +'<button style="background:rgba(200,168,74,.08);border:1px solid var(--border);border-radius:3px;color:var(--text3);width:18px;height:18px;font-size:.7rem;line-height:1;cursor:pointer" onclick="adjInvQty('+i+',-1)">−</button>'
+      +'<span style="font-family:Cinzel,serif;font-size:.65rem;color:var(--gold);min-width:18px;text-align:center">'+item.qty+'</span>'
+      +'<button style="background:rgba(200,168,74,.08);border:1px solid var(--border);border-radius:3px;color:var(--text3);width:18px;height:18px;font-size:.7rem;line-height:1;cursor:pointer" onclick="adjInvQty('+i+',1)">+</button>'
+      +'<button class="inv-del" onclick="removeInv('+i+')">✕</button>'
+      +'</div>'
+      +'</div>';
+  }).join('');
   updateInvBadge();
 }
+function adjInvQty(i,d){
+  normInv();
+  if(!inventory[i]) return;
+  inventory[i].qty=Math.max(1,inventory[i].qty+d);
+  renderInv();
+}
 function removeInv(i){inventory.splice(i,1);renderInv();}
-function addInvItem(n){const s=n.trim();if(!s)return;inventory.push(s);renderInv();}
+function addInvItem(n){
+  normInv();
+  var s=(typeof n==='string'?n:n.name||'').trim();
+  if(!s)return;
+  // Check if already exists, increment qty
+  var existing=inventory.find(function(x){return x.name.toLowerCase()===s.toLowerCase();});
+  if(existing){existing.qty=(existing.qty||1)+1;}
+  else{inventory.push({name:s,qty:1});}
+  renderInv();
+}
 function openInvModal(){
   const html=`<div class="modal-title">🎒 Adicionar ao Inventário</div>
     <div class="mfield"><label>Item</label><input id="inv-new" placeholder="Ex: Poção de Cura"/></div>
@@ -2084,10 +2279,30 @@ function updXP(){
   const cur=XP_TABLE[charLevel-1]||0;
   const next=XP_TABLE[charLevel]||XP_TABLE[XP_TABLE.length-1];
   const pct=Math.min(100,Math.round(((charXP-cur)/(next-cur))*100));
+  // Update sidebar elements
   ['level-badge','level-d','xp-level'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=charLevel;});
   const xpCur=document.getElementById('xp-cur');if(xpCur)xpCur.textContent=charXP;
   const xpNext=document.getElementById('xp-next');if(xpNext)xpNext.textContent=next;
-  const xpBar=document.getElementById('xp-bar');if(xpBar)xpBar.style.width=pct+'%';
+  // xp-bar removed from sidebar — header only
+  // Update header XP mini bar
+  var hxp=document.getElementById('hdr-xp');
+  if(hxp) hxp.style.display=window.CHAR_NAME?'flex':'none';
+  var hl=document.getElementById('hdr-level');if(hl)hl.textContent=charLevel;
+  var hc=document.getElementById('hdr-xp-cur');if(hc)hc.textContent=charXP;
+  var hb=document.getElementById('hdr-xp-bar');if(hb)hb.style.width=pct+'%';
+  var hub=document.getElementById('hdr-lvlup-btn');
+  if(hub){
+    var nextXP=XP_TABLE[charLevel];
+    hub.style.color=nextXP&&charXP>=nextXP?'var(--gold2)':'var(--text3)';
+    hub.style.display=nextXP&&charXP>=nextXP?'block':'none';
+  }
+  // Show level up notification in sidebar too
+  var lvlupBtn=document.querySelector('[onclick="openLevelUp()"]');
+  if(lvlupBtn&&XP_TABLE[charLevel]&&charXP>=XP_TABLE[charLevel]){
+    lvlupBtn.style.background='rgba(200,168,74,.25)';
+    lvlupBtn.style.color='var(--gold3)';
+    lvlupBtn.textContent='⬆ Upar!';
+  }
 }
 function addXP(amount){
   charXP+=amount;
@@ -2459,6 +2674,121 @@ function clearMap(){mapSrc=null;const parent=document.querySelector('.map-panel'
 // ─── MODAIS ───
 function openDynModal(html){document.getElementById('dyn-modal-content').innerHTML=html;document.getElementById('dyn-modal').style.display='flex';}
 function closeDynModal(){document.getElementById('dyn-modal').style.display='none';}
+
+function openCharSheet(){
+  var name=window.CHAR_NAME||'—';
+  var race=window.CHAR_RACE||'—';
+  var cls=window.CHAR_CLASS||'—';
+  var clsBase=cls.split(' — ')[0];
+  var sub=window.CHAR_SUBCLASS||'';
+  var region=window.CHAR_REGION||'—';
+  var sym=CLASS_SYMBOLS[clsBase]||{symbol:'⚔',color:'var(--gold)'};
+
+  // Attributes section
+  var attrHtml=Object.entries(ATTRS).map(function(e){
+    var a=e[0],v=e[1];
+    var m=modNum(v);
+    var ms=(m>=0?'+':'')+m;
+    return'<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;text-align:center;padding:.5rem .3rem">'
+      +'<div style="font-family:Cinzel,serif;font-size:.48rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px">'+a+'</div>'
+      +'<div style="font-family:Cinzel,serif;font-size:1.1rem;color:var(--gold2);font-weight:600">'+ms+'</div>'
+      +'<div style="font-family:Cinzel,serif;font-size:.6rem;color:var(--text3)">'+v+'</div>'
+      +'</div>';
+  }).join('');
+
+  // Saves section
+  var saveHtml=Object.entries(ATTRS).map(function(e){
+    var a=e[0],v=e[1];
+    var prof=saveProficiencies[a];
+    var bonus=modNum(v)+(prof?(charLevel<5?2:charLevel<9?3:charLevel<13?4:charLevel<17?5:6):0);
+    return'<div style="display:flex;align-items:center;gap:5px;padding:3px 5px;background:var(--surface);border:1px solid var(--border);border-radius:5px">'
+      +'<div style="width:10px;height:10px;border-radius:50%;background:'+(prof?'var(--gold2)':'transparent')+';border:1.5px solid '+(prof?'var(--gold2)':'var(--text3)')+';flex-shrink:0"></div>'
+      +'<span style="font-family:Cinzel,serif;font-size:.5rem;color:var(--text3);text-transform:uppercase;flex:1">'+a+'</span>'
+      +'<span style="font-family:Cinzel,serif;font-size:.72rem;color:var(--gold2)">'+(bonus>=0?'+':'')+bonus+'</span>'
+      +'</div>';
+  }).join('');
+
+  // Equipment
+  var eqHtml=['armadura','escudo','arma'].map(function(slot){
+    var eqId=equipped[slot];
+    var name2='—';
+    if(eqId){
+      var arm=ARMOR_DB.find(function(a){return a.id===eqId;});
+      var wpn=WEAPONS_DB.find(function(w){return w.id===eqId;});
+      var found=arm||wpn;
+      if(found) name2=found.name;
+    }
+    var labels={armadura:'Armadura',escudo:'Escudo',arma:'Arma'};
+    return'<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border)">'
+      +'<span style="font-family:Cinzel,serif;font-size:.6rem;color:var(--text3)">'+labels[slot]+'</span>'
+      +'<span style="font-size:.75rem;color:var(--text2)">'+name2+'</span>'
+      +'</div>';
+  }).join('');
+
+  // Achievements
+  var achHtml=CONQUISTAS.length
+    ?CONQUISTAS.map(function(c){return'<div class="ach">'+c+'</div>';}).join('')
+    :'<div style="font-size:.72rem;color:var(--text3);font-style:italic">Nenhuma conquista ainda</div>';
+
+  // Abilities
+  var abilHtml=abilities.length
+    ?abilities.map(function(a){
+      return'<div style="background:rgba(107,63,160,.06);border:1px solid rgba(107,63,160,.18);border-radius:6px;padding:5px 8px;margin-bottom:4px">'
+        +'<div style="font-family:Cinzel,serif;font-size:.67rem;color:var(--arc3)">'+a.name+(a.max?' ('+a.remaining+'/'+a.max+')':'')+'</div>'
+        +'<div style="font-size:.7rem;color:var(--text3)">'+a.desc+'</div>'
+        +'</div>';
+    }).join('')
+    :'<div style="font-size:.72rem;color:var(--text3);font-style:italic">Nenhuma habilidade</div>';
+
+  var profBonus=charLevel<5?2:charLevel<9?3:charLevel<13?4:charLevel<17?5:6;
+
+  var html='<div style="max-width:500px">'
+    // Header
+    +'<div style="display:flex;align-items:center;gap:.8rem;padding-bottom:.8rem;border-bottom:1px solid var(--border);margin-bottom:.9rem">'
+    +'<div style="width:52px;height:52px;border-radius:50%;background:radial-gradient(circle,rgba(200,168,74,.12),rgba(0,0,0,.5));border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0">'+sym.symbol+'</div>'
+    +'<div>'
+    +'<div style="font-family:Cinzel Decorative,serif;font-size:1.05rem;color:var(--gold2)">'+name+'</div>'
+    +'<div style="font-size:.8rem;color:var(--text3);margin-top:1px">'+race+' '+cls+(sub?' — '+sub:'')+'</div>'
+    +'<div style="font-size:.72rem;color:var(--text3);font-style:italic">'+region+' · Nível '+charLevel+'</div>'
+    +'</div>'
+    +'<div style="margin-left:auto;text-align:right">'
+    +'<div style="font-family:Cinzel,serif;font-size:.58rem;color:var(--text3)">PV</div>'
+    +'<div style="font-family:Cinzel,serif;font-size:.9rem;color:var(--blood3)">'+hpC+'/'+HP_MAX+'</div>'
+    +'<div style="font-family:Cinzel,serif;font-size:.58rem;color:var(--text3);margin-top:2px">CA</div>'
+    +'<div style="font-family:Cinzel,serif;font-size:.9rem;color:var(--ocean2)">'+charCA+'</div>'
+    +'</div>'
+    +'</div>'
+    // Stats
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.9rem">'
+    +'<div>'
+    +'<div style="font-family:Cinzel,serif;font-size:.54rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Atributos</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.25rem">'+attrHtml+'</div>'
+    +'</div>'
+    +'<div>'
+    +'<div style="font-family:Cinzel,serif;font-size:.54rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Resistências</div>'
+    +'<div style="display:flex;flex-direction:column;gap:.2rem">'+saveHtml+'</div>'
+    +'<div style="margin-top:.4rem;font-family:Cinzel,serif;font-size:.6rem;color:var(--text3)">Proficiência: +'+profBonus+'</div>'
+    +'</div>'
+    +'</div>'
+    // Equipment
+    +'<div style="margin-bottom:.9rem">'
+    +'<div style="font-family:Cinzel,serif;font-size:.54rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Equipamento</div>'
+    +eqHtml
+    +'</div>'
+    // Abilities
+    +'<div style="margin-bottom:.9rem">'
+    +'<div style="font-family:Cinzel,serif;font-size:.54rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Habilidades</div>'
+    +abilHtml
+    +'</div>'
+    // Achievements
+    +'<div>'
+    +'<div style="font-family:Cinzel,serif;font-size:.54rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Conquistas & Lore</div>'
+    +'<div style="max-height:160px;overflow-y:auto">'+achHtml+'</div>'
+    +'</div>'
+    +'</div>';
+
+  openDynModal('<div class="modal-title" style="text-align:left;padding-bottom:.6rem">📋 Ficha — '+name+'</div>'+html+'<div class="modal-row" style="margin-top:.8rem"><button class="mbtn secondary" onclick="closeDynModal()">Fechar</button></div>');
+}
 
 // ─── TOASTS ───
 let rollToastTimer;
