@@ -1419,7 +1419,8 @@ REGRAS OBRIGATÓRIAS:
 4. Linguagem clara e direta. Narre como um bom Mestre — sem palavras rebuscadas desnecessárias.
 5. AO FINAL: pergunte APENAS "O que você faz?" — não liste opções nem sugira ações ao jogador.
 6. Nunca resolva combates sem rolagens do jogador.
-7. Ouro: registre cada transação somente uma vez com gold_add ou gold_remove. Não duplique.`;
+7. OURO — REGRA CRÍTICA: SEMPRE que o personagem receber ou gastar moedas, inclua obrigatoriamente o JSON de atualização com gold_add (receber) ou gold_remove (gastar). Sem exceção. Registre UMA VEZ por transação. Ex: recebeu 10 PO → "gold_add":10. Comprou item por 5 PO → "gold_remove":5.
+8. Nunca mencione que vai incluir o JSON — apenas inclua silenciosamente ao final.`;
 
 function mod(v){const m=Math.floor((v-10)/2);return(m>=0?'+':'')+m;}
 function modNum(v){return Math.floor((v-10)/2);}
@@ -1427,7 +1428,7 @@ function prof(){return Math.ceil(1+charLevel/4);}
 
 // ─── INIT ───
 function init(){
-  renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderCoins();renderInv();renderQuests();renderSpells();
+  renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();renderSpells();
   document.getElementById('achiev-d').innerHTML=CONQUISTAS.map(c=>`<div class="ach">${c}</div>`).join('');
   setQA(['Explorar','Falar com NPC','Ver companheiros','Partir em jornada','Usar habilidade','⚔ Iniciar combate']);
   updHP();updCA();updXP();
@@ -2451,12 +2452,14 @@ function saveAbility(){
 // ─── MOEDAS ───
 const COIN_DATA=[{k:'PP',lbl:'Platina',val:10,color:'#dde4f0',bg:'rgba(210,220,240,.12)',border:'rgba(210,220,240,.4)'},{k:'PO',lbl:'Ouro',val:1,color:'#f0c040',bg:'rgba(240,192,64,.12)',border:'rgba(240,192,64,.45)'},{k:'PE',lbl:'Eletr.',val:.5,color:'#6ecfa0',bg:'rgba(110,207,160,.1)',border:'rgba(110,207,160,.4)'},{k:'PA',lbl:'Prata',val:.1,color:'#b8c8d8',bg:'rgba(180,200,220,.1)',border:'rgba(180,200,220,.4)'},{k:'PC',lbl:'Cobre',val:.01,color:'#d08850',bg:'rgba(200,136,80,.1)',border:'rgba(200,136,80,.4)'}];
 function autoConvertCoins(){
-  if(coins.PC>=10){var c=Math.floor(coins.PC/10);coins.PC-=c*10;coins.PA+=c;}
-  if(coins.PA>=10){var c=Math.floor(coins.PA/10);coins.PA-=c*10;coins.PP+=c;}
-  if(coins.PP>=10){var c=Math.floor(coins.PP/10);coins.PP-=c*10;coins.PO+=c;}
-  if(coins.PE>=2){var c=Math.floor(coins.PE/2);coins.PE-=c*2;coins.PO+=c;}
+  // D&D 5e: 10 PC = 1 PA, 10 PA = 1 PO, 10 PO = 1 PP, 2 PE = 1 PO
+  // (não converter automaticamente — manter valores como estão para fidelidade)
 }
 
+function renderAllCoins(){
+  renderCoins('d');
+  renderCoins('m');
+}
 function renderCoins(suffix='d'){
   const el=document.getElementById('coins-'+suffix);
   const tel=document.getElementById('coin-total-'+suffix);
@@ -2473,8 +2476,7 @@ function renderCoins(suffix='d'){
 }
 function updCoin(k,v,suffix){
   coins[k]=Math.max(0,typeof v==='number'?Math.round(v):(parseInt(v)||0));
-  renderCoins(suffix||'d');
-  if(suffix!=='m') renderCoins('m');
+  renderAllCoins();
 }
 function updCoinTotal(suffix){
   const el=document.getElementById('coin-total-'+suffix);
@@ -3400,11 +3402,19 @@ function parseAndApplyUpdates(raw){
           if(u.gold_add) coins.PO+=parseInt(u.gold_add)||0;
           if(u.gold_remove) coins.PO=Math.max(0,coins.PO-(parseInt(u.gold_remove)||0));
         }
-        autoConvertCoins();
-        renderCoins();
-        renderCoins('m');
-        if(u.gold_add) msgs.push('💰 +'+u.gold_add+' po');
-        if(u.gold_remove) msgs.push('💸 −'+u.gold_remove+' po');
+        renderAllCoins();
+        var poAfter=coins.PO;
+        if(u.gold_add){
+          var amt=parseInt(u.gold_add)||0;
+          msgs.push('💰 +'+amt+' PO → Total: '+poAfter+' PO');
+          showRollToast('💰 +'+amt+' ouro recebido!');
+        }
+        if(u.gold_remove){
+          var amt2=parseInt(u.gold_remove)||0;
+          msgs.push('💸 −'+amt2+' PO → Restam: '+poAfter+' PO');
+          showRollToast('💸 −'+amt2+' ouro gasto!');
+        }
+        saveProgress('auto');
       }
     }
     // Magic item received
@@ -3571,8 +3581,8 @@ function loadProgress(slot='auto'){
   if(s.campaignTitle) window.CAMPAIGN_TITLE=s.campaignTitle;
   if(s.systemOverride) window.SYSTEM_OVERRIDE=s.systemOverride;
   // Render everything
-  updHP();updCA();updXP();renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderCoins();renderInv();renderQuests();
-  renderSpells();renderMagicItems();renderDiary();
+  updHP();updCA();updXP();renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();
+  renderSpells();renderMagicItems();renderDiary();renderAllCoins();
   if(s.notas){const el=document.getElementById('notes-d');if(el)el.value=s.notas;}
   if(s.chat){const el=document.getElementById('chat');if(el){el.innerHTML=s.chat;el.scrollTop=99999;}}
   if(mapSrc){const img=document.getElementById('map-img');if(img)img.src=mapSrc;}
@@ -3637,7 +3647,7 @@ function importSave(event){
       charXP=state.charXP||300;
       saveProficiencies=state.saveProficiencies||{FOR:true,CON:true,DES:false,INT:false,SAB:false,CAR:false};
       mapSrc=state.mapSrc||null;
-      updHP();updCA();updXP();renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderCoins();renderInv();renderQuests();
+      updHP();updCA();updXP();renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();
       if(state.notas){var el=document.getElementById('notes-d');if(el)el.value=state.notas;}
       if(state.chat){var el=document.getElementById('chat');if(el){el.innerHTML=state.chat;el.scrollTop=99999;}}
       if(mapSrc){var img=document.getElementById('map-img');if(img)img.src=mapSrc;}
@@ -4210,7 +4220,7 @@ function importSaveFromMenu(event){
       charXP=state.charXP||0;
       saveProficiencies=state.saveProficiencies||{FOR:false,CON:false,DES:false,INT:false,SAB:false,CAR:false};
       mapSrc=state.mapSrc||null;
-      updHP();updCA();updXP();renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderCoins();renderInv();renderQuests();
+      updHP();updCA();updXP();renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();
       if(state.notas){var nd=document.getElementById('notes-d');if(nd)nd.value=state.notas;}
       if(state.chat){var cd=document.getElementById('chat');if(cd){cd.innerHTML=state.chat;cd.scrollTop=99999;}}
       saveProgress('auto');
@@ -4430,7 +4440,7 @@ async function startNewGame(){
     +'- NPCs com nomes únicos. Nunca repita nomes já usados.\n\n'
     +'SISTEMA DE ATUALIZAÇÃO — ao final se houver mudanças inclua (JSON puro, sem markdown):\n'
     +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa"}],"quest_update":[{"id":"q1","status":"concluida"}],"xp_gain":150,"gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena."}}\n'
-    +'Use gold_add quando personagem recebe ouro/pagamento. gold_remove quando gasta. magic_item_add quando recebe item mágico. diary_entry a cada cena importante (máx 2 linhas). Só inclua campos que mudaram.';
+    +'OBRIGATÓRIO: Toda vez que o personagem receber moedas use gold_add. Toda vez que gastar use gold_remove. NUNCA pule essa atualização quando houver troca de moedas. Inclua também magic_item_add ao receber item mágico e diary_entry a cada cena importante.';
 
   // Override SYSTEM for this session
   window.SYSTEM_OVERRIDE=dynSystem;
@@ -4444,7 +4454,7 @@ async function startNewGame(){
     hidStartScreen();
     init();
     magicItems=[];diary=[];
-    updHP();updCA();updXP();renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderCoins();renderInv();renderQuests();renderSpells();renderMagicItems();renderDiary();
+    updHP();updCA();updXP();renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();renderSpells();renderMagicItems();renderDiary();renderAllCoins();
     // Update header with character info
     updateHeader(name,race,cls+(subclass?' — '+subclass:''),1,region.name);
 
