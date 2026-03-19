@@ -893,7 +893,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   .hdr{padding:.4rem .75rem;gap:.35rem}
   .hdr-left{gap:.35rem;min-width:0;flex:1}
   .hdr-title{font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
-  .hdr-sub{display:none}
+  .hdr-title-block{display:none}
   #hdr-xp{display:none!important}
   #hdr-icon{width:28px;height:28px;font-size:.9rem;flex-shrink:0}
   /* hide non-essential right-side items */
@@ -1221,8 +1221,8 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   <!-- HDR -->
   <div class="hdr">
     <div class="hdr-left">
-      <div class="hdr-icon" id="hdr-icon" style="font-size:1.1rem">⚔</div>
-      <div>
+      <div class="hdr-icon" id="hdr-icon" style="font-size:1.1rem;cursor:pointer" onclick="openCampaignInfo()" title="Ver campanha">⚔</div>
+      <div class="hdr-title-block">
         <div class="hdr-title" id="campaign-title">Taverna das Crônicas</div>
         <div class="hdr-sub" id="campaign-sub">Narrador IA · D&D 5e · Forgotten Realms</div>
       </div>
@@ -1485,13 +1485,17 @@ const SPELL_SLOTS_BY_CLASS={
 };
 let combatActive=false, combatants=[], currentTurn=0, roundNum=1;
 var CONQUISTAS=[];
+// XP_TABLE[i] = XP total necessário para alcançar nível i+1
+// Nível 1=0, Nível 2=300, Nível 3=900... (LdJ p.15 oficial)
 const XP_TABLE=[0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,120000,140000,165000,195000,225000,265000,305000,355000];
+// XP de recompensa por CR (Livro do Mestre p.275) — usado para sugerir XP de encontros
+const XP_BY_CR={0:10,'1/8':25,'1/4':50,'1/2':100,1:200,2:450,3:700,4:1100,5:1800,6:2300,7:2900,8:3900,9:5000,10:5900,11:7200,12:8400,13:10000,14:11500,15:13000,16:15000,17:18000,18:20000,19:22000,20:25000};
 
 // SYSTEM PROMPT
 const SYSTEM=`Você é o Mestre de D&D 5e narrando em português do Brasil.
 REGRAS OBRIGATÓRIAS:
 1. NUNCA mencione dados internos como [PV], [CA], [ESTADO_OCULTO] no texto narrativo.
-2. NPCs com nomes únicos e variados. Nunca repita nomes já usados na sessão atual.
+2. NPCs SEMPRE com nomes únicos e DIFERENTES entre si. PROIBIDO repetir nomes: se já usou 'Aldric', não use novamente. Prefira nomes culturalmente coerentes com o local da cena (ex: nomes élfico em vilas élficas). Guarde internamente os nomes já usados e evite-os.
 3. Rolagens: SEMPRE inclua o modificador. Ex: "Role d20+3 de Percepção". NUNCA apenas "role d20".
 4. Linguagem clara e direta. Narre como um bom Mestre — sem palavras rebuscadas desnecessárias.
 5. AO FINAL: pergunte APENAS "O que você faz?" — não liste opções nem sugira ações ao jogador.
@@ -2633,7 +2637,29 @@ function renderQuests(){
   updateQuestBadge();
 }
 function addQuest(q){if(quests.find(x=>x.id===q.id))return;quests.push(q);renderQuests();showQuestNotif('📜 Nova Missão',q.titulo,q.desc);}
-function updQuest(id,status){const q=quests.find(x=>x.id===id);if(q){q.status=status;renderQuests();if(status==='concluida')showQuestNotif('✓ Missão Concluída',q.titulo,'');}}
+function updQuest(id,status){
+  var q=quests.find(function(x){return x.id===id;});
+  if(!q) return;
+  var prev=q.status;
+  q.status=status;
+  renderQuests();
+  if(status==='concluida'&&prev!=='concluida'){
+    // XP reward based on quest difficulty (stored in q.xp, default by level)
+    var xpReward=q.xp||Math.floor([75,150,275,500,750,1000,1500,2000,2500,3000][Math.min(charLevel-1,9)]);
+    addXP(xpReward);
+    showQuestNotif('✓ Missão Concluída',q.titulo,'+'+xpReward+' XP ganhos!');
+    addDiaryEntry('Missão concluída: '+q.titulo+'. Recompensa: '+xpReward+' XP.');
+    CONQUISTAS.push('✓ Missão concluída: '+q.titulo);
+    var achEl=document.getElementById('achiev-d');
+    if(achEl) achEl.innerHTML=CONQUISTAS.map(function(c){return'<div class="ach">'+c+'</div>';}).join('');
+    showRollToast('✓ +'+xpReward+' XP — Missão concluída!');
+    saveProgress('auto');
+  }
+  if(status==='falhou'&&prev!=='falhou'){
+    addDiaryEntry('Missão falhou: '+q.titulo+'.');
+    showQuestNotif('✗ Missão Falhou',q.titulo,'');
+  }
+}
 function delQuest(id){quests=quests.filter(x=>x.id!==id);renderQuests();}
 function updateQuestBadge(){const active=quests.filter(q=>q.status==='ativa').length;const b=document.getElementById('quest-badge');if(b){b.textContent=active;b.className='badge'+(active?' show':'');}}
 function showQuestNotif(tag,titulo,desc){const el=document.getElementById('quest-notif');el.innerHTML=`<div class="qn-tag">${tag}</div><div class="qn-title">${titulo}</div>${desc?`<div class="qn-desc">${desc}</div>`:''}`;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>{el.style.display='none';},4000);}
@@ -2669,10 +2695,13 @@ function updXP(){
   }
 }
 function addXP(amount){
-  charXP+=amount;
-  const next=XP_TABLE[charLevel];
-  if(next&&charXP>=next) showRollToast('🌟 Nível disponível! Use o botão Upar!');
+  charXP+=Math.round(amount);
   updXP();
+  var next=XP_TABLE[charLevel];
+  if(next&&charXP>=next){
+    showRollToast('🌟 Nível disponível! Toque em 📈 para upar!');
+    addMsg('sys','🌟 '+( window.CHAR_NAME||'Personagem')+' atingiu XP suficiente para o nível '+(charLevel+1)+'! Toque em 📈 Upar para avançar.');
+  }
 }
 function openLevelUp(){
   var nextLvl=charLevel+1;
@@ -2862,6 +2891,72 @@ function openLevelUpSpellNotice(cls, lvl, features){
     +'<button class="mbtn primary" onclick="closeDynModal();setTimeout(openSpellManager,100)">✚ Gerenciar Magias</button>'
     +'</div>';
   openDynModal(html);
+}
+
+function openCampaignInfo(){
+  var name=window.CHAR_NAME||'—';
+  var race=window.CHAR_RACE||'—';
+  var cls=window.CHAR_CLASS||'—';
+  var region=window.CHAR_REGION||'Forgotten Realms';
+  var title=window.CAMPAIGN_TITLE||'Taverna das Crônicas';
+  var sub=document.getElementById('campaign-sub')?.textContent||'';
+  var clsBase=cls.split(' — ')[0];
+  var sym=CLASS_SYMBOLS[clsBase]||{symbol:'⚔',color:'var(--gold)',bg:'rgba(200,168,74,.15)'};
+
+  // XP info
+  var xpCur=charXP;
+  var xpNext=XP_TABLE[charLevel]||'—';
+  var xpPrev=XP_TABLE[charLevel-1]||0;
+  var xpPct=xpNext!=='—'?Math.min(100,Math.round(((xpCur-xpPrev)/(xpNext-xpPrev))*100)):100;
+
+  // Quest summary
+  var ativas=quests.filter(function(q){return q.status==='ativa';});
+  var concluidas=quests.filter(function(q){return q.status==='concluida';});
+  var questHtml=ativas.length
+    ?ativas.map(function(q){
+      return'<div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px">'
+        +'<span style="color:var(--gold);font-size:.7rem;flex-shrink:0">●</span>'
+        +'<span style="font-size:.78rem;color:var(--text2)">'+q.titulo+'</span>'
+        +'</div>';
+    }).join('')
+    :'<div style="font-size:.74rem;color:var(--text3);font-style:italic">Nenhuma missão ativa</div>';
+
+  var html='<div style="text-align:center;margin-bottom:.9rem">'
+    +'<div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,'+sym.bg+',rgba(0,0,0,.6));border:1px solid rgba(200,168,74,.3);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto .6rem">'+sym.symbol+'</div>'
+    +'<div style="font-family:Cinzel Decorative,serif;font-size:.95rem;color:var(--gold2);margin-bottom:.2rem">'+title+'</div>'
+    +'<div style="font-size:.72rem;color:var(--text3);font-style:italic">'+sub+'</div>'
+    +'</div>'
+    +'<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.7rem;margin-bottom:.7rem">'
+    +'<div style="display:flex;align-items:center;gap:.6rem">'
+    +'<div style="flex:1">'
+    +'<div style="font-family:Cinzel,serif;font-size:.68rem;color:var(--gold2)">'+name+'</div>'
+    +'<div style="font-size:.7rem;color:var(--text3);margin-top:1px">'+race+' '+cls+'</div>'
+    +'<div style="font-size:.68rem;color:var(--text3);font-style:italic">'+region+'</div>'
+    +'</div>'
+    +'<div style="text-align:right">'
+    +'<div style="font-family:Cinzel,serif;font-size:.55rem;color:var(--text3);text-transform:uppercase">Nível</div>'
+    +'<div style="font-family:Cinzel Decorative,serif;font-size:1.5rem;color:var(--gold2);line-height:1">'+charLevel+'</div>'
+    +'</div>'
+    +'</div>'
+    +'<div style="margin-top:.6rem">'
+    +'<div style="display:flex;justify-content:space-between;font-family:Cinzel,serif;font-size:.54rem;color:var(--text3);margin-bottom:3px">'
+    +'<span>XP: '+xpCur+'</span><span>Próximo: '+(xpNext!=='—'?xpNext:'Máx')+'</span>'
+    +'</div>'
+    +'<div style="background:rgba(200,168,74,.12);border-radius:4px;height:6px;overflow:hidden">'
+    +'<div style="background:linear-gradient(90deg,var(--blood),var(--gold2));height:100%;border-radius:4px;width:'+xpPct+'%;transition:width .5s"></div>'
+    +'</div>'
+    +'</div>'
+    +'</div>'
+    +'<div style="margin-bottom:.7rem">'
+    +'<div style="font-family:Cinzel,serif;font-size:.56rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">📜 Missões Ativas ('+ativas.length+')</div>'
+    +questHtml
+    +(concluidas.length?'<div style="font-size:.66rem;color:var(--text3);margin-top:.3rem;font-style:italic">'+concluidas.length+' missão(ões) concluída(s)</div>':'')
+    +'</div>'
+    +'<div style="display:flex;gap:.4rem">'
+    +'<button class="mbtn secondary" onclick="closeDynModal()" style="flex:1">Fechar</button>'
+    +'<button class="mbtn primary" onclick="openLevelUp();closeDynModal()" style="flex:1">📈 Upar</button>'
+    +'</div>';
+  openDynModal('<div class="modal-title">📖 Campanha</div>'+html);
 }
 
 function openCombat(){
@@ -3456,13 +3551,8 @@ function parseAndApplyUpdates(raw){
     if(u.inv_remove?.length){u.inv_remove.forEach(n=>{const i=inventory.findIndex(x=>x.toLowerCase().includes(n.toLowerCase()));if(i>=0)inventory.splice(i,1);});renderInv();msgs.push('🎒 −'+u.inv_remove.join(', '));}
     if(u.quest_add?.length) u.quest_add.forEach(q=>addQuest(q));
     if(u.quest_update?.length) u.quest_update.forEach(function(qu){
-      if(qu.status==='concluida'){
-        var q=quests.find(function(x){return x.id===qu.id;});
-        if(q){
-          CONQUISTAS.push('✓ Missão concluída: '+q.titulo);
-          document.getElementById('achiev-d').innerHTML=CONQUISTAS.map(function(c){return '<div class="ach">'+c+'</div>';}).join('');
-        }
-      }
+      // Store XP reward from AI response if provided
+      if(qu.xp_reward){var q=quests.find(function(x){return x.id===qu.id;});if(q)q.xp=qu.xp_reward;}
       updQuest(qu.id,qu.status);
     });
     if(u.xp_gain) addXP(u.xp_gain);
@@ -4516,9 +4606,9 @@ async function startNewGame(){
     +'- Nunca resolva combates sem rolls do jogador.\n'
     +'- AO FINAL: pergunte somente "O que você faz?" — NÃO liste opções nem sugira ações.\n'
     +'- Use nomes e locais CANÔNICOS dos Forgotten Realms.\n'
-    +'- NPCs com nomes únicos. Nunca repita nomes já usados.\n\n'
+    +'- NPCs SEMPRE com nomes únicos e culturalmente coerentes. NUNCA repita um nome já usado nesta sessão.\n\n'
     +'SISTEMA DE ATUALIZAÇÃO — ao final se houver mudanças inclua (JSON puro, sem markdown):\n'
-    +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa"}],"quest_update":[{"id":"q1","status":"concluida"}],"xp_gain":150,"gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena."}}\n'
+    +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300}],"xp_gain":150,"gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena."}}\n'
     +'OBRIGATÓRIO: Toda vez que o personagem receber moedas use gold_add. Toda vez que gastar use gold_remove. NUNCA pule essa atualização quando houver troca de moedas. Inclua também magic_item_add ao receber item mágico e diary_entry a cada cena importante.';
 
   // Override SYSTEM for this session
