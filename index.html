@@ -1492,16 +1492,8 @@ const XP_TABLE=[0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,1
 const XP_BY_CR={0:10,'1/8':25,'1/4':50,'1/2':100,1:200,2:450,3:700,4:1100,5:1800,6:2300,7:2900,8:3900,9:5000,10:5900,11:7200,12:8400,13:10000,14:11500,15:13000,16:15000,17:18000,18:20000,19:22000,20:25000};
 
 // SYSTEM PROMPT
-const SYSTEM=`Você é o Mestre de D&D 5e narrando em português do Brasil.
-REGRAS OBRIGATÓRIAS:
-1. NUNCA mencione dados internos como [PV], [CA], [ESTADO_OCULTO] no texto narrativo.
-2. NPCs SEMPRE com nomes únicos e DIFERENTES entre si. PROIBIDO repetir nomes: se já usou 'Aldric', não use novamente. Prefira nomes culturalmente coerentes com o local da cena (ex: nomes élfico em vilas élficas). Guarde internamente os nomes já usados e evite-os.
-3. Rolagens: SEMPRE inclua o modificador. Ex: "Role d20+3 de Percepção". NUNCA apenas "role d20".
-4. Linguagem clara e direta. Narre como um bom Mestre — sem palavras rebuscadas desnecessárias.
-5. AO FINAL: pergunte APENAS "O que você faz?" — não liste opções nem sugira ações ao jogador.
-6. Nunca resolva combates sem rolagens do jogador.
-7. OURO — REGRA CRÍTICA: SEMPRE que o personagem receber ou gastar moedas, inclua obrigatoriamente o JSON de atualização com gold_add (receber) ou gold_remove (gastar). Sem exceção. Registre UMA VEZ por transação. Ex: recebeu 10 PO → "gold_add":10. Comprou item por 5 PO → "gold_remove":5.
-8. Nunca mencione que vai incluir o JSON — apenas inclua silenciosamente ao final.`;
+const SYSTEM='Você é o Mestre de D&D 5e narrando em português do Brasil.\n'+'REGRAS OBRIGATÓRIAS:\n'+'1. NUNCA mencione dados internos como [PV], [CA], [ESTADO_OCULTO] no texto narrativo.\n'+'2. NPCs SEMPRE com nomes únicos e DIFERENTES. PROIBIDO repetir nomes. Nomes culturalmente coerentes com o local.\n'+'3. Rolagens SEMPRE com modificador. Ex: Role d20+3 de Percepção. Role 2d20+X (maior) para VANTAGEM, (menor) para DESVANTAGEM. Não explique ao jogador o motivo.\n'+'4. Linguagem clara e direta. Sem palavras rebuscadas.\n'+'5. AO FINAL: pergunte APENAS \"O que você faz?\" — não liste opções.\n'+'6. Nunca resolva combates sem rolagens do jogador.\n'+'7. OURO: gold_add (receber) ou gold_remove (gastar) no JSON. O contexto mostra [Tesouro:X PO] — nunca deixe gastar mais do que possui.\n'+'8. SALDO INSUFICIENTE: [SISTEMA: moedas insuficientes] → NPC percebe e reage naturalmente.\n'+'9. MISSÕES OBRIGATÓRIO: quest_add ao iniciar qualquer missão/objetivo com id, titulo, desc, xp. quest_update ao concluir/falhar com xp_reward.\n'+'10. XP NARRATIVO: xp_gain+xp_source — Combate:50-500, Diplomacia:50-200, Descoberta:25-150, Desafio:25-100. Nunca para ações triviais.\n'+'11. Nunca mencione o JSON — inclua silenciosamente ao final.';
+
 
 function mod(v){const m=Math.floor((v-10)/2);return(m>=0?'+':'')+m;}
 function modNum(v){return Math.floor((v-10)/2);}
@@ -2533,8 +2525,50 @@ function saveAbility(){
 // ─── MOEDAS ───
 const COIN_DATA=[{k:'PP',lbl:'Platina',val:10,color:'#dde4f0',bg:'rgba(210,220,240,.12)',border:'rgba(210,220,240,.4)'},{k:'PO',lbl:'Ouro',val:1,color:'#f0c040',bg:'rgba(240,192,64,.12)',border:'rgba(240,192,64,.45)'},{k:'PE',lbl:'Eletr.',val:.5,color:'#6ecfa0',bg:'rgba(110,207,160,.1)',border:'rgba(110,207,160,.4)'},{k:'PA',lbl:'Prata',val:.1,color:'#b8c8d8',bg:'rgba(180,200,220,.1)',border:'rgba(180,200,220,.4)'},{k:'PC',lbl:'Cobre',val:.01,color:'#d08850',bg:'rgba(200,136,80,.1)',border:'rgba(200,136,80,.4)'}];
 function autoConvertCoins(){
-  // D&D 5e: 10 PC = 1 PA, 10 PA = 1 PO, 10 PO = 1 PP, 2 PE = 1 PO
-  // (não converter automaticamente — manter valores como estão para fidelidade)
+  // Não converter automaticamente — manter valores nominais para fidelidade
+}
+
+// Retorna o patrimônio total do jogador em PO equivalente
+function getTotalPO(){
+  return COIN_DATA.reduce(function(s,c){return s+coins[c.k]*c.val;},0);
+}
+
+// Tenta gastar 'amtPO' em PO (equivalente). 
+// Desconta na ordem: PO → PP → PE → PA → PC.
+// Retorna {ok:true} se conseguiu, ou {ok:false, total:X} se insuficiente.
+function spendPO(amtPO){
+  var total=getTotalPO();
+  if(amtPO>total+0.001){
+    return{ok:false,total:total,falta:Math.round((amtPO-total)*100)/100};
+  }
+  var rem=amtPO;
+  // Descontar de PO primeiro
+  var fromPO=Math.min(coins.PO,Math.floor(rem));
+  coins.PO-=fromPO; rem-=fromPO;
+  // PP (1 PP = 10 PO)
+  if(rem>0.001){
+    var fromPP=Math.min(coins.PP,Math.ceil(rem/10));
+    coins.PP-=fromPP; rem-=fromPP*10; coins.PO+=Math.round(-rem<0?0:-rem);
+    rem=Math.max(0,rem);
+  }
+  // PE (1 PE = 0.5 PO)
+  if(rem>0.001){
+    var fromPE=Math.min(coins.PE,Math.ceil(rem/0.5));
+    coins.PE-=fromPE; rem-=fromPE*0.5; rem=Math.max(0,rem);
+  }
+  // PA (1 PA = 0.1 PO)
+  if(rem>0.01){
+    var fromPA=Math.min(coins.PA,Math.ceil(rem/0.1));
+    coins.PA-=fromPA; rem-=fromPA*0.1; rem=Math.max(0,rem);
+  }
+  // PC (1 PC = 0.01 PO)
+  if(rem>0.001){
+    var fromPC=Math.min(coins.PC,Math.ceil(rem/0.01));
+    coins.PC-=fromPC;
+  }
+  // Clamp all to 0
+  Object.keys(coins).forEach(function(k){coins[k]=Math.max(0,Math.round(coins[k]*100)/100);});
+  return{ok:true,total:getTotalPO()};
 }
 
 function renderAllCoins(){
@@ -2636,7 +2670,16 @@ function renderQuests(){
     </div>`).join(''):'<div class="no-quests">Nenhuma missão ativa</div>';
   updateQuestBadge();
 }
-function addQuest(q){if(quests.find(x=>x.id===q.id))return;quests.push(q);renderQuests();showQuestNotif('📜 Nova Missão',q.titulo,q.desc);}
+function addQuest(q){
+  if(quests.find(function(x){return x.id===q.id;})) return;
+  quests.push(q);
+  renderQuests();
+  // Diary entry automático ao iniciar missão
+  addDiaryEntry('📜 Nova missão iniciada: '+q.titulo+(q.desc?' — '+q.desc:'')+'.');
+  showQuestNotif('📜 Nova Missão',q.titulo,q.desc);
+  saveProgress('auto');
+  if(typeof mobActive!=='undefined'&&mobActive==='quest'){setTimeout(function(){mobTab('quest');},100);}
+}
 function updQuest(id,status){
   var q=quests.find(function(x){return x.id===id;});
   if(!q) return;
@@ -2646,7 +2689,7 @@ function updQuest(id,status){
   if(status==='concluida'&&prev!=='concluida'){
     // XP reward based on quest difficulty (stored in q.xp, default by level)
     var xpReward=q.xp||Math.floor([75,150,275,500,750,1000,1500,2000,2500,3000][Math.min(charLevel-1,9)]);
-    addXP(xpReward);
+    addXP(xpReward,'Missão');
     showQuestNotif('✓ Missão Concluída',q.titulo,'+'+xpReward+' XP ganhos!');
     addDiaryEntry('Missão concluída: '+q.titulo+'. Recompensa: '+xpReward+' XP.');
     CONQUISTAS.push('✓ Missão concluída: '+q.titulo);
@@ -2658,6 +2701,10 @@ function updQuest(id,status){
   if(status==='falhou'&&prev!=='falhou'){
     addDiaryEntry('Missão falhou: '+q.titulo+'.');
     showQuestNotif('✗ Missão Falhou',q.titulo,'');
+  }
+  // Refresh mobile quest tab if it's open
+  if(typeof mobActive!=='undefined'&&mobActive==='quest'){
+    setTimeout(function(){mobTab('quest');},100);
   }
 }
 function delQuest(id){quests=quests.filter(x=>x.id!==id);renderQuests();}
@@ -2694,14 +2741,54 @@ function updXP(){
     lvlupBtn.textContent='⬆ Upar!';
   }
 }
-function addXP(amount){
+function addXP(amount, source){
+  var prev=charXP;
   charXP+=Math.round(amount);
   updXP();
   var next=XP_TABLE[charLevel];
+  var prevXP=XP_TABLE[charLevel-1]||0;
+  var range=next-prevXP;
+  var prevPct=range>0?Math.round(((prev-prevXP)/range)*100):100;
+  var newPct=range>0?Math.min(100,Math.round(((charXP-prevXP)/range)*100)):100;
+  var gained=Math.round(amount);
+  // Show XP gain toast with source
+  var srcLabel=source?(' ('+source+')'):'';
+  showXPToast(gained, prevPct, newPct, srcLabel);
+  // Level up check
   if(next&&charXP>=next){
-    showRollToast('🌟 Nível disponível! Toque em 📈 para upar!');
-    addMsg('sys','🌟 '+( window.CHAR_NAME||'Personagem')+' atingiu XP suficiente para o nível '+(charLevel+1)+'! Toque em 📈 Upar para avançar.');
+    setTimeout(function(){
+      showRollToast('🌟 NÍVEL DISPONÍVEL! Toque em 📈 para upar!');
+      addMsg('sys','⬆ '+(window.CHAR_NAME||'Personagem')+' tem XP suficiente para o Nível '+(charLevel+1)+'! Toque em 📈 Upar para avançar e receber novas habilidades.');
+    },1200);
   }
+  saveProgress('auto');
+}
+
+function showXPToast(gained, prevPct, newPct, source){
+  var t=document.getElementById('xp-toast');
+  if(!t){
+    t=document.createElement('div');
+    t.id='xp-toast';
+    t.style.cssText='position:fixed;bottom:calc(var(--nav-h,68px)+12px);left:50%;transform:translateX(-50%);'
+      +'background:linear-gradient(135deg,rgba(22,16,9,.97),rgba(35,26,12,.97));'
+      +'border:1px solid rgba(200,168,74,.5);border-radius:12px;padding:.6rem 1rem;'
+      +'z-index:2000;min-width:200px;max-width:280px;text-align:center;'
+      +'box-shadow:0 4px 20px rgba(0,0,0,.6),0 0 12px rgba(200,168,74,.2);'
+      +'opacity:0;transition:opacity .3s;pointer-events:none;';
+    document.body.appendChild(t);
+  }
+  t.innerHTML='<div style="font-family:Cinzel,serif;font-size:.54rem;color:rgba(200,168,74,.7);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Experiência'+(source||'')+'</div>'
+    +'<div style="font-family:Cinzel Decorative,serif;font-size:1.1rem;color:var(--gold2);margin-bottom:.4rem">+'+gained+' XP</div>'
+    +'<div style="background:rgba(200,168,74,.1);border:1px solid rgba(200,168,74,.2);border-radius:6px;height:8px;overflow:hidden;position:relative">'
+    +'<div id="xp-toast-bar-prev" style="position:absolute;top:0;left:0;height:100%;background:rgba(200,168,74,.25);border-radius:6px;width:'+prevPct+'%;transition:none"></div>'
+    +'<div id="xp-toast-bar" style="position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,var(--blood),var(--gold2));border-radius:6px;width:'+prevPct+'%;transition:width .8s cubic-bezier(.4,0,.2,1);box-shadow:0 0 6px rgba(200,168,74,.4)"></div>'
+    +'</div>'
+    +'<div style="font-family:Cinzel,serif;font-size:.52rem;color:rgba(200,168,74,.5);margin-top:3px">'+prevPct+'% → '+newPct+'%</div>';
+  t.style.opacity='1';
+  // Animate bar after paint
+  setTimeout(function(){var b=document.getElementById('xp-toast-bar');if(b)b.style.width=newPct+'%';},50);
+  clearTimeout(t._timer);
+  t._timer=setTimeout(function(){t.style.opacity='0';},3500);
 }
 function openLevelUp(){
   var nextLvl=charLevel+1;
@@ -3555,7 +3642,11 @@ function parseAndApplyUpdates(raw){
       if(qu.xp_reward){var q=quests.find(function(x){return x.id===qu.id;});if(q)q.xp=qu.xp_reward;}
       updQuest(qu.id,qu.status);
     });
-    if(u.xp_gain) addXP(u.xp_gain);
+    if(u.xp_gain){
+      var xpSrc=u.xp_source||'Narrativa';
+      addXP(u.xp_gain, xpSrc);
+      msgs.push('✨ +'+Math.round(u.xp_gain)+' XP ('+xpSrc+')');
+    }
     // Gold changes from narration — deduplicate via hash
     if(u.gold_add!==undefined||u.gold_remove!==undefined||u.coins){
       var goldKey=(u.gold_add||0)+'_'+(u.gold_remove||0)+'_'+JSON.stringify(u.coins||{});
@@ -3565,21 +3656,37 @@ function parseAndApplyUpdates(raw){
         window._processedGold.add(msgHash);
         if(u.coins){
           Object.assign(coins,u.coins);
+          renderAllCoins();
         } else {
-          if(u.gold_add) coins.PO+=parseInt(u.gold_add)||0;
-          if(u.gold_remove) coins.PO=Math.max(0,coins.PO-(parseInt(u.gold_remove)||0));
-        }
-        renderAllCoins();
-        var poAfter=coins.PO;
-        if(u.gold_add){
-          var amt=parseInt(u.gold_add)||0;
-          msgs.push('💰 +'+amt+' PO → Total: '+poAfter+' PO');
-          showRollToast('💰 +'+amt+' ouro recebido!');
-        }
-        if(u.gold_remove){
-          var amt2=parseInt(u.gold_remove)||0;
-          msgs.push('💸 −'+amt2+' PO → Restam: '+poAfter+' PO');
-          showRollToast('💸 −'+amt2+' ouro gasto!');
+          if(u.gold_add){
+            var addAmt=parseInt(u.gold_add)||0;
+            coins.PO+=addAmt;
+            renderAllCoins();
+            var poAfterAdd=Math.round(getTotalPO()*100)/100;
+            msgs.push('💰 +'+addAmt+' PO → Total: '+poAfterAdd.toFixed(1)+' PO');
+            showRollToast('💰 +'+addAmt+' ouro recebido!');
+          }
+          if(u.gold_remove){
+            var remAmt=parseInt(u.gold_remove)||0;
+            var result=spendPO(remAmt);
+            if(result.ok){
+              renderAllCoins();
+              var poAfterRem=Math.round(getTotalPO()*100)/100;
+              msgs.push('💸 −'+remAmt+' PO → Restam: '+poAfterRem.toFixed(1)+' PO');
+              showRollToast('💸 −'+remAmt+' ouro gasto!');
+            } else {
+              // INSUFFICIENT FUNDS — inject a narrative notice
+              var faltaStr=result.falta.toFixed(result.falta<1?2:1);
+              var totalStr=result.total.toFixed(result.total<1?2:1);
+              // Add a system message so the AI narrates the shortage
+              var shortageMsg='[SISTEMA: O personagem tentou gastar '+remAmt+' PO mas só possui '+totalStr+' PO no total (considerando todas as moedas). O NPC deve perceber que faltam '+faltaStr+' PO e reagir a isso narrativamente — sem mencionar termos de sistema, apenas como o NPC agiria.]';
+              // Inject into the next AI response context
+              hist.push({role:'user',content:shortageMsg});
+              showRollToast('⚠ Moedas insuficientes! Você tem '+totalStr+' PO equivalente');
+              msgs.push('⚠ Moedas insuficientes — '+totalStr+' PO disponível, tentou gastar '+remAmt+' PO');
+              // Do NOT deduct — transaction blocked
+            }
+          }
         }
         saveProgress('auto');
       }
@@ -3610,7 +3717,7 @@ function parseAndApplyUpdates(raw){
 }
 
 async function callAI(userMsg){
-  var ctx='[PV:'+hpC+'/'+HP_MAX+'|CA:'+charCA+'|Nv:'+charLevel+'|XP:'+charXP+']';
+  var ctx='[PV:'+hpC+'/'+HP_MAX+'|CA:'+charCA+'|Nv:'+charLevel+'|XP:'+charXP+'|Tesouro:'+Math.round(getTotalPO()*10)/10+'PO]';
   var gemHist=hist.map(function(m){
     return{role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]};
   });
@@ -3623,7 +3730,7 @@ async function callAI(userMsg){
       var body=JSON.stringify({
         system_instruction:{parts:[{text:SYSTEM}]},
         contents:gemHist,
-        generationConfig:{maxOutputTokens:2048,temperature:0.9}
+        generationConfig:{maxOutputTokens:1200,temperature:0.85}
       });
       var controller=new AbortController();
       var timeoutId=setTimeout(function(){controller.abort();},30000);
@@ -3642,7 +3749,7 @@ async function callAI(userMsg){
         var rurl='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+apiKey;
         var rc=new AbortController();
         setTimeout(function(){rc.abort();},25000);
-        var rr=await fetch(rurl,{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({system_instruction:{parts:[{text:sys||SYSTEM}]},contents:gemHist,generationConfig:{maxOutputTokens:2048,temperature:0.9}}),signal:rc.signal});
+        var rr=await fetch(rurl,{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({system_instruction:{parts:[{text:sys||SYSTEM}]},contents:gemHist,generationConfig:{maxOutputTokens:1200,temperature:0.85}}),signal:rc.signal});
         if(rr.ok){response=rr;break;}
       }catch(re){lastErr=re.message;}
     }
@@ -4283,6 +4390,7 @@ function checkStorageSave(){
   }
 }
 
+function fmtMod(v){var m=Math.floor((parseInt(v)||10)-10)/2;m=Math.floor(m);return(m>=0?'+':'')+m;}
 function buildAttrBuilder(){
   var el=document.getElementById('attr-builder');if(!el)return;
   var cls=document.getElementById('new-class')?.value||'Guerreiro';
@@ -4290,22 +4398,53 @@ function buildAttrBuilder(){
   var vals=[15,14,13,12,10,8];
   el.innerHTML=ATTR_NAMES.map(function(a,i){
     var v=defs.attrs[a]||vals[i];
-    var m=Math.floor((v-10)/2);
-    var ms=(m>=0?'+':'')+m;
-    return '<div class="attr-build-box">'
-      +'<label>'+a+'</label>'
-      +'<input type="number" id="nb-'+a+'" min="3" max="20" value="'+v+'" '
-      +'style="width:100%;background:transparent;border:none;border-bottom:1px solid rgba(201,168,76,.4);font-family:Cinzel,serif;font-size:.9rem;color:#e6c76a;outline:none;text-align:center;padding:1px 0" '
-      +'oninput="updAttrMod(this.id.replace(\"nb-\",\"\"),this.value)"/>'
-      +'<div class="attr-build-mod" id="nbm-'+a+'">'+ms+'</div>'
+    var ms=fmtMod(v);
+    var mc=v>=16?'#6ecfa0':v>=14?'#e6c76a':v<=8?'#e74c3c':'rgba(237,224,188,.7)';
+    return'<div class="attr-build-box">'
+      +'<label style="font-family:Cinzel,serif;font-size:.56rem;color:rgba(200,168,74,.7);text-transform:uppercase;letter-spacing:1px;display:block;text-align:center;margin-bottom:3px">'+a+'</label>'
+      +'<div style="display:flex;align-items:center;justify-content:center;gap:4px">'
+      +'<button type="button" data-a="'+a+'" data-d="-1" class="attr-step-btn" style="background:rgba(200,168,74,.08);border:1px solid rgba(200,168,74,.2);border-radius:3px;color:rgba(237,224,188,.5);width:22px;height:22px;font-size:.8rem;cursor:pointer;flex-shrink:0;line-height:1">−</button>'
+      +'<input type="number" id="nb-'+a+'" data-attr="'+a+'" min="3" max="20" value="'+v+'" class="attr-step-inp" '
+      +'style="width:36px;background:transparent;border:none;border-bottom:1px solid rgba(201,168,74,.4);font-family:Cinzel,serif;font-size:1rem;color:#e6c76a;outline:none;text-align:center;padding:1px 0"/>'
+      +'<button type="button" data-a="'+a+'" data-d="1" class="attr-step-btn" style="background:rgba(200,168,74,.08);border:1px solid rgba(200,168,74,.2);border-radius:3px;color:rgba(237,224,188,.5);width:22px;height:22px;font-size:.8rem;cursor:pointer;flex-shrink:0;line-height:1">+</button>'
+      +'</div>'
+      +'<div id="nbm-'+a+'" style="font-family:Cinzel Decorative,serif;font-size:.9rem;color:'+mc+';text-align:center;margin-top:2px;font-weight:700;transition:color .2s">'+ms+'</div>'
       +'</div>';
   }).join('');
+  // Bind events via event delegation
+  el.addEventListener('click',function(ev){
+    var btn=ev.target.closest('.attr-step-btn');
+    if(!btn)return;
+    var a=btn.dataset.a, d=parseInt(btn.dataset.d);
+    var inp=document.getElementById('nb-'+a);
+    if(!inp)return;
+    var next=Math.max(3,Math.min(20,(parseInt(inp.value)||10)+d));
+    inp.value=next;
+    updAttrMod(a,next);
+  });
+  el.addEventListener('input',function(ev){
+    var inp=ev.target.closest('.attr-step-inp');
+    if(!inp)return;
+    updAttrMod(inp.dataset.attr,inp.value);
+  });
+}
+function stepAttr(a,d){
+  var inp=document.getElementById('nb-'+a);
+  if(!inp)return;
+  var cur=parseInt(inp.value)||10;
+  var next=Math.max(3,Math.min(20,cur+d));
+  inp.value=next;
+  updAttrMod(a,next);
 }
 
 function updAttrMod(a,v){
-  var m=Math.floor((parseInt(v)||10)-10)/2;m=Math.floor(m);
+  var n=parseInt(v)||10;
+  var m=Math.floor((n-10)/2);
+  var ms=(m>=0?'+':'')+m;
   var el=document.getElementById('nbm-'+a);
-  if(el)el.textContent=(m>=0?'+':'')+m;
+  if(!el)return;
+  el.textContent=ms;
+  el.style.color=n>=16?'#6ecfa0':n>=14?'#e6c76a':n<=8?'#e74c3c':'rgba(237,224,188,.7)';
 }
 
 function updateClassDefaults(){
@@ -4601,24 +4740,32 @@ async function startNewGame(){
     +'CAMPANHA: Gere uma campanha ORIGINAL mas baseada no universo oficial dos Forgotten Realms. Use localidades, facções, deuses, história e personagens CANÔNICOS do setting (Waterdeep, Zhentarim, Harpers, Sembia, deuses do Faerûn etc). A aventura deve ser coerente com o nível 1 do personagem.\n\n'
     +'DIRETRIZES:\n'
     +'- Narre em português claro e direto, como um bom Mestre. Sem palavras rebuscadas desnecessárias.\n'
-    +'- 2-4 parágrafos por resposta.\n'
+    +'- Máximo 3 parágrafos por resposta. Seja direto e envolvente.\n'
     +'- Para testes inclua o modificador: "Role d20+X de Y". Nunca só "role d20".\n'
     +'- Nunca resolva combates sem rolls do jogador.\n'
     +'- AO FINAL: pergunte somente "O que você faz?" — NÃO liste opções nem sugira ações.\n'
     +'- Use nomes e locais CANÔNICOS dos Forgotten Realms.\n'
-    +'- NPCs SEMPRE com nomes únicos e culturalmente coerentes. NUNCA repita um nome já usado nesta sessão.\n\n'
+    +'- NPCs SEMPRE com nomes únicos e culturalmente coerentes. NUNCA repita um nome já usado nesta sessão.\n\n- Se o personagem tiver informações incompletas (nome de família nobre, deidade, mestre, etc.), INVENTE detalhes coerentes com Forgotten Realms e USE-OS naturalmente na narração.\n'
     +'SISTEMA DE ATUALIZAÇÃO — ao final se houver mudanças inclua (JSON puro, sem markdown):\n'
-    +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300}],"xp_gain":150,"gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena."}}\n'
-    +'OBRIGATÓRIO: Toda vez que o personagem receber moedas use gold_add. Toda vez que gastar use gold_remove. NUNCA pule essa atualização quando houver troca de moedas. Inclua também magic_item_add ao receber item mágico e diary_entry a cada cena importante.';
+    +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300}],"xp_gain":150,"xp_source":"Combate","gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena."}}\n'
+    +'OBRIGATÓRIO:\n'
+    +'- Moedas: gold_add (receber) / gold_remove (gastar). Nunca pule.\n'
+    +'- Missões: quest_add ao iniciar qualquer objetivo; quest_update ao concluir/falhar. Sempre com xp_reward.\n'
+    +'- XP: xp_gain + xp_source em todo evento significativo. Combate:50-500, Diplomacia:50-200, Descoberta:25-150, Desafio:25-100.\n'
+    +'- Diário: diary_entry a cada cena importante.\n'
+    +'- Saldo insuficiente: narre o NPC percebendo a falta.';
 
   // Override SYSTEM for this session
   window.SYSTEM_OVERRIDE=dynSystem;
 
   try{
     // Generate opening narration + campaign hook
-    var openingPrompt='[INÍCIO DE CAMPANHA] Personagem: '+name+', '+race+' '+cls+' de nível 1, '+align+', antecedente: '+bg+'.'
-      +(story?' Motivação: '+story:'')
-      +' Região: '+region.name+'. Crie a cena de abertura da aventura nos Forgotten Realms: apresente o local com detalhes canônicos do setting, a situação inicial, e um gancho de aventura envolvente e original adequado ao nível 1. Termine com a primeira decisão do jogador.';
+    // Generate any missing character details (family name, house, etc.)
+    var charDetails='';
+    if(bg==='Nobre'&&!story){
+      charDetails=' Família nobre: gere um nome de casa nobre coerente com '+region.name+' (ex: Casa Raventhorn, Família Auldren).';
+    }
+    var openingPrompt='[INÍCIO DE CAMPANHA] '+name+', '+race+' '+cls+' Nv1, '+align+'. Antecedente: '+bg+'.'+(story?' História: '+story:charDetails)+' Região: '+region.name+'. Escreva UMA cena de abertura curta e envolvente (máx 3 parágrafos). Apresente onde '+name+' está agora e o primeiro conflito ou situação. Termine com O que você faz?';
 
     hidStartScreen();
     init();
@@ -4671,7 +4818,7 @@ async function startNewGame(){
 }
 
 async function callAIWithSystem(userMsg,systemOverride){
-  var ctx='[PV:'+hpC+'/'+HP_MAX+'|CA:'+charCA+'|Nv:'+charLevel+']';
+  var ctx='[PV:'+hpC+'/'+HP_MAX+'|CA:'+charCA+'|Nv:'+charLevel+'|XP:'+charXP+'|Tesouro:'+Math.round(getTotalPO()*10)/10+'PO]';
   var gemHist=hist.map(function(m){
     return{role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]};
   });
@@ -4685,7 +4832,7 @@ async function callAIWithSystem(userMsg,systemOverride){
       var body=JSON.stringify({
         system_instruction:{parts:[{text:sys}]},
         contents:gemHist,
-        generationConfig:{maxOutputTokens:2048,temperature:0.9}
+        generationConfig:{maxOutputTokens:1200,temperature:0.85}
       });
       var controller=new AbortController();
       var timeoutId=setTimeout(function(){controller.abort();},30000);
