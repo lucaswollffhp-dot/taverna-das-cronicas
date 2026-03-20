@@ -1571,7 +1571,7 @@ const XP_TABLE=[0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,1
 const XP_BY_CR={0:10,'1/8':25,'1/4':50,'1/2':100,1:200,2:450,3:700,4:1100,5:1800,6:2300,7:2900,8:3900,9:5000,10:5900,11:7200,12:8400,13:10000,14:11500,15:13000,16:15000,17:18000,18:20000,19:22000,20:25000};
 
 // SYSTEM PROMPT
-const SYSTEM='Você é o Mestre de D&D 5e narrando em português do Brasil.\n'+'REGRAS OBRIGATÓRIAS:\n'+'1. NUNCA mencione dados internos como [PV], [CA], [ESTADO_OCULTO] no texto narrativo.\n'+'2. NPCs SEMPRE com nomes únicos e DIFERENTES. PROIBIDO repetir nomes. Nomes culturalmente coerentes com o local.\n'+'3. Rolagens SEMPRE com modificador. Ex: Role d20+3 de Percepção. Role 2d20+X (maior) para VANTAGEM, (menor) para DESVANTAGEM. Não explique ao jogador o motivo.\n'+'4. Linguagem clara e direta. Sem palavras rebuscadas.\n'+'5. AO FINAL: pergunte APENAS \"O que você faz?\" — não liste opções.\n'+'6. Nunca resolva combates sem rolagens do jogador.\n'+'7. OURO: gold_add (receber) ou gold_remove (gastar) no JSON. O contexto mostra [Tesouro:X PO] — nunca deixe gastar mais do que possui.\n'+'8. SALDO INSUFICIENTE: [SISTEMA: moedas insuficientes] → NPC percebe e reage naturalmente.\n'+'9. MISSÕES OBRIGATÓRIO: quest_add ao iniciar qualquer missão/objetivo com id, titulo, desc, xp. quest_update ao concluir/falhar com xp_reward.\n'+'10. XP NARRATIVO: xp_gain+xp_source — Combate:50-500, Diplomacia:50-200, Descoberta:25-150, Desafio:25-100. Nunca para ações triviais.\n'+'11. Nunca mencione o JSON — inclua silenciosamente ao final.';
+const SYSTEM='Você é o Mestre de D&D 5e narrando em português do Brasil.\n'+'REGRAS OBRIGATÓRIAS:\n'+'1. NUNCA mencione dados internos como [PV], [CA], [ESTADO_OCULTO] no texto narrativo.\n'+'2. NPCs SEMPRE com nomes únicos e DIFERENTES. PROIBIDO repetir nomes. Nomes culturalmente coerentes com o local.\n'+'3. Rolagens SEMPRE com modificador. Ex: Role d20+3 de Percepção. Role 2d20+X (maior) para VANTAGEM, (menor) para DESVANTAGEM. Não explique ao jogador o motivo.\n'+'4. Linguagem clara e direta. Sem palavras rebuscadas.\n'+'5. AO FINAL: pergunte APENAS \"O que você faz?\" — não liste opções.\n'+'6. Nunca resolva combates sem rolagens do jogador.\n'+'7. OURO: gold_add (receber) ou gold_remove (gastar) no JSON. O contexto mostra [Tesouro:X PO] — nunca deixe gastar mais do que possui.\n'+'8. SALDO INSUFICIENTE: [SISTEMA: moedas insuficientes] → NPC percebe e reage naturalmente.\n'+'9. MISSÕES OBRIGATÓRIO: quest_add ao iniciar qualquer missão/objetivo com id, titulo, desc, xp estimado. quest_update ao concluir/falhar com xp_reward e gold_reward (se houver pagamento prometido). Na conclusão, o narrador deve descrever a entrega da recompensa ANTES de incluir o JSON.\n'+'10. XP NARRATIVO: xp_gain+xp_source — Combate:50-500, Diplomacia:50-200, Descoberta:25-150, Desafio:25-100. Nunca para ações triviais.\n'+'11. Nunca mencione o JSON — inclua silenciosamente ao final.';
 
 
 function mod(v){const m=Math.floor((v-10)/2);return(m>=0?'+':'')+m;}
@@ -2715,12 +2715,21 @@ function adjInvQty(i,d){
 function removeInv(i){inventory.splice(i,1);renderInv();}
 function addInvItem(n){
   normInv();
-  var s=(typeof n==='string'?n:n.name||'').trim();
-  if(!s)return;
-  // Check if already exists, increment qty
+  var raw=(typeof n==='string'?n:(n.name||'')).trim();
+  if(!raw)return;
+  // Parse quantity from string: "20 Flechas", "5x Poção", "Espada (3)"
+  var qty=1, s=raw;
+  var m=raw.match(/^(\d+)\s*[xX×]?\s*(.+)$/);
+  if(!m)m=raw.match(/^(.+?)\s*[\(×x]\s*(\d+)\)?$/);
+  if(m){
+    if(/^\d+/.test(raw)){qty=parseInt(m[1]);s=m[2].trim();}
+    else{s=m[1].trim();qty=parseInt(m[2]);}
+  }
+  s=s.charAt(0).toUpperCase()+s.slice(1); // capitalize
+  // Check if already exists by name, increment qty
   var existing=inventory.find(function(x){return x.name.toLowerCase()===s.toLowerCase();});
-  if(existing){existing.qty=(existing.qty||1)+1;}
-  else{inventory.push({name:s,qty:1});}
+  if(existing){existing.qty=(existing.qty||1)+qty;}
+  else{inventory.push({name:s,qty:qty});}
   renderInv();
 }
 function openInvModal(){
@@ -2752,10 +2761,14 @@ function renderQuests(){
 }
 function addQuest(q){
   if(quests.find(function(x){return x.id===q.id;})) return;
+  // Ensure required fields
+  if(!q.id)q.id='q_'+Date.now();
+  if(!q.status)q.status='ativa';
   quests.push(q);
   renderQuests();
-  // Diary entry automático ao iniciar missão
-  addDiaryEntry('📜 Nova missão iniciada: '+q.titulo+(q.desc?' — '+q.desc:'')+'.');
+  // Diary entry — show XP reward hint if set
+  var hint=q.xp?' ('+q.xp+' XP prometidos)':'';
+  addDiaryEntry('📜 Missão recebida: '+q.titulo+(q.desc?'. '+q.desc:'')+hint+'.');
   showQuestNotif('📜 Nova Missão',q.titulo,q.desc);
   saveProgress('auto');
   if(typeof mobActive!=='undefined'&&mobActive==='quest'){setTimeout(function(){mobTab('quest');},100);}
@@ -2767,20 +2780,32 @@ function updQuest(id,status){
   q.status=status;
   renderQuests();
   if(status==='concluida'&&prev!=='concluida'){
-    // XP reward based on quest difficulty (stored in q.xp, default by level)
     var xpReward=q.xp||Math.floor([75,150,275,500,750,1000,1500,2000,2500,3000][Math.min(charLevel-1,9)]);
     addXP(xpReward,'Missão');
-    showQuestNotif('✓ Missão Concluída',q.titulo,'+'+xpReward+' XP ganhos!');
-    addDiaryEntry('Missão concluída: '+q.titulo+'. Recompensa: '+xpReward+' XP.');
-    CONQUISTAS.push('✓ Missão concluída: '+q.titulo);
+    // Gold reward if set in quest
+    var goldMsg='';
+    if(q.gold_reward&&q.gold_reward>0){
+      coins.PO+=q.gold_reward;
+      renderAllCoins();
+      goldMsg=' · +'+q.gold_reward+' PO';
+      showRollToast('💰 +'+q.gold_reward+' PO de recompensa!');
+      setTimeout(function(){showRollToast('✓ +'+xpReward+' XP — Missão concluída!');},1400);
+    } else {
+      showRollToast('✓ +'+xpReward+' XP — Missão concluída!');
+    }
+    var rewardLine='+'+xpReward+' XP'+goldMsg;
+    showQuestNotif('✓ Missão Concluída',q.titulo,rewardLine);
+    addDiaryEntry('✓ Missão concluída: '+q.titulo+'. Recompensas: '+rewardLine+'.');
+    CONQUISTAS.push('✓ '+q.titulo);
     var achEl=document.getElementById('achiev-d');
     if(achEl) achEl.innerHTML=CONQUISTAS.map(function(c){return'<div class="ach">'+c+'</div>';}).join('');
-    showRollToast('✓ +'+xpReward+' XP — Missão concluída!');
+    addMsg('sys','✓ Missão concluída: '+q.titulo+' | '+rewardLine);
     saveProgress('auto');
   }
   if(status==='falhou'&&prev!=='falhou'){
-    addDiaryEntry('Missão falhou: '+q.titulo+'.');
-    showQuestNotif('✗ Missão Falhou',q.titulo,'');
+    addDiaryEntry('✗ Missão falhou: '+q.titulo+'.');
+    showQuestNotif('✗ Missão Falhou',q.titulo,'Melhor sorte na próxima...');
+    addMsg('sys','✗ Missão falhou: '+q.titulo);
   }
   // Refresh mobile quest tab if it's open
   if(typeof mobActive!=='undefined'&&mobActive==='quest'){
@@ -3715,11 +3740,27 @@ function parseAndApplyUpdates(raw){
     const u=JSON.parse(m[0]).UPDATES;
     const msgs=[];
     if(u.inv_add?.length){u.inv_add.forEach(i=>addInvItem(i));msgs.push('🎒 +'+u.inv_add.join(', '));}
-    if(u.inv_remove?.length){u.inv_remove.forEach(n=>{const i=inventory.findIndex(x=>x.toLowerCase().includes(n.toLowerCase()));if(i>=0)inventory.splice(i,1);});renderInv();msgs.push('🎒 −'+u.inv_remove.join(', '));}
+    if(u.inv_remove?.length){
+      u.inv_remove.forEach(function(entry){
+        // entry can be "Flecha" or "3 Flechas"
+        var qty=1,name=entry;
+        var m2=entry.match(/^(\d+)\s+(.+)$/);
+        if(m2){qty=parseInt(m2[1]);name=m2[2];}
+        var idx=inventory.findIndex(function(x){return x.name.toLowerCase().includes(name.toLowerCase());});
+        if(idx>=0){
+          inventory[idx].qty-=qty;
+          if(inventory[idx].qty<=0)inventory.splice(idx,1);
+        }
+      });
+      renderInv();msgs.push('🎒 −'+u.inv_remove.join(', '));
+    }
     if(u.quest_add?.length) u.quest_add.forEach(q=>addQuest(q));
     if(u.quest_update?.length) u.quest_update.forEach(function(qu){
-      // Store XP reward from AI response if provided
-      if(qu.xp_reward){var q=quests.find(function(x){return x.id===qu.id;});if(q)q.xp=qu.xp_reward;}
+      var q=quests.find(function(x){return x.id===qu.id;});
+      if(q){
+        if(qu.xp_reward)q.xp=qu.xp_reward;
+        if(qu.gold_reward)q.gold_reward=qu.gold_reward;
+      }
       updQuest(qu.id,qu.status);
     });
     if(u.xp_gain){
@@ -4099,7 +4140,9 @@ const RACES_DB={
 };
 
 // ─── SUBCLASSES NÍVEL 1 com escolhas (Clérigo domínio, Bruxo patrono, Feiticeiro origem) ───
-const SUBCLASS_LEVEL1=['Clérigo','Bruxo','Feiticeiro'];
+// Classes que escolhem subclasse antes do nível 3
+const SUBCLASS_LEVEL1=['Clérigo','Bruxo','Feiticeiro']; // nível 1
+const SUBCLASS_LEVEL2=['Mago','Druida']; // nível 2 — podem escolher já na criação
 
 // ─── ARMAS OFICIAIS (Livro do Jogador p.150) ───
 const WEAPONS_DB=[
@@ -4586,12 +4629,20 @@ function renderRaceTraits(){
 }
 function renderPhysiqueArea(){
   var rd=RACES_DB[_ccSelectedRace];var grid=document.getElementById('physique-grid');
-  if(!grid||!rd||!rd.physique)return;
-  var p=rd.physique;
-  var fields=[{id:'phys-skin',label:'Pele',opts:p.skin||[]},{id:'phys-hair',label:'Cabelo',opts:p.hair||[]},{id:'phys-eyes',label:'Olhos',opts:p.eyes||[]},{id:'phys-build',label:'Porte',opts:p.build||[]},{id:'phys-height',label:'Altura',opts:p.height||[]}];
-  if(p.extras)fields.push({id:'phys-extras',label:'Traço especial',opts:p.extras});
-  grid.innerHTML=fields.filter(function(f){return f.opts.length;}).map(function(f){
-    return'<div><label class="cc-label">'+f.label+'</label><select id="'+f.id+'" class="cc-select">'+f.opts.map(function(o){return'<option>'+o+'</option>';}).join('')+'</select></div>';
+  if(!grid)return;
+  var p=(rd&&rd.physique)||{skin:[],hair:[],eyes:[],build:[],height:[]};
+  // Fields: label, id, placeholder with racial suggestions
+  var fields=[
+    {id:'phys-skin',label:'Pele / Escamas',ph:((p.skin||[]).slice(0,3).join(', '))||'Ex: morena, clara, bronzeada'},
+    {id:'phys-hair',label:'Cabelo',ph:((p.hair||[]).slice(0,3).join(', '))||'Ex: castanho, preto, loiro'},
+    {id:'phys-eyes',label:'Olhos',ph:((p.eyes||[]).slice(0,3).join(', '))||'Ex: castanhos, azuis, verdes'},
+    {id:'phys-build',label:'Porte físico',ph:((p.build||[]).slice(0,2).join(', '))||'Ex: atlético, esguio'},
+    {id:'phys-height',label:'Altura',ph:((p.height||[]).slice(0,2).join(', '))||'Ex: 1,75m'},
+  ];
+  if(p.extras)fields.push({id:'phys-extras',label:'Traço especial',ph:((p.extras||[]).slice(0,2).join(', '))||'Ex: cicatriz, tatuagem'});
+  grid.innerHTML=fields.map(function(f){
+    return'<div><label class="cc-label">'+f.label+'</label>'
+      +'<input id="'+f.id+'" class="cc-input" placeholder="'+f.ph+'"/></div>';
   }).join('');
 }
 function updateRacialBonusHint(){
@@ -4617,14 +4668,25 @@ function selectClass(c){
 function renderSubclass1Area(){
   var area=document.getElementById('subclass1-area');var grid=document.getElementById('subclass1-grid');var lbl=document.getElementById('subclass1-label');
   if(!area||!grid)return;
-  var need=typeof SUBCLASS_LEVEL1!=='undefined'&&SUBCLASS_LEVEL1.indexOf(_ccSelectedClass)>=0;
-  area.style.display=need?'':'none';if(!need)return;
+  var isLv1=SUBCLASS_LEVEL1.indexOf(_ccSelectedClass)>=0;
+  var isLv2=typeof SUBCLASS_LEVEL2!=='undefined'&&SUBCLASS_LEVEL2.indexOf(_ccSelectedClass)>=0;
+  var isLv3=!isLv1&&!isLv2;
+  area.style.display='';
   var subs=SUBCLASSES[_ccSelectedClass]||[];
-  var labels={Clérigo:'Domínio Divino',Bruxo:'Patrono Transcendental',Feiticeiro:'Origem de Feitiçaria'};
+  var labels={Clérigo:'Domínio Divino (Nível 1)',Bruxo:'Patrono Transcendental (Nível 1)',Feiticeiro:'Origem de Feitiçaria (Nível 1)',Mago:'Tradição Arcana (Nível 2)',Druida:'Círculo Druídico (Nível 2)'};
+  var lv3classes={Guerreiro:'Arquétipo Marcial',Paladino:'Juramento Sagrado',Bárbaro:'Caminho Primitivo',Ladino:'Arquétipo de Ladino',Bardo:'Colégio de Bardo',Monge:'Tradição Monástica',Patrulheiro:'Arquétipo de Patrulheiro'};
+  if(isLv3){
+    if(lbl)lbl.textContent=(lv3classes[_ccSelectedClass]||'Subclasse')+' — escolhida no Nível 3';
+    grid.innerHTML='<div style="grid-column:1/-1;padding:.5rem .6rem;background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.12);border-radius:7px;font-size:.74rem;color:var(--text3);font-style:italic">Você escolherá sua subclasse ao atingir o nível 3. Opções: '
+      +subs.join(', ')+'</div>';
+    return;
+  }
   if(lbl)lbl.textContent=labels[_ccSelectedClass]||'Subclasse';
   grid.innerHTML=subs.map(function(s){
-    return'<div class="cc-card'+(s===_ccSelectedSubclass1?' selected':'')+'" data-s="'+s+'" onclick="selectSubclass1(this.dataset.s)"><div class="cc-card-name" style="font-size:.46rem">'+s+'</div></div>';
+    return'<div class="cc-card'+(s===_ccSelectedSubclass1?' selected':'')+'" data-s="'+s+'" onclick="selectSubclass1(this.dataset.s)"><div class="cc-card-name" style="font-size:.44rem;line-height:1.3">'+s+'</div></div>';
   }).join('');
+  // Auto-select first if none chosen
+  if(!_ccSelectedSubclass1&&subs.length)selectSubclass1(subs[0]);
 }
 function selectSubclass1(s){
   _ccSelectedSubclass1=s;
@@ -5018,7 +5080,7 @@ async function startNewGame(){
     +'- Use nomes e locais CANÔNICOS dos Forgotten Realms.\n'
     +'- NPCs SEMPRE com nomes únicos e culturalmente coerentes. NUNCA repita um nome já usado nesta sessão.\n\n- Se o personagem tiver informações incompletas (nome de família nobre, deidade, mestre, etc.), INVENTE detalhes coerentes com Forgotten Realms e USE-OS naturalmente na narração.\n'
     +'SISTEMA DE ATUALIZAÇÃO — ao final se houver mudanças inclua (JSON puro, sem markdown):\n'
-    +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300}],"xp_gain":150,"xp_source":"Combate","gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena."}}\n'
+    +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300,"gold_reward":50}],"xp_gain":150,"xp_source":"Combate","gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena."}}\n'
     +'OBRIGATÓRIO:\n'
     +'- Moedas: gold_add (receber) / gold_remove (gastar). Nunca pule.\n'
     +'- Missões: quest_add ao iniciar qualquer objetivo; quest_update ao concluir/falhar. Sempre com xp_reward.\n'
