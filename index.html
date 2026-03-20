@@ -306,6 +306,9 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .skill-prof{width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(200,168,74,.25);flex-shrink:0;transition:all .15s}
 .skill-prof.on{background:var(--gold2);border-color:var(--gold2)}
 .skill-prof.exp{background:var(--arc2);border-color:var(--arc2);box-shadow:0 0 4px var(--arc2)}
+/* Condition badges pulse on critical conditions */
+#conditions-hdr-badges>div{animation:condPulse 3s ease-in-out infinite}
+@keyframes condPulse{0%,100%{opacity:.8}50%{opacity:1}}
 .skill-lbl{font-family:Cinzel,serif;font-size:.46rem;color:var(--text3);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .skill-attr{font-family:Cinzel,serif;font-size:.42rem;color:rgba(200,168,74,.3);width:24px;text-align:right;flex-shrink:0}
 .skill-val{font-family:Cinzel,serif;font-size:.68rem;color:var(--gold2);width:24px;text-align:right;flex-shrink:0}
@@ -1399,6 +1402,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
         <span id="ds-fail-hdr" style="font-family:Cinzel,serif;font-size:.52rem;color:#e74c3c">0</span>
       </div>
       <div class="ca-badge">🛡 <span id="ca-hdr">—</span></div>
+      <div id="conditions-hdr-badges" style="display:none;align-items:center;gap:3px;flex-wrap:wrap;max-width:160px"></div>
       <!-- action buttons -->
       <button class="hbtn" onclick="openCombat()" id="combat-toggle-btn">⚔</button>
       <button class="hbtn gold" onclick="openSaveModal()">💾</button>
@@ -1449,6 +1453,14 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
       <div>
         <div class="slbl">🛡 Testes de Resistência</div>
         <div class="saves-grid" id="saves-d"></div>
+      </div>
+      <hr class="sdiv">
+      <div>
+        <div class="slbl">⚡ Condições
+          <span id="cond-toggle" onclick="toggleConditionPanel()" style="background:rgba(200,168,74,.08);border:1px solid rgba(200,168,74,.2);border-radius:4px;color:rgba(200,168,74,.5);font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;cursor:pointer;margin-left:4px" title="Expandir/recolher">▼</span>
+          <button onclick="openConditionPicker()" style="background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.3);border-radius:4px;color:#e74c3c;font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:2px;cursor:pointer" title="Gerenciar condições">⚡ +</button>
+        </div>
+        <div id="conditions-list-d" style="display:none"></div>
       </div>
       <hr class="sdiv">
       <div>
@@ -1663,7 +1675,7 @@ const XP_TABLE=[0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,1
 const XP_BY_CR={0:10,'1/8':25,'1/4':50,'1/2':100,1:200,2:450,3:700,4:1100,5:1800,6:2300,7:2900,8:3900,9:5000,10:5900,11:7200,12:8400,13:10000,14:11500,15:13000,16:15000,17:18000,18:20000,19:22000,20:25000};
 
 // SYSTEM PROMPT
-const SYSTEM='Você é o Mestre de D&D 5e narrando em português do Brasil.\n'+'REGRAS OBRIGATÓRIAS:\n'+'1. NUNCA mencione dados internos como [PV], [CA], [ESTADO_OCULTO] no texto narrativo.\n'+'2. NPCs SEMPRE com nomes únicos e DIFERENTES. PROIBIDO repetir nomes. Nomes culturalmente coerentes com o local.\n'+'3. Rolagens SEMPRE com modificador. Ex: Role d20+3 de Percepção. Role 2d20+X (maior) para VANTAGEM, (menor) para DESVANTAGEM. Não explique ao jogador o motivo.\n'+'4. Linguagem clara e direta. Sem palavras rebuscadas.\n'+'5. AO FINAL: pergunte APENAS \"O que você faz?\" — não liste opções.\n'+'6. Nunca resolva combates sem rolagens do jogador.\n'+'6b. HP/DANO: Quando o personagem sofre dano, inclua hp_damage no JSON. Quando recebe cura, inclua hp_heal. Quando morre: se houver companheiros na cena, narre a reação deles e continue. TPK só quando TODOS caem.\n'+'6c. TESTES DE MORTE: Quando personagem está em 0 PV, peça "Role d20 de Teste de Morte". ≥10=sucesso, <10=falha. 3 sucessos=estabiliza, 3 falhas=morte, natural 20=acorda com 1 PV, natural 1=2 falhas.\n'+'7. OURO: gold_add (receber) ou gold_remove (gastar) no JSON. O contexto mostra [Tesouro:X PO] — nunca deixe gastar mais do que possui.\n'+'8. SALDO INSUFICIENTE: [SISTEMA: moedas insuficientes] → NPC percebe e reage naturalmente.\n'+'9. MISSÕES OBRIGATÓRIO: quest_add ao iniciar qualquer missão/objetivo com id, titulo, desc, xp estimado. quest_update ao concluir/falhar com xp_reward e gold_reward (se houver pagamento prometido). Na conclusão, o narrador deve descrever a entrega da recompensa ANTES de incluir o JSON.\n'+'10. XP NARRATIVO: xp_gain+xp_source — Combate:50-500, Diplomacia:50-200, Descoberta:25-150, Desafio:25-100. Nunca para ações triviais.\n'+'11. Nunca mencione o JSON — inclua silenciosamente ao final.';
+const SYSTEM='Você é o Mestre de D&D 5e narrando em português do Brasil.\n'+'REGRAS OBRIGATÓRIAS:\n'+'1. NUNCA mencione dados internos como [PV], [CA], [ESTADO_OCULTO] no texto narrativo.\n'+'2. NPCs SEMPRE com nomes únicos e DIFERENTES. PROIBIDO repetir nomes. Nomes culturalmente coerentes com o local.\n'+'3. Rolagens SEMPRE com modificador. Ex: Role d20+3 de Percepção. Role 2d20+X (maior) para VANTAGEM, (menor) para DESVANTAGEM. Não explique ao jogador o motivo.\n'+'4. Linguagem clara e direta. Sem palavras rebuscadas.\n'+'5. AO FINAL: pergunte APENAS \"O que você faz?\" — não liste opções.\n'+'6. Nunca resolva combates sem rolagens do jogador.\n'+'6b. HP/DANO: Quando o personagem sofre dano, inclua hp_damage no JSON. Quando recebe cura, inclua hp_heal. Quando morre: se houver companheiros na cena, narre a reação deles e continue. TPK só quando TODOS caem.\n'+'6d. CONDIÇÕES: Quando o personagem sofre uma condição (Envenenado, Agarrado, Assustado, Atordoado, Caído, Cego, Encantado, Enfeitiçado, Exausto, Incapacitado, Inconsciente, Invisível, Paralisado, Petrificado), inclua condition_add no JSON com o nome exato. Quando a condição termina, inclua condition_remove. Aplique os efeitos mecânicos da condição na narração.\n'+'6c. TESTES DE MORTE: Quando personagem está em 0 PV, peça "Role d20 de Teste de Morte". ≥10=sucesso, <10=falha. 3 sucessos=estabiliza, 3 falhas=morte, natural 20=acorda com 1 PV, natural 1=2 falhas.\n'+'7. OURO: gold_add (receber) ou gold_remove (gastar) no JSON. O contexto mostra [Tesouro:X PO] — nunca deixe gastar mais do que possui.\n'+'8. SALDO INSUFICIENTE: [SISTEMA: moedas insuficientes] → NPC percebe e reage naturalmente.\n'+'9. MISSÕES OBRIGATÓRIO: quest_add ao iniciar qualquer missão/objetivo com id, titulo, desc, xp estimado. quest_update ao concluir/falhar com xp_reward e gold_reward (se houver pagamento prometido). Na conclusão, o narrador deve descrever a entrega da recompensa ANTES de incluir o JSON.\n'+'10. XP NARRATIVO: xp_gain+xp_source — Combate:50-500, Diplomacia:50-200, Descoberta:25-150, Desafio:25-100. Nunca para ações triviais.\n'+'11. Nunca mencione o JSON — inclua silenciosamente ao final.';
 
 
 function mod(v){const m=Math.floor((v-10)/2);return(m>=0?'+':'')+m;}
@@ -1681,7 +1693,7 @@ function toggleSkillsPanel(){
   if(!open)renderSkills();
 }
 function init(){
-  renderAttrs();renderSaves();renderSkills();renderEquip();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();renderSpells();
+  renderAttrs();renderSaves();renderSkills();renderEquip();renderConditions();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();renderSpells();
   document.getElementById('achiev-d').innerHTML=CONQUISTAS.map(c=>`<div class="ach">${c}</div>`).join('');
   setQA(['Explorar','Falar com NPC','Ver companheiros','Partir em jornada','Usar habilidade','⚔ Iniciar combate']);
   updHP();updCA();updXP();
@@ -3580,6 +3592,11 @@ function buildMobChar(){
     +'</div></div>';
   // Saves
   var profB=charLevel<5?2:charLevel<9?3:charLevel<13?4:5;
+  // Active conditions strip
+  var activeList=Object.entries(activeConditions).filter(function(e){return e[1].active;});
+  var condHtml=activeList.length
+    ?'<div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.5rem">'+activeList.map(function(e){var name=e[0],cond=CONDITIONS_DB[name];return'<div onclick="openConditionPicker()" style="display:flex;align-items:center;gap:3px;padding:3px 7px;background:rgba('+hexToRgb(cond.color)+',.15);border:1px solid '+cond.color+';border-radius:6px;cursor:pointer"><span style="font-size:.85rem">'+cond.icon+'</span><span style="font-family:Cinzel,serif;font-size:.5rem;color:'+cond.color+'">'+name+'</span></div>';}).join('')+'</div>'
+    :'<button onclick="openConditionPicker()" style="background:rgba(231,76,60,.06);border:1px solid rgba(231,76,60,.2);border-radius:7px;padding:3px 10px;font-family:Cinzel,serif;font-size:.52rem;color:#e74c3c;cursor:pointer;width:100%;margin-bottom:.4rem">⚡ Sem condições ativas</button>';
   var saves='<div style="margin-bottom:.8rem">'
     +'<div class="slbl">🛡 Testes de Resistência</div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.25rem">'
@@ -4136,6 +4153,127 @@ function restartGame(){
   goToMainMenu();
 }
 
+// ─── CONDIÇÕES ATIVAS ───
+
+function addCondition(name, duration, level){
+  if(!CONDITIONS_DB[name])return;
+  if(!activeConditions[name])activeConditions[name]={active:true,duration:duration||'',level:level||1};
+  else{activeConditions[name].active=true;if(duration)activeConditions[name].duration=duration;if(level)activeConditions[name].level=level;}
+  renderConditions();
+  var cond=CONDITIONS_DB[name];
+  addMsg('sys',cond.icon+' Condição aplicada: '+name+(duration?' ('+duration+')':'')+'.');
+  // If Unconscious, also trigger death saves
+  if(name==='Inconsciente'&&hpC===0)showDeathModal();
+  saveProgress('auto');
+}
+
+function removeCondition(name){
+  if(activeConditions[name]){
+    delete activeConditions[name];
+    renderConditions();
+    var cond=CONDITIONS_DB[name];
+    addMsg('sys',(cond?cond.icon:'')+'  Condição removida: '+name+'.');
+    if(name==='Inconsciente')closeDeathModal();
+    saveProgress('auto');
+  }
+}
+
+function toggleConditionPanel(){
+  var el=document.getElementById('conditions-list-d');
+  var tog=document.getElementById('cond-toggle');
+  if(!el)return;
+  var hidden=el.style.display==='none';
+  el.style.display=hidden?'':'none';
+  if(tog)tog.textContent=hidden?'▲':'▼';
+}
+
+function openConditionPicker(){
+  var active=Object.keys(activeConditions);
+  var html='<div class="modal-title">⚡ Condições</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.35rem;margin-bottom:.7rem">';
+  Object.entries(CONDITIONS_DB).forEach(function(entry){
+    var name=entry[0],cond=entry[1];
+    var isActive=!!(activeConditions[name]&&activeConditions[name].active);
+    html+='<div data-cn="'+name+'" onclick="toggleConditionFromPicker(this.dataset.cn)" style="'
+      +'display:flex;align-items:center;gap:6px;padding:6px 8px;'
+      +'border-radius:8px;cursor:pointer;transition:all .15s;'
+      +'background:'+(isActive?'rgba('+hexToRgb(cond.color)+',.15)':'var(--surface)')+';'
+      +'border:1px solid '+(isActive?cond.color:'var(--border)')+'">'
+      +'<span style="font-size:1.1rem">'+cond.icon+'</span>'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-family:Cinzel,serif;font-size:.56rem;color:'+(isActive?cond.color:'var(--text2)')+';white-space:nowrap">'+name+'</div>'
+      +(cond.hasLevels&&isActive?'<div style="font-size:.58rem;color:var(--text3)">Nível '+( activeConditions[name]?.level||1)+'</div>':'')
+      +'</div>'
+      +'<div style="width:10px;height:10px;border-radius:50%;background:'+(isActive?cond.color:'transparent')+';border:1.5px solid '+(isActive?cond.color:'rgba(200,168,74,.2)')+'"></div>'
+      +'</div>';
+  });
+  html+='</div>';
+  html+='<button class="mbtn secondary" onclick="closeDynModal()">Fechar</button>';
+  openDynModal(html);
+}
+
+function hexToRgb(hex){
+  var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return r+','+g+','+b;
+}
+
+function toggleConditionFromPicker(name){
+  if(activeConditions[name]&&activeConditions[name].active){removeCondition(name);}
+  else{addCondition(name);}
+  closeDynModal();
+  setTimeout(openConditionPicker,80);
+}
+
+function renderConditions(){
+  // Desktop sidebar
+  var el=document.getElementById('conditions-list-d');
+  // Header badges
+  var hdrEl=document.getElementById('conditions-hdr-badges');
+  var activeList=Object.entries(activeConditions).filter(function(e){return e[1].active;});
+
+  // Header badges (compact, always visible)
+  if(hdrEl){
+    hdrEl.innerHTML=activeList.map(function(e){
+      var name=e[0],data=e[1];
+      var cond=CONDITIONS_DB[name];
+      return'<div onclick="openConditionPicker()" title="'+name+': '+cond.desc.slice(0,60)+'..." style="'
+        +'display:flex;align-items:center;gap:2px;padding:2px 5px;'
+        +'background:rgba('+hexToRgb(cond.color)+',.15);'
+        +'border:1px solid '+cond.color+';border-radius:6px;cursor:pointer;'
+        +'font-family:Cinzel,serif;font-size:.48rem;color:'+cond.color+'">'
+        +cond.icon+'<span style="margin-left:2px">'+name.slice(0,8)+'</span>'
+        +'</div>';
+    }).join('');
+    hdrEl.style.display=activeList.length?'flex':'none';
+  }
+
+  if(!el)return;
+  if(!activeList.length){
+    el.innerHTML='<div style="font-size:.7rem;color:var(--text3);font-style:italic;text-align:center;padding:.3rem 0">Nenhuma condição ativa</div>';
+    return;
+  }
+  el.innerHTML=activeList.map(function(e){
+    var name=e[0],data=e[1];
+    var cond=CONDITIONS_DB[name];
+    return'<div style="display:flex;align-items:flex-start;gap:6px;padding:5px 7px;'
+      +'background:rgba('+hexToRgb(cond.color)+',.1);'
+      +'border:1px solid '+cond.color+';border-radius:8px;margin-bottom:.3rem">'
+      +'<span style="font-size:1.1rem;flex-shrink:0">'+cond.icon+'</span>'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between">'
+      +'<span style="font-family:Cinzel,serif;font-size:.6rem;color:'+cond.color+'">'+name+'</span>'
+      +'<button data-cn="'+name+'" onclick="removeCondition(this.dataset.cn)" style="background:rgba(200,168,74,.08);border:1px solid var(--border);border-radius:3px;color:var(--text3);font-size:.6rem;padding:0 4px;cursor:pointer;line-height:1.4">✕</button>'
+      +'</div>'
+      +(data.duration?'<div style="font-size:.58rem;color:var(--text3);margin-top:1px">⏱ '+data.duration+'</div>':'')
+      +'<div style="font-size:.65rem;color:var(--text3);margin-top:2px;line-height:1.3">'+cond.desc.slice(0,80)+(cond.desc.length>80?'...':'')+'</div>'
+      +(cond.saveStat?'<div style="font-size:.56rem;color:rgba(200,168,74,.4);margin-top:1px">TR '+cond.saveStat+' para resistir</div>':'')
+      +'</div></div>';
+  }).join('');
+
+  // Mobile refresh if conditions tab open
+  if(typeof buildMobChar==='function'&&mobActive==='char')buildMobChar();
+}
+
 function showRollToast(msg){const t=document.getElementById('roll-toast');t.textContent=msg;t.style.opacity='1';clearTimeout(rollToastTimer);rollToastTimer=setTimeout(()=>{t.style.opacity='0';},2500);}
 function showSaveToast(msg){const t=document.getElementById('save-toast');t.textContent='💾 '+msg;t.style.opacity='1';clearTimeout(t._timer);t._timer=setTimeout(()=>{t.style.opacity='0';},2500);}
 
@@ -4195,6 +4333,21 @@ function parseAndApplyUpdates(raw){
       }
       updQuest(qu.id,qu.status);
     });
+    // Conditions from narration
+    if(u.condition_add?.length){
+      u.condition_add.forEach(function(c){
+        var name=typeof c==='string'?c:c.name;
+        var dur=typeof c==='object'?c.duration:'';
+        var lv=typeof c==='object'?c.level:1;
+        if(CONDITIONS_DB[name])addCondition(name,dur,lv);
+      });
+    }
+    if(u.condition_remove?.length){
+      u.condition_remove.forEach(function(c){
+        var name=typeof c==='string'?c:c.name;
+        removeCondition(name);
+      });
+    }
     // HP changes from narration
     if(u.hp_damage){adjHP(-(parseInt(u.hp_damage)||0));msgs.push('💥 -'+u.hp_damage+' PV');}
     if(u.hp_heal){adjHP(parseInt(u.hp_heal)||0);msgs.push('💚 +'+u.hp_heal+' PV');}
@@ -4381,7 +4534,7 @@ function getState(){
     charSubclass:window.CHAR_SUBCLASS||'',charRegion:window.CHAR_REGION||'',
     campaignTitle:window.CAMPAIGN_TITLE||'',
     systemOverride:window.SYSTEM_OVERRIDE||'',
-    deathSaves:deathSaves,isUnconscious:isUnconscious,isDead:isDead,partyNPCs:partyNPCs,
+    deathSaves:deathSaves,isUnconscious:isUnconscious,isDead:isDead,partyNPCs:partyNPCs,activeConditions:activeConditions,
     spells:spells,spellSlots:spellSlots,
     notas:document.getElementById('notes-d')?.value||'',
     chat:document.getElementById('chat')?.innerHTML||'',
@@ -4418,6 +4571,7 @@ function loadProgress(slot='auto'){
   if(s.isUnconscious!==undefined)isUnconscious=s.isUnconscious;
   if(s.isDead!==undefined)isDead=s.isDead;
   if(s.partyNPCs!==undefined)partyNPCs=s.partyNPCs;
+  if(s.activeConditions!==undefined)activeConditions=s.activeConditions;
   if(isUnconscious)showDeathModal();
     window.CHAR_RACE=s.charRace||'';
     window.CHAR_CLASS=s.charClass||'';
@@ -4548,6 +4702,27 @@ const FR_REGIONS=[
   {id:'underdark',name:'Underdark',desc:'O subsolo sombrio repleto de perigos',start:'numa câmara rochosa com o eco de criaturas distantes'},
 ];
 
+
+// ─── CONDIÇÕES D&D 5e (LdJ Apêndice A, p.290) ───
+const CONDITIONS_DB={
+  'Agarrado':    {icon:'🤝',color:'#e67e22',desc:'Velocidade 0. Termina quando quem agarrou for incapacitado ou o personagem escapar.',saveStat:null},
+  'Assustado':   {icon:'😱',color:'#9b59b6',desc:'Desvantagem em testes enquanto a fonte do medo estiver visível. Não pode se mover em direção à fonte.',saveStat:'SAB'},
+  'Atordoado':   {icon:'💫',color:'#f39c12',desc:'Incapacitado. Falha automática em Resistências de FOR e DES. Ataques contra têm vantagem.',saveStat:'CON'},
+  'Caído':       {icon:'⬇',color:'#7f8c8d',desc:'Desvantagem em ataques. Ataques corpo-a-corpo contra têm vantagem; à distância têm desvantagem. Custo extra de movimento para levantar.',saveStat:null},
+  'Cego':        {icon:'🙈',color:'#2c3e50',desc:'Falha em testes que dependem de visão. Desvantagem em ataques. Ataques contra têm vantagem.',saveStat:'CON'},
+  'Encantado':   {icon:'💜',color:'#e91e8c',desc:'Não pode atacar o encantador. O encantador tem vantagem em interações sociais com o personagem.',saveStat:'SAB'},
+  'Enfeitiçado': {icon:'✨',color:'#1abc9c',desc:'Considerado amigo do feiticeiro. Desvantagem para resistir a magias do feiticeiro.',saveStat:'CAR'},
+  'Envenenado':  {icon:'☠',color:'#27ae60',desc:'Desvantagem em testes de ataque e habilidade.',saveStat:'CON'},
+  'Exausto':     {icon:'😮‍💨',color:'#e74c3c',desc:'Nível 1-6. Acumula: -10 velocidade/nível, desvantagem em testes, -penalidade a ataques.',saveStat:'CON',hasLevels:true,level:1},
+  'Incapacitado':{icon:'🚫',color:'#c0392b',desc:'Não pode realizar ações nem reações.',saveStat:null},
+  'Inconsciente':{icon:'💤',color:'#34495e',desc:'Incapacitado, não pode se mover ou falar. Cai no chão. Falha em FOR e DES. Ataques têm vantagem. Crítico em corpo-a-corpo.',saveStat:null},
+  'Invisível':   {icon:'👻',color:'#bdc3c7',desc:'Impossível ser visto sem sentidos especiais. Vantagem em ataques. Ataques contra têm desvantagem.',saveStat:null},
+  'Paralisado':  {icon:'🧊',color:'#3498db',desc:'Incapacitado. Falha em FOR e DES. Ataques têm vantagem. Crítico em corpo-a-corpo.',saveStat:'CON'},
+  'Petrificado': {icon:'🗿',color:'#95a5a6',desc:'Transformado em pedra. Incapacitado, peso x10. Imune a veneno e doença.',saveStat:'CON'},
+};
+
+// Condições ativas do personagem: {conditionName: {active:bool, duration:'', level:1}}
+var activeConditions={};
 
 // ─── RAÇAS COM SUB-RAÇAS E TRAÇOS FÍSICOS (LdJ) ───
 const RACES_DB={
@@ -5749,7 +5924,7 @@ async function startNewGame(){
     +'- Use nomes e locais CANÔNICOS dos Forgotten Realms.\n'
     +'- NPCs SEMPRE com nomes únicos e culturalmente coerentes. NUNCA repita um nome já usado nesta sessão.\n\n- Se o personagem tiver informações incompletas (nome de família nobre, deidade, mestre, etc.), INVENTE detalhes coerentes com Forgotten Realms e USE-OS naturalmente na narração.\n'
     +'SISTEMA DE ATUALIZAÇÃO — ao final se houver mudanças inclua (JSON puro, sem markdown):\n'
-    +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300,"gold_reward":50}],"hp_damage":5,"hp_heal":0,"xp_gain":150,"xp_source":"Combate","gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena."}}\n'
+    +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300,"gold_reward":50}],"hp_damage":5,"hp_heal":0,"condition_add":[{"name":"Envenenado","duration":"1 hora"}],"condition_remove":["Envenenado"],"xp_gain":150,"xp_source":"Combate","gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena."}}\n'
     +'OBRIGATÓRIO:\n'
     +'- Moedas: gold_add (receber) / gold_remove (gastar). Nunca pule.\n'
     +'- Missões: quest_add ao iniciar qualquer objetivo; quest_update ao concluir/falhar. Sempre com xp_reward.\n'
