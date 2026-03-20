@@ -639,29 +639,31 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .mob-nav{
   display:none;position:fixed;bottom:0;left:0;right:0;
   height:var(--nav-h);
-  background:linear-gradient(180deg,rgba(22,16,9,.97) 0%,rgba(13,10,6,.99) 100%);
-  border-top:1px solid rgba(200,168,74,.25);
+  background:linear-gradient(180deg,rgba(22,16,9,.98) 0%,rgba(10,7,4,.99) 100%);
+  border-top:1px solid rgba(200,168,74,.28);
   z-index:100;flex-shrink:0;
-  box-shadow:0 -6px 24px rgba(0,0,0,.65),0 -1px 0 rgba(200,168,74,.12);
-  padding:0 4px;
+  box-shadow:0 -6px 28px rgba(0,0,0,.7),0 -1px 0 rgba(200,168,74,.15);
+  padding:5px 6px 4px;
+  box-sizing:border-box;
 }
 .mob-nav-inner{
   display:flex;
-  align-items:center;
-  justify-content:space-evenly;
+  align-items:stretch;
+  justify-content:space-between;
   height:100%;
   gap:4px;
+  width:100%;
 }
 .mnav-btn{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:4px;
+  gap:3px;
   background:rgba(200,168,74,.06);
   border:1px solid rgba(200,168,74,.18);
-  border-radius:10px;
+  border-radius:9px;
   color:rgba(200,168,74,.5);
-  font-family:Cinzel,serif;font-size:.38rem;text-transform:uppercase;letter-spacing:.8px;
-  padding:6px 4px 5px;
-  flex:1;max-width:56px;min-width:44px;
+  font-family:Cinzel,serif;font-size:.36rem;text-transform:uppercase;letter-spacing:.5px;
+  padding:4px 0;
+  flex:1 1 0;width:0;min-width:0;
   position:relative;
   transition:all .18s cubic-bezier(.4,0,.2,1);
   cursor:pointer;
@@ -701,7 +703,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 /* Mobile drawer */
 .mob-drawer{
   display:none;position:fixed;
-  top:0;bottom:var(--nav-h);left:0;right:0;
+  top:var(--hdr-h,48px);bottom:var(--nav-h);left:0;right:0;
   background:var(--bg);
   z-index:99;overflow-y:auto;-webkit-overflow-scrolling:touch;
   padding:0;
@@ -840,6 +842,35 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 ══════════════════════════════════════ */
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes glow{0%,100%{opacity:.4}50%{opacity:.8}}
+/* ── Character Creation Steps ── */
+.cc-panel{width:100%}
+.cc-section-title{font-family:Cinzel,serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.6rem;padding-bottom:.3rem;border-bottom:1px solid var(--border)}
+.cc-label{font-family:Cinzel,serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px}
+.cc-input{width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(200,168,74,.3);border-radius:7px;padding:.55rem .8rem;font-family:Cormorant Garamond,serif;font-size:.95rem;color:#e8dfc8;outline:none;transition:border .2s;box-sizing:border-box}
+.cc-input-lg{font-size:1.05rem}
+.cc-input:focus{border-color:rgba(200,168,74,.6)}
+.cc-select{width:100%;background:#0d0a10;border:1px solid rgba(200,168,74,.3);border-radius:7px;padding:.5rem .7rem;font-family:Cormorant Garamond,serif;font-size:.92rem;color:#e8dfc8;outline:none;box-sizing:border-box}
+.cc-nav-row{display:flex;gap:.5rem;margin-top:.6rem}
+.cc-btn-sec{flex:1;background:rgba(200,168,74,.06);border:1px solid rgba(200,168,74,.25);border-radius:9px;color:rgba(200,168,74,.7);font-family:Cinzel,serif;font-size:.7rem;padding:.6rem;cursor:pointer;transition:all .2s}
+.cc-btn-sec:hover{border-color:rgba(200,168,74,.5)}
+.cc-btn-pri{flex:2;background:rgba(200,168,74,.12);border:1px solid rgba(200,168,74,.4);border-radius:9px;color:var(--gold2);font-family:Cinzel,serif;font-size:.72rem;padding:.6rem;cursor:pointer;transition:all .2s}
+.cc-btn-pri:hover{background:rgba(200,168,74,.2)}
+.cc-btn-start{flex:2;background:linear-gradient(135deg,#8b1a2a,#c0392b,#8b1a2a);border:1px solid rgba(200,168,74,.5);border-radius:9px;color:#f5db96;font-family:Cinzel,serif;font-size:.75rem;padding:.6rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;box-shadow:0 4px 20px rgba(155,35,53,.35);transition:all .2s}
+.cc-btn-start:hover{box-shadow:0 6px 28px rgba(155,35,53,.55)}
+/* Race/Class grid cards */
+.cc-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:.55rem .4rem;text-align:center;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.cc-card:hover{border-color:rgba(200,168,74,.4);background:rgba(200,168,74,.04)}
+.cc-card.selected{border-color:var(--gold2);background:rgba(200,168,74,.1);box-shadow:0 0 10px rgba(200,168,74,.15)}
+.cc-card-icon{font-size:1.3rem;line-height:1}
+.cc-card-name{font-family:Cinzel,serif;font-size:.52rem;color:var(--gold);text-transform:uppercase;letter-spacing:.8px}
+.cc-card-sub{font-size:.62rem;color:var(--text3);font-style:italic}
+/* Step dots */
+.cc-step-dot{font-family:Cinzel,serif;font-size:.44rem;color:rgba(200,168,74,.3);text-transform:uppercase;letter-spacing:.5px;padding:3px 7px;border-radius:10px;border:1px solid rgba(200,168,74,.15);transition:all .25s;white-space:nowrap}
+.cc-step-dot.active{color:var(--gold2);border-color:rgba(200,168,74,.5);background:rgba(200,168,74,.08)}
+.cc-step-dot.done{color:rgba(200,168,74,.5);border-color:rgba(200,168,74,.3)}
+.cc-step-line{flex:1;height:1px;background:rgba(200,168,74,.12);align-self:center}
+
+
 @media(max-width:740px){
   /* Start screen full scroll on mobile */
   #start-screen{
@@ -1080,102 +1111,140 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
     <!-- ══ STEP 3: CHARACTER CREATION ══ -->
     <div id="step-new" style="display:none;text-align:left;width:100%;padding-bottom:2rem">
 
-      <!-- Header -->
-      <div style="text-align:center;margin-bottom:1.2rem">
-        <div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(200,168,74,.06);border:1px solid rgba(200,168,74,.2);border-radius:8px;padding:.4rem .9rem">
-          <span style="color:rgba(200,168,74,.7)">📜</span>
-          <span style="font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold2);letter-spacing:1px">Criar Personagem</span>
+      <!-- Progress steps indicator -->
+      <div style="display:flex;justify-content:center;gap:.3rem;margin-bottom:1.2rem" id="cc-steps-bar">
+        <div class="cc-step-dot active" id="ccdot-0">Raça</div>
+        <div class="cc-step-line"></div>
+        <div class="cc-step-dot" id="ccdot-1">Classe</div>
+        <div class="cc-step-line"></div>
+        <div class="cc-step-dot" id="ccdot-2">Identidade</div>
+        <div class="cc-step-line"></div>
+        <div class="cc-step-dot" id="ccdot-3">Atributos</div>
+        <div class="cc-step-line"></div>
+        <div class="cc-step-dot" id="ccdot-4">História</div>
+      </div>
+
+      <!-- STEP 0: RAÇA -->
+      <div class="cc-panel" id="cc-panel-0">
+        <div class="cc-section-title">🧬 Escolha sua Raça</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.7rem" id="race-grid"></div>
+        <!-- Sub-raça -->
+        <div id="subrace-area" style="display:none;margin-bottom:.7rem">
+          <div class="cc-section-title" style="font-size:.5rem">Sub-raça</div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.35rem" id="subrace-grid"></div>
+        </div>
+        <!-- Traços da raça -->
+        <div id="race-traits-area" style="display:none;background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.12);border-radius:8px;padding:.7rem;margin-bottom:.7rem">
+          <div style="font-family:Cinzel,serif;font-size:.52rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.4rem">Traços Raciais</div>
+          <div id="race-traits-list" style="font-size:.78rem;color:var(--text2);line-height:1.6"></div>
+        </div>
+        <!-- Draconato dragon type -->
+        <div id="dragon-area" style="display:none;margin-bottom:.7rem">
+          <label class="cc-label">Ancestral Dracônico</label>
+          <select id="dragon-type" class="cc-select"><option>Vermelho (Fogo)</option></select>
+        </div>
+        <!-- Características físicas -->
+        <div style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:10px;padding:.8rem;margin-bottom:.7rem">
+          <div class="cc-section-title" style="font-size:.5rem">✨ Aparência Física</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem" id="physique-grid"></div>
+          <div style="margin-top:.5rem">
+            <label class="cc-label">Descrição adicional (opcional)</label>
+            <input id="cc-appearance" placeholder="Cicatriz, tatuagem, traço marcante..." class="cc-input"/>
+          </div>
+        </div>
+        <div class="cc-nav-row">
+          <button onclick="showStep('step-menu')" class="cc-btn-sec">← Menu</button>
+          <button onclick="ccNext(0)" class="cc-btn-pri">Próximo: Classe →</button>
         </div>
       </div>
 
-      <!-- Section: Identity -->
-      <div style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:12px;padding:1rem;margin-bottom:.8rem">
-        <div style="font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:.7rem">Identidade</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
-          <div style="grid-column:1/-1">
-            <label style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Nome do Personagem *</label>
-            <input id="new-name" placeholder="Como você é chamado?" style="width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(200,168,74,.3);border-radius:7px;padding:.55rem .8rem;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#e8dfc8;outline:none;transition:border .2s"/>
-          </div>
+      <!-- STEP 1: CLASSE -->
+      <div class="cc-panel" id="cc-panel-1" style="display:none">
+        <div class="cc-section-title">⚔ Escolha sua Classe</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.7rem" id="class-grid"></div>
+        <!-- Subclasse nível 1 (Clérigo, Bruxo, Feiticeiro) -->
+        <div id="subclass1-area" style="display:none;margin-bottom:.7rem">
+          <div class="cc-section-title" style="font-size:.5rem" id="subclass1-label">Domínio / Patrono / Origem</div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.35rem" id="subclass1-grid"></div>
+        </div>
+        <!-- Escolhas de classe nível 1 -->
+        <div id="class-choices-area" style="display:none;background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.12);border-radius:8px;padding:.7rem;margin-bottom:.7rem">
+          <div class="cc-section-title" style="font-size:.5rem">Escolhas de Nível 1</div>
+          <div id="class-choices-list"></div>
+        </div>
+        <!-- Equipment preview -->
+        <div id="equip-preview" style="background:rgba(58,144,200,.04);border:1px solid rgba(58,144,200,.18);border-radius:10px;padding:.7rem .9rem;margin-bottom:.7rem;font-size:.78rem;color:#e8dfc8"></div>
+        <div class="cc-nav-row">
+          <button onclick="ccPrev(1)" class="cc-btn-sec">← Raça</button>
+          <button onclick="ccNext(1)" class="cc-btn-pri">Próximo: Identidade →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: IDENTIDADE -->
+      <div class="cc-panel" id="cc-panel-2" style="display:none">
+        <div class="cc-section-title">📛 Identidade</div>
+        <div style="margin-bottom:.6rem">
+          <label class="cc-label">Nome do Personagem *</label>
+          <input id="new-name" placeholder="Como você é chamado?" class="cc-input cc-input-lg"/>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.6rem">
           <div>
-            <label style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Raça</label>
-            <select id="new-race" style="width:100%;background:#0d0a10;border:1px solid rgba(200,168,74,.3);border-radius:7px;padding:.55rem .8rem;font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#e8dfc8;outline:none">
-              <option>Humano</option><option>Elfo</option><option>Meio-Elfo</option><option>Anão</option>
-              <option>Halfling</option><option>Gnomo</option><option>Meio-Orc</option><option>Tiefling</option><option>Draconato</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Alinhamento</label>
-            <select id="new-align" style="width:100%;background:#0d0a10;border:1px solid rgba(200,168,74,.3);border-radius:7px;padding:.55rem .8rem;font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#e8dfc8;outline:none">
+            <label class="cc-label">Alinhamento</label>
+            <select id="new-align" class="cc-select">
               <option>Leal e Bom</option><option>Neutro e Bom</option><option>Caótico e Bom</option>
               <option>Leal e Neutro</option><option>Neutro</option><option>Caótico e Neutro</option>
               <option>Leal e Mau</option><option>Neutro e Mau</option><option>Caótico e Mau</option>
             </select>
           </div>
-        </div>
-      </div>
-
-      <!-- Section: Class -->
-      <div style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:12px;padding:1rem;margin-bottom:.8rem">
-        <div style="font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:.7rem">Classe & Vocação</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
           <div>
-            <label style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Classe</label>
-            <select id="new-class" style="width:100%;background:#0d0a10;border:1px solid rgba(200,168,74,.3);border-radius:7px;padding:.55rem .8rem;font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#e8dfc8;outline:none" onchange="updateClassDefaults()">
-              <option>Guerreiro</option><option>Paladino</option><option>Bárbaro</option><option>Ladino</option>
-              <option>Mago</option><option>Feiticeiro</option><option>Bruxo</option><option>Clérigo</option>
-              <option>Druida</option><option>Bardo</option><option>Monge</option><option>Patrulheiro</option>
-            </select>
-          </div>
-          <div>
-            <label style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Antecedente</label>
-            <select id="new-bg" style="width:100%;background:#0d0a10;border:1px solid rgba(200,168,74,.3);border-radius:7px;padding:.55rem .8rem;font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#e8dfc8;outline:none">
-              <option>Forasteiro</option><option>Soldado</option><option>Criminoso</option><option>Sábio</option>
-              <option>Nobre</option><option>Herói do Povo</option><option>Eremita</option><option>Marinheiro</option>
-              <option>Charlatão</option><option>Artesão de Guilda</option>
-            </select>
-          </div>
-          <div style="grid-column:1/-1">
-            <label style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Subclasse <span style="color:rgba(200,168,74,.35);font-size:.52rem;text-transform:none">(nível 3)</span></label>
-            <select id="new-subclass" style="width:100%;background:#0d0a10;border:1px solid rgba(200,168,74,.3);border-radius:7px;padding:.55rem .8rem;font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#e8dfc8;outline:none">
-              <option value="">Escolher após nível 3</option>
+            <label class="cc-label">Antecedente</label>
+            <select id="new-bg" class="cc-select">
+              <option>Forasteiro</option><option>Soldado</option><option>Criminoso</option>
+              <option>Sábio</option><option>Nobre</option><option>Herói do Povo</option>
+              <option>Eremita</option><option>Marinheiro</option><option>Charlatão</option>
+              <option>Artesão de Guilda</option><option>Acólito</option><option>Artista</option>
             </select>
           </div>
         </div>
+        <div style="margin-bottom:.6rem">
+          <div class="cc-section-title" style="font-size:.5rem">🗺 Região de Início</div>
+          <div id="region-list" style="display:flex;flex-wrap:wrap;gap:.35rem"></div>
+        </div>
+        <div class="cc-nav-row">
+          <button onclick="ccPrev(2)" class="cc-btn-sec">← Classe</button>
+          <button onclick="ccNext(2)" class="cc-btn-pri">Próximo: Atributos →</button>
+        </div>
       </div>
 
-      <!-- Section: Attributes -->
-      <div style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:12px;padding:1rem;margin-bottom:.8rem">
-        <div style="font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:.4rem">Atributos</div>
-        <div style="font-size:.7rem;color:rgba(200,168,74,.35);font-style:italic;margin-bottom:.6rem">Array padrão: 15, 14, 13, 12, 10, 8</div>
-        <div id="attr-builder" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem"></div>
+      <!-- STEP 3: ATRIBUTOS -->
+      <div class="cc-panel" id="cc-panel-3" style="display:none">
+        <div class="cc-section-title">⚡ Atributos</div>
+        <div style="font-size:.7rem;color:rgba(200,168,74,.4);font-style:italic;margin-bottom:.6rem">Array padrão: 15, 14, 13, 12, 10, 8 — ajuste conforme quiser</div>
+        <div id="attr-builder" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.7rem"></div>
+        <!-- Racial bonuses reminder -->
+        <div id="racial-bonus-hint" style="font-size:.72rem;color:var(--arc3);background:rgba(107,63,160,.06);border:1px solid rgba(107,63,160,.15);border-radius:7px;padding:.5rem .7rem;margin-bottom:.7rem"></div>
+        <div class="cc-nav-row">
+          <button onclick="ccPrev(3)" class="cc-btn-sec">← Identidade</button>
+          <button onclick="ccNext(3)" class="cc-btn-pri">Próximo: História →</button>
+        </div>
       </div>
 
-      <!-- Section: Story -->
-      <div style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:12px;padding:1rem;margin-bottom:.8rem">
-        <div style="font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:.7rem">História</div>
-        <label style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px">Motivação (opcional)</label>
-        <textarea id="new-story" placeholder="De onde vem? O que busca? Qual seu maior medo?" style="width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(200,168,74,.3);border-radius:7px;padding:.55rem .8rem;font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#e8dfc8;outline:none;resize:none;min-height:60px;line-height:1.5"></textarea>
-      </div>
-
-      <!-- Section: Region -->
-      <div style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:12px;padding:1rem;margin-bottom:.8rem">
-        <div style="font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:.7rem">🗺 Região de Início</div>
-        <div id="region-list" style="display:flex;flex-wrap:wrap;gap:.35rem"></div>
-      </div>
-
-      <!-- Equipment Preview -->
-      <div id="equip-preview" style="background:rgba(58,144,200,.04);border:1px solid rgba(58,144,200,.18);border-radius:10px;padding:.7rem .9rem;margin-bottom:1rem;font-size:.78rem;color:#e8dfc8"></div>
-
-      <!-- Action buttons -->
-      <div style="display:flex;gap:.6rem">
-        <button onclick="showStep('step-menu')" style="flex:1;background:rgba(200,168,74,.06);border:1px solid rgba(200,168,74,.25);border-radius:10px;color:rgba(200,168,74,.7);font-family:'Cinzel',serif;font-size:.72rem;padding:.65rem;cursor:pointer;letter-spacing:.5px;transition:all .2s"
-          onmouseover="this.style.borderColor='rgba(200,168,74,.5)'" onmouseout="this.style.borderColor='rgba(200,168,74,.25)'">
-          ← Menu Inicial
-        </button>
-        <button onclick="startNewGame()" style="flex:2;background:linear-gradient(135deg,#8b1a2a 0%,#c0392b 60%,#8b1a2a 100%);border:1px solid rgba(200,168,74,.5);border-radius:10px;color:#f5db96;font-family:'Cinzel',serif;font-size:.8rem;padding:.65rem;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 20px rgba(155,35,53,.35);transition:all .2s"
-          onmouseover="this.style.boxShadow='0 6px 28px rgba(155,35,53,.55)'" onmouseout="this.style.boxShadow='0 4px 20px rgba(155,35,53,.35)'">
-          ⚔ Iniciar Aventura
-        </button>
+      <!-- STEP 4: HISTÓRIA -->
+      <div class="cc-panel" id="cc-panel-4" style="display:none">
+        <div class="cc-section-title">📖 História & Motivação</div>
+        <div style="margin-bottom:.6rem">
+          <label class="cc-label">Motivação (opcional)</label>
+          <textarea id="new-story" placeholder="De onde vem? O que busca? Qual seu maior medo? Quem é sua família?" class="cc-input" style="min-height:80px;resize:none;line-height:1.5"></textarea>
+        </div>
+        <!-- Summary card -->
+        <div id="char-summary" style="background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.2);border-radius:10px;padding:.8rem;margin-bottom:.8rem">
+          <div style="font-family:Cinzel,serif;font-size:.54rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.5rem">Resumo do Personagem</div>
+          <div id="char-summary-content" style="font-size:.8rem;color:var(--text2);line-height:1.6"></div>
+        </div>
+        <div class="cc-nav-row">
+          <button onclick="ccPrev(4)" class="cc-btn-sec">← Atributos</button>
+          <button onclick="startNewGame()" class="cc-btn-start">⚔ Iniciar Aventura</button>
+        </div>
       </div>
     </div>
 
@@ -1490,7 +1559,7 @@ const SPELL_SLOTS_BY_CLASS={
   'Clérigo':{   1:{total:2,used:0}},
   'Druida':{    1:{total:2,used:0}},
   'Bardo':{     1:{total:2,used:0}},
-  'Paladino':{  1:{total:0,used:0}},  // Paladino ganha magias nv2
+  'Paladino':{  1:{total:0,used:0}},  // Paladino ganha slots no nv2, mas seleciona magias desde nv1
   'Patrulheiro':{1:{total:0,used:0}}, // Patrulheiro ganha magias nv2
 };
 let combatActive=false, combatants=[], currentTurn=0, roundNum=1;
@@ -2271,7 +2340,9 @@ function openSpellManager(){
     if(!list.length) return '';
     var locked=(L===0);
     var sel=countSelected(lvl);
-    var limitTxt=locked?'🔒 Nível '+(lvl===1?2:lvl*2)+' necessário':L===99?'ilimitado':sel+'/'+L;
+    var isPalTrack=(clsBase==='Paladino'||clsBase==='Patrulheiro')&&lvl===1;
+    var lockMsg=isPalTrack?'🔒 Conjuração disponível no Nível 2':'🔒 Disponível no Nível '+(lvl===1?2:lvl*2);
+    var limitTxt=locked?lockMsg:L===99?'ilimitado':sel+'/'+L;
     var limitColor=locked?'var(--blood2)':sel>=L&&L<99?'var(--gold2)':'var(--text3)';
 
     var rows=list.map(function(sp){
@@ -2628,11 +2699,10 @@ function renderInv(){
       +'<span class="inv-name">'+item.name+'</span>'
       +'<div style="display:flex;align-items:center;gap:3px;flex-shrink:0">'
       +'<button style="background:rgba(200,168,74,.08);border:1px solid var(--border);border-radius:3px;color:var(--text3);width:18px;height:18px;font-size:.7rem;line-height:1;cursor:pointer" onclick="adjInvQty('+i+',-1)">−</button>'
-      +'<span style="font-family:Cinzel,serif;font-size:.65rem;color:var(--gold);min-width:18px;text-align:center">'+item.qty+'</span>'
+      +'<span style="font-family:Cinzel,serif;font-size:.68rem;color:var(--gold);min-width:22px;text-align:center">'+item.qty+'</span>'
       +'<button style="background:rgba(200,168,74,.08);border:1px solid var(--border);border-radius:3px;color:var(--text3);width:18px;height:18px;font-size:.7rem;line-height:1;cursor:pointer" onclick="adjInvQty('+i+',1)">+</button>'
       +'<button class="inv-del" onclick="removeInv('+i+')">✕</button>'
-      +'</div>'
-      +'</div>';
+      +'</div></div>';
   }).join('');
   updateInvBadge();
 }
@@ -3969,18 +4039,67 @@ document.getElementById('chat')&&document.getElementById('chat').addEventListene
 
 // ─── FORGOTTEN REALMS DATA ───
 const FR_REGIONS=[
-  {id:'waterdeep',name:'Waterdeep',desc:'Cidade dos Esplendores'},
-  {id:'baldursgate',name:'Portão de Baldur',desc:'Porto & Comércio'},
-  {id:'neverwinter',name:'Neverwinter',desc:'A Joia do Norte'},
-  {id:'candlekeep',name:'Candlekeep',desc:'Fortaleza do Saber'},
-  {id:'icewinddale',name:'Vale do Vento Gelado',desc:'Terras Selvagens'},
-  {id:'silverymoon',name:'Lua de Prata',desc:'Cidade Mágica'},
-  {id:'amn',name:'Amn',desc:'Terra dos Mercadores'},
-  {id:'cormyr',name:'Cormyr',desc:'Reino da Floresta'},
-  {id:'thay',name:'Thay',desc:'Terra dos Magos Vermelhos'},
-  {id:'underdark',name:'Underdark',desc:'Profundezas Sombrias'},
+  // Grandes cidades
+  {id:'waterdeep',name:'Waterdeep',desc:'A Cidade dos Esplendores — metrópole cosmopolita',start:'nas ruas movimentadas do Distrito do Porto'},
+  {id:'baldursgate',name:'Portão de Baldur',desc:'Porto vibrante na Sword Coast',start:'nos docas infestados de contrabandistas'},
+  {id:'neverwinter',name:'Neverwinter',desc:'A Joia do Norte — cidade renascida das cinzas',start:'perto das muralhas ainda marcadas pela catástrofe'},
+  // Vilas e vilarejos
+  {id:'phandelin',name:'Phandalin',desc:'Vilarejo de colonos na beira da Triboar Trail',start:'na praça de terra batida em frente à Stonehill Inn'},
+  {id:'daggerford',name:'Daggerford',desc:'Pequena cidade comercial na Sword Coast',start:'no mercado barulhento próximo ao rio Delimbiyr'},
+  {id:'greenest',name:'Greenest',desc:'Vilarejo tranquilo nas Planícies de Elturgard',start:'nos campos abertos ao sul da cidade'},
+  {id:'triboar',name:'Triboar',desc:'Entroncamento de estradas nas pradarias do Norte',start:'no pátio do Poseidon Inn após uma longa viagem'},
+  {id:'longsaddle',name:'Longsaddle',desc:'Vila isolada famosa por sua família de magos',start:'nas margens de um riacho próximo à mansão Harpell'},
+  // Regiões selvagens
+  {id:'icewinddale',name:'Vale do Vento Gelado',desc:'Terras geladas além do Norte Profundo',start:'em uma cabana de caçador às margens do Lac Dinneshere'},
+  {id:'mistyforest',name:'Floresta das Névoas',desc:'Floresta élfica misteriosa a oeste de Waterdeep',start:'numa clareira iluminada por vagalumes mágicos'},
+  {id:'anauroch',name:'Anauroch',desc:'O Grande Deserto de Areia dos Forgotten Realms',start:'num oásis raro com ruínas arcanas ao redor'},
+  {id:'underdark',name:'Underdark',desc:'O subsolo sombrio repleto de perigos',start:'numa câmara rochosa com o eco de criaturas distantes'},
 ];
 
+
+// ─── RAÇAS COM SUB-RAÇAS E TRAÇOS FÍSICOS (LdJ) ───
+const RACES_DB={
+  'Humano':    {sub:[],speed:9,size:'Médio',
+    traits:['Versátil: +1 em todos os atributos','Proficiência em uma perícia extra','Idioma extra'],
+    physique:{skin:['clara','morena','escura','azeitonada','bronzeada'],hair:['castanho','preto','loiro','ruivo','grisalho','branco'],eyes:['castanhos','azuis','verdes','cinzas','avelã'],build:['esguio','atlético','corpulento','mediano'],height:['1,60m','1,70m','1,75m','1,80m','1,85m','1,90m']}},
+  'Elfo':      {sub:['Elfo Alto','Elfo da Floresta','Elfo Negro (Drow)'],speed:9,size:'Médio',
+    traits:['Visão no escuro 18m','Resistência a encantamento','Transe em vez de sono'],
+    subTraits:{'Elfo Alto':['Truque arcano adicional','Proficiência em espada longa e arco longo'],
+               'Elfo da Floresta':['Velocidade 10,5m','Esconder-se em terreno natural'],
+               'Elfo Negro (Drow)':['Visão no escuro 36m','Luz das Fadas','Escuridão']},
+    physique:{skin:['pálida prateada','bronze dourado','ébano azulado','cobre'],hair:['prateado','dourado','preto azulado','branco','vermelho-cobre'],eyes:['dourados','prateados','verdes esmeralda','violeta','âmbar'],build:['esguio e gracioso','delicado','alto e elegante'],height:['1,55m','1,65m','1,70m','1,75m']}},
+  'Meio-Elfo': {sub:[],speed:9,size:'Médio',
+    traits:['Visão no escuro 18m','Resistência a encantamento','+2 CAR, +1 em dois atributos','Duas proficiências de perícia'],
+    physique:{skin:['clara','bege','morena'],hair:['castanho','preto','loiro','ruivo'],eyes:['azuis','verdes','violeta','dourados','cinzas'],build:['mediano','esguio','levemente graciosas'],height:['1,65m','1,70m','1,75m','1,80m']}},
+  'Anão':      {sub:['Anão da Colina','Anão da Montanha'],speed:7.5,size:'Médio',
+    traits:['Visão no escuro 18m','Resiliência anã (vantagem contra veneno)','Velocidade não reduzida por armadura'],
+    subTraits:{'Anão da Colina':['+2 CON +1 SAB','1 PV extra por nível','Vantagem contra magia de percepção'],
+               'Anão da Montanha':['+2 CON +2 FOR','Proficiência com armaduras leves e médias']},
+    physique:{skin:['rosada','bronzeada','marrom acinzentada','pálida'],hair:['castanho','preto','ruivo','loiro dourado','grisalho'],eyes:['castanhos','azuis','acinzentados','verdes'],build:['robusto e largo','musculoso','encorpado'],height:['1,20m','1,25m','1,30m','1,35m']}},
+  'Halfling':  {sub:['Halfling Pés-Leves','Halfling Robusto'],speed:7.5,size:'Pequeno',
+    traits:['+2 DES','Sortudo: re-rola 1s em ataques','Corajoso: vantagem contra medo'],
+    subTraits:{'Halfling Pés-Leves':['+1 CAR','Esconder-se atrás de criaturas maiores'],
+               'Halfling Robusto':['+1 CON','Vantagem contra veneno']},
+    physique:{skin:['clara','bronzeada','morena'],hair:['castanho','preto','loiro'],eyes:['castanhos','azuis','verdes','avelã'],build:['rechonchudo','esguio','miúdo'],height:['88cm','90cm','95cm','1,00m']}},
+  'Gnomo':     {sub:['Gnomo da Floresta','Gnomo das Rochas'],speed:7.5,size:'Pequeno',
+    traits:['+2 INT','Visão no escuro 18m','Esperteza gnômica: vantagem em INT/SAB/CAR contra magia'],
+    subTraits:{'Gnomo da Floresta':['+1 DES','Ilusão menor à vontade','Falar com animais pequenos'],
+               'Gnomo das Rochas':['+1 CON','Proficiência com ferramentas de artesão','Histórico Artificial']},
+    physique:{skin:['clara','bege','bronzeada'],hair:['branco','creme','loiro claro','cinza'],eyes:['azuis','verdes','âmbar','prata'],build:['miúdo','ágil','compacto'],height:['90cm','95cm','1,00m','1,05m']}},
+  'Meio-Orc':  {sub:[],speed:9,size:'Médio',
+    traits:['+2 FOR +1 CON','Visão no escuro 18m','Ameaçador: proficiência em Intimidação','Resistência Implacável: 1/long rest ficar em 1 PV','Ataques Selvagens: +1 dado em críticos'],
+    physique:{skin:['cinza-esverdeada','verde-oliva','marrom-acinzentada','esverdeada'],hair:['preto','marrom escuro','castanho'],eyes:['vermelhos','castanhos','âmbar','verdes escuros'],build:['musculoso e largo','imponente','corpulento'],height:['1,75m','1,80m','1,85m','1,90m','1,95m']}},
+  'Tiefling':  {sub:[],speed:9,size:'Médio',
+    traits:['+1 INT +2 CAR','Visão no escuro 18m','Resistência infernal (fogo)','Legado Infernal: Thaumaturgia/Chamas Infernais/Escuridão'],
+    physique:{skin:['vermelha','roxa','azul escura','cinza carvão','bege com manchas'],hair:['preto','vermelho','roxo escuro','branco prateado'],eyes:['sólidos: vermelho','prata','ouro','roxo'],extras:['chifres curvos','cauda longa','presas pontudas','ausência de íris'],height:['1,60m','1,65m','1,75m','1,80m']}},
+  'Draconato': {sub:[],speed:9,size:'Médio',
+    traits:['+2 FOR +1 CAR','Ancestral Dracônico: escolha o tipo de dragão','Sopro de Armas (1x/descanso curto)','Resistência ao elemento do ancestral'],
+    dragonTypes:['Preto (Ácido)','Azul (Relâmpago)','Latão (Fogo)','Bronze (Relâmpago)','Cobre (Ácido)','Dourado (Fogo)','Verde (Veneno)','Vermelho (Fogo)','Prata (Frio)','Branco (Frio)'],
+    physique:{skin:['escamas vermelhas','escamas douradas','escamas prateadas','escamas verdes','escamas azuis','escamas negras','escamas bronzeadas','escamas brancas'],eyes:['dourados','vermelhos','azuis','verdes'],build:['imponente e musculoso','escamoso e alto'],height:['1,85m','1,90m','1,95m','2,00m']}},
+};
+
+// ─── SUBCLASSES NÍVEL 1 com escolhas (Clérigo domínio, Bruxo patrono, Feiticeiro origem) ───
+const SUBCLASS_LEVEL1=['Clérigo','Bruxo','Feiticeiro'];
 
 // ─── ARMAS OFICIAIS (Livro do Jogador p.150) ───
 const WEAPONS_DB=[
@@ -4379,9 +4498,8 @@ function showStep(id){
     var el=document.getElementById(s);if(el)el.style.display='none';
   });
   var el=document.getElementById(id);if(el)el.style.display='block';
-  if(id==='step-new') buildAttrBuilder();
+  if(id==='step-new'){ccStep(0);}
   if(id==='step-menu') checkStorageSave();
-  if(id==='step-new') buildRegionList();
 }
 
 function checkStorageSave(){
@@ -4401,6 +4519,140 @@ function checkStorageSave(){
 }
 
 function fmtMod(v){var m=Math.floor((parseInt(v)||10)-10)/2;m=Math.floor(m);return(m>=0?'+':'')+m;}
+var _ccSelectedRace='Humano';
+var _ccSelectedSubrace='';
+var _ccSelectedClass='Guerreiro';
+var _ccSelectedSubclass1='';
+
+function ccStep(n){
+  for(var i=0;i<5;i++){
+    var p=document.getElementById('cc-panel-'+i);
+    if(p)p.style.display=i===n?'':'none';
+    var dot=document.getElementById('ccdot-'+i);
+    if(dot)dot.className='cc-step-dot'+(i===n?' active':i<n?' done':'');
+  }
+  if(n===0)buildRaceGrid();
+  if(n===1)buildClassGrid();
+  if(n===2)buildRegionList();
+  if(n===3){buildAttrBuilder();updateRacialBonusHint();}
+  if(n===4)buildCharSummary();
+  window.scrollTo(0,0);
+}
+function ccNext(cur){
+  if(cur===0){var a=document.getElementById('cc-appearance');if(a)window._ccAppearance=a.value;}
+  if(cur===2){var n=document.getElementById('new-name')?.value.trim();if(!n){alert('Digite o nome!');return;}}
+  ccStep(cur+1);
+}
+function ccPrev(cur){ccStep(cur-1);}
+
+function buildRaceGrid(){
+  var el=document.getElementById('race-grid');if(!el)return;
+  var icons={Humano:'👤',Elfo:'🧝','Meio-Elfo':'🧑',Anão:'⛏',Halfling:'🍀',Gnomo:'🔭','Meio-Orc':'💪',Tiefling:'😈',Draconato:'🐉'};
+  el.innerHTML=Object.keys(RACES_DB).map(function(r){
+    return'<div class="cc-card'+(r===_ccSelectedRace?' selected':'')+'" data-r="'+r+'" onclick="selectRace(this.dataset.r)"><div class="cc-card-icon">'+(icons[r]||'⚔')+'</div><div class="cc-card-name">'+r+'</div></div>';
+  }).join('');
+  renderSubraceArea();renderPhysiqueArea();renderRaceTraits();
+}
+function selectRace(r){
+  _ccSelectedRace=r;_ccSelectedSubrace='';
+  document.querySelectorAll('#race-grid .cc-card').forEach(function(c){c.classList.toggle('selected',c.querySelector('.cc-card-name')?.textContent===r);});
+  renderSubraceArea();renderRaceTraits();renderPhysiqueArea();
+  var da=document.getElementById('dragon-area');if(da)da.style.display=r==='Draconato'?'':'none';
+  if(r==='Draconato'){var ds=document.getElementById('dragon-type');if(ds&&RACES_DB.Draconato.dragonTypes)ds.innerHTML=RACES_DB.Draconato.dragonTypes.map(function(d){return'<option>'+d+'</option>';}).join('');}
+}
+function renderSubraceArea(){
+  var rd=RACES_DB[_ccSelectedRace];var area=document.getElementById('subrace-area');var grid=document.getElementById('subrace-grid');
+  if(!area||!grid)return;
+  if(!rd||!rd.sub||!rd.sub.length){area.style.display='none';return;}
+  area.style.display='';
+  grid.innerHTML=rd.sub.map(function(s){
+    var ex=rd.subTraits&&rd.subTraits[s]?rd.subTraits[s].slice(0,1).join(''):'';
+    return'<div class="cc-card'+(s===_ccSelectedSubrace?' selected':'')+'" data-s="'+s+'" onclick="selectSubrace(this.dataset.s)"><div class="cc-card-name">'+s+'</div><div class="cc-card-sub">'+ex+'</div></div>';
+  }).join('');
+}
+function selectSubrace(s){
+  _ccSelectedSubrace=s;
+  document.querySelectorAll('#subrace-grid .cc-card').forEach(function(c){c.classList.toggle('selected',c.querySelector('.cc-card-name')?.textContent===s);});
+  renderRaceTraits();
+}
+function renderRaceTraits(){
+  var rd=RACES_DB[_ccSelectedRace];var area=document.getElementById('race-traits-area');var list=document.getElementById('race-traits-list');
+  if(!area||!list||!rd)return;
+  var traits=(rd.traits||[]).slice();
+  if(rd.subTraits&&_ccSelectedSubrace&&rd.subTraits[_ccSelectedSubrace])traits=traits.concat(rd.subTraits[_ccSelectedSubrace]);
+  if(!traits.length){area.style.display='none';return;}
+  area.style.display='';
+  list.innerHTML=traits.map(function(t){return'<div style="padding:2px 0;border-bottom:1px solid var(--border)">• '+t+'</div>';}).join('');
+}
+function renderPhysiqueArea(){
+  var rd=RACES_DB[_ccSelectedRace];var grid=document.getElementById('physique-grid');
+  if(!grid||!rd||!rd.physique)return;
+  var p=rd.physique;
+  var fields=[{id:'phys-skin',label:'Pele',opts:p.skin||[]},{id:'phys-hair',label:'Cabelo',opts:p.hair||[]},{id:'phys-eyes',label:'Olhos',opts:p.eyes||[]},{id:'phys-build',label:'Porte',opts:p.build||[]},{id:'phys-height',label:'Altura',opts:p.height||[]}];
+  if(p.extras)fields.push({id:'phys-extras',label:'Traço especial',opts:p.extras});
+  grid.innerHTML=fields.filter(function(f){return f.opts.length;}).map(function(f){
+    return'<div><label class="cc-label">'+f.label+'</label><select id="'+f.id+'" class="cc-select">'+f.opts.map(function(o){return'<option>'+o+'</option>';}).join('')+'</select></div>';
+  }).join('');
+}
+function updateRacialBonusHint(){
+  var el=document.getElementById('racial-bonus-hint');if(!el)return;
+  var bonusMap={Humano:'+1 em todos os atributos',Elfo:'+2 DES',  'Meio-Elfo':'+2 CAR +1 em dois',Anão:'+2 CON',Halfling:'+2 DES',Gnomo:'+2 INT','Meio-Orc':'+2 FOR +1 CON',Tiefling:'+2 CAR +1 INT',Draconato:'+2 FOR +1 CAR'};
+  var b=bonusMap[_ccSelectedRace]||'';el.style.display=b?'':'none';if(b)el.textContent='Bônus racial: '+b;
+}
+function buildClassGrid(){
+  var el=document.getElementById('class-grid');if(!el)return;
+  var icons={Guerreiro:'⚔',Paladino:'✝',Bárbaro:'🪓',Ladino:'🗡',Mago:'📖',Feiticeiro:'✨',Bruxo:'👁',Clérigo:'☩',Druida:'🌿',Bardo:'🎵',Monge:'👊',Patrulheiro:'🏹'};
+  el.innerHTML=Object.keys(CLASS_DEFAULTS).map(function(c){
+    var hp=CLASS_LEVEL_TABLE[c]?'d'+CLASS_LEVEL_TABLE[c].hpDie:'d8';
+    return'<div class="cc-card'+(c===_ccSelectedClass?' selected':'')+'" data-c="'+c+'" onclick="selectClass(this.dataset.c)"><div class="cc-card-icon">'+(icons[c]||'⚔')+'</div><div class="cc-card-name">'+c+'</div><div class="cc-card-sub">'+hp+'</div></div>';
+  }).join('');
+  renderSubclass1Area();renderClassChoices();updateClassDefaults();
+}
+function selectClass(c){
+  _ccSelectedClass=c;_ccSelectedSubclass1='';
+  document.querySelectorAll('#class-grid .cc-card').forEach(function(el){el.classList.toggle('selected',el.querySelector('.cc-card-name')?.textContent===c);});
+  var nc=document.getElementById('new-class');if(nc)nc.value=c;
+  renderSubclass1Area();renderClassChoices();updateClassDefaults();
+}
+function renderSubclass1Area(){
+  var area=document.getElementById('subclass1-area');var grid=document.getElementById('subclass1-grid');var lbl=document.getElementById('subclass1-label');
+  if(!area||!grid)return;
+  var need=typeof SUBCLASS_LEVEL1!=='undefined'&&SUBCLASS_LEVEL1.indexOf(_ccSelectedClass)>=0;
+  area.style.display=need?'':'none';if(!need)return;
+  var subs=SUBCLASSES[_ccSelectedClass]||[];
+  var labels={Clérigo:'Domínio Divino',Bruxo:'Patrono Transcendental',Feiticeiro:'Origem de Feitiçaria'};
+  if(lbl)lbl.textContent=labels[_ccSelectedClass]||'Subclasse';
+  grid.innerHTML=subs.map(function(s){
+    return'<div class="cc-card'+(s===_ccSelectedSubclass1?' selected':'')+'" data-s="'+s+'" onclick="selectSubclass1(this.dataset.s)"><div class="cc-card-name" style="font-size:.46rem">'+s+'</div></div>';
+  }).join('');
+}
+function selectSubclass1(s){
+  _ccSelectedSubclass1=s;
+  document.querySelectorAll('#subclass1-grid .cc-card').forEach(function(c){c.classList.toggle('selected',c.querySelector('.cc-card-name')?.textContent===s);});
+}
+function renderClassChoices(){
+  var area=document.getElementById('class-choices-area');var list=document.getElementById('class-choices-list');
+  if(!area||!list)return;
+  var choices=[];
+  if(_ccSelectedClass==='Guerreiro')choices.push({id:'combat-style',label:'Estilo de Combate',opts:['Arqueiro (+2 ataques à distância)','Defesa (+1 CA com armadura)','Duelo (+2 dano 1 mão)','Duas Armas','Proteção (escudo)','Armas Grandes (re-rolar 1,2)']});
+  if(_ccSelectedClass==='Patrulheiro'){choices.push({id:'fav-enemy',label:'Inimigo Favorito',opts:['Aberrações','Bestas','Dragões','Elementais','Fadas','Gigantes','Humanoides','Mortos-Vivos','Demônios']});choices.push({id:'fav-terrain',label:'Terreno Favorito',opts:['Ártico','Costa','Deserto','Floresta','Pântano','Montanha','Planície','Subterrâneo']});}
+  if(!choices.length){area.style.display='none';return;}
+  area.style.display='';
+  list.innerHTML=choices.map(function(ch){return'<div style="margin-bottom:.5rem"><label class="cc-label">'+ch.label+'</label><select id="cc-choice-'+ch.id+'" class="cc-select">'+ch.opts.map(function(o){return'<option>'+o+'</option>';}).join('')+'</select></div>';}).join('');
+}
+function buildCharSummary(){
+  var el=document.getElementById('char-summary-content');if(!el)return;
+  var name=document.getElementById('new-name')?.value||'?';
+  var align=document.getElementById('new-align')?.value||'';var bg=document.getElementById('new-bg')?.value||'';
+  var region=FR_REGIONS.find(function(r){return r.id===selectedRegion;})||FR_REGIONS[0];
+  var physParts=[];['phys-height','phys-build','phys-skin','phys-hair','phys-eyes'].forEach(function(id){var e=document.getElementById(id);if(e)physParts.push(e.value);});
+  var appear=window._ccAppearance||'';if(appear)physParts.push(appear);
+  var sub=_ccSelectedSubrace?(' ('+_ccSelectedSubrace+')'):'';var sub1=_ccSelectedSubclass1?(' — '+_ccSelectedSubclass1):'';
+  var defs=CLASS_DEFAULTS[_ccSelectedClass]||{};var hp=defs.hp||8;
+  var conMod=Math.floor(((parseInt(document.getElementById('nb-CON')?.value)||14)-10)/2);
+  el.innerHTML='<b style="color:var(--gold2)">'+name+'</b> — '+_ccSelectedRace+sub+' '+_ccSelectedClass+sub1+'<br>'+'Alinhamento: '+align+' · Antecedente: '+bg+'<br>'+'Região: '+region.name+(region.start?' ('+region.start+')':'')+'<br>'+'PV iniciais: '+(hp+conMod)+'<br>'+(physParts.length?'Aparência: '+physParts.join(', ')+'<br>':'')+'<span style="color:var(--arc3)">Equipamento inicial carregado automaticamente.</span>';
+}
+
 function buildAttrBuilder(){
   var el=document.getElementById('attr-builder');if(!el)return;
   var cls=document.getElementById('new-class')?.value||'Guerreiro';
@@ -4603,9 +4855,17 @@ async function startNewGame(){
   var name=document.getElementById('new-name')?.value.trim();
   if(!name){alert('Dê um nome ao seu personagem!');return;}
 
-  var cls=document.getElementById('new-class')?.value||'Guerreiro';
-  var subclass=document.getElementById('new-subclass')?.value||'';
-  var race=document.getElementById('new-race')?.value||'Humano';
+  var cls=_ccSelectedClass||document.getElementById('new-class')?.value||'Guerreiro';
+  var subclass=_ccSelectedSubclass1||document.getElementById('new-subclass')?.value||'';
+  var race=_ccSelectedRace||'Humano';
+  // Physical appearance
+  var physDesc=[];
+  ['phys-height','phys-build','phys-skin','phys-hair','phys-eyes','phys-extras'].forEach(function(id){
+    var el=document.getElementById(id);if(el&&el.value)physDesc.push(el.value);
+  });
+  var appearance=(window._ccAppearance||'');
+  if(appearance)physDesc.push(appearance);
+  var physString=physDesc.join(', ');
   var bg=document.getElementById('new-bg')?.value||'Forasteiro';
   var align=document.getElementById('new-align')?.value||'Neutro e Bom';
   var story=document.getElementById('new-story')?.value||'';
@@ -4745,6 +5005,7 @@ async function startNewGame(){
     +'PERSONAGEM: '+name+' | '+race+' '+cls+(subclass?' ('+subclass+')':'')+' | Nível 1 | '+align+'\n'
     +'Antecedente: '+bg+(story?' | História: '+story:'')+'\n'
     +'Atributos: FOR '+newAttrs.FOR+' DES '+newAttrs.DES+' CON '+newAttrs.CON+' INT '+newAttrs.INT+' SAB '+newAttrs.SAB+' CAR '+newAttrs.CAR+'\n'
+    +(physString?'Aparência física: '+physString+'\n':'')
     +'PV: '+HP_MAX+' | CA: '+charCA+'\n'
     +'Região de início: '+region.name+' ('+region.desc+')\n\n'
     +'CAMPANHA: Gere uma campanha ORIGINAL mas baseada no universo oficial dos Forgotten Realms. Use localidades, facções, deuses, história e personagens CANÔNICOS do setting (Waterdeep, Zhentarim, Harpers, Sembia, deuses do Faerûn etc). A aventura deve ser coerente com o nível 1 do personagem.\n\n'
