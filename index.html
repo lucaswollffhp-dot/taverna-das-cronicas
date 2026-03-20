@@ -309,6 +309,8 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 /* Condition badges pulse on critical conditions */
 #conditions-hdr-badges>div{animation:condPulse 3s ease-in-out infinite}
 @keyframes condPulse{0%,100%{opacity:.8}50%{opacity:1}}
+@keyframes concPulse{0%,100%{box-shadow:0 0 4px rgba(165,105,189,.3)}50%{box-shadow:0 0 10px rgba(165,105,189,.6)}}
+@keyframes inspPulse{0%,100%{box-shadow:0 0 4px rgba(241,196,15,.3)}50%{box-shadow:0 0 12px rgba(241,196,15,.7)}}
 .skill-lbl{font-family:Cinzel,serif;font-size:.46rem;color:var(--text3);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .skill-attr{font-family:Cinzel,serif;font-size:.42rem;color:rgba(200,168,74,.3);width:24px;text-align:right;flex-shrink:0}
 .skill-val{font-family:Cinzel,serif;font-size:.68rem;color:var(--gold2);width:24px;text-align:right;flex-shrink:0}
@@ -518,6 +520,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   cursor:pointer;min-width:52px;transition:all .2s;flex-shrink:0;
 }
 .turn-token.active-turn{border-color:var(--gold);background:rgba(200,168,74,.1);box-shadow:0 0 8px var(--gold-glow)}
+.turn-token.dead-turn{opacity:.4;filter:grayscale(.8)}
 .turn-token.my-turn{border-color:var(--blood3);background:rgba(155,35,53,.12);box-shadow:0 0 8px rgba(155,35,53,.2)}
 .tt-name{font-family:'Cinzel',serif;font-size:.52rem;text-transform:uppercase;color:var(--text2)}
 .tt-init{font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold2)}
@@ -1403,6 +1406,15 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
       </div>
       <div class="ca-badge">🛡 <span id="ca-hdr">—</span></div>
       <div id="conditions-hdr-badges" style="display:none;align-items:center;gap:3px;flex-wrap:wrap;max-width:160px"></div>
+      <div id="conc-hdr" style="display:none;align-items:center;gap:3px;background:rgba(125,60,152,.15);border:1px solid rgba(165,105,189,.5);border-radius:7px;padding:2px 7px;cursor:pointer;animation:concPulse 2s ease-in-out infinite" onclick="breakConcentration('cancelado')" title="Clique para quebrar concentração">
+        <span style="font-size:.7rem">🔮</span>
+        <span id="conc-name-hdr" style="font-family:Cinzel,serif;font-size:.5rem;color:var(--arc2);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+        <span style="font-family:Cinzel,serif;font-size:.44rem;color:rgba(165,105,189,.5)">✕</span>
+      </div>
+      <!-- Inspiração -->
+      <button id="insp-hdr" onclick="toggleInspiration()" style="display:flex;align-items:center;gap:2px;background:rgba(200,168,74,.05);border:1px solid rgba(200,168,74,.2);border-radius:7px;padding:2px 7px;cursor:pointer;color:rgba(200,168,74,.4);font-family:Cinzel,serif;font-size:.6rem;transition:all .2s" title="Sem inspiração">
+        <span id="insp-icon">☆</span>
+      </button>
       <!-- action buttons -->
       <button class="hbtn" onclick="openCombat()" id="combat-toggle-btn">⚔</button>
       <button class="hbtn gold" onclick="openSaveModal()">💾</button>
@@ -1519,6 +1531,13 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
       <div>
         <div class="slbl">🏆 Conquistas</div>
         <div class="achiev" id="achiev-d"></div>
+      </div>
+      <hr class="sdiv">
+      <div>
+        <div class="slbl">👥 NPCs
+          <button onclick="openNPCTracker()" style="background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.3);border-radius:4px;color:#6ecfa0;font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:4px;cursor:pointer">+ Ver</button>
+        </div>
+        <div id="npc-sidebar-list"></div>
       </div>
       <hr class="sdiv">
       <div>
@@ -1644,6 +1663,7 @@ var isDead=false;          // 3 falhas = morto
 // ─── PARTY NPCs (companheiros na cena) ───
 var partyNPCs=[];  // [{id,name,hp,maxHp,alive}]
 var gameOver=false;
+var hasInspiration=false;  // Inspiração concedida pelo DM (LdJ p.125)
 let charLevel=2, charXP=300;
 let charCA=16,baseCA=13;
 let saveProficiencies={FOR:true,CON:true,DES:false,INT:false,SAB:false,CAR:false};
@@ -1675,7 +1695,9 @@ const XP_TABLE=[0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,1
 const XP_BY_CR={0:10,'1/8':25,'1/4':50,'1/2':100,1:200,2:450,3:700,4:1100,5:1800,6:2300,7:2900,8:3900,9:5000,10:5900,11:7200,12:8400,13:10000,14:11500,15:13000,16:15000,17:18000,18:20000,19:22000,20:25000};
 
 // SYSTEM PROMPT
-const SYSTEM='Você é o Mestre de D&D 5e narrando em português do Brasil.\n'+'REGRAS OBRIGATÓRIAS:\n'+'1. NUNCA mencione dados internos como [PV], [CA], [ESTADO_OCULTO] no texto narrativo.\n'+'2. NPCs SEMPRE com nomes únicos e DIFERENTES. PROIBIDO repetir nomes. Nomes culturalmente coerentes com o local.\n'+'3. Rolagens SEMPRE com modificador. Ex: Role d20+3 de Percepção. Role 2d20+X (maior) para VANTAGEM, (menor) para DESVANTAGEM. Não explique ao jogador o motivo.\n'+'4. Linguagem clara e direta. Sem palavras rebuscadas.\n'+'5. AO FINAL: pergunte APENAS \"O que você faz?\" — não liste opções.\n'+'6. Nunca resolva combates sem rolagens do jogador.\n'+'6b. HP/DANO: Quando o personagem sofre dano, inclua hp_damage no JSON. Quando recebe cura, inclua hp_heal. Quando morre: se houver companheiros na cena, narre a reação deles e continue. TPK só quando TODOS caem.\n'+'6d. CONDIÇÕES: Quando o personagem sofre uma condição (Envenenado, Agarrado, Assustado, Atordoado, Caído, Cego, Encantado, Enfeitiçado, Exausto, Incapacitado, Inconsciente, Invisível, Paralisado, Petrificado), inclua condition_add no JSON com o nome exato. Quando a condição termina, inclua condition_remove. Aplique os efeitos mecânicos da condição na narração.\n'+'6c. TESTES DE MORTE: Quando personagem está em 0 PV, peça "Role d20 de Teste de Morte". ≥10=sucesso, <10=falha. 3 sucessos=estabiliza, 3 falhas=morte, natural 20=acorda com 1 PV, natural 1=2 falhas.\n'+'7. OURO: gold_add (receber) ou gold_remove (gastar) no JSON. O contexto mostra [Tesouro:X PO] — nunca deixe gastar mais do que possui.\n'+'8. SALDO INSUFICIENTE: [SISTEMA: moedas insuficientes] → NPC percebe e reage naturalmente.\n'+'9. MISSÕES OBRIGATÓRIO: quest_add ao iniciar qualquer missão/objetivo com id, titulo, desc, xp estimado. quest_update ao concluir/falhar com xp_reward e gold_reward (se houver pagamento prometido). Na conclusão, o narrador deve descrever a entrega da recompensa ANTES de incluir o JSON.\n'+'10. XP NARRATIVO: xp_gain+xp_source — Combate:50-500, Diplomacia:50-200, Descoberta:25-150, Desafio:25-100. Nunca para ações triviais.\n'+'11. Nunca mencione o JSON — inclua silenciosamente ao final.';
+const SYSTEM='Você é o Mestre de D&D 5e narrando em português do Brasil.\n'+'REGRAS OBRIGATÓRIAS:\n'+'1. NUNCA mencione dados internos como [PV], [CA], [ESTADO_OCULTO] no texto narrativo.\n'+'2. NPCs SEMPRE com nomes únicos e DIFERENTES. PROIBIDO repetir nomes. Nomes culturalmente coerentes com o local.\n'+'3. Rolagens SEMPRE com modificador. Ex: Role d20+3 de Percepção. Role 2d20+X (maior) para VANTAGEM, (menor) para DESVANTAGEM. Não explique ao jogador o motivo.\n'+'4. Linguagem clara e direta. Sem palavras rebuscadas.\n'+'5. AO FINAL: pergunte APENAS \"O que você faz?\" — não liste opções.\n'+'6. Nunca resolva combates sem rolagens do jogador.\n'+'6b. HP/DANO: Quando o personagem sofre dano, inclua hp_damage no JSON. Quando recebe cura, inclua hp_heal. Quando morre: se houver companheiros na cena, narre a reação deles e continue. TPK só quando TODOS caem.\n'+'6f. INSPIRAÇÃO: Quando o jogador fizer algo extraordinariamente criativo, em personagem ou heroico, inclua grant_inspiration:true no JSON para conceder Inspiração.\n'
++'6e. CONCENTRAÇÃO: Quando o personagem conjura magia de concentração, inclua concentration_start:"Nome da Magia". Se a concentração for quebrada (dano, nova magia), inclua concentration_break:"motivo".\n'
++'6d. CONDIÇÕES: Quando o personagem sofre uma condição (Envenenado, Agarrado, Assustado, Atordoado, Caído, Cego, Encantado, Enfeitiçado, Exausto, Incapacitado, Inconsciente, Invisível, Paralisado, Petrificado), inclua condition_add no JSON com o nome exato. Quando a condição termina, inclua condition_remove. Aplique os efeitos mecânicos da condição na narração.\n'+'6c. TESTES DE MORTE: Quando personagem está em 0 PV, peça "Role d20 de Teste de Morte". ≥10=sucesso, <10=falha. 3 sucessos=estabiliza, 3 falhas=morte, natural 20=acorda com 1 PV, natural 1=2 falhas.\n'+'7. OURO: gold_add (receber) ou gold_remove (gastar) no JSON. O contexto mostra [Tesouro:X PO] — nunca deixe gastar mais do que possui.\n'+'8. SALDO INSUFICIENTE: [SISTEMA: moedas insuficientes] → NPC percebe e reage naturalmente.\n'+'9. MISSÕES OBRIGATÓRIO: quest_add ao iniciar qualquer missão/objetivo com id, titulo, desc, xp estimado. quest_update ao concluir/falhar com xp_reward e gold_reward (se houver pagamento prometido). Na conclusão, o narrador deve descrever a entrega da recompensa ANTES de incluir o JSON.\n'+'10. XP NARRATIVO: xp_gain+xp_source — Combate:50-500, Diplomacia:50-200, Descoberta:25-150, Desafio:25-100. Nunca para ações triviais.\n'+'11. Nunca mencione o JSON — inclua silenciosamente ao final.';
 
 
 function mod(v){const m=Math.floor((v-10)/2);return(m>=0?'+':'')+m;}
@@ -1693,7 +1715,7 @@ function toggleSkillsPanel(){
   if(!open)renderSkills();
 }
 function init(){
-  renderAttrs();renderSaves();renderSkills();renderEquip();renderConditions();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();renderSpells();
+  renderAttrs();renderSaves();renderSkills();renderEquip();renderConditions();renderConcentration();renderNPCs();renderInspiration();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();renderSpells();
   document.getElementById('achiev-d').innerHTML=CONQUISTAS.map(c=>`<div class="ach">${c}</div>`).join('');
   setQA(['Explorar','Falar com NPC','Ver companheiros','Partir em jornada','Usar habilidade','⚔ Iniciar combate']);
   updHP();updCA();updXP();
@@ -1862,11 +1884,13 @@ function adjHP(d){
   hpC=Math.max(0,Math.min(HP_MAX,hpC+d));
   updHP();
   if(d>0&&hpC>0&&isUnconscious){
-    // Cura acorda o personagem inconsciente
     wakeUp();
   } else if(hpC===0&&prev>0){
-    // Acabou de cair
     fallUnconscious();
+  }
+  // Check concentration on damage
+  if(d<0&&concentrationSpell){
+    checkConcentrationDC(-d);
   }
 }
 
@@ -2408,6 +2432,7 @@ function saveMagicItems(){
 
 // ====== DIÁRIO AUTOMÁTICO ======
 var savedNotes=[];
+var npcTracker=[];  // [{id,name,location,relation:'aliado'|'neutro'|'inimigo',notes}]
 
 function saveNote(){
   var el=document.getElementById('notes-d');
@@ -2554,6 +2579,7 @@ function castSpell(id){
       slot.used=(slot.used||0)+1;
       renderSpells();
       addMsg('sys','✨ '+(window.CHAR_NAME||'Personagem')+' conjura '+s.name+'! Descreva sua ação ao Mestre.');
+      if(CONCENTRATION_SPELLS.has(s.name))startConcentration(s.name);
     } else {
       addMsg('sys','⚠ Sem espaços de magia de nível '+lv+' disponíveis!');
       return;
@@ -3438,11 +3464,13 @@ function openCombat(){
         <input type="number" id="init-killyn" placeholder="d20+1" style="width:60px;background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:4px;padding:3px 5px;font-family:Cinzel,serif;font-size:.74rem;color:var(--parch);text-align:center;outline:none" value="${Math.floor(Math.random()*20)+1+modNum(ATTRS.DES)}"/>
       </div>
     </div>
-    <div style="display:flex;gap:.4rem;margin-bottom:.6rem">
-      <input id="comb-name" placeholder="Nome do inimigo" style="flex:1;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;padding:4px 7px;font-family:Crimson Text,serif;font-size:.84rem;color:var(--parch);outline:none"/>
-      <input id="comb-init" type="number" placeholder="Init" style="width:55px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;padding:4px 5px;font-family:Cinzel,serif;font-size:.8rem;color:var(--parch);text-align:center;outline:none"/>
+    <div style="display:grid;grid-template-columns:1fr 52px 60px auto;gap:.4rem;margin-bottom:.4rem;align-items:center">
+      <input id="comb-name" placeholder="Nome do inimigo" style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;padding:4px 7px;font-family:Crimson Text,serif;font-size:.84rem;color:var(--parch);outline:none"/>
+      <input id="comb-init" type="number" placeholder="Init" style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;padding:4px 5px;font-family:Cinzel,serif;font-size:.8rem;color:var(--parch);text-align:center;outline:none"/>
+      <input id="comb-hp" type="number" placeholder="PV" style="background:rgba(192,57,43,.06);border:1px solid rgba(192,57,43,.25);border-radius:4px;padding:4px 5px;font-family:Cinzel,serif;font-size:.8rem;color:var(--blood2);text-align:center;outline:none"/>
       <button class="mbtn secondary" style="font-size:.68rem;padding:4px 8px" onclick="addCombatant()">+</button>
     </div>
+    <div style="font-family:Cinzel,serif;font-size:.48rem;color:rgba(200,168,74,.3);margin-bottom:.5rem">Nome · Iniciativa · PV (opcional)</div>
     <div class="modal-row">
       <button class="mbtn secondary" onclick="closeDynModal()">Cancelar</button>
       <button class="mbtn primary" onclick="startCombat()">⚡ Iniciar!</button>
@@ -3452,39 +3480,111 @@ function openCombat(){
 }
 let extraCombatants=[];
 function addCombatant(){
-  const name=document.getElementById('comb-name')?.value.trim();
-  const init=parseInt(document.getElementById('comb-init')?.value)||Math.floor(Math.random()*20)+1;
+  var name=document.getElementById('comb-name')?.value.trim();
+  var init=parseInt(document.getElementById('comb-init')?.value)||cryptoRandInt(1,20)+modNum(ATTRS.DES);
+  var hp=parseInt(document.getElementById('comb-hp')?.value)||0;
   if(!name)return;
-  extraCombatants.push({name,init,isPlayer:false});
-  const list=document.getElementById('comb-list');
+  extraCombatants.push({name:name,init:init,isPlayer:false,hp:hp,maxHp:hp});
+  var list=document.getElementById('comb-list');
   if(list){
-    const d=document.createElement('div');
-    d.style.cssText='display:grid;grid-template-columns:1fr auto;gap:.4rem;align-items:center;background:rgba(201,168,76,.05);border:1px solid var(--border);border-radius:5px;padding:5px 8px';
-    d.innerHTML=`<span style="font-family:'Cinzel',serif;font-size:.72rem;color:var(--parch2)">${name}</span><span style="font-family:'Cinzel',serif;font-size:.74rem;color:var(--gold2)">${init}</span>`;
+    var d=document.createElement('div');
+    d.style.cssText='display:grid;grid-template-columns:1fr auto auto;gap:.4rem;align-items:center;background:rgba(201,168,76,.05);border:1px solid var(--border);border-radius:5px;padding:5px 8px';
+    d.innerHTML='<span style="font-family:Cinzel,serif;font-size:.72rem;color:var(--parch2)">'+name+'</span>'
+      +'<span style="font-family:Cinzel,serif;font-size:.68rem;color:var(--gold2)">⚡'+init+'</span>'
+      +(hp?'<span style="font-family:Cinzel,serif;font-size:.68rem;color:var(--blood2)">❤'+hp+'</span>':'<span></span>');
     list.appendChild(d);
   }
   document.getElementById('comb-name').value='';
   document.getElementById('comb-init').value='';
+  document.getElementById('comb-hp').value='';
 }
 function startCombat(){
-  const killynInit=parseInt(document.getElementById('init-killyn')?.value)||10;
-  combatants=[{name:'Killyn',init:killynInit,isPlayer:true},...extraCombatants];
-  combatants.sort((a,b)=>b.init-a.init);
+  var pName=window.CHAR_NAME||'Personagem';
+  var pInit=parseInt(document.getElementById('init-killyn')?.value)||10;
+  combatants=[{name:pName,init:pInit,isPlayer:true,hp:hpC,maxHp:HP_MAX},...extraCombatants];
+  combatants.sort(function(a,b){return b.init-a.init;});
   currentTurn=0;roundNum=1;combatActive=true;
   document.getElementById('combat-bar').classList.add('active');
   document.getElementById('combat-toggle-btn').textContent='🏳 Fim';
   renderTurnOrder();closeDynModal();
-  addMsg('sys','⚡ Combate iniciado! Ordem: '+combatants.map(c=>c.name+' ('+c.init+')').join(' → '));
+  addMsg('sys','⚡ Combate iniciado! Ordem: '+combatants.map(function(c){return c.name+' ('+c.init+')'+(c.maxHp?' ❤'+c.hp:'');}).join(' → '));
+  // Inject combat context for AI
+  var enemies=combatants.filter(function(c){return !c.isPlayer;});
+  if(enemies.length){
+    hist.push({role:'user',content:'[SISTEMA: Combate iniciado. Inimigos: '+enemies.map(function(e){return e.name+(e.maxHp?' (PV:'+e.hp+'/'+e.maxHp+')':'');}).join(', ')+'. Use hp_damage para dano sofrido pelo jogador.]'});
+  }
 }
 function renderTurnOrder(){
-  const el=document.getElementById('turn-list');
+  var el=document.getElementById('turn-list');
   if(!el)return;
-  el.innerHTML=combatants.map((c,i)=>`
-    <div class="turn-token ${i===currentTurn?(c.isPlayer?'my-turn':'active-turn'):''}">
-      <div class="tt-init">${c.init}</div>
-      <div class="tt-name">${c.name.substring(0,8)}</div>
-    </div>`).join('');
+  el.innerHTML=combatants.map(function(c,i){
+    var isActive=i===currentTurn;
+    var cls='turn-token'+(isActive?(c.isPlayer?' my-turn':' active-turn'):'');
+    var dead=!c.isPlayer&&c.maxHp>0&&c.hp<=0;
+    var hpBar='';
+    if(c.maxHp>0&&!c.isPlayer){
+      var pct=Math.max(0,Math.round((c.hp/c.maxHp)*100));
+      var barColor=pct>60?'#6ecfa0':pct>30?'#f39c12':'#e74c3c';
+      hpBar='<div style="height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:2px;overflow:hidden">'
+        +'<div style="height:100%;width:'+pct+'%;background:'+barColor+';transition:width .3s;border-radius:2px"></div>'
+        +'</div>';
+    }
+    var hpLabel=c.maxHp>0?(c.isPlayer?'':(' ❤'+c.hp)):'';
+    return'<div class="'+cls+(dead?' dead-turn':'')+'" '
+      +((!c.isPlayer&&c.maxHp>0)?'onclick="openHPEditor('+combatants.indexOf(c)+')" style="cursor:pointer"':'')+'>'
+      +'<div class="tt-init">'+c.init+'</div>'
+      +'<div class="tt-name" style="'+(dead?'text-decoration:line-through;opacity:.4':'')+'">'+c.name.substring(0,9)+'</div>'
+      +(hpLabel?'<div style="font-family:Cinzel,serif;font-size:.46rem;color:var(--blood2);line-height:1">'+hpLabel+'</div>':'')
+      +hpBar
+      +'</div>';
+  }).join('');
 }
+function openHPEditor(idx){
+  var c=combatants[idx];
+  if(!c||c.isPlayer)return;
+  var html='<div class="modal-title">❤ '+c.name+'</div>'
+    +'<div style="text-align:center;margin-bottom:.8rem">'
+    +'<div style="font-family:Cinzel Decorative,serif;font-size:2rem;color:var(--blood2)">'+c.hp+'<span style="font-size:1rem;color:var(--text3)">/'+c.maxHp+'</span></div>'
+    +(c.maxHp>0?'<div style="background:rgba(192,57,43,.1);border-radius:6px;height:8px;overflow:hidden;margin:.4rem 0">'
+      +'<div style="background:linear-gradient(90deg,#e74c3c,#c0392b);height:100%;width:'+Math.max(0,Math.round(c.hp/c.maxHp*100))+'%;transition:width .3s;border-radius:6px"></div></div>':'')
+    +'</div>'
+    +'<div style="display:flex;gap:.5rem;margin-bottom:.6rem;align-items:center;justify-content:center">'
+    +'<button onclick="adjEnemyHP('+idx+',-1)" class="hpadj" style="width:36px;height:36px;font-size:1.2rem">−</button>'
+    +'<input id="enemy-hp-inp" type="number" value="'+c.hp+'" style="width:60px;background:rgba(0,0,0,.3);border:1px solid rgba(192,57,43,.4);border-radius:7px;text-align:center;font-family:Cinzel,serif;font-size:1.1rem;color:var(--blood2);padding:4px;outline:none"/>'
+    +'<button onclick="adjEnemyHP('+idx+',1)" class="hpadj" style="width:36px;height:36px;font-size:1.2rem">+</button>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.3rem;margin-bottom:.6rem">'
+    +[-1,-2,-5,-10].map(function(d){return'<button onclick="adjEnemyHP('+idx+','+d+')" style="background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.3);border-radius:6px;color:var(--blood2);font-family:Cinzel,serif;font-size:.6rem;padding:4px;cursor:pointer">'+d+'</button>';}).join('')
+    +'</div>'
+    +(c.hp>0
+      ?'<button onclick="killEnemy('+idx+')" style="width:100%;background:rgba(192,57,43,.2);border:1px solid rgba(192,57,43,.4);border-radius:8px;color:#e74c3c;font-family:Cinzel,serif;font-size:.68rem;padding:.5rem;cursor:pointer;margin-bottom:.4rem">☠ Derrotar</button>'
+      :'<div style="text-align:center;font-family:Cinzel,serif;font-size:.66rem;color:rgba(231,76,60,.6);margin-bottom:.4rem">☠ Derrotado</div>')
+    +'<button onclick="closeDynModal()" class="mbtn secondary" style="width:100%">Fechar</button>';
+  openDynModal(html);
+}
+
+function adjEnemyHP(idx,d){
+  var c=combatants[idx];if(!c||c.isPlayer)return;
+  c.hp=Math.max(0,Math.min(c.maxHp||999,c.hp+d));
+  renderTurnOrder();
+  var inp=document.getElementById('enemy-hp-inp');if(inp)inp.value=c.hp;
+  if(c.hp<=0)killEnemy(idx);
+}
+
+function killEnemy(idx){
+  var c=combatants[idx];if(!c)return;
+  c.hp=0;
+  renderTurnOrder();closeDynModal();
+  addMsg('sys','☠ '+c.name+' foi derrotado!');
+  // Check if all enemies are defeated
+  var enemies=combatants.filter(function(x){return !x.isPlayer;});
+  var alive=enemies.filter(function(x){return x.hp>0||x.maxHp===0;});
+  if(!alive.length&&enemies.length>0){
+    addMsg('sys','🏆 Todos os inimigos foram derrotados! Combate encerrado.');
+    endCombat();
+  }
+}
+
 function nextTurn(){
   currentTurn=(currentTurn+1)%combatants.length;
   if(currentTurn===0) roundNum++;
@@ -4274,6 +4374,178 @@ function renderConditions(){
   if(typeof buildMobChar==='function'&&mobActive==='char')buildMobChar();
 }
 
+// ─── CONCENTRAÇÃO ───
+function startConcentration(spellName){
+  if(concentrationSpell&&concentrationSpell!==spellName){
+    addMsg('sys','🔮 Concentração em "'+concentrationSpell+'" quebrada para conjurar "'+spellName+'".');
+  }
+  concentrationSpell=spellName;
+  renderConcentration();
+  addMsg('sys','🔮 Concentrando em: '+spellName+'. Qualquer dano exige TR CON CD 10 (ou metade do dano) para manter.');
+  saveProgress('auto');
+}
+
+function breakConcentration(reason){
+  if(!concentrationSpell)return;
+  var old=concentrationSpell;
+  concentrationSpell=null;
+  renderConcentration();
+  addMsg('sys','💔 Concentração em "'+old+'" quebrada'+(reason?' — '+reason:'')+'.');
+  saveProgress('auto');
+}
+
+function checkConcentrationDC(damage){
+  if(!concentrationSpell)return;
+  var dc=Math.max(10,Math.floor(damage/2));
+  var roll=cryptoRandInt(1,20)+Math.floor((ATTRS.CON-10)/2);
+  var profBonus=charLevel<5?2:charLevel<9?3:charLevel<13?4:5;
+  // Check if CON save proficient
+  if(saveProficiencies.CON)roll+=profBonus;
+  if(roll>=dc){
+    addMsg('roll','🔮 TR Concentração: '+roll+' vs CD '+dc+' — ✓ Mantida!');
+  } else {
+    addMsg('roll','🔮 TR Concentração: '+roll+' vs CD '+dc+' — ✗ Quebrada!');
+    breakConcentration('falha no TR');
+  }
+}
+
+function renderConcentration(){
+  var el=document.getElementById('conc-hdr');
+  if(!el)return;
+  if(concentrationSpell){
+    el.style.display='flex';
+    var nameEl=document.getElementById('conc-name-hdr');
+    if(nameEl)nameEl.textContent=concentrationSpell;
+  } else {
+    el.style.display='none';
+  }
+  // Also update spells section
+  renderSpells();
+}
+
+// ─── RASTREADOR DE NPCs ───
+function addNPC(name,location,relation,notes){
+  var id='npc_'+Date.now();
+  npcTracker.push({id:id,name:name,location:location||'',relation:relation||'neutro',notes:notes||''});
+  renderNPCs();
+  saveProgress('auto');
+  return id;
+}
+
+function removeNPC(id){
+  npcTracker=npcTracker.filter(function(n){return n.id!==id;});
+  renderNPCs();saveProgress('auto');
+}
+
+function updateNPCRelation(id,rel){
+  var n=npcTracker.find(function(x){return x.id===id;});
+  if(n){n.relation=rel;renderNPCs();saveProgress('auto');}
+}
+
+function openNPCTracker(){
+  renderNPCs();
+  var html='<div class="modal-title">👥 NPCs Conhecidos</div>'
+    +'<div id="npc-list-modal" style="max-height:320px;overflow-y:auto;margin-bottom:.6rem"></div>'
+    +'<div style="display:grid;grid-template-columns:1fr 80px 80px;gap:.35rem;margin-bottom:.4rem">'
+    +'<input id="npc-inp-name" placeholder="Nome do NPC" class="cc-input" style="font-size:.8rem;padding:.35rem .6rem"/>'
+    +'<input id="npc-inp-loc" placeholder="Local" class="cc-input" style="font-size:.75rem;padding:.35rem .5rem"/>'
+    +'<select id="npc-inp-rel" class="cc-select" style="font-size:.75rem;padding:.35rem .4rem">'
+    +'<option value="neutro">Neutro</option><option value="aliado">Aliado</option><option value="inimigo">Inimigo</option>'
+    +'</select>'
+    +'</div>'
+    +'<div style="display:flex;gap:.4rem">'
+    +'<button onclick="addNPCFromModal()" class="mbtn primary" style="flex:1">+ Adicionar</button>'
+    +'<button onclick="closeDynModal()" class="mbtn secondary">Fechar</button>'
+    +'</div>';
+  openDynModal(html);
+  renderNPCsInModal();
+}
+
+function addNPCFromModal(){
+  var name=document.getElementById('npc-inp-name')?.value.trim();
+  var loc=document.getElementById('npc-inp-loc')?.value.trim();
+  var rel=document.getElementById('npc-inp-rel')?.value||'neutro';
+  if(!name)return;
+  addNPC(name,loc,rel,'');
+  document.getElementById('npc-inp-name').value='';
+  document.getElementById('npc-inp-loc').value='';
+  renderNPCsInModal();
+}
+
+function renderNPCsInModal(){
+  var el=document.getElementById('npc-list-modal');
+  if(!el)return;
+  if(!npcTracker.length){
+    el.innerHTML='<div style="font-size:.74rem;color:var(--text3);font-style:italic;text-align:center;padding:.5rem">Nenhum NPC registrado ainda.</div>';
+    return;
+  }
+  var relColors={aliado:'#6ecfa0',neutro:'rgba(200,168,74,.6)',inimigo:'#e74c3c'};
+  var relIcons={aliado:'🤝',neutro:'😐',inimigo:'⚔'};
+  el.innerHTML=npcTracker.map(function(n){
+    var col=relColors[n.relation]||relColors.neutro;
+    return'<div style="display:flex;align-items:center;gap:.5rem;padding:.4rem .5rem;background:var(--surface);border:1px solid var(--border);border-radius:7px;margin-bottom:.3rem">'
+      +'<span style="font-size:1rem;flex-shrink:0">'+relIcons[n.relation]+'</span>'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-family:Cinzel,serif;font-size:.62rem;color:'+col+'">'+n.name+'</div>'
+      +(n.location?'<div style="font-size:.62rem;color:var(--text3)">📍 '+n.location+'</div>':'')
+      +'</div>'
+      +'<select data-nid="'+n.id+'" onchange="updateNPCRelation(this.dataset.nid,this.value)" style="background:#0d0a10;border:1px solid rgba(200,168,74,.2);border-radius:5px;font-size:.58rem;color:'+col+';padding:2px 4px">'
+      +'<option value="aliado"'+(n.relation==='aliado'?' selected':'')+'>Aliado</option>'
+      +'<option value="neutro"'+(n.relation==='neutro'?' selected':'')+'>Neutro</option>'
+      +'<option value="inimigo"'+(n.relation==='inimigo'?' selected':'')+'>Inimigo</option>'
+      +'</select>'
+      +'<button data-nid="'+n.id+'" onclick="removeNPC(this.dataset.nid);renderNPCsInModal()" style="background:rgba(200,168,74,.06);border:1px solid var(--border);border-radius:4px;color:var(--text3);font-size:.6rem;padding:1px 5px;cursor:pointer">✕</button>'
+      +'</div>';
+  }).join('');
+}
+
+function renderNPCs(){
+  var el=document.getElementById('npc-sidebar-list');
+  if(!el)return;
+  if(!npcTracker.length){
+    el.innerHTML='<div style="font-size:.7rem;color:var(--text3);font-style:italic;text-align:center;padding:.3rem 0">Nenhum NPC registrado</div>';
+    return;
+  }
+  var relColors={aliado:'#6ecfa0',neutro:'rgba(200,168,74,.5)',inimigo:'#e74c3c'};
+  var relIcons={aliado:'🤝',neutro:'😐',inimigo:'⚔'};
+  el.innerHTML=npcTracker.slice(-8).map(function(n){  // show last 8
+    var col=relColors[n.relation]||relColors.neutro;
+    return'<div style="display:flex;align-items:center;gap:5px;padding:3px 0;border-bottom:1px solid var(--border)">'
+      +'<span style="font-size:.8rem">'+relIcons[n.relation]+'</span>'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-family:Cinzel,serif;font-size:.6rem;color:'+col+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+n.name+'</div>'
+      +(n.location?'<div style="font-size:.58rem;color:var(--text3)">'+n.location+'</div>':'')
+      +'</div></div>';
+  }).join('');
+}
+
+// ─── INSPIRAÇÃO (LdJ p.125) ───
+function toggleInspiration(){
+  hasInspiration=!hasInspiration;
+  renderInspiration();
+  if(hasInspiration){
+    addMsg('sys','✨ Inspiração recebida! Você tem vantagem em um teste à sua escolha.');
+    showRollToast('✨ Inspiração recebida!');
+  } else {
+    addMsg('sys','✨ Inspiração usada.');
+    showRollToast('✨ Inspiração usada!');
+  }
+  saveProgress('auto');
+}
+
+function renderInspiration(){
+  var el=document.getElementById('insp-hdr');
+  if(!el)return;
+  el.style.background=hasInspiration?'rgba(241,196,15,.15)':'rgba(200,168,74,.05)';
+  el.style.borderColor=hasInspiration?'rgba(241,196,15,.7)':'rgba(200,168,74,.2)';
+  el.style.color=hasInspiration?'#f1c40f':'rgba(200,168,74,.4)';
+  el.title=hasInspiration?'Inspiração ativa — clique para usar':'Sem inspiração — clique para receber';
+  var icon=document.getElementById('insp-icon');
+  if(icon)icon.textContent=hasInspiration?'✨':'☆';
+  if(hasInspiration)el.style.animation='inspPulse 1.5s ease-in-out infinite';
+  else el.style.animation='none';
+}
+
 function showRollToast(msg){const t=document.getElementById('roll-toast');t.textContent=msg;t.style.opacity='1';clearTimeout(rollToastTimer);rollToastTimer=setTimeout(()=>{t.style.opacity='0';},2500);}
 function showSaveToast(msg){const t=document.getElementById('save-toast');t.textContent='💾 '+msg;t.style.opacity='1';clearTimeout(t._timer);t._timer=setTimeout(()=>{t.style.opacity='0';},2500);}
 
@@ -4334,6 +4606,8 @@ function parseAndApplyUpdates(raw){
       updQuest(qu.id,qu.status);
     });
     // Conditions from narration
+    if(u.concentration_start){startConcentration(u.concentration_start);}
+    if(u.concentration_break){breakConcentration(u.concentration_break);}
     if(u.condition_add?.length){
       u.condition_add.forEach(function(c){
         var name=typeof c==='string'?c:c.name;
@@ -4424,6 +4698,18 @@ function parseAndApplyUpdates(raw){
         msgs.push('💎 '+u.magic_item_add);
       }
     }
+    // NPC tracking from narration
+    if(u.npc_add&&u.npc_add.length){
+      u.npc_add.forEach(function(n){
+        var nm=typeof n==='string'?n:n.name;
+        var loc=typeof n==='object'?n.location:'';
+        var rel=typeof n==='object'?n.relation:'neutro';
+        if(nm&&!npcTracker.find(function(x){return x.name.toLowerCase()===nm.toLowerCase();}))
+          addNPC(nm,loc,rel,'');
+      });
+    }
+    // Inspiration from narration
+    if(u.grant_inspiration){if(!hasInspiration){hasInspiration=true;renderInspiration();addMsg('sys','✨ O Mestre concedeu Inspiração!');}}
     // Diary entry trigger
     if(u.diary_entry){
       addDiaryEntry(u.diary_entry);
@@ -4534,7 +4820,7 @@ function getState(){
     charSubclass:window.CHAR_SUBCLASS||'',charRegion:window.CHAR_REGION||'',
     campaignTitle:window.CAMPAIGN_TITLE||'',
     systemOverride:window.SYSTEM_OVERRIDE||'',
-    deathSaves:deathSaves,isUnconscious:isUnconscious,isDead:isDead,partyNPCs:partyNPCs,activeConditions:activeConditions,
+    deathSaves:deathSaves,isUnconscious:isUnconscious,isDead:isDead,partyNPCs:partyNPCs,activeConditions:activeConditions,concentrationSpell:concentrationSpell,npcTracker:npcTracker,hasInspiration:hasInspiration,
     spells:spells,spellSlots:spellSlots,
     notas:document.getElementById('notes-d')?.value||'',
     chat:document.getElementById('chat')?.innerHTML||'',
@@ -4572,6 +4858,9 @@ function loadProgress(slot='auto'){
   if(s.isDead!==undefined)isDead=s.isDead;
   if(s.partyNPCs!==undefined)partyNPCs=s.partyNPCs;
   if(s.activeConditions!==undefined)activeConditions=s.activeConditions;
+  if(s.concentrationSpell!==undefined)concentrationSpell=s.concentrationSpell;
+  if(s.npcTracker!==undefined)npcTracker=s.npcTracker;
+  if(s.hasInspiration!==undefined)hasInspiration=s.hasInspiration;
   if(isUnconscious)showDeathModal();
     window.CHAR_RACE=s.charRace||'';
     window.CHAR_CLASS=s.charClass||'';
@@ -4723,6 +5012,7 @@ const CONDITIONS_DB={
 
 // Condições ativas do personagem: {conditionName: {active:bool, duration:'', level:1}}
 var activeConditions={};
+var concentrationSpell=null;   // nome da magia em concentração ou null
 
 // ─── RAÇAS COM SUB-RAÇAS E TRAÇOS FÍSICOS (LdJ) ───
 const RACES_DB={
@@ -4826,6 +5116,19 @@ const BG_SKILLS={
 
 // State: selected skill proficiencies
 var skillProficiencies = {};  // {skill_id: true/false}
+
+// ─── MAGIAS DE CONCENTRAÇÃO (LdJ) — 1 ativa por vez ───
+const CONCENTRATION_SPELLS=new Set([
+  // Nível 1
+  'Enfeitiçar Pessoa','Marca do Caçador','Bênção','Bane','Detectar Magia','Detectar Veneno e Doença',
+  'Disfarce','Armadura de Agathys','Queda de Penas','Armadura de Mago','Escudo da Fé','Proteção da Maldade e do Bem',
+  // Nível 2
+  'Cegueira/Surdez','Nuvem Ácida','Silêncio','Alterar-Se','Deter Pessoa','Web','Levitação','Névoa','Invisibilidade',
+  // Nível 3
+  'Antídoto para Veneno','Explosão de Chamas','Hipnose','Orbe de Energia','Raio Relâmpago','Voo','Lentidão',
+  // Nível 4+
+  'Polimorfar','Banimento','Confusão','Fantasia','Medo','Invisibilidade Maior','Fortaleza de Força','Caminhar pelo Vento',
+]);
 
 // ─── ARMAS OFICIAIS (Livro do Jogador p.150) ───
 const WEAPONS_DB=[
@@ -5922,9 +6225,9 @@ async function startNewGame(){
     +'- Nunca resolva combates sem rolls do jogador.\n'
     +'- AO FINAL: pergunte somente "O que você faz?" — NÃO liste opções nem sugira ações.\n'
     +'- Use nomes e locais CANÔNICOS dos Forgotten Realms.\n'
-    +'- NPCs SEMPRE com nomes únicos e culturalmente coerentes. NUNCA repita um nome já usado nesta sessão.\n\n- Se o personagem tiver informações incompletas (nome de família nobre, deidade, mestre, etc.), INVENTE detalhes coerentes com Forgotten Realms e USE-OS naturalmente na narração.\n'
+    +'- NPCs SEMPRE com nomes únicos e culturalmente coerentes. NUNCA repita um nome já usado nesta sessão. Quando um NPC importante for introduzido pela primeira vez, inclua npc_add no JSON.\n\n- Se o personagem tiver informações incompletas (nome de família nobre, deidade, mestre, etc.), INVENTE detalhes coerentes com Forgotten Realms e USE-OS naturalmente na narração.\n'
     +'SISTEMA DE ATUALIZAÇÃO — ao final se houver mudanças inclua (JSON puro, sem markdown):\n'
-    +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300,"gold_reward":50}],"hp_damage":5,"hp_heal":0,"condition_add":[{"name":"Envenenado","duration":"1 hora"}],"condition_remove":["Envenenado"],"xp_gain":150,"xp_source":"Combate","gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena."}}\n'
+    +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300,"gold_reward":50}],"hp_damage":5,"hp_heal":0,"condition_add":[{"name":"Envenenado","duration":"1 hora"}],"condition_remove":["Envenenado"],"xp_gain":150,"xp_source":"Combate","gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena.","npc_add":[{"name":"Nome","location":"Local","relation":"aliado"}]}}\n'
     +'OBRIGATÓRIO:\n'
     +'- Moedas: gold_add (receber) / gold_remove (gastar). Nunca pule.\n'
     +'- Missões: quest_add ao iniciar qualquer objetivo; quest_update ao concluir/falhar. Sempre com xp_reward.\n'
