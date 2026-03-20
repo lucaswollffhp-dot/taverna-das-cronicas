@@ -1829,7 +1829,7 @@ let charLevel=2, charXP=300;
 let charCA=16,baseCA=13;
 let saveProficiencies={FOR:true,CON:true,DES:false,INT:false,SAB:false,CAR:false};
 const ATTRS={FOR:16,DES:12,CON:16,INT:8,SAB:11,CAR:10};
-let inventory=['Machado de Batalha','Escudo','Camisão de Malha'];
+let inventory=[{name:'Machado de Batalha',qty:1},{name:'Escudo',qty:1},{name:'Camisão de Malha',qty:1}];
 let quests=[], attacks=[], abilities=[];
 let equipped={arma:null,armadura:null,escudo:null,acessorio:null};
 let coins={PP:0,PO:10,PE:0,PA:0,PC:0};
@@ -3227,8 +3227,7 @@ function normInv(){
   });
 }
 function renderInv(){
-  // inventário já normalizado
-  
+  normInv();
   var el=document.getElementById('inv-list-d');
   if(!el)return;
   if(!inventory.length){el.innerHTML='<div style="font-size:.7rem;color:var(--text3);font-style:italic;text-align:center;padding:.2rem 0">Vazio</div>';updateInvBadge();return;}
@@ -5762,90 +5761,66 @@ const MAGIC_ITEMS_DB=[
 ];
 
 const CLASS_DEFAULTS={
-  'Guerreiro':{hp:10,ca:16,
-    attrs:{FOR:16,DES:12,CON:16,INT:8,SAB:11,CAR:10},
-    saves:{FOR:true,CON:true},
+  'Guerreiro':{hp:12,ca:16,
+    attrs:{FOR:16,DES:12,CON:16,INT:8,SAB:11,CAR:10},saves:{FOR:true,CON:true},
     armorId:'cota_malha',shieldId:'escudo',weaponId:'espada_longa',
-    equip:['Cota de Malha','Escudo','Espada Longa','Adaga','Pacote do Explorador'],
-    atk:{name:'Espada Longa',dmg:'1d8',type:'cortante',stat:'FOR'},
-    spells:false,icon:'⚔'},
-  'Paladino':{hp:10,ca:18,
-    attrs:{FOR:15,DES:8,CON:14,INT:10,SAB:12,CAR:16},
-    saves:{SAB:true,CAR:true},
-    armorId:'placas',shieldId:'escudo',weaponId:'maca',
-    equip:['Armadura de Placas','Escudo','Maça','5 Dardos','Pacote do Sacerdote','Símbolo Sagrado'],
-    atk:{name:'Maça',dmg:'1d6',type:'concussão',stat:'FOR'},
-    spells:true,icon:'✝'},
-  'Bárbaro':{hp:12,ca:13,
-    attrs:{FOR:17,DES:13,CON:16,INT:8,SAB:11,CAR:9},
-    saves:{FOR:true,CON:true},
+    equip:['Cota de Malha','Escudo','Espada Longa','Adaga','Pacote do Explorador','Pederneira e Isqueiro'],
+    atk:{name:'Espada Longa',dmg:'1d8',type:'cortante',stat:'FOR'},spells:false,icon:'⚔'},
+  'Paladino':{hp:11,ca:18,
+    attrs:{FOR:16,DES:8,CON:14,INT:10,SAB:12,CAR:16},saves:{SAB:true,CAR:true},
+    armorId:'armadura_placas',shieldId:'escudo',weaponId:'maca',
+    equip:['Armadura de Placas','Escudo','Maça','5 Dardos','Símbolo Sagrado','Pacote do Sacerdote'],
+    atk:{name:'Maça',dmg:'1d6',type:'contundente',stat:'FOR'},spells:true,icon:'✝'},
+  'Bárbaro':{hp:14,ca:13,
+    attrs:{FOR:17,DES:13,CON:15,INT:8,SAB:11,CAR:9},saves:{FOR:true,CON:true},
     armorId:null,shieldId:null,weaponId:'machado_grande',
-    equip:['Machado Grande','2 Machadinhas','Pacote do Explorador','4 Azagaias'],
-    atk:{name:'Machado Grande',dmg:'1d12',type:'cortante',stat:'FOR'},
-    spells:false,icon:'🪓'},
-  'Ladino':{hp:8,ca:14,
-    attrs:{FOR:10,DES:17,CON:14,INT:12,SAB:11,CAR:13},
-    saves:{DES:true,INT:true},
+    equip:['Machado Grande','2 Machadinhas','4 Azagaias','Pacote do Explorador','10 Peças de Ouro'],
+    atk:{name:'Machado Grande',dmg:'1d12',type:'cortante',stat:'FOR'},spells:false,icon:'🪓'},
+  'Ladino':{hp:9,ca:13,
+    attrs:{FOR:8,DES:17,CON:13,INT:12,SAB:11,CAR:14},saves:{DES:true,INT:true},
     armorId:'couro_batido',shieldId:null,weaponId:'rapieira',
-    equip:['Couro Batido','Rapieira','Arco Curto','Aljava (20 Flechas)','2 Adagas','Ferramentas de Ladrão','Pacote do Burlão'],
-    atk:{name:'Rapieira',dmg:'1d8',type:'perfurante',stat:'DES'},
-    spells:false,icon:'🗡'},
-  'Mago':{hp:6,ca:12,
-    attrs:{FOR:8,DES:14,CON:13,INT:17,SAB:12,CAR:10},
-    saves:{INT:true,SAB:true},
+    equip:['Couro Batido','Rapieira','Arco Curto','Aljava com 20 Flechas','2 Adagas','Ferramentas de Ladrão','Pacote do Ladrão'],
+    atk:{name:'Rapieira',dmg:'1d8',type:'perfurante',stat:'DES'},spells:false,icon:'🗡'},
+  'Mago':{hp:7,ca:11,
+    attrs:{FOR:8,DES:12,CON:13,INT:17,SAB:12,CAR:11},saves:{INT:true,SAB:true},
     armorId:null,shieldId:null,weaponId:'bordao',
-    equip:['Bordão','Grimório','Bolsa de Componentes','Pacote do Estudioso'],
-    atk:{name:'Bordão',dmg:'1d6',type:'concussão',stat:'FOR'},
-    spells:true,icon:'📖'},
-  'Feiticeiro':{hp:6,ca:12,
-    attrs:{FOR:8,DES:14,CON:13,INT:10,SAB:12,CAR:17},
-    saves:{CON:true,CAR:true},
+    equip:['Bordão','Grimório','Bolsa de Componentes','Pacote do Estudioso','10 Velas','Tinta e Pena'],
+    atk:{name:'Bordão',dmg:'1d6',type:'contundente',stat:'INT'},spells:true,icon:'📖'},
+  'Feiticeiro':{hp:7,ca:11,
+    attrs:{FOR:8,DES:13,CON:13,INT:10,SAB:12,CAR:17},saves:{CON:true,CAR:true},
     armorId:null,shieldId:null,weaponId:'bordao',
     equip:['Bordão','2 Adagas','Bolsa de Componentes','Pacote do Dungeoneer'],
-    atk:{name:'Adaga',dmg:'1d4',type:'perfurante',stat:'DES'},
-    spells:true,icon:'✨'},
-  'Bruxo':{hp:8,ca:13,
-    attrs:{FOR:8,DES:14,CON:13,INT:12,SAB:11,CAR:16},
-    saves:{SAB:true,CAR:true},
+    atk:{name:'Bordão',dmg:'1d6',type:'contundente',stat:'CAR'},spells:true,icon:'✨'},
+  'Bruxo':{hp:8,ca:11,
+    attrs:{FOR:9,DES:13,CON:13,INT:12,SAB:11,CAR:17},saves:{SAB:true,CAR:true},
     armorId:'couro',shieldId:null,weaponId:'bordao',
     equip:['Couro','Bordão','2 Adagas','Bolsa de Componentes','Pacote do Estudioso'],
-    atk:{name:'Adaga',dmg:'1d4',type:'perfurante',stat:'DES'},
-    spells:true,icon:'👁'},
-  'Clérigo':{hp:8,ca:18,
-    attrs:{FOR:14,DES:10,CON:14,INT:10,SAB:17,CAR:12},
-    saves:{SAB:true,CAR:true},
-    armorId:'placas',shieldId:'escudo',weaponId:'maca',
-    equip:['Armadura de Placas','Escudo','Maça','Pacote do Sacerdote','Símbolo Sagrado'],
-    atk:{name:'Maça',dmg:'1d6',type:'concussão',stat:'FOR'},
-    spells:true,icon:'☩'},
-  'Druida':{hp:8,ca:14,
-    attrs:{FOR:10,DES:14,CON:14,INT:12,SAB:17,CAR:10},
-    saves:{INT:true,SAB:true},
-    armorId:'gibao_peles',shieldId:'escudo',weaponId:'bordao',
-    equip:['Gibão de Peles','Escudo de Madeira','Bastão de Madeira','Pacote do Explorador','Foco Druídico'],
-    atk:{name:'Bastão de Madeira',dmg:'1d6',type:'concussão',stat:'SAB'},
-    spells:true,icon:'🌿'},
-  'Bardo':{hp:8,ca:14,
-    attrs:{FOR:8,DES:16,CON:12,INT:13,SAB:10,CAR:17},
-    saves:{DES:true,CAR:true},
+    atk:{name:'Bordão',dmg:'1d6',type:'contundente',stat:'CAR'},spells:true,icon:'👁'},
+  'Clérigo':{hp:9,ca:18,
+    attrs:{FOR:14,DES:8,CON:14,INT:10,SAB:17,CAR:12},saves:{SAB:true,CAR:true},
+    armorId:'armadura_placas',shieldId:'escudo',weaponId:'maca',
+    equip:['Armadura de Placas','Escudo','Maça','Símbolo Sagrado','Pacote do Sacerdote','Ração para 5 Dias'],
+    atk:{name:'Maça',dmg:'1d6',type:'contundente',stat:'FOR'},spells:true,icon:'⛪'},
+  'Druida':{hp:9,ca:13,
+    attrs:{FOR:10,DES:13,CON:13,INT:12,SAB:17,CAR:11},saves:{INT:true,SAB:true},
+    armorId:'gibao_peles',shieldId:'escudo_madeira',weaponId:'bordao',
+    equip:['Gibão de Peles','Escudo de Madeira','Bordão','Foco Druídico','Pacote do Explorador','Ervas Medicinais'],
+    atk:{name:'Bordão',dmg:'1d6',type:'contundente',stat:'SAB'},spells:true,icon:'🌿'},
+  'Bardo':{hp:9,ca:13,
+    attrs:{FOR:9,DES:14,CON:13,INT:12,SAB:11,CAR:17},saves:{DES:true,CAR:true},
     armorId:'couro_batido',shieldId:null,weaponId:'rapieira',
-    equip:['Couro Batido','Rapieira','Adaga','Instrumento Musical (Alaúde)','Pacote do Diplomata'],
-    atk:{name:'Rapieira',dmg:'1d8',type:'perfurante',stat:'DES'},
-    spells:true,icon:'🎵'},
-  'Monge':{hp:8,ca:15,
-    attrs:{FOR:13,DES:16,CON:14,INT:10,SAB:15,CAR:8},
-    saves:{FOR:true,DES:true},
-    armorId:null,shieldId:null,weaponId:'bordao',
-    equip:['Bordão Curto','10 Dardos','Pacote do Dungeoneer'],
-    atk:{name:'Bordão Curto',dmg:'1d6',type:'concussão',stat:'FOR'},
-    spells:false,icon:'👊'},
-  'Patrulheiro':{hp:10,ca:15,
-    attrs:{FOR:13,DES:16,CON:14,INT:10,SAB:14,CAR:10},
-    saves:{FOR:true,DES:true},
+    equip:['Couro Batido','Rapieira','Adaga','Instrumento Musical (Alaúde)','Pacote do Diplomata','Fantasia'],
+    atk:{name:'Rapieira',dmg:'1d8',type:'perfurante',stat:'DES'},spells:true,icon:'🎵'},
+  'Monge':{hp:9,ca:14,
+    attrs:{FOR:13,DES:16,CON:13,INT:10,SAB:15,CAR:9},saves:{FOR:true,DES:true},
+    armorId:null,shieldId:null,weaponId:'bordao_curto',
+    equip:['Bordão Curto','10 Dardos','Pacote do Dungeoneer','Roupas Comuns'],
+    atk:{name:'Bordão Curto',dmg:'1d6',type:'perfurante',stat:'DES'},spells:false,icon:'👊'},
+  'Patrulheiro':{hp:11,ca:13,
+    attrs:{FOR:13,DES:16,CON:13,INT:10,SAB:14,CAR:9},saves:{FOR:true,DES:true},
     armorId:'camisao_malha',shieldId:null,weaponId:'espada_longa',
-    equip:['Camisão de Malha','Espada Longa','Arco Longo','Aljava (20 Flechas)','Pacote do Explorador','Armadilha de Caça'],
-    atk:{name:'Espada Longa',dmg:'1d8',type:'cortante',stat:'FOR'},
-    spells:true,icon:'🏹'},
+    equip:['Camisão de Malha','Espada Longa','Arco Longo','Aljava com 20 Flechas','2 Adagas','Armadilha de Caça','Pacote do Explorador'],
+    atk:{name:'Espada Longa',dmg:'1d8',type:'cortante',stat:'FOR'},spells:true,icon:'🏹'},
 };
 
 const ATTR_NAMES=['FOR','DES','CON','INT','SAB','CAR'];
@@ -6422,7 +6397,10 @@ async function startNewGame(){
   activeConditions={};concentrationSpell=null;
   // Reset party/NPCs/inspiration
   partyNPCs=[];npcTracker=[];hasInspiration=false;
-  inventory=[].concat(defs.equip||[]);
+  inventory=(defs.equip||[]).map(function(item){
+    if(typeof item==='string'){var qty=1,name=item;var m=item.match(/^(\d+)\s+(.+)$/);if(m){qty=parseInt(m[1]);name=m[2];}return{name:name,qty:qty};}
+    return item.qty?item:{name:item.name||item,qty:1};
+  });
   equipped={arma:null,armadura:null,escudo:null,acessorio:null};
   // Auto-equip from class defaults
   if(defs.armorId) equipped.armadura=defs.armorId;
