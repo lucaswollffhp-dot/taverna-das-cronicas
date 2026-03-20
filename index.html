@@ -811,10 +811,20 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
    CHARACTER CREATION (start screen)
 ══════════════════════════════════════ */
 .attr-build-box{
-  background:var(--surface);border:1px solid rgba(200,168,74,.25);
-  border-radius:7px;text-align:center;padding:.35rem .2rem;
+  background:var(--surface);border:1px solid rgba(200,168,74,.22);
+  border-radius:8px;text-align:center;padding:.6rem .4rem;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  transition:border-color .2s;
 }
-.attr-build-box label{display:block;font-family:'Cinzel',serif;font-size:.44rem;color:var(--gold);text-transform:uppercase;margin-bottom:2px}
+.attr-build-box:hover{border-color:rgba(200,168,74,.5)}
+.attr-step-btn{
+  background:rgba(200,168,74,.08);border:1px solid rgba(200,168,74,.2);
+  border-radius:5px;color:rgba(237,224,188,.6);
+  width:28px;height:28px;font-size:.9rem;cursor:pointer;
+  font-family:Cinzel,serif;line-height:1;transition:all .15s;flex-shrink:0;
+}
+.attr-step-btn:hover{background:rgba(200,168,74,.2);color:#e6c76a;border-color:rgba(200,168,74,.5)}
+.attr-step-btn:active{transform:scale(.92)}
 .attr-build-mod{font-family:'Cinzel',serif;font-size:.58rem;color:var(--text3);margin-top:1px}
 .region-btn{
   background:var(--surface);border:1px solid var(--border);
@@ -1137,7 +1147,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
       <div style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:12px;padding:1rem;margin-bottom:.8rem">
         <div style="font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:.4rem">Atributos</div>
         <div style="font-size:.7rem;color:rgba(200,168,74,.35);font-style:italic;margin-bottom:.6rem">Array padrão: 15, 14, 13, 12, 10, 8</div>
-        <div id="attr-builder" style="display:grid;grid-template-columns:repeat(6,1fr);gap:.3rem"></div>
+        <div id="attr-builder" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem"></div>
       </div>
 
       <!-- Section: Story -->
@@ -4395,39 +4405,38 @@ function buildAttrBuilder(){
   var el=document.getElementById('attr-builder');if(!el)return;
   var cls=document.getElementById('new-class')?.value||'Guerreiro';
   var defs=CLASS_DEFAULTS[cls]||CLASS_DEFAULTS['Guerreiro'];
-  var vals=[15,14,13,12,10,8];
   el.innerHTML=ATTR_NAMES.map(function(a,i){
+    var vals=[15,14,13,12,10,8];
     var v=defs.attrs[a]||vals[i];
     var ms=fmtMod(v);
-    var mc=v>=16?'#6ecfa0':v>=14?'#e6c76a':v<=8?'#e74c3c':'rgba(237,224,188,.7)';
+    var mc=v>=16?'#6ecfa0':v>=14?'#e6c76a':v<=8?'#e74c3c':'rgba(237,224,188,.6)';
     return'<div class="attr-build-box">'
-      +'<label style="font-family:Cinzel,serif;font-size:.56rem;color:rgba(200,168,74,.7);text-transform:uppercase;letter-spacing:1px;display:block;text-align:center;margin-bottom:3px">'+a+'</label>'
-      +'<div style="display:flex;align-items:center;justify-content:center;gap:4px">'
-      +'<button type="button" data-a="'+a+'" data-d="-1" class="attr-step-btn" style="background:rgba(200,168,74,.08);border:1px solid rgba(200,168,74,.2);border-radius:3px;color:rgba(237,224,188,.5);width:22px;height:22px;font-size:.8rem;cursor:pointer;flex-shrink:0;line-height:1">−</button>'
-      +'<input type="number" id="nb-'+a+'" data-attr="'+a+'" min="3" max="20" value="'+v+'" class="attr-step-inp" '
-      +'style="width:36px;background:transparent;border:none;border-bottom:1px solid rgba(201,168,74,.4);font-family:Cinzel,serif;font-size:1rem;color:#e6c76a;outline:none;text-align:center;padding:1px 0"/>'
-      +'<button type="button" data-a="'+a+'" data-d="1" class="attr-step-btn" style="background:rgba(200,168,74,.08);border:1px solid rgba(200,168,74,.2);border-radius:3px;color:rgba(237,224,188,.5);width:22px;height:22px;font-size:.8rem;cursor:pointer;flex-shrink:0;line-height:1">+</button>'
+      +'<div style="font-family:Cinzel,serif;font-size:.56rem;color:rgba(200,168,74,.8);text-transform:uppercase;letter-spacing:1.5px">'+a+'</div>'
+      +'<div style="display:flex;align-items:center;gap:6px;margin:2px 0">'
+      +'<button type="button" data-a="'+a+'" data-d="-1" class="attr-step-btn">−</button>'
+      +'<input type="number" id="nb-'+a+'" data-attr="'+a+'" min="3" max="20" value="'+v+'" class="attr-step-inp"'
+      +' style="width:42px;background:transparent;border:none;border-bottom:2px solid rgba(200,168,74,.35);font-family:Cinzel,serif;font-size:1.3rem;color:#e6c76a;outline:none;text-align:center;padding:2px 0"/>'
+      +'<button type="button" data-a="'+a+'" data-d="1" class="attr-step-btn">+</button>'
       +'</div>'
-      +'<div id="nbm-'+a+'" style="font-family:Cinzel Decorative,serif;font-size:.9rem;color:'+mc+';text-align:center;margin-top:2px;font-weight:700;transition:color .2s">'+ms+'</div>'
+      +'<div id="nbm-'+a+'" style="font-family:Cinzel Decorative,serif;font-size:1rem;font-weight:700;color:'+mc+';transition:color .2s">'+ms+'</div>'
       +'</div>';
   }).join('');
-  // Bind events via event delegation
+  // Event delegation
   el.addEventListener('click',function(ev){
     var btn=ev.target.closest('.attr-step-btn');
     if(!btn)return;
-    var a=btn.dataset.a, d=parseInt(btn.dataset.d);
+    var a=btn.dataset.a,d=parseInt(btn.dataset.d);
     var inp=document.getElementById('nb-'+a);
     if(!inp)return;
-    var next=Math.max(3,Math.min(20,(parseInt(inp.value)||10)+d));
-    inp.value=next;
-    updAttrMod(a,next);
+    inp.value=Math.max(3,Math.min(20,(parseInt(inp.value)||10)+d));
+    updAttrMod(a,inp.value);
   });
   el.addEventListener('input',function(ev){
     var inp=ev.target.closest('.attr-step-inp');
-    if(!inp)return;
-    updAttrMod(inp.dataset.attr,inp.value);
+    if(inp)updAttrMod(inp.dataset.attr,inp.value);
   });
 }
+
 function stepAttr(a,d){
   var inp=document.getElementById('nb-'+a);
   if(!inp)return;
@@ -4765,7 +4774,7 @@ async function startNewGame(){
     if(bg==='Nobre'&&!story){
       charDetails=' Família nobre: gere um nome de casa nobre coerente com '+region.name+' (ex: Casa Raventhorn, Família Auldren).';
     }
-    var openingPrompt='[INÍCIO DE CAMPANHA] '+name+', '+race+' '+cls+' Nv1, '+align+'. Antecedente: '+bg+'.'+(story?' História: '+story:charDetails)+' Região: '+region.name+'. Escreva UMA cena de abertura curta e envolvente (máx 3 parágrafos). Apresente onde '+name+' está agora e o primeiro conflito ou situação. Termine com O que você faz?';
+    var openingPrompt='Personagem: '+name+' ('+race+' '+cls+', '+align+'). Região: '+region.name+'. Escreva APENAS 2 parágrafos de abertura. Seja direto e envolvente. Termine com: O que você faz?';
 
     hidStartScreen();
     init();
@@ -4776,7 +4785,9 @@ async function startNewGame(){
 
     if(bar)bar.style.width='100%';
     addLoad();
+    window._openingCall=true;
     var r=await callAIWithSystem(openingPrompt,dynSystem);
+    window._openingCall=false;
     rmLoad();
     // Extract campaign name from response (first bold or quoted title, else generate one)
     var campTitle=name+' e as Crônicas de '+region.name;
@@ -4829,10 +4840,11 @@ async function callAIWithSystem(userMsg,systemOverride){
   for(var i=0;i<models.length;i++){
     try{
       var url='https://generativelanguage.googleapis.com/v1beta/models/'+models[i]+':generateContent?key='+apiKey;
+      var maxTok=window._openingCall?600:1200;
       var body=JSON.stringify({
         system_instruction:{parts:[{text:sys}]},
         contents:gemHist,
-        generationConfig:{maxOutputTokens:1200,temperature:0.85}
+        generationConfig:{maxOutputTokens:maxTok,temperature:0.85}
       });
       var controller=new AbortController();
       var timeoutId=setTimeout(function(){controller.abort();},30000);
