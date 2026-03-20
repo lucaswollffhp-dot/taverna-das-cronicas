@@ -596,6 +596,26 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   padding:.65rem 1rem;flex-shrink:0;
 }
 .quick-acts{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.5rem}
+.dice-bar{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-bottom:.4rem;flex-wrap:wrap}
+.dice-btn{background:rgba(200,168,74,.07);border:1px solid rgba(200,168,74,.22);border-radius:7px;color:rgba(200,168,74,.7);font-family:Cinzel,serif;font-size:.6rem;padding:4px 7px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:36px;user-select:none}
+.dice-btn:hover{background:rgba(200,168,74,.18);border-color:rgba(200,168,74,.5);color:var(--gold2);transform:translateY(-1px);box-shadow:0 3px 8px rgba(200,168,74,.15)}
+.dice-btn:active{transform:scale(.93) translateY(0)}
+.dice-btn.rolling{animation:diceRoll .35s ease-out;border-color:var(--gold2);color:var(--gold2)}
+.dice-btn svg{width:22px;height:22px;flex-shrink:0}
+.dice-btn .dice-lbl{font-size:.46rem;opacity:.7}
+.dice-mod-inp{width:44px;background:rgba(200,168,74,.06);border:1px solid rgba(200,168,74,.2);border-radius:6px;color:var(--gold2);font-family:Cinzel,serif;font-size:.7rem;text-align:center;padding:3px 4px;outline:none}
+.dice-mod-inp:focus{border-color:rgba(200,168,74,.5)}
+.dice-mod-lbl{font-family:Cinzel,serif;font-size:.52rem;color:rgba(200,168,74,.5);white-space:nowrap}
+.dice-result-flash{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,rgba(13,9,6,.97),rgba(22,16,9,.97));border:2px solid rgba(200,168,74,.6);border-radius:16px;padding:1.2rem 2rem;text-align:center;z-index:3000;box-shadow:0 8px 40px rgba(0,0,0,.8),0 0 20px rgba(200,168,74,.2);pointer-events:none;animation:diceFlash .15s ease-out}
+.dice-result-die{font-family:Cinzel,serif;font-size:.62rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:.3rem}
+.dice-result-num{font-family:Cinzel Decorative,serif;font-size:3.5rem;line-height:1;font-weight:700;margin-bottom:.2rem;color:var(--gold2)}
+.dice-result-num.nat20{color:#6ecfa0;text-shadow:0 0 20px rgba(110,207,160,.5)}
+.dice-result-num.nat1{color:#e74c3c;text-shadow:0 0 20px rgba(231,76,60,.4)}
+.dice-result-num.high{color:var(--gold2)}
+.dice-result-num.low{color:rgba(200,168,74,.35)}
+.dice-result-mod{font-family:Cinzel,serif;font-size:.82rem;color:rgba(200,168,74,.6);margin-top:.2rem}
+@keyframes diceRoll{0%{transform:rotate(0) scale(1)}25%{transform:rotate(-12deg) scale(1.08)}50%{transform:rotate(8deg) scale(1.05)}75%{transform:rotate(-5deg) scale(1.02)}100%{transform:rotate(0) scale(1)}}
+@keyframes diceFlash{0%{transform:translate(-50%,-50%) scale(.7);opacity:0}60%{transform:translate(-50%,-50%) scale(1.05);opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
 .qa{
   background:var(--surface);border:1px solid var(--border);
   border-radius:20px;padding:3px 11px;
@@ -936,6 +956,12 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   .hdr-title{font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
   .hdr-title-block{display:none}
   #hdr-xp{display:none!important}
+  .dice-bar{gap:3px}
+  .dice-btn{min-width:28px;padding:3px 3px;border-radius:5px}
+  .dice-btn svg{width:17px;height:17px}
+  .dice-btn .dice-lbl{font-size:.38rem}
+  .dice-mod-inp{width:32px;font-size:.62rem;padding:2px 3px}
+  .dice-mod-lbl{font-size:.44rem}
   #hdr-icon{width:28px;height:28px;font-size:.9rem;flex-shrink:0}
   /* hide non-essential right-side items */
   .hbtn-hide-mob{display:none!important}
@@ -1489,6 +1515,12 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
       <div class="chat-box" id="chat"></div>
       <div class="input-area">
         <div class="quick-acts" id="qas"></div>
+        <div class="dice-bar">
+          <span class="dice-mod-lbl">Mod</span>
+          <input type="number" id="dice-mod" class="dice-mod-inp" value="0" title="Modificador"/>
+          <div style="width:1px;height:18px;background:rgba(200,168,74,.15);margin:0 1px"></div>
+          <button class="dice-btn" id="dbtn-4" onclick="rollDie(4)" title="d4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,3 22,20 2,20"/><line x1="12" y1="3" x2="12" y2="20"/><line x1="7" y1="13.5" x2="17" y2="13.5"/></svg><span class="dice-lbl">d4</span></button><button class="dice-btn" id="dbtn-6" onclick="rollDie(6)" title="d6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.2" fill="currentColor"/><circle cx="16" cy="16" r="1.2" fill="currentColor"/><circle cx="8" cy="16" r="1.2" fill="currentColor"/><circle cx="16" cy="8" r="1.2" fill="currentColor"/></svg><span class="dice-lbl">d6</span></button><button class="dice-btn" id="dbtn-8" onclick="rollDie(8)" title="d8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 22,9 18,21 6,21 2,9"/><line x1="12" y1="2" x2="12" y2="21"/><line x1="2" y1="9" x2="22" y2="9"/></svg><span class="dice-lbl">d8</span></button><button class="dice-btn" id="dbtn-10" onclick="rollDie(10)" title="d10"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 21,8 18,19 6,19 3,8"/><line x1="12" y1="2" x2="12" y2="19"/></svg><span class="dice-lbl">d10</span></button><button class="dice-btn" id="dbtn-12" onclick="rollDie(12)" title="d12"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 20,6 22,14 16,21 8,21 2,14 4,6"/><line x1="12" y1="2" x2="12" y2="21"/></svg><span class="dice-lbl">d12</span></button><button class="dice-btn" id="dbtn-20" onclick="rollDie(20)" title="d20"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 22,8 22,16 12,22 2,16 2,8"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/><line x1="12" y1="2" x2="2" y2="8"/><line x1="12" y1="2" x2="22" y2="8"/><line x1="12" y1="22" x2="2" y2="16"/><line x1="12" y1="22" x2="22" y2="16"/></svg><span class="dice-lbl">d20</span></button><button class="dice-btn" id="dbtn-100" onclick="rollDie(100)" title="d100"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><text x="12" y="15.5" font-size="8" text-anchor="middle" fill="currentColor" stroke="none" font-family="serif">%</text></svg><span class="dice-lbl">d100</span></button>
+        </div>
         <div class="inp-row">
           <textarea class="ainp" id="inp" placeholder="O que você faz?" rows="2" onkeydown="kdown(event)"></textarea>
           <button class="sbtn" id="sbtn" onclick="send()">Agir ↗</button>
@@ -3704,6 +3736,56 @@ function openCharSheet(){
 
 // ─── TOASTS ───
 let rollToastTimer;
+function cryptoRandInt(min,max){
+  var range=max-min+1;
+  var buf=new Uint32Array(1);
+  var limit=Math.floor(0x100000000/range)*range;
+  var x;
+  do{crypto.getRandomValues(buf);x=buf[0];}while(x>=limit);
+  return min+(x%range);
+}
+function rollDie(sides){
+  var result=cryptoRandInt(1,sides);
+  var rawMod=parseInt(document.getElementById('dice-mod')?.value)||0;
+  var total=result+rawMod;
+  var modStr=rawMod!==0?(rawMod>0?' +'+rawMod:' '+rawMod)+' = '+total:'';
+  var btn=document.getElementById('dbtn-'+sides);
+  if(btn){btn.classList.add('rolling');setTimeout(function(){btn.classList.remove('rolling');},380);}
+  var numClass='',emoji='';
+  if(sides===20){
+    if(result===20){numClass='nat20';emoji='⭐ ';}
+    else if(result===1){numClass='nat1';emoji='💀 ';}
+    else if(result>=15)numClass='high';
+    else if(result<=5)numClass='low';
+  } else {
+    var pct=result/sides;
+    if(pct>=0.85)numClass='high';
+    else if(pct<=0.15)numClass='low';
+  }
+  showDiceFlash(sides,result,rawMod,total,numClass,emoji);
+  var line=emoji+'d'+sides+': '+result+modStr;
+  if(sides===20&&result===20)line+=' — 🌟 CRÍTICO NATURAL!';
+  if(sides===20&&result===1)line+=' — ☠ FALHA CRÍTICA!';
+  addMsg('roll',line);
+}
+var _diceFlashTimer=null;
+function showDiceFlash(sides,result,mod,total,numClass,emoji){
+  var el=document.getElementById('dice-flash');
+  if(!el){
+    el=document.createElement('div');el.id='dice-flash';el.className='dice-result-flash';
+    el.style.cursor='pointer';
+    el.addEventListener('click',function(){el.style.opacity='0';setTimeout(function(){el.style.display='none';},200);});
+    document.body.appendChild(el);
+  }
+  var modLine=mod!==0?'<div class="dice-result-mod">'+(mod>0?'+':'')+mod+' mod = '+total+'</div>':'';
+  el.innerHTML='<div class="dice-result-die">d'+sides+'</div>'
+    +'<div class="dice-result-num '+numClass+'">'+emoji+result+'</div>'
+    +modLine
+    +'<div style="font-family:Cinzel,serif;font-size:.44rem;color:rgba(200,168,74,.3);margin-top:.4rem">toque para fechar</div>';
+  el.style.display='block';el.style.opacity='1';
+  clearTimeout(_diceFlashTimer);
+  _diceFlashTimer=setTimeout(function(){el.style.opacity='0';setTimeout(function(){el.style.display='none';},300);},3000);
+}
 function showRollToast(msg){const t=document.getElementById('roll-toast');t.textContent=msg;t.style.opacity='1';clearTimeout(rollToastTimer);rollToastTimer=setTimeout(()=>{t.style.opacity='0';},2500);}
 function showSaveToast(msg){const t=document.getElementById('save-toast');t.textContent='💾 '+msg;t.style.opacity='1';clearTimeout(t._timer);t._timer=setTimeout(()=>{t.style.opacity='0';},2500);}
 
