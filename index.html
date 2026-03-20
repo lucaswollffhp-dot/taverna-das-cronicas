@@ -295,6 +295,20 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 
 /* ── SAVES ── */
 .saves-grid{display:grid;grid-template-columns:1fr 1fr;gap:.25rem}
+.save-box{display:flex;align-items:center;gap:4px;padding:3px 5px;background:var(--surface);border:1px solid var(--border);border-radius:5px;cursor:pointer;transition:border .15s}
+.save-box:hover{border-color:var(--border2)}
+.save-prof{width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(200,168,74,.3);flex-shrink:0;transition:all .15s}
+.save-prof.on{background:var(--gold2);border-color:var(--gold2)}
+.save-lbl{font-family:Cinzel,serif;font-size:.48rem;color:var(--text3);text-transform:uppercase;flex:1}
+.save-val{font-family:Cinzel,serif;font-size:.72rem;color:var(--gold2)}
+.skill-box{display:flex;align-items:center;gap:4px;padding:3px 5px;border-radius:4px;transition:background .12s}
+.skill-box:hover{background:rgba(200,168,74,.05)}
+.skill-prof{width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(200,168,74,.25);flex-shrink:0;transition:all .15s}
+.skill-prof.on{background:var(--gold2);border-color:var(--gold2)}
+.skill-prof.exp{background:var(--arc2);border-color:var(--arc2);box-shadow:0 0 4px var(--arc2)}
+.skill-lbl{font-family:Cinzel,serif;font-size:.46rem;color:var(--text3);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.skill-attr{font-family:Cinzel,serif;font-size:.42rem;color:rgba(200,168,74,.3);width:24px;text-align:right;flex-shrink:0}
+.skill-val{font-family:Cinzel,serif;font-size:.68rem;color:var(--gold2);width:24px;text-align:right;flex-shrink:0}
 .save-box{
   display:flex;align-items:center;gap:5px;
   background:var(--surface);border:1px solid var(--border);
@@ -1198,6 +1212,34 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
           <div class="cc-section-title" style="font-size:.5rem">Escolhas de Nível 1</div>
           <div id="class-choices-list"></div>
         </div>
+        <!-- Skills selection -->
+        <div id="skills-choice-area" style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:10px;padding:.8rem;margin-bottom:.7rem">
+          <div class="cc-section-title" style="font-size:.5rem">🎯 Perícias</div>
+          <!-- Antecedente aqui para atualizar skills em tempo real -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.7rem">
+            <div>
+              <label class="cc-label">Antecedente</label>
+              <select id="new-bg" class="cc-select" onchange="renderSkillsChoice()">
+                <option>Forasteiro</option><option>Soldado</option><option>Criminoso</option>
+                <option>Sábio</option><option>Nobre</option><option>Herói do Povo</option>
+                <option>Eremita</option><option>Marinheiro</option><option>Charlatão</option>
+                <option>Artesão de Guilda</option><option>Acólito</option><option>Artista</option>
+              </select>
+            </div>
+            <div id="bg-skills-area">
+              <label class="cc-label">Perícias do antecedente</label>
+              <div id="bg-skills-list" style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:4px"></div>
+            </div>
+          </div>
+          <!-- Classe skill choices -->
+          <div id="skills-choice-hint" style="font-size:.7rem;color:rgba(200,168,74,.5);font-style:italic;margin-bottom:.4rem"></div>
+          <div id="skills-choice-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:.3rem"></div>
+          <!-- Ladino expertise -->
+          <div id="expertise-area" style="display:none;margin-top:.6rem">
+            <div style="font-family:Cinzel,serif;font-size:.5rem;color:var(--arc3);text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem">⭐ Especialização — escolha 2 perícias para proficiência dupla</div>
+            <div id="expertise-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:.3rem"></div>
+          </div>
+        </div>
         <!-- Equipment preview -->
         <div id="equip-preview" style="background:rgba(58,144,200,.04);border:1px solid rgba(58,144,200,.18);border-radius:10px;padding:.7rem .9rem;margin-bottom:.7rem;font-size:.78rem;color:#e8dfc8"></div>
         <div class="cc-nav-row">
@@ -1224,12 +1266,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
           </div>
           <div>
             <label class="cc-label">Antecedente</label>
-            <select id="new-bg" class="cc-select">
-              <option>Forasteiro</option><option>Soldado</option><option>Criminoso</option>
-              <option>Sábio</option><option>Nobre</option><option>Herói do Povo</option>
-              <option>Eremita</option><option>Marinheiro</option><option>Charlatão</option>
-              <option>Artesão de Guilda</option><option>Acólito</option><option>Artista</option>
-            </select>
+            <div id="bg-display-step2" style="padding:.5rem .7rem;background:rgba(200,168,74,.05);border:1px solid rgba(200,168,74,.2);border-radius:7px;font-family:Cormorant Garamond,serif;font-size:.9rem;color:var(--gold2)">— definido na etapa anterior —</div>
           </div>
         </div>
         <div style="margin-bottom:.6rem">
@@ -1403,6 +1440,13 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
       <div>
         <div class="slbl">🛡 Testes de Resistência</div>
         <div class="saves-grid" id="saves-d"></div>
+      </div>
+      <hr class="sdiv">
+      <div>
+        <div class="slbl">🎯 Perícias
+          <span id="skills-toggle" onclick="toggleSkillsPanel()" style="background:rgba(200,168,74,.08);border:1px solid rgba(200,168,74,.2);border-radius:4px;color:rgba(200,168,74,.5);font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;cursor:pointer;margin-left:4px" title="Expandir/recolher">▼</span>
+        </div>
+        <div id="skills-d" style="display:none"></div>
       </div>
       <hr class="sdiv">
       <div>
@@ -1611,8 +1655,17 @@ function modNum(v){return Math.floor((v-10)/2);}
 function prof(){return Math.ceil(1+charLevel/4);}
 
 // ─── INIT ───
+function toggleSkillsPanel(){
+  var el=document.getElementById('skills-d');
+  var tog=document.getElementById('skills-toggle');
+  if(!el)return;
+  var open=el.style.display!=='none';
+  el.style.display=open?'none':'';
+  if(tog)tog.textContent=open?'▼':'▲';
+  if(!open)renderSkills();
+}
 function init(){
-  renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();renderSpells();
+  renderAttrs();renderSaves();renderSkills();renderEquip();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();renderSpells();
   document.getElementById('achiev-d').innerHTML=CONQUISTAS.map(c=>`<div class="ach">${c}</div>`).join('');
   setQA(['Explorar','Falar com NPC','Ver companheiros','Partir em jornada','Usar habilidade','⚔ Iniciar combate']);
   updHP();updCA();updXP();
@@ -1714,6 +1767,50 @@ function renderSaves(){
   }).join('');
 }
 function toggleSaveProf(a){saveProficiencies[a]=!saveProficiencies[a];renderSaves();}
+
+function getSkillBonus(skillId){
+  var sk=SKILLS_DATA.find(function(x){return x.id===skillId;});
+  if(!sk)return 0;
+  var attrVal=ATTRS[sk.attr]||10;
+  var base=modNum(attrVal);
+  var profBonus=charLevel<5?2:charLevel<9?3:charLevel<13?4:charLevel<17?5:6;
+  if(skillProficiencies[sk.name]){
+    // Expertise = double proficiency (Ladino/Bardo)
+    base+=skillProficiencies[sk.name+'_expertise']?profBonus*2:profBonus;
+  }
+  return base;
+}
+
+function getSkillBonusStr(skillId){
+  var b=getSkillBonus(skillId);
+  return(b>=0?'+':'')+b;
+}
+
+function renderSkills(){
+  var el=document.getElementById('skills-d');if(!el)return;
+  var profBonus=charLevel<5?2:charLevel<9?3:charLevel<13?4:charLevel<17?5:6;
+  el.innerHTML=SKILLS_DATA.map(function(sk){
+    var attrVal=ATTRS[sk.attr]||10;
+    var base=modNum(attrVal);
+    var bonus=base+(skillProficiencies[sk.name]?profBonus:0);
+    var bonusStr=(bonus>=0?'+':'')+bonus;
+    var hasprof=!!skillProficiencies[sk.name];
+    return'<div class="skill-box" data-sn="'+sk.name+'" onclick="toggleSkillProf(this.dataset.sn)" title="'+sk.attr+'" style="cursor:pointer">'
+      +'<div class="skill-prof'+(skillProficiencies[sk.name+'_expertise']?' exp':hasprof?' on':'')+'"></div>'
+      +'<span class="skill-lbl">'+sk.name+'</span>'
+      +'<span class="skill-attr">'+sk.attr+'</span>'
+      +'<span class="skill-val">'+bonusStr+'</span>'
+      +'</div>';
+  }).join('');
+}
+
+function toggleSkillProf(name){
+  if(skillProficiencies[name])delete skillProficiencies[name];
+  else skillProficiencies[name]=true;
+  renderSkills();
+  // Update callAI context
+  updXP(); // triggers hdr update
+}
 
 // ─── HP ───
 function updHP(){
@@ -3335,6 +3432,15 @@ function buildMobChar(){
     }).join('')
     +'</div></div>';
 
+  // Skills proficiencies for mobile
+  var profBsk=charLevel<5?2:charLevel<9?3:charLevel<13?4:5;
+  var profSkills=SKILLS_DATA.filter(function(sk){return skillProficiencies[sk.name];});
+  var skillsHtml='<div style="margin-bottom:.8rem">'
+    +'<div class="slbl">🎯 Perícias com Proficiência</div>'
+    +'<div style="display:flex;flex-wrap:wrap;gap:.25rem">'
+    +profSkills.map(function(sk){var b=modNum(ATTRS[sk.attr]||10)+profBsk;return'<div style="background:rgba(200,168,74,.07);border:1px solid rgba(200,168,74,.2);border-radius:5px;padding:2px 7px;font-family:Cinzel,serif;font-size:.5rem;color:var(--gold2)">'+sk.name+' '+(b>=0?'+':'')+b+'</div>';}).join('')
+    +(profSkills.length===0?'<div style="font-size:.7rem;color:var(--text3);font-style:italic">Nenhuma selecionada</div>':'')
+    +'</div></div>';
   // Saves
   var profB=charLevel<5?2:charLevel<9?3:charLevel<13?4:5;
   var saves='<div style="margin-bottom:.8rem">'
@@ -3394,7 +3500,7 @@ function buildMobChar(){
       :'<div style="font-size:.72rem;color:var(--text3);font-style:italic;text-align:center;padding:.3rem">Nenhuma conquista</div>')
     +'</div>';
 
-  return'<div style="padding:.8rem">'+hdr+vitals+attrs+saves+equipHtml+lvlHtml+achHtml+'</div>';
+  return'<div style="padding:.8rem">'+hdr+vitals+attrs+skillsHtml+saves+equipHtml+lvlHtml+achHtml+'</div>';
 }
 
 function buildMobBag(){
@@ -3920,7 +4026,8 @@ function parseAndApplyUpdates(raw){
 }
 
 async function callAI(userMsg){
-  var ctx='[PV:'+hpC+'/'+HP_MAX+'|CA:'+charCA+'|Nv:'+charLevel+'|XP:'+charXP+'|Tesouro:'+Math.round(getTotalPO()*10)/10+'PO]';
+  var skillCtx=Object.keys(skillProficiencies).filter(function(k){return skillProficiencies[k];}).slice(0,6).join(',');
+  var ctx='[PV:'+hpC+'/'+HP_MAX+'|CA:'+charCA+'|Nv:'+charLevel+'|XP:'+charXP+'|Tesouro:'+Math.round(getTotalPO()*10)/10+'PO'+(skillCtx?'|Prof:'+skillCtx:'')+']';
   var gemHist=hist.map(function(m){
     return{role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]};
   });
@@ -4013,7 +4120,7 @@ function kdown(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
 const SAVE_KEY='killyn_v3';let autoSaveTimer=null;
 function getState(){
   return{hpC,HP_MAX,hist,inventory,quests,attacks,abilities,equipped,coins,attrs:{FOR:ATTRS.FOR,DES:ATTRS.DES,CON:ATTRS.CON,INT:ATTRS.INT,SAB:ATTRS.SAB,CAR:ATTRS.CAR},
-    charLevel,charXP,saveProficiencies,mapSrc,conquistas:CONQUISTAS,
+    charLevel,charXP,saveProficiencies,skillProficiencies,mapSrc,conquistas:CONQUISTAS,
     charName:window.CHAR_NAME||'',charRace:window.CHAR_RACE||'',
     charClass:window.CHAR_CLASS||'',
     charSubclass:window.CHAR_SUBCLASS||'',charRegion:window.CHAR_REGION||'',
@@ -4039,6 +4146,7 @@ function loadProgress(slot='auto'){
   coins=s.coins||{PP:0,PO:10,PE:0,PA:0,PC:0};
   charLevel=s.charLevel||2;charXP=s.charXP||300;
   saveProficiencies=s.saveProficiencies||{FOR:true,CON:true,DES:false,INT:false,SAB:false,CAR:false};
+  if(s.skillProficiencies)skillProficiencies=s.skillProficiencies;
   mapSrc=s.mapSrc||null;
   // Restore all character data
   if(s.spells) spells=s.spells;
@@ -4225,6 +4333,63 @@ const RACES_DB={
 // Classes que escolhem subclasse antes do nível 3
 const SUBCLASS_LEVEL1=['Clérigo','Bruxo','Feiticeiro']; // nível 1
 const SUBCLASS_LEVEL2=['Mago','Druida']; // nível 2 — podem escolher já na criação
+
+// ─── PERÍCIAS (LdJ p.174) ───
+const SKILLS_DATA=[
+  {id:'acrobacia',  name:'Acrobacia',   attr:'DES'},
+  {id:'arcanismo',  name:'Arcanismo',   attr:'INT'},
+  {id:'atletismo',  name:'Atletismo',   attr:'FOR'},
+  {id:'atuacao',    name:'Atuação',     attr:'CAR'},
+  {id:'enganacao',  name:'Enganação',   attr:'CAR'},
+  {id:'furtividade',name:'Furtividade', attr:'DES'},
+  {id:'historia',   name:'História',    attr:'INT'},
+  {id:'intimidacao',name:'Intimidação', attr:'CAR'},
+  {id:'intuicao',   name:'Intuição',    attr:'SAB'},
+  {id:'investigacao',name:'Investigação',attr:'INT'},
+  {id:'lidar_animais',name:'Lidar com Animais',attr:'SAB'},
+  {id:'medicina',   name:'Medicina',    attr:'SAB'},
+  {id:'natureza',   name:'Natureza',    attr:'INT'},
+  {id:'percepcao',  name:'Percepção',   attr:'SAB'},
+  {id:'persuasao',  name:'Persuasão',   attr:'CAR'},
+  {id:'prestidigitacao',name:'Prestidigitação',attr:'DES'},
+  {id:'religiao',   name:'Religião',    attr:'INT'},
+  {id:'sobrevivencia',name:'Sobrevivência',attr:'SAB'},
+];
+
+// Perícias disponíveis por classe (escolher N de lista) — LdJ oficial
+const CLASS_SKILLS={
+  'Guerreiro':  {choose:2, from:['Acrobacia','Atletismo','História','Intuição','Intimidação','Percepção','Sobrevivência']},
+  'Paladino':   {choose:2, from:['Atletismo','Intuição','Intimidação','Medicina','Persuasão','Religião']},
+  'Bárbaro':    {choose:2, from:['Lidar com Animais','Atletismo','Intimidação','Natureza','Percepção','Sobrevivência']},
+  'Ladino':     {choose:4, from:['Acrobacia','Atletismo','Enganação','Intimidação','Intuição','Investigação','Percepção','Persuasão','Prestidigitação','Furtividade']},
+  'Mago':       {choose:2, from:['Arcanismo','História','Intuição','Investigação','Medicina','Religião']},
+  'Feiticeiro': {choose:2, from:['Arcanismo','Enganação','Intuição','Intimidação','Persuasão','Religião']},
+  'Bruxo':      {choose:2, from:['Arcanismo','Enganação','História','Intimidação','Investigação','Natureza','Religião']},
+  'Clérigo':    {choose:2, from:['História','Intuição','Medicina','Persuasão','Religião']},
+  'Druida':     {choose:2, from:['Arcanismo','Lidar com Animais','Intuição','Medicina','Natureza','Percepção','Religião','Sobrevivência']},
+  'Bardo':      {choose:3, from:['Acrobacia','Arcanismo','Atletismo','Atuação','Enganação','Furtividade','História','Intuição','Intimidação','Investigação','Medicina','Natureza','Percepção','Persuasão','Prestidigitação','Religião','Sobrevivência']},
+  'Monge':      {choose:2, from:['Acrobacia','Atletismo','História','Intuição','Religião','Furtividade']},
+  'Patrulheiro':{choose:3, from:['Lidar com Animais','Atletismo','Intuição','Investigação','Natureza','Percepção','Furtividade','Sobrevivência']},
+};
+
+// Perícias concedidas por Antecedente (LdJ oficial)
+const BG_SKILLS={
+  'Forasteiro':       ['Atletismo','Sobrevivência'],
+  'Soldado':          ['Atletismo','Intimidação'],
+  'Criminoso':        ['Enganação','Furtividade'],
+  'Sábio':            ['Arcanismo','História'],
+  'Nobre':            ['História','Persuasão'],
+  'Herói do Povo':    ['Lidar com Animais','Sobrevivência'],
+  'Eremita':          ['Medicina','Religião'],
+  'Marinheiro':       ['Atletismo','Percepção'],
+  'Charlatão':        ['Enganação','Prestidigitação'],
+  'Artesão de Guilda':['Intuição','Persuasão'],
+  'Acólito':          ['Intuição','Religião'],
+  'Artista':          ['Acrobacia','Atuação'],
+};
+
+// State: selected skill proficiencies
+var skillProficiencies = {};  // {skill_id: true/false}
 
 // ─── ARMAS OFICIAIS (Livro do Jogador p.150) ───
 const WEAPONS_DB=[
@@ -4664,8 +4829,24 @@ function ccStep(n){
   window.scrollTo(0,0);
 }
 function ccNext(cur){
-  if(cur===0){var a=document.getElementById('cc-appearance');if(a)window._ccAppearance=a.value;}
-  if(cur===2){var n=document.getElementById('new-name')?.value.trim();if(!n){alert('Digite o nome!');return;}}
+  if(cur===0){
+    var a=document.getElementById('cc-appearance');if(a)window._ccAppearance=a.value;
+  }
+  if(cur===1){
+    // Validate skill selection
+    var cs=CLASS_SKILLS[_ccSelectedClass]||{choose:2,from:[]};
+    var bgEl=document.getElementById('new-bg');
+    var bgSkills=BG_SKILLS[bgEl?bgEl.value:'Forasteiro']||[];
+    var chosen=Object.keys(window._ccSkills||{}).filter(function(k){return window._ccSkills[k];}).length;
+    // Only count class skills (not bg duplicates)
+    var needed=cs.choose;
+    // If bg already covers some, class still needs its own
+    if(chosen<needed){
+      showRollToast('⚠ Escolha '+needed+' perícia'+(needed>1?'s':'')+' de classe ('+chosen+'/'+needed+')');
+      return;
+    }
+  }
+  if(cur===2){var n=document.getElementById('new-name')?.value.trim();if(!n){alert('Digite o nome do personagem!');return;}}
   ccStep(cur+1);
 }
 function ccPrev(cur){ccStep(cur-1);}
@@ -4739,13 +4920,13 @@ function buildClassGrid(){
     var hp=CLASS_LEVEL_TABLE[c]?'d'+CLASS_LEVEL_TABLE[c].hpDie:'d8';
     return'<div class="cc-card'+(c===_ccSelectedClass?' selected':'')+'" data-c="'+c+'" onclick="selectClass(this.dataset.c)"><div class="cc-card-icon">'+(icons[c]||'⚔')+'</div><div class="cc-card-name">'+c+'</div><div class="cc-card-sub">'+hp+'</div></div>';
   }).join('');
-  renderSubclass1Area();renderClassChoices();updateClassDefaults();
+  window._ccSkills={};renderSubclass1Area();renderClassChoices();renderSkillsChoice();updateClassDefaults();
 }
 function selectClass(c){
   _ccSelectedClass=c;_ccSelectedSubclass1='';
   document.querySelectorAll('#class-grid .cc-card').forEach(function(el){el.classList.toggle('selected',el.querySelector('.cc-card-name')?.textContent===c);});
   var nc=document.getElementById('new-class');if(nc)nc.value=c;
-  renderSubclass1Area();renderClassChoices();updateClassDefaults();
+  window._ccSkills={};renderSubclass1Area();renderClassChoices();renderSkillsChoice();updateClassDefaults();
 }
 function renderSubclass1Area(){
   var area=document.getElementById('subclass1-area');var grid=document.getElementById('subclass1-grid');var lbl=document.getElementById('subclass1-label');
@@ -4774,6 +4955,130 @@ function selectSubclass1(s){
   _ccSelectedSubclass1=s;
   document.querySelectorAll('#subclass1-grid .cc-card').forEach(function(c){c.classList.toggle('selected',c.querySelector('.cc-card-name')?.textContent===s);});
 }
+function renderSkillsChoice(){
+  var hint=document.getElementById('skills-choice-hint');
+  var grid=document.getElementById('skills-choice-grid');
+  var bgList=document.getElementById('bg-skills-list');
+  if(!grid)return;
+
+  var cs=CLASS_SKILLS[_ccSelectedClass]||{choose:2,from:[]};
+  var bgEl=document.getElementById('new-bg');
+  var bgVal=bgEl?bgEl.value:'Forasteiro';
+  var bgSkills=BG_SKILLS[bgVal]||[];
+
+  // Update bg display in step 2
+  var disp=document.getElementById('bg-display-step2');
+  if(disp)disp.textContent=bgVal;
+
+  // Count class skills already selected (excluding bg skills)
+  var selectedCount=0;
+  cs.from.forEach(function(s){if(window._ccSkills&&window._ccSkills[s])selectedCount++;});
+
+  if(hint)hint.textContent='Escolha '+cs.choose+' perícia'+(cs.choose>1?'s':'')+' da classe'
+    +' ('+selectedCount+'/'+cs.choose+')'
+    +' — as do antecedente são concedidas automaticamente';
+
+  // Build skill cards
+  grid.innerHTML=cs.from.map(function(sname){
+    var sk=SKILLS_DATA.find(function(x){return x.name===sname;});
+    var sel=!!(window._ccSkills&&window._ccSkills[sname]);
+    var isBg=bgSkills.indexOf(sname)>=0;
+    var attrLabel=sk?sk.attr:'';
+    // If it's a bg skill, show as auto-granted, not selectable via class
+    if(isBg){
+      return'<div style="display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:7px;'
+        +'background:rgba(107,63,160,.07);border:1px solid rgba(107,63,160,.2);opacity:.8;">'
+        +'<div style="width:14px;height:14px;border-radius:50%;flex-shrink:0;background:var(--arc2);border:1.5px solid var(--arc3);display:flex;align-items:center;justify-content:center">'
+        +'<div style="width:6px;height:6px;border-radius:50%;background:#fff;opacity:.7"></div></div>'
+        +'<span style="flex:1;font-family:Cormorant Garamond,serif;font-size:.82rem;color:var(--arc3)">'+sname+'</span>'
+        +'<span style="font-family:Cinzel,serif;font-size:.46rem;color:var(--arc2)">'+attrLabel+'</span>'
+        +'<span style="font-family:Cinzel,serif;font-size:.42rem;color:var(--arc2)">📜 BG</span>'
+        +'</div>';
+    }
+    return'<div onclick="toggleSkillChoice(this.dataset.skill,'+cs.choose+')" data-skill="'+sname+'" style="'
+      +'display:flex;align-items:center;gap:6px;padding:5px 7px;'
+      +'border-radius:7px;cursor:pointer;transition:all .15s;'
+      +'background:'+(sel?'rgba(200,168,74,.12)':'var(--surface)')+';'
+      +'border:1px solid '+(sel?'rgba(200,168,74,.45)':'var(--border)')+';">'
+      +'<div style="width:14px;height:14px;border-radius:50%;flex-shrink:0;'
+      +'border:1.5px solid '+(sel?'var(--gold2)':'rgba(200,168,74,.25)')+';'
+      +'background:'+(sel?'var(--gold2)':'transparent')+';">'
+      +(sel?'<div style="width:6px;height:6px;border-radius:50%;background:#1a1208;margin:3px auto"></div>':'')
+      +'</div>'
+      +'<span style="flex:1;font-family:Cormorant Garamond,serif;font-size:.82rem;color:'+(sel?'var(--gold2)':'var(--text2)')+'">'+sname+'</span>'
+      +'<span style="font-family:Cinzel,serif;font-size:.46rem;color:rgba(200,168,74,.4)">'+attrLabel+'</span>'
+      +'</div>';
+  }).join('');
+
+  // Background skills badges
+  if(bgList){
+    bgList.innerHTML=bgSkills.map(function(s){
+      return'<div style="background:rgba(107,63,160,.1);border:1px solid rgba(107,63,160,.25);border-radius:5px;padding:2px 8px;font-family:Cinzel,serif;font-size:.52rem;color:var(--arc3)">'+s+'</div>';
+    }).join('');
+  }
+
+  // Ladino expertise
+  var expArea=document.getElementById('expertise-area');
+  var expGrid=document.getElementById('expertise-grid');
+  if(expArea&&expGrid){
+    var isLadino=_ccSelectedClass==='Ladino';
+    expArea.style.display=isLadino?'':'none';
+    if(isLadino){
+      // All trained skills (class + bg) eligible for expertise
+      var trained=bgSkills.slice();
+      cs.from.forEach(function(s){if(window._ccSkills&&window._ccSkills[s])trained.push(s);});
+      if(!window._ccExpertise)window._ccExpertise={};
+      var expCount=Object.keys(window._ccExpertise).length;
+      expGrid.innerHTML=trained.map(function(sname){
+        var sel=!!(window._ccExpertise&&window._ccExpertise[sname]);
+        return'<div data-exp="'+sname+'" onclick="toggleExpertise(this.dataset.exp)" style="'
+          +'display:flex;align-items:center;gap:6px;padding:4px 7px;'
+          +'border-radius:7px;cursor:pointer;transition:all .15s;'
+          +'background:'+(sel?'rgba(107,63,160,.18)':'var(--surface)')+';'
+          +'border:1px solid '+(sel?'rgba(107,63,160,.5)':'var(--border)')+';">'
+          +'<span style="font-size:.8rem">'+(sel?'⭐':'○')+'</span>'
+          +'<span style="flex:1;font-family:Cormorant Garamond,serif;font-size:.82rem;color:'+(sel?'var(--arc3)':'var(--text2)')+'">'+sname+'</span>'
+          +'</div>';
+      }).join('');
+      if(!trained.length)expGrid.innerHTML='<div style="font-size:.74rem;color:var(--text3);font-style:italic">Selecione perícias da classe primeiro</div>';
+    }
+  }
+}
+
+function toggleSkillChoice(sname, maxChoose){
+  if(!window._ccSkills)window._ccSkills={};
+  var cs=CLASS_SKILLS[_ccSelectedClass]||{choose:2,from:[]};
+  var bgEl=document.getElementById('new-bg');
+  var bgSkills=BG_SKILLS[bgEl?bgEl.value:'Forasteiro']||[];
+  // Can't select bg skills as class choices
+  if(bgSkills.indexOf(sname)>=0)return;
+  var selectedCount=Object.keys(window._ccSkills).filter(function(k){return window._ccSkills[k];}).length;
+  if(window._ccSkills[sname]){
+    delete window._ccSkills[sname];
+    // Remove from expertise too if deselected
+    if(window._ccExpertise)delete window._ccExpertise[sname];
+  } else {
+    if(selectedCount>=maxChoose){
+      showRollToast('⚠ Máximo de '+maxChoose+' perícia'+(maxChoose>1?'s':'')+' de classe para '+_ccSelectedClass);
+      return;
+    }
+    window._ccSkills[sname]=true;
+  }
+  renderSkillsChoice();
+}
+
+function toggleExpertise(sname){
+  if(!window._ccExpertise)window._ccExpertise={};
+  var count=Object.keys(window._ccExpertise).length;
+  if(window._ccExpertise[sname]){
+    delete window._ccExpertise[sname];
+  } else {
+    if(count>=2){showRollToast('⚠ Máximo 2 perícias com Especialização');return;}
+    window._ccExpertise[sname]=true;
+  }
+  renderSkillsChoice();
+}
+
 function renderClassChoices(){
   var area=document.getElementById('class-choices-area');var list=document.getElementById('class-choices-list');
   if(!area||!list)return;
@@ -5041,6 +5346,26 @@ async function startNewGame(){
   coins={PP:0,PO:startGold,PE:0,PA:0,PC:0};
   charLevel=1;charXP=0;
   saveProficiencies=Object.assign({FOR:false,DES:false,CON:false,INT:false,SAB:false,CAR:false},defs.saves||{});
+  // Apply selected skill proficiencies (from class choices + background)
+  skillProficiencies={};
+  var csChosen=window._ccSkills||{};
+  Object.keys(csChosen).forEach(function(s){if(csChosen[s])skillProficiencies[s]=true;});
+  // Background skills auto-granted
+  var bgChosen=BG_SKILLS[bg]||[];
+  bgChosen.forEach(function(s){skillProficiencies[s]=true;});
+  // Ladino expertise: double proficiency (stored as 'expertise' key)
+  if(cls==='Ladino'&&window._ccExpertise){
+    Object.keys(window._ccExpertise).forEach(function(s){
+      if(window._ccExpertise[s])skillProficiencies[s+'_expertise']=true;
+    });
+  }
+  // Store choice for combat style etc
+  if(document.getElementById('cc-choice-combat-style'))
+    window._ccCombatStyle=document.getElementById('cc-choice-combat-style').value;
+  if(document.getElementById('cc-choice-fav-enemy'))
+    window._ccFavEnemy=document.getElementById('cc-choice-fav-enemy').value;
+  if(document.getElementById('cc-choice-fav-terrain'))
+    window._ccFavTerrain=document.getElementById('cc-choice-fav-terrain').value;
   mapSrc=null;
   // Store current char data globally for header updates
   window.CHAR_NAME=name;
@@ -5150,6 +5475,7 @@ async function startNewGame(){
     +'Antecedente: '+bg+(story?' | História: '+story:'')+'\n'
     +'Atributos: FOR '+newAttrs.FOR+' DES '+newAttrs.DES+' CON '+newAttrs.CON+' INT '+newAttrs.INT+' SAB '+newAttrs.SAB+' CAR '+newAttrs.CAR+'\n'
     +(physString?'Aparência física: '+physString+'\n':'')
+    +'Perícias com proficiência: '+Object.keys(skillProficiencies).filter(function(k){return skillProficiencies[k];}).join(', ')+'\n'
     +'PV: '+HP_MAX+' | CA: '+charCA+'\n'
     +'Região de início: '+region.name+' ('+region.desc+')\n\n'
     +'CAMPANHA: Gere uma campanha ORIGINAL mas baseada no universo oficial dos Forgotten Realms. Use localidades, facções, deuses, história e personagens CANÔNICOS do setting (Waterdeep, Zhentarim, Harpers, Sembia, deuses do Faerûn etc). A aventura deve ser coerente com o nível 1 do personagem.\n\n'
@@ -5246,7 +5572,8 @@ async function startNewGame(){
 }
 
 async function callAIWithSystem(userMsg,systemOverride){
-  var ctx='[PV:'+hpC+'/'+HP_MAX+'|CA:'+charCA+'|Nv:'+charLevel+'|XP:'+charXP+'|Tesouro:'+Math.round(getTotalPO()*10)/10+'PO]';
+  var skillCtx=Object.keys(skillProficiencies).filter(function(k){return skillProficiencies[k];}).slice(0,6).join(',');
+  var ctx='[PV:'+hpC+'/'+HP_MAX+'|CA:'+charCA+'|Nv:'+charLevel+'|XP:'+charXP+'|Tesouro:'+Math.round(getTotalPO()*10)/10+'PO'+(skillCtx?'|Prof:'+skillCtx:'')+']';
   var gemHist=hist.map(function(m){
     return{role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]};
   });
