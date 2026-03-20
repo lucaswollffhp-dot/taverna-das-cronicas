@@ -5303,21 +5303,50 @@ document.getElementById('chat')&&document.getElementById('chat').addEventListene
 
 // ─── FORGOTTEN REALMS DATA ───
 const FR_REGIONS=[
-  // Grandes cidades
-  {id:'waterdeep',name:'Waterdeep',desc:'A Cidade dos Esplendores — metrópole cosmopolita',start:'nas ruas movimentadas do Distrito do Porto'},
-  {id:'baldursgate',name:'Portão de Baldur',desc:'Porto vibrante na Sword Coast',start:'nos docas infestados de contrabandistas'},
-  {id:'neverwinter',name:'Neverwinter',desc:'A Joia do Norte — cidade renascida das cinzas',start:'perto das muralhas ainda marcadas pela catástrofe'},
-  // Vilas e vilarejos
-  {id:'phandelin',name:'Phandalin',desc:'Vilarejo de colonos na beira da Triboar Trail',start:'na praça de terra batida em frente à Stonehill Inn'},
-  {id:'daggerford',name:'Daggerford',desc:'Pequena cidade comercial na Sword Coast',start:'no mercado barulhento próximo ao rio Delimbiyr'},
-  {id:'greenest',name:'Greenest',desc:'Vilarejo tranquilo nas Planícies de Elturgard',start:'nos campos abertos ao sul da cidade'},
-  {id:'triboar',name:'Triboar',desc:'Entroncamento de estradas nas pradarias do Norte',start:'no pátio do Poseidon Inn após uma longa viagem'},
-  {id:'longsaddle',name:'Longsaddle',desc:'Vila isolada famosa por sua família de magos',start:'nas margens de um riacho próximo à mansão Harpell'},
-  // Regiões selvagens
-  {id:'icewinddale',name:'Vale do Vento Gelado',desc:'Terras geladas além do Norte Profundo',start:'em uma cabana de caçador às margens do Lac Dinneshere'},
-  {id:'mistyforest',name:'Floresta das Névoas',desc:'Floresta élfica misteriosa a oeste de Waterdeep',start:'numa clareira iluminada por vagalumes mágicos'},
-  {id:'anauroch',name:'Anauroch',desc:'O Grande Deserto de Areia dos Forgotten Realms',start:'num oásis raro com ruínas arcanas ao redor'},
-  {id:'underdark',name:'Underdark',desc:'O subsolo sombrio repleto de perigos',start:'numa câmara rochosa com o eco de criaturas distantes'},
+
+  // ── GRANDES METRÓPOLES ──
+  {id:'waterdeep',    cat:'Metrópole', name:'Waterdeep',         desc:'A Cidade dos Esplendores — metrópole cosmopolita, lar de guildas, nobres e segredos',          start:'nas ruas movimentadas do Distrito do Porto, entre mercadores e marinheiros'},
+  {id:'baldursgate',  cat:'Metrópole', name:'Portão de Baldur',   desc:'Porto vibrante na Sword Coast — cidade de ambição, crime e oportunidade',                       start:'nos docas infestados de contrabandistas, sob o olhar atento dos Flaming Fists'},
+  {id:'neverwinter',  cat:'Metrópole', name:'Neverwinter',        desc:'A Joia do Norte — cidade renascida das cinzas do desastre do Monte Hotenow',                    start:'perto das muralhas ainda marcadas pela erupção, num bairro em reconstrução'},
+  {id:'silverymoon',  cat:'Metrópole', name:'Silverymoon',        desc:'A Lua de Prata — cidade élfica de magia, arte e erudição no coração do Norte',                  start:'na Gran Bibliotheca, entre estantes repletas de tomos arcanos centenários'},
+  {id:'suzail',       cat:'Metrópole', name:'Suzail',             desc:'Capital de Cormyr — cidade real sob proteção dos War Wizards e dos Purple Dragons',              start:'na praça do mercado Real, com o Palácio de Suzail reluzindo ao fundo'},
+  {id:'calimport',    cat:'Metrópole', name:'Calimport',          desc:'A Rainha do Sul — labirinto de bazares, pashas e assassinos no deserto de Calim',               start:'nos bazares aromáticos do Distrito das Especiarias, rodeado de mercadores exóticos'},
+  {id:'luskan',       cat:'Metrópole', name:'Luskan',             desc:'A Cidade dos Piratas — porto corrupto controlado pelos Arcanos e lordes navais rivais',          start:'num beco escuro do Porto Sul, com o Retalhador III ancorado nas docas ao longe'},
+  {id:'athkatla',     cat:'Metrópole', name:'Athkatla',           desc:'A Cidade da Moeda — coração comercial de Amn, onde tudo tem preço',                             start:'no Distrito dos Mercadores, cercado de lojas, bancos e negociadores sorridentes'},
+
+  // ── CIDADES MÉDIAS E FORTALEZAS ──
+  {id:'daggerford',   cat:'Cidade',    name:'Daggerford',         desc:'Cidade comercial amuralhada na Sword Coast, governada pelo Duque Pwyll',                        start:'no mercado barulhento próximo ao rio Delimbiyr, com a muralha à vista'},
+  {id:'yartar',       cat:'Cidade',    name:'Yartar',             desc:'Cidade fluvial estratégica no Vale de Dessarin, disputada por guildas rivais',                  start:'nas docas do rio Surbrin, enquanto barcos carregados de mercadorias passam'},
+  {id:'mirabar',      cat:'Cidade',    name:'Mirabar',            desc:'Cidade-fortaleza anã da Costa do Norte, rica em minérios e guardada por Axes of Mirabar',       start:'nas minas subterrâneas, com o brilho do minério de ferro iluminando as paredes'},
+  {id:'elturel',      cat:'Cidade',    name:'Elturel',            desc:'A Cidade da Luz Radiante — centro paladino de Elturgard, protegida por um sol eterno',          start:'na Grande Praça sob o brilho permanente do Companheiro, sol mágico acima da cidade'},
+  {id:'hillsfar',     cat:'Cidade',    name:'Hillsfar',           desc:'Cidade humana xenófoba próxima à Floresta Cormanthor, famosa pela Arena',                      start:'nos arredores murados da cidade, tentando entrar sem chamar atenção dos guardas'},
+  {id:'baldurs_gate_outer', cat:'Cidade', name:'Elfsong Tavern',  desc:'A famosa taverna de Portão de Baldur — ponto de encontro de aventureiros de toda a Sword Coast', start:'na Elfsong Tavern, ouvindo o canto espectral do elfo enquanto bebe cerveja de cevada'},
+
+  // ── VILAS E VILAREJOS ──
+  {id:'phandalin',    cat:'Vila',      name:'Phandalin',          desc:'Vilarejo de colonos reconstruído na Triboar Trail, perto das Cavernas de Onda do Trovão',       start:'na praça de terra batida em frente à Stonehill Inn, com aventureiros e mineiros ao redor'},
+  {id:'greenest',     cat:'Vila',      name:'Greenest',           desc:'Vilarejo tranquilo nas Planícies de Elturgard, alvo de recentes ataques de cultistas do dragão', start:'nos campos ao sul enquanto fumaça ainda sobe das casas após um ataque recente'},
+  {id:'triboar',      cat:'Vila',      name:'Triboar',            desc:'Entroncamento vital de três estradas nas pradarias do Norte, parada de caravanas',               start:'no Poseidon Inn, descansando após uma longa jornada de caravana pelo interior'},
+  {id:'longsaddle',   cat:'Vila',      name:'Longsaddle',         desc:'Vila isolada famosa pela excêntrica família de magos Harpell e sua mansão caótica',             start:'nas margens do riacho próximo à mansão Harpell, observando fogos mágicos acidentais'},
+  {id:'golden_fields',cat:'Vila',      name:'Campos Dourados',    desc:'Vilarejo agrícola pacato no coração dos campos de trigo de Elturgard',                          start:'num celeiro convertido em pousada, entre fazendeiros e viajantes descansando'},
+  {id:'thundertree',  cat:'Vila',      name:'Thundertree',        desc:'Vilarejo fantasma perto de Neverwinter — destruído pela erupção, tomado por mortos-vivos e cultistas', start:'nas ruínas cobertas de trepadeiras venenosas, com o vulcão ao fundo'},
+  {id:'amphail',      cat:'Vila',      name:'Amphail',            desc:'Vila de criadores de cavalos ao norte de Waterdeep, famosa pelas melhores montarias da Sword Coast', start:'nos estábulos de Amphail, examinando cavalos de guerra antes de uma jornada'},
+  {id:'bargewright',  cat:'Vila',      name:'Bargewright Inn',    desc:'Complexo de pousadas e armazéns no rio Dessarin — ponto de encontro de mercadores e espias',    start:'no saguão lotado da estalagem, entre mercadores discutindo preços de trigo e ferro'},
+
+  // ── LOCAIS LENDÁRIOS ──
+  {id:'candlekeep',   cat:'Lendário',  name:'Candlekeep',         desc:'A Biblioteca Imortal — fortaleza de conhecimento na ponta sul da Sword Coast',                  start:'no Hall das Respostas, cercado de escribas e pergaminhos de incalculável valor'},
+  {id:'myth_drannor', cat:'Lendário',  name:'Myth Drannor',       desc:'A Cidade das Canções — ruínas élficas mágicas na Floresta Cormanthor, repletas de perigos arcanos', start:'nos arcos de cristal quebrados da antiga cidade, com magia residual tremulando no ar'},
+  {id:'baldurs_gate_dungeon', cat:'Lendário', name:'Dungeon do Crânio',  desc:'As masmorras sob Waterdeep — labirinto de calabouços, ilusionistas e tesouros proibidos',  start:'na entrada do nível 1 da Dungeon do Crânio, tocha acesa, coração acelerado'},
+  {id:'undermountain', cat:'Lendário', name:'Undermountain',      desc:'A maior masmorra dos Reinos — criada por Halaster Blackcloak sob o Monte Waterdeep',            start:'no Yawning Portal, prestes a descer pela corda para os salões de Undermountain'},
+
+  // ── REGIÕES SELVAGENS ──
+  {id:'icewinddale',  cat:'Selvagem',  name:'Vale do Vento Gelado', desc:'Tundra gelada além do Norte Profundo — dez cidades isoladas em torno do Lac Dinneshere',     start:'em Bryn Shander, a maior das Dez Cidades, com o frio cortante e a neve constante'},
+  {id:'mistyforest',  cat:'Selvagem',  name:'Floresta das Névoas',  desc:'Floresta élfica misteriosa a oeste de Waterdeep, lar de elfos selvagens e criaturas mágicas', start:'numa clareira iluminada por vagalumes mágicos, enquanto olhos élficos observam das árvores'},
+  {id:'anauroch',     cat:'Selvagem',  name:'Anauroch',             desc:'O Grande Deserto de Areia — outrora império Netheril, agora mar de dunas e ruínas flutuantes', start:'num oásis raro cercado de ruínas arcanas de uma civilização esquecida'},
+  {id:'high_forest',  cat:'Selvagem',  name:'Alto Bosque',          desc:'Floresta primordial vasta ao leste da Sword Coast, lar de unicórnios, treants e elfos antigos', start:'numa clareira sagrada do Alto Bosque, com raízes milenares formando um círculo natural'},
+  {id:'gray_peaks',   cat:'Selvagem',  name:'Picos Cinzentos',      desc:'Montanhas ao leste de Waterdeep — território de gigantes de pedra, grifos e tribos bárbaras',  start:'num acampamento de montanha a meia encosta, com o vento uivando entre os picos'},
+  {id:'underdark',    cat:'Selvagem',  name:'Underdark',            desc:'O subsolo sombrio — lar de drows, mind flayers e horrores inimagináveis abaixo da superfície',  start:'numa câmara rochosa mal iluminada por cogumelos bioluminescentes, eco de criaturas distantes'},
+  {id:'chult',        cat:'Selvagem',  name:'Chult',                desc:'Península tropical selvagem ao sul — dinossauros, mortos-vivos e a Cidade de Ouro perdida',     start:'no porto de Port Nyanzaru, sob um calor tropical sufocante, cercado de mercadores e mercenários'},
+  {id:'sea_of_fallen_stars', cat:'Selvagem', name:'Mar das Estrelas Caídas', desc:'Mar interior dos Reinos — repleto de piratas, sahuagins e rotas comerciais estratégicas', start:'no convés de um barco mercante, com a costa distante e o cheiro de sal no ar'},
 ];
 
 
@@ -6238,9 +6267,28 @@ function updateClassDefaults(){
 
 function buildRegionList(){
   var el=document.getElementById('region-list');if(!el)return;
-  el.innerHTML=FR_REGIONS.map(function(r){
-    return '<button class="region-btn'+(selectedRegion===r.id?' sel':'')+'" data-rid="'+r.id+'" onclick="selectRegion(this.dataset.rid)" title="'+r.desc+'">'+r.name+'</button>';
-  }).join('');
+  // Agrupar por categoria
+  var cats={};
+  FR_REGIONS.forEach(function(r){
+    if(!cats[r.cat])cats[r.cat]=[];
+    cats[r.cat].push(r);
+  });
+  var catOrder=['Metrópole','Cidade','Vila','Lendário','Selvagem'];
+  var catIcons={'Metrópole':'🏰','Cidade':'🏙','Vila':'🏘','Lendário':'⚡','Selvagem':'🌲'};
+  var catColors={'Metrópole':'rgba(200,168,74,.7)','Cidade':'rgba(93,173,226,.7)','Vila':'rgba(46,204,113,.6)','Lendário':'rgba(165,105,189,.7)','Selvagem':'rgba(231,76,60,.6)'};
+  var html='';
+  catOrder.forEach(function(cat){
+    if(!cats[cat])return;
+    html+='<div style="width:100%;margin-bottom:.2rem;margin-top:.5rem">'
+      +'<span style="font-family:Cinzel,serif;font-size:.48rem;color:'+catColors[cat]+';text-transform:uppercase;letter-spacing:1.5px">'
+      +(catIcons[cat]||'·')+' '+cat+'</span></div>';
+    html+=cats[cat].map(function(r){
+      var sel=selectedRegion===r.id;
+      return'<button class="region-btn'+(sel?' sel':'')+'" data-rid="'+r.id
+        +'" onclick="selectRegion(this.dataset.rid)" title="'+r.desc+'">'+r.name+'</button>';
+    }).join('');
+  });
+  el.innerHTML=html;
 }
 
 function selectRegion(id){
