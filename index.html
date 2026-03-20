@@ -885,6 +885,23 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 ══════════════════════════════════════ */
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes glow{0%,100%{opacity:.4}50%{opacity:.8}}
+/* ── Patch Notes ── */
+.pnscroll::-webkit-scrollbar{width:4px}
+.pnscroll::-webkit-scrollbar-track{background:transparent}
+.pnscroll::-webkit-scrollbar-thumb{background:rgba(200,168,74,.2);border-radius:2px}
+.pn-version{background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.1);border-radius:12px;padding:1rem;margin-bottom:.8rem}
+.pn-version-first{border-color:rgba(107,63,160,.2);background:rgba(107,63,160,.03)}
+.pn-ver-badge{font-family:Cinzel Decorative,serif;font-size:.75rem;color:var(--arc2);margin-bottom:.3rem}
+.pn-date{font-family:Cinzel,serif;font-size:.55rem;color:rgba(200,168,74,.4);margin-left:.5rem;font-weight:normal}
+.pn-ver-title{font-family:Cinzel,serif;font-size:1rem;color:var(--gold2);margin-bottom:.15rem}
+.pn-ver-sub{font-family:Cormorant Garamond,serif;font-size:.88rem;color:rgba(200,168,74,.45);font-style:italic;margin-bottom:.7rem;padding-bottom:.5rem;border-bottom:1px solid rgba(200,168,74,.1)}
+.pn-category{font-family:Cinzel,serif;font-size:.56rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin:.6rem 0 .3rem}
+.pn-list{margin:0;padding-left:1.1rem;list-style:none}
+.pn-list li{font-family:Cormorant Garamond,serif;font-size:.9rem;color:rgba(232,223,200,.75);margin-bottom:.35rem;line-height:1.5;position:relative}
+.pn-list li::before{content:"◆";color:rgba(200,168,74,.3);font-size:.5rem;position:absolute;left:-1rem;top:.35rem}
+.pn-list li strong{color:var(--gold2);font-weight:600}
+.pn-list li code{font-family:monospace;font-size:.8rem;background:rgba(200,168,74,.08);border:1px solid rgba(200,168,74,.15);border-radius:3px;padding:0 3px;color:var(--arc2)}
+
 /* ── Character Creation Steps ── */
 .cc-panel{width:100%}
 .cc-section-title{font-family:Cinzel,serif;font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.6rem;padding-bottom:.3rem;border-bottom:1px solid var(--border)}
@@ -1149,7 +1166,11 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 
       </div>
 
-      <div style="text-align:center;margin-top:1.2rem">
+      <div style="text-align:center;margin-top:1.2rem;display:flex;flex-direction:column;gap:.5rem;align-items:center">
+        <button onclick="showStep('step-patchnotes')" style="background:rgba(107,63,160,.08);border:1px solid rgba(107,63,160,.3);border-radius:8px;padding:.4rem 1.1rem;color:var(--arc2);font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:all .2s"
+          onmouseover="this.style.borderColor='rgba(165,105,189,.6)'" onmouseout="this.style.borderColor='rgba(107,63,160,.3)'">
+          📜 Notas da Versão
+        </button>
         <button onclick="showStep('step-api')" style="background:none;border:none;color:rgba(200,168,74,.3);font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:color .2s"
           onmouseover="this.style.color='rgba(200,168,74,.7)'" onmouseout="this.style.color='rgba(200,168,74,.3)'">
           🔑 Trocar chave de API
@@ -1158,7 +1179,145 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
     </div>
 
     <!-- ══ STEP 3: CHARACTER CREATION ══ -->
-    <div id="step-new" style="display:none;text-align:left;width:100%;padding-bottom:2rem">
+    <div     <!-- ══ PATCH NOTES ══ -->
+    <div id="step-patchnotes" style="display:none;width:100%;padding-bottom:2rem">
+      <div style="text-align:center;margin-bottom:1.2rem">
+        <div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(107,63,160,.08);border:1px solid rgba(107,63,160,.3);border-radius:8px;padding:.4rem .9rem">
+          <span style="color:var(--arc2)">📜</span>
+          <span style="font-family:Cinzel,serif;font-size:.78rem;color:var(--arc2);letter-spacing:1px">Notas da Taverna</span>
+        </div>
+        <div style="font-family:Cormorant Garamond,serif;font-size:.88rem;color:rgba(200,168,74,.5);font-style:italic;margin-top:.4rem">Cartas do Mestre para seus aventureiros</div>
+      </div>
+
+      <div style="max-height:72vh;overflow-y:auto;padding-right:.2rem" class="pnscroll">
+
+        <!-- v1.5 — Março 2026 -->
+        <div class="pn-version">
+          <div class="pn-ver-badge">v1.5 <span class="pn-date">Março 2026</span></div>
+          <div class="pn-ver-title">O Dia das Quatro Bênçãos</div>
+          <div class="pn-ver-sub">Quatro novas mecânicas chegam à Taverna — cada uma forjada para trazer o combate à vida</div>
+
+          <div class="pn-category">⚔ Combate</div>
+          <ul class="pn-list">
+            <li><strong>HP dos Inimigos</strong> — Agora você pode registrar os pontos de vida de cada criatura ao iniciar o combate. As barras de saúde aparecem nos tokens, mudando de verde para vermelho conforme o inimigo sangra. Clique no token para abrir o editor e ajustar o dano. Quando o último inimigo cair, o combate se encerra sozinho.</li>
+            <li><strong>Testes de Morte</strong> — Quando seus PV chegam a zero, o destino não é imediato. Três círculos dourados e três vermelhos surgem na tela — role o d20 a cada rodada. Natural 20: acorde com 1 PV. Natural 1: duas falhas de uma vez. Três sucessos: estabilize. Três falhas: o herói tomba.</li>
+            <li><strong>Game Over e TPK</strong> — Se aliados ainda respiram quando você cai, a narrativa continua com eles. Apenas quando <em>todos</em> tombarem o fim chega: a tela escura de TPK.  Total. Party. Kill.</li>
+          </ul>
+
+          <div class="pn-category">🔮 Magia</div>
+          <ul class="pn-list">
+            <li><strong>Concentração</strong> — Quarenta magias agora exigem seu foco mental. O badge roxo pulsante no cabeçalho mostra qual magia está ativa. Ao sofrer dano, o sistema rola automaticamente seu Teste de Resistência de Constituição — falhou? A magia se desfaz. Conjure outra magia de concentração e a anterior é quebrada sem cerimônia.</li>
+            <li><strong>Ícones de concentração</strong> — A lista de magias agora mostra 🔮 em todas que requerem foco, e ✓ Ativa na que está em efeito.</li>
+          </ul>
+
+          <div class="pn-category">⚡ Condições</div>
+          <ul class="pn-list">
+            <li><strong>14 condições oficiais</strong> — Agarrado, Assustado, Atordoado, Caído, Cego, Encantado, Enfeitiçado, Envenenado, Exausto, Incapacitado, Inconsciente, Invisível, Paralisado, Petrificado. Cada uma com cor, ícone, descrição mecânica e o TR necessário para resistir. Badges coloridos pulsam no cabeçalho. O narrador aplica e remove condições automaticamente.</li>
+          </ul>
+
+          <div class="pn-category">👥 Mundo Vivo</div>
+          <ul class="pn-list">
+            <li><strong>Rastreador de NPCs</strong> — Nunca mais esqueça o nome do ferreiro que te ajudou ou do guarda que te odeia. Cada NPC importante é registrado com nome, localização e relação (🤝 aliado · 😐 neutro · ⚔ inimigo). O narrador os adiciona automaticamente ao detectar uma introdução importante.</li>
+            <li><strong>Inspiração</strong> — O botão ☆ no cabeçalho. Quando você fizer algo extraordinariamente heroico, criativo ou brilhantemente dramático, o Mestre concede Inspiração. A estrela acende dourada. Use-a para ter vantagem quando mais precisar.</li>
+          </ul>
+        </div>
+
+        <!-- v1.4 — Fevereiro 2026 (b) -->
+        <div class="pn-version">
+          <div class="pn-ver-badge">v1.4b <span class="pn-date">Fevereiro 2026</span></div>
+          <div class="pn-ver-title">A Forja das Perícias</div>
+          <div class="pn-ver-sub">A ficha de personagem cresce com proficiências, antecedentes e especializações</div>
+
+          <div class="pn-category">🎯 Criação de Personagem</div>
+          <ul class="pn-list">
+            <li><strong>Perícias de classe</strong> — Cada classe tem sua lista oficial (LdJ). Guerreiro escolhe 2 de 7, Bardo escolhe 3 de todas, Ladino escolhe 4 de 10. As perícias do antecedente aparecem automaticamente em roxo com 📜 BG — não gastam suas escolhas de classe.</li>
+            <li><strong>Antecedente na etapa de classe</strong> — Mudei de posição para que as perícias do antecedente atualizem em tempo real enquanto você escolhe.</li>
+            <li><strong>Especialização do Ladino</strong> — Após escolher as 4 perícias, selecione 2 para Especialização ⭐ — proficiência dobrada, representada por um dot roxo na ficha.</li>
+            <li><strong>Subclasses por nível correto</strong> — Clérigo, Bruxo e Feiticeiro escolhem no nível 1. Mago e Druida no nível 2. Os outros veem uma prévia das opções disponíveis no nível 3.</li>
+          </ul>
+        </div>
+
+        <!-- v1.4 — Fevereiro 2026 (a) -->
+        <div class="pn-version">
+          <div class="pn-ver-badge">v1.4 <span class="pn-date">Fevereiro 2026</span></div>
+          <div class="pn-ver-title">A Criação Renascida</div>
+          <div class="pn-ver-sub">A tela de criação de personagem foi completamente reconstruída</div>
+
+          <div class="pn-category">🧬 Nova Criação em 5 Etapas</div>
+          <ul class="pn-list">
+            <li><strong>Raça com sub-raças</strong> — Elfo Alto, Elfo da Floresta, Drow. Anão da Colina ou da Montanha. Cards clicáveis com traços raciais listados abaixo.</li>
+            <li><strong>Aparência física</strong> — Campos abertos para pele, cabelo, olhos, porte e altura — com sugestões específicas para cada raça como placeholder.</li>
+            <li><strong>Classe com escolhas</strong> — Guerreiro escolhe Estilo de Combate. Patrulheiro escolhe Inimigo Favorito e Terreno. Cards visuais com dado de vida.</li>
+            <li><strong>Regiões variadas</strong> — Além das grandes cidades, agora você pode começar em Phandalin, Daggerford, Greenest, Triboar, ou nas selvagens Floresta das Névoas e Anauroch.</li>
+            <li><strong>Resumo final</strong> — O passo 5 mostra um cartão completo do personagem antes de embarcar.</li>
+          </ul>
+        </div>
+
+        <!-- v1.3 — Janeiro 2026 -->
+        <div class="pn-version">
+          <div class="pn-ver-badge">v1.3 <span class="pn-date">Janeiro 2026</span></div>
+          <div class="pn-ver-title">O Arsenal do Aventureiro</div>
+          <div class="pn-ver-sub">Dados, missões, ouro e o rolador criptográfico</div>
+
+          <div class="pn-category">🎲 Rolador de Dados</div>
+          <ul class="pn-list">
+            <li><strong>7 dados do D&D</strong> — d4, d6, d8, d10, d12, d20 e d100, todos acima do campo de texto. Campo de modificador à esquerda.</li>
+            <li><strong>Aleatoriedade real</strong> — Usa <code>crypto.getRandomValues()</code> com rejection sampling. Sem Math.random, sem viés. Natural 20 brilha verde, natural 1 pulsa vermelho.</li>
+          </ul>
+
+          <div class="pn-category">💰 Tesouro e Missões</div>
+          <ul class="pn-list">
+            <li><strong>Sistema de ouro inteligente</strong> — Tenta gastar mais do que tem? O NPC percebe e reage. O saldo total considera todas as moedas (PP, PO, PE, PA, PC) com as conversões corretas.</li>
+            <li><strong>Missões com recompensas</strong> — Ao concluir uma missão, XP e ouro são concedidos automaticamente. O diário registra. O narrador deve narrar a entrega antes do JSON.</li>
+            <li><strong>Toast de XP animado</strong> — Cada ganho de experiência mostra a fonte (Combate, Missão, Descoberta) e uma barra animada do progresso atual para o próximo nível.</li>
+          </ul>
+        </div>
+
+        <!-- v1.2 — Dezembro 2025 -->
+        <div class="pn-version">
+          <div class="pn-ver-badge">v1.2 <span class="pn-date">Dezembro 2025</span></div>
+          <div class="pn-ver-title">Os Primeiros Feitiços</div>
+          <div class="pn-ver-sub">Magias, mobile e a estrutura que tudo sustenta</div>
+
+          <div class="pn-category">✨ Magias e Habilidades</div>
+          <ul class="pn-list">
+            <li><strong>Gerenciador de magias</strong> — Círculos clicáveis por nível de magia com limites por classe e nível (LdJ oficial). Paladino e Patrulheiro bloqueados no nível 1 com mensagem clara.</li>
+            <li><strong>Habilidades de classe</strong> — Segunda Rajada, Sentido Divino, Fúria, Ataque Furtivo, Inspiração de Bardo e mais, todos configurados automaticamente para o nível 1.</li>
+          </ul>
+
+          <div class="pn-category">📱 Mobile</div>
+          <ul class="pn-list">
+            <li><strong>6 abas na barra inferior</strong> — Chat · Ficha · Itens · Missões · Diário · Mais. Botões que ocupam toda a largura, igualmente espaçados.</li>
+            <li><strong>Header limpo no mobile</strong> — Título oculto. O ícone da classe abre a sinopse da campanha com XP e missões ativas.</li>
+          </ul>
+        </div>
+
+        <!-- v1.0 — Novembro 2025 -->
+        <div class="pn-version pn-version-first">
+          <div class="pn-ver-badge">v1.0 <span class="pn-date">Novembro 2025</span></div>
+          <div class="pn-ver-title">A Taverna Abre Suas Portas</div>
+          <div class="pn-ver-sub">O começo de tudo</div>
+          <ul class="pn-list">
+            <li>Narrador IA com Google Gemini 2.5 Flash rodando campanhas completas de D&D 5e nos Forgotten Realms</li>
+            <li>Ficha completa: atributos, salvaguardas, CA, HP, inventário, equipamentos, ataques</li>
+            <li>Sistema de combate por turno com ordem de iniciativa</li>
+            <li>Descanso curto e longo com recuperação de recursos</li>
+            <li>Sistema de missões, diário de aventuras, anotações e conquistas</li>
+            <li>Save/load com 3 slots + exportar/importar .json</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div style="text-align:center;margin-top:1rem">
+        <button onclick="showStep('step-menu')" style="background:rgba(200,168,74,.08);border:1px solid rgba(200,168,74,.25);border-radius:8px;padding:.5rem 1.4rem;color:rgba(200,168,74,.7);font-family:Cinzel,serif;font-size:.68rem;letter-spacing:1px;cursor:pointer;transition:all .2s"
+          onmouseover="this.style.borderColor='rgba(200,168,74,.5)'" onmouseout="this.style.borderColor='rgba(200,168,74,.25)'">
+          ← Voltar à Taverna
+        </button>
+      </div>
+    </div>
+
+    id="step-new" style="display:none;text-align:left;width:100%;padding-bottom:2rem">
 
       <!-- Progress steps indicator -->
       <div style="display:flex;justify-content:center;gap:.3rem;margin-bottom:1.2rem" id="cc-steps-bar">
@@ -1911,6 +2070,9 @@ function wakeUp(){
   isUnconscious=false;
   deathSaves={successes:0,failures:0,stable:false};
   closeDeathModal();
+  // Waking up doesn't break concentration (was already at 0 HP)
+  // but Unconscious condition (if manually set) should be removed
+  if(activeConditions['Inconsciente'])removeCondition('Inconsciente');
   updHP();
   addMsg('sys','💚 '+( window.CHAR_NAME||'Personagem')+' foi estabilizado e recuperou consciência com '+hpC+' PV!');
 }
@@ -2257,7 +2419,7 @@ function renderAttacks(){
 function rollAttack(id){
   const a=attacks.find(x=>x.id===id);
   if(!a)return;
-  const hitRoll=Math.floor(Math.random()*20)+1;
+  const hitRoll=cryptoRandInt(1,20);
   const total=hitRoll+a.bonus;
   const crit=hitRoll===20;
   const miss=hitRoll===1;
@@ -2265,7 +2427,7 @@ function rollAttack(id){
   if(!miss){
     const dice=a.dmg.split('d');
     const num=crit?parseInt(dice[0])*2:parseInt(dice[0]);
-    for(let i=0;i<num;i++) dmg+=Math.floor(Math.random()*parseInt(dice[1]))+1;
+    for(let i=0;i<num;i++) dmg+=cryptoRandInt(1,parseInt(dice[1]));
     dmg+=a.dmgBonus;
   }
   const msg=miss?`⚔ ${a.name}: FALHA CRÍTICA! (d20=1)`
@@ -2774,6 +2936,17 @@ function smSave(){
 function longRest(){
   // Full HP recovery
   hpC=HP_MAX;
+  // Reset death state
+  deathSaves={successes:0,failures:0,stable:false};
+  isUnconscious=false;isDead=false;
+  closeDeathModal();
+  var deathEl=document.getElementById('death-screen');if(deathEl)deathEl.style.display='none';
+  // Break concentration (rest interrupts concentration)
+  if(concentrationSpell)breakConcentration('descanso longo');
+  // Remove non-permanent conditions (Envenenado, Assustado, etc. ended by rest)
+  ['Envenenado','Assustado','Enfeitiçado','Encantado','Atordoado','Caído'].forEach(function(c){
+    if(activeConditions[c])removeCondition(c);
+  });
   // Recover ALL spell slots
   if(spellSlots){
     Object.keys(spellSlots).forEach(function(lv){
@@ -2796,7 +2969,7 @@ function shortRest(){
   var cls=(window.CHAR_CLASS||'').split(' — ')[0];
   var hpDie=CLASS_LEVEL_TABLE[cls]?CLASS_LEVEL_TABLE[cls].hpDie:8;
   var conMod=modNum(ATTRS.CON);
-  var roll=Math.floor(Math.random()*hpDie)+1;
+  var roll=cryptoRandInt(1,hpDie);
   var gain=Math.max(1,roll+conMod);
   hpC=Math.min(HP_MAX,hpC+gain);
   // Recover short-rest abilities (e.g. Action Surge, Bardic Inspiration)
@@ -2812,6 +2985,8 @@ function shortRest(){
   }
   updHP();renderAbilities();
   var name=window.CHAR_NAME||'Personagem';
+  // Short rest resets stable death state
+  if(deathSaves.stable||isUnconscious){deathSaves={successes:0,failures:0,stable:false};isUnconscious=false;closeDeathModal();}
   addMsg('sys','☕ '+name+' descansou brevemente. Rolou 1d'+hpDie+' ('+roll+') +'+conMod+' CON = +'+gain+' PV. PV atual: '+hpC+'/'+HP_MAX+'.');
   showSaveToast('Descanso curto: +'+gain+' PV');
   saveProgress('auto');
@@ -3284,7 +3459,7 @@ function openLevelUp(){
 
 function rollHPGain(die){
   var d=die||10;
-  var roll=Math.floor(Math.random()*d)+1;
+  var roll=cryptoRandInt(1,d);
   var gain=Math.max(1,roll+modNum(ATTRS.CON));
   var el=document.getElementById('hp-gain-result');
   if(el) el.textContent='d'+d+'='+roll+' +'+modNum(ATTRS.CON)+' CON = +'+gain+' PV';
@@ -3323,7 +3498,9 @@ function confirmLevelUp(newLvl){
   if(subPick&&subPick.value){
     window.CHAR_SUBCLASS=subPick.value;
     var clsBase=(window.CHAR_CLASS||'').split(' — ')[0];
-    updateHeader(window.CHAR_NAME,window.CHAR_RACE,clsBase+' — '+subPick.value,newLvl,window.CHAR_REGION);
+    renderConditions();renderConcentration();renderNPCs();renderInspiration();
+  if(isUnconscious)showDeathModal();
+  updateHeader(window.CHAR_NAME,window.CHAR_RACE,clsBase+' — '+subPick.value,newLvl,window.CHAR_REGION);
     CONQUISTAS.push('🎭 Subclasse: '+subPick.value);
   }
   updHP();updCA();updXP();
@@ -3461,7 +3638,7 @@ function openCombat(){
     <div id="comb-list" style="display:flex;flex-direction:column;gap:.4rem;margin-bottom:.6rem">
       <div style="display:grid;grid-template-columns:1fr auto;gap:.4rem;align-items:center;background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.2);border-radius:5px;padding:5px 8px">
         <span style="font-family:'Cinzel',serif;font-size:.74rem;color:var(--blood2)">⚔ ${window.CHAR_NAME||'Personagem'} (você)</span>
-        <input type="number" id="init-killyn" placeholder="d20+1" style="width:60px;background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:4px;padding:3px 5px;font-family:Cinzel,serif;font-size:.74rem;color:var(--parch);text-align:center;outline:none" value="${Math.floor(Math.random()*20)+1+modNum(ATTRS.DES)}"/>
+        <input type="number" id="init-killyn" placeholder="d20+1" style="width:60px;background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:4px;padding:3px 5px;font-family:Cinzel,serif;font-size:.74rem;color:var(--parch);text-align:center;outline:none" value="${cryptoRandInt(1,20)+modNum(ATTRS.DES)}"/>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 52px 60px auto;gap:.4rem;margin-bottom:.4rem;align-items:center">
@@ -5523,7 +5700,7 @@ let newCharData={};
 let selectedRegion='waterdeep';
 
 function showStep(id){
-  ['step-api','step-menu','step-new','step-generating'].forEach(s=>{
+  ['step-api','step-menu','step-new','step-generating','step-patchnotes'].forEach(s=>{
     var el=document.getElementById(s);if(el)el.style.display='none';
   });
   var el=document.getElementById(id);if(el)el.style.display='block';
@@ -6071,6 +6248,17 @@ async function startNewGame(){
   hist=[];quests=[];
   CONQUISTAS=[];
   window._processedGold=new Set();
+  // Reset combat
+  combatants=[];extraCombatants=[];currentTurn=0;roundNum=1;combatActive=false;
+  var combatBar=document.getElementById('combat-bar');if(combatBar)combatBar.classList.remove('active');
+  // Reset death state
+  deathSaves={successes:0,failures:0,stable:false};isUnconscious=false;isDead=false;gameOver=false;
+  var deathEl=document.getElementById('death-screen');if(deathEl)deathEl.style.display='none';
+  closeDeathModal();
+  // Reset conditions/concentration
+  activeConditions={};concentrationSpell=null;
+  // Reset party/NPCs/inspiration
+  partyNPCs=[];npcTracker=[];hasInspiration=false;
   inventory=[].concat(defs.equip||[]);
   equipped={arma:null,armadura:null,escudo:null,acessorio:null};
   // Auto-equip from class defaults
@@ -6080,7 +6268,7 @@ async function startNewGame(){
   // Roll starting gold per class (LdJ p.144)
   var goldDef=STARTING_GOLD[cls]||{dice:5,sides:4,mult:10};
   var goldRoll=0;
-  for(var _g=0;_g<goldDef.dice;_g++) goldRoll+=Math.floor(Math.random()*goldDef.sides)+1;
+  for(var _g=0;_g<goldDef.dice;_g++) goldRoll+=cryptoRandInt(1,goldDef.sides);
   var startGold=goldRoll*goldDef.mult;
   coins={PP:0,PO:startGold,PE:0,PA:0,PC:0};
   charLevel=1;charXP=0;
