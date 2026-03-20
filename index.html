@@ -620,6 +620,9 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .dice-mod-inp{width:44px;background:rgba(200,168,74,.06);border:1px solid rgba(200,168,74,.2);border-radius:6px;color:var(--gold2);font-family:Cinzel,serif;font-size:.7rem;text-align:center;padding:3px 4px;outline:none}
 .dice-mod-inp:focus{border-color:rgba(200,168,74,.5)}
 .dice-mod-lbl{font-family:Cinzel,serif;font-size:.52rem;color:rgba(200,168,74,.5);white-space:nowrap}
+@keyframes fadeInDeath{0%{opacity:0}100%{opacity:1}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+
 .dice-result-flash{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,rgba(13,9,6,.97),rgba(22,16,9,.97));border:2px solid rgba(200,168,74,.6);border-radius:16px;padding:1.2rem 2rem;text-align:center;z-index:3000;box-shadow:0 8px 40px rgba(0,0,0,.8),0 0 20px rgba(200,168,74,.2);pointer-events:none;animation:diceFlash .15s ease-out}
 .dice-result-die{font-family:Cinzel,serif;font-size:.62rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:.3rem}
 .dice-result-num{font-family:Cinzel Decorative,serif;font-size:3.5rem;line-height:1;font-weight:700;margin-bottom:.2rem;color:var(--gold2)}
@@ -1389,6 +1392,12 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
       </div>
       <!-- vital stats -->
       <div class="hp-mini" id="hp-hdr">❤ —</div>
+      <div id="death-saves-hdr" style="display:none;align-items:center;gap:3px;background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.4);border-radius:7px;padding:2px 6px;cursor:pointer" onclick="showDeathModal()" title="Testes de Morte">
+        <span style="font-size:.7rem">💀</span>
+        <span id="ds-succ-hdr" style="font-family:Cinzel,serif;font-size:.52rem;color:#6ecfa0">0</span>
+        <span style="font-family:Cinzel,serif;font-size:.5rem;color:rgba(255,255,255,.3)">/</span>
+        <span id="ds-fail-hdr" style="font-family:Cinzel,serif;font-size:.52rem;color:#e74c3c">0</span>
+      </div>
       <div class="ca-badge">🛡 <span id="ca-hdr">—</span></div>
       <!-- action buttons -->
       <button class="hbtn" onclick="openCombat()" id="combat-toggle-btn">⚔</button>
@@ -1616,6 +1625,13 @@ const HP_MAX_BASE=16;
 let HP_MAX=16,hpC=16,hist=[],busy=false,apiKey='',mobActive='chat';
 var magicItems=[];
 var diary=[];
+// ─── DEATH SAVING THROWS (LdJ p.197) ───
+var deathSaves={successes:0,failures:0,stable:false};
+var isUnconscious=false;  // HP=0, fazendo testes de morte
+var isDead=false;          // 3 falhas = morto
+// ─── PARTY NPCs (companheiros na cena) ───
+var partyNPCs=[];  // [{id,name,hp,maxHp,alive}]
+var gameOver=false;
 let charLevel=2, charXP=300;
 let charCA=16,baseCA=13;
 let saveProficiencies={FOR:true,CON:true,DES:false,INT:false,SAB:false,CAR:false};
@@ -1647,7 +1663,7 @@ const XP_TABLE=[0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,1
 const XP_BY_CR={0:10,'1/8':25,'1/4':50,'1/2':100,1:200,2:450,3:700,4:1100,5:1800,6:2300,7:2900,8:3900,9:5000,10:5900,11:7200,12:8400,13:10000,14:11500,15:13000,16:15000,17:18000,18:20000,19:22000,20:25000};
 
 // SYSTEM PROMPT
-const SYSTEM='Você é o Mestre de D&D 5e narrando em português do Brasil.\n'+'REGRAS OBRIGATÓRIAS:\n'+'1. NUNCA mencione dados internos como [PV], [CA], [ESTADO_OCULTO] no texto narrativo.\n'+'2. NPCs SEMPRE com nomes únicos e DIFERENTES. PROIBIDO repetir nomes. Nomes culturalmente coerentes com o local.\n'+'3. Rolagens SEMPRE com modificador. Ex: Role d20+3 de Percepção. Role 2d20+X (maior) para VANTAGEM, (menor) para DESVANTAGEM. Não explique ao jogador o motivo.\n'+'4. Linguagem clara e direta. Sem palavras rebuscadas.\n'+'5. AO FINAL: pergunte APENAS \"O que você faz?\" — não liste opções.\n'+'6. Nunca resolva combates sem rolagens do jogador.\n'+'7. OURO: gold_add (receber) ou gold_remove (gastar) no JSON. O contexto mostra [Tesouro:X PO] — nunca deixe gastar mais do que possui.\n'+'8. SALDO INSUFICIENTE: [SISTEMA: moedas insuficientes] → NPC percebe e reage naturalmente.\n'+'9. MISSÕES OBRIGATÓRIO: quest_add ao iniciar qualquer missão/objetivo com id, titulo, desc, xp estimado. quest_update ao concluir/falhar com xp_reward e gold_reward (se houver pagamento prometido). Na conclusão, o narrador deve descrever a entrega da recompensa ANTES de incluir o JSON.\n'+'10. XP NARRATIVO: xp_gain+xp_source — Combate:50-500, Diplomacia:50-200, Descoberta:25-150, Desafio:25-100. Nunca para ações triviais.\n'+'11. Nunca mencione o JSON — inclua silenciosamente ao final.';
+const SYSTEM='Você é o Mestre de D&D 5e narrando em português do Brasil.\n'+'REGRAS OBRIGATÓRIAS:\n'+'1. NUNCA mencione dados internos como [PV], [CA], [ESTADO_OCULTO] no texto narrativo.\n'+'2. NPCs SEMPRE com nomes únicos e DIFERENTES. PROIBIDO repetir nomes. Nomes culturalmente coerentes com o local.\n'+'3. Rolagens SEMPRE com modificador. Ex: Role d20+3 de Percepção. Role 2d20+X (maior) para VANTAGEM, (menor) para DESVANTAGEM. Não explique ao jogador o motivo.\n'+'4. Linguagem clara e direta. Sem palavras rebuscadas.\n'+'5. AO FINAL: pergunte APENAS \"O que você faz?\" — não liste opções.\n'+'6. Nunca resolva combates sem rolagens do jogador.\n'+'6b. HP/DANO: Quando o personagem sofre dano, inclua hp_damage no JSON. Quando recebe cura, inclua hp_heal. Quando morre: se houver companheiros na cena, narre a reação deles e continue. TPK só quando TODOS caem.\n'+'6c. TESTES DE MORTE: Quando personagem está em 0 PV, peça "Role d20 de Teste de Morte". ≥10=sucesso, <10=falha. 3 sucessos=estabiliza, 3 falhas=morte, natural 20=acorda com 1 PV, natural 1=2 falhas.\n'+'7. OURO: gold_add (receber) ou gold_remove (gastar) no JSON. O contexto mostra [Tesouro:X PO] — nunca deixe gastar mais do que possui.\n'+'8. SALDO INSUFICIENTE: [SISTEMA: moedas insuficientes] → NPC percebe e reage naturalmente.\n'+'9. MISSÕES OBRIGATÓRIO: quest_add ao iniciar qualquer missão/objetivo com id, titulo, desc, xp estimado. quest_update ao concluir/falhar com xp_reward e gold_reward (se houver pagamento prometido). Na conclusão, o narrador deve descrever a entrega da recompensa ANTES de incluir o JSON.\n'+'10. XP NARRATIVO: xp_gain+xp_source — Combate:50-500, Diplomacia:50-200, Descoberta:25-150, Desafio:25-100. Nunca para ações triviais.\n'+'11. Nunca mencione o JSON — inclua silenciosamente ao final.';
 
 
 function mod(v){const m=Math.floor((v-10)/2);return(m>=0?'+':'')+m;}
@@ -1815,12 +1831,133 @@ function toggleSkillProf(name){
 // ─── HP ───
 function updHP(){
   const p=Math.max(0,Math.round((hpC/HP_MAX)*100));
-  ['hp-txt','hp-txt-m'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=hpC+'/'+HP_MAX;});
-  ['hp-num','hp-num-m'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=hpC;});
-  document.getElementById('hp-hdr').textContent='❤ '+hpC+'/'+HP_MAX;
-  ['hp-bar','hp-bar-m'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.width=p+'%';});
+  var hpLabel=isDead?'☠ Morto':isUnconscious?'💀 0/'+HP_MAX:'❤ '+hpC+'/'+HP_MAX;
+  var hpTxt=isDead?'Morto':isUnconscious?'0/'+HP_MAX:hpC+'/'+HP_MAX;
+  ['hp-txt','hp-txt-m'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=hpTxt;});
+  ['hp-num','hp-num-m'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=isDead?'☠':isUnconscious?'💀':hpC;});
+  var hdrEl=document.getElementById('hp-hdr');if(hdrEl)hdrEl.textContent=hpLabel;
+  ['hp-bar','hp-bar-m'].forEach(id=>{
+    const e=document.getElementById(id);
+    if(e){e.style.width=p+'%';e.style.background=isDead?'#555':isUnconscious?'#7a1a2a':'';} 
+  });
+  // Show/hide death saves badge in header
+  var dsHdr=document.getElementById('death-saves-hdr');
+  if(dsHdr)dsHdr.style.display=isUnconscious&&!isDead?'flex':'none';
 }
-function adjHP(d){hpC=Math.max(0,Math.min(HP_MAX,hpC+d));updHP();if(hpC===0)addMsg('sys','☠ Killyn caiu inconsciente!');}
+function adjHP(d){
+  if(isDead)return; // morto não muda HP
+  var prev=hpC;
+  hpC=Math.max(0,Math.min(HP_MAX,hpC+d));
+  updHP();
+  if(d>0&&hpC>0&&isUnconscious){
+    // Cura acorda o personagem inconsciente
+    wakeUp();
+  } else if(hpC===0&&prev>0){
+    // Acabou de cair
+    fallUnconscious();
+  }
+}
+
+// ─── DEATH SAVING THROWS ───
+
+function fallUnconscious(){
+  isUnconscious=true;
+  isDead=false;
+  deathSaves={successes:0,failures:0,stable:false};
+  updHP();
+  showDeathModal();
+  addMsg('sys','💀 '+( window.CHAR_NAME||'Personagem')+' caiu inconsciente! Faça os Testes de Morte (d20 por rodada).');
+  // Inject into narration context
+  hist.push({role:'user',content:'[SISTEMA: '+( window.CHAR_NAME||'Personagem')+' chegou a 0 PV e está inconsciente fazendo Testes de Morte. REGRA: não descreva morte imediata — narre a queda e peça o teste: "Role d20 de Teste de Morte"]'});
+}
+
+function wakeUp(){
+  isUnconscious=false;
+  deathSaves={successes:0,failures:0,stable:false};
+  closeDeathModal();
+  updHP();
+  addMsg('sys','💚 '+( window.CHAR_NAME||'Personagem')+' foi estabilizado e recuperou consciência com '+hpC+' PV!');
+}
+
+function stabilize(){
+  // Estabilizado = inconsciente mas não faz mais testes (HP=0, não morre)
+  deathSaves.stable=true;
+  isUnconscious=false;
+  closeDeathModal();
+  addMsg('sys','🩹 '+(window.CHAR_NAME||'Personagem')+' foi estabilizado. Inconsciente mas estável.');
+  updHP();
+}
+
+function rollDeathSave(){
+  if(!isUnconscious||isDead)return;
+  var result=cryptoRandInt(1,20);
+  var msg='🎲 Teste de Morte: '+result;
+  if(result===20){
+    // Natural 20 — recupera 1 PV e acorda!
+    hpC=1;
+    msg+=' — ⭐ NATURAL 20! Recupera consciência com 1 PV!';
+    addMsg('roll',msg);
+    wakeUp();
+    return;
+  }
+  if(result===1){
+    // Natural 1 = 2 falhas
+    deathSaves.failures=Math.min(3,deathSaves.failures+2);
+    msg+=' — 💀 FALHA CRÍTICA! +2 falhas';
+  } else if(result>=10){
+    deathSaves.successes=Math.min(3,deathSaves.successes+1);
+    msg+=' — ✓ Sucesso ('+deathSaves.successes+'/3)';
+  } else {
+    deathSaves.failures=Math.min(3,deathSaves.failures+1);
+    msg+=' — ✗ Falha ('+deathSaves.failures+'/3)';
+  }
+  addMsg('roll',msg);
+  if(deathSaves.successes>=3){
+    stabilize();
+    addMsg('sys','🩹 3 sucessos — personagem estabilizado!');
+  } else if(deathSaves.failures>=3){
+    die();
+  } else {
+    updateDeathModal();
+  }
+}
+
+function die(){
+  isDead=true;
+  isUnconscious=false;
+  hpC=0;
+  closeDeathModal();
+  showDeathScreen();
+  addMsg('sys','☠ '+( window.CHAR_NAME||'Personagem')+' morreu. 3 falhas nos Testes de Morte.');
+  // Check for TPK
+  checkTPK();
+}
+
+function checkTPK(){
+  // TPK (Total Party Kill) só quando TODOS os membros do grupo morrem
+  // Se não há companheiros ativos, o narrador continua até a cena encerrar
+  var aliveNPCs=partyNPCs.filter(function(n){return n.alive;});
+  if(aliveNPCs.length>0){
+    // Companheiros ainda vivos — narrador continua a cena com eles
+    hist.push({role:'user',content:'[SISTEMA: '+( window.CHAR_NAME||'Personagem')+' morreu. Os companheiros do grupo ('+aliveNPCs.map(function(n){return n.name;}).join(', ')+') ainda estão vivos. Continue a cena com eles — não encerre a aventura. Narre as reações dos companheiros à morte do personagem.]'});
+    addMsg('sys','⚔ Os companheiros '+aliveNPCs.map(function(n){return n.name;}).join(', ')+' continuam a batalha...');
+  } else {
+    // Sem companheiros ou todos mortos = TPK potencial
+    // Narrador decide se é TPK baseado na cena
+    hist.push({role:'user',content:'[SISTEMA: TPK — todos os membros do grupo caíram. Narre o fim da batalha e encerre a cena com um epílogo trágico. Não continue a aventura. Termine com: "FIM DE CAMPANHA — todos os heróis tombaram."]'});
+    setTimeout(function(){showTPKScreen();},3000);
+  }
+}
+
+function addPartyNPC(name,hp){
+  partyNPCs.push({id:'npc_'+Date.now(),name:name,hp:hp,maxHp:hp,alive:true});
+}
+
+function partyNPCFalls(id){
+  var npc=partyNPCs.find(function(n){return n.id===id;});
+  if(npc){npc.alive=false;npc.hp=0;}
+  if(isDead)checkTPK(); // Re-check TPK se personagem já morreu
+}
 
 // ─── CA ───
 function updCA(){
@@ -3892,6 +4029,113 @@ function showDiceFlash(sides,result,mod,total,numClass,emoji){
   clearTimeout(_diceFlashTimer);
   _diceFlashTimer=setTimeout(function(){el.style.opacity='0';setTimeout(function(){el.style.display='none';},300);},3000);
 }
+function showDeathModal(){
+  var el=document.getElementById('death-modal');
+  if(!el){
+    el=document.createElement('div');el.id='death-modal';
+    el.style.cssText='position:fixed;bottom:calc(var(--nav-h,68px)+8px);left:50%;transform:translateX(-50%);'+
+      'background:linear-gradient(135deg,rgba(40,5,5,.98),rgba(22,3,3,.98));'+
+      'border:2px solid rgba(192,57,43,.7);border-radius:14px;'+
+      'padding:.9rem 1.1rem;z-index:2500;min-width:280px;max-width:340px;'+
+      'box-shadow:0 8px 32px rgba(0,0,0,.8),0 0 20px rgba(192,57,43,.25);';
+    document.body.appendChild(el);
+  }
+  el.style.display='block';
+  updateDeathModal();
+}
+
+function closeDeathModal(){
+  var el=document.getElementById('death-modal');if(el)el.style.display='none';
+}
+
+function updateDeathModal(){
+  var el=document.getElementById('death-modal');if(!el)return;
+  var s=deathSaves.successes,f=deathSaves.failures;
+  function dots(n,filled,colorOn,colorOff){
+    var h='';
+    for(var i=0;i<3;i++){
+      var on=i<filled;
+      h+='<div style="width:20px;height:20px;border-radius:50%;border:2px solid '+(on?colorOn:colorOff)+
+        ';background:'+(on?colorOn:'transparent')+
+        ';box-shadow:'+(on?'0 0 8px '+colorOn:'none')+
+        ';transition:all .25s"></div>';
+    }
+    return h;
+  }
+  el.innerHTML=
+    '<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.7rem">'+
+      '<span style="font-size:1.3rem">💀</span>'+
+      '<div>'+
+        '<div style="font-family:Cinzel,serif;font-size:.72rem;color:#e74c3c;letter-spacing:1px">INCONSCIENTE</div>'+
+        '<div style="font-family:Cinzel,serif;font-size:.52rem;color:rgba(255,100,100,.5)">Testes de Morte — role d20 por rodada</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:flex;justify-content:space-between;margin-bottom:.8rem">'+
+      '<div>'+
+        '<div style="font-family:Cinzel,serif;font-size:.5rem;color:#6ecfa0;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Sucessos</div>'+
+        '<div style="display:flex;gap:5px">'+dots(3,s,'#6ecfa0','rgba(110,207,160,.2)')+'</div>'+
+      '</div>'+
+      '<div>'+
+        '<div style="font-family:Cinzel,serif;font-size:.5rem;color:#e74c3c;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Falhas</div>'+
+        '<div style="display:flex;gap:5px">'+dots(3,f,'#e74c3c','rgba(231,76,60,.2)')+'</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem">'+
+      '<button onclick="rollDeathSave()" style="background:linear-gradient(135deg,rgba(192,57,43,.3),rgba(120,20,20,.4));border:1px solid rgba(192,57,43,.5);border-radius:8px;color:#f5a0a0;font-family:Cinzel,serif;font-size:.66rem;padding:.5rem;cursor:pointer;letter-spacing:.5px">🎲 Rolar d20</button>'+
+      '<button onclick="adjHP(1)" style="background:linear-gradient(135deg,rgba(46,125,50,.25),rgba(30,80,30,.3));border:1px solid rgba(100,200,100,.3);border-radius:8px;color:#6ecfa0;font-family:Cinzel,serif;font-size:.66rem;padding:.5rem;cursor:pointer;letter-spacing:.5px">💚 Receber Cura</button>'+
+    '</div>'+
+    '<div style="text-align:center;margin-top:.5rem;font-family:Cinzel,serif;font-size:.46rem;color:rgba(255,100,100,.4)">20 nat = acorda · 1 nat = 2 falhas · 3 falhas = morte</div>';
+}
+
+function showDeathScreen(){
+  var el=document.getElementById('death-screen');
+  if(!el){
+    el=document.createElement('div');el.id='death-screen';
+    el.style.cssText='position:fixed;inset:0;z-index:4000;'+
+      'background:radial-gradient(ellipse at center,rgba(80,0,0,.97),rgba(5,0,0,.99));'+
+      'display:flex;flex-direction:column;align-items:center;justify-content:center;'+
+      'animation:fadeInDeath 1.5s ease-out;';
+    document.body.appendChild(el);
+  }
+  var name=window.CHAR_NAME||'Personagem';
+  el.innerHTML=
+    '<div style="font-size:5rem;margin-bottom:1rem;animation:pulse 2s infinite">💀</div>'+
+    '<div style="font-family:Cinzel Decorative,serif;font-size:1.4rem;color:#8b1a2a;letter-spacing:3px;margin-bottom:.5rem">VOCÊ CAIU</div>'+
+    '<div style="font-family:Cormorant Garamond,serif;font-size:1.1rem;color:rgba(200,168,74,.6);font-style:italic;margin-bottom:.3rem">'+name+' sucumbiu ao destino</div>'+
+    '<div style="font-family:Cinzel,serif;font-size:.6rem;color:rgba(200,168,74,.3);letter-spacing:2px;margin-bottom:2rem">3 FALHAS NOS TESTES DE MORTE</div>'+
+    '<div style="display:flex;gap:.8rem">'+
+      '<button onclick="continueAfterDeath()" style="background:rgba(200,168,74,.1);border:1px solid rgba(200,168,74,.3);border-radius:10px;color:var(--gold2);font-family:Cinzel,serif;font-size:.7rem;padding:.7rem 1.2rem;cursor:pointer">📖 Continuar Narrativa</button>'+
+      '<button onclick="restartGame()" style="background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.4);border-radius:10px;color:#e74c3c;font-family:Cinzel,serif;font-size:.7rem;padding:.7rem 1.2rem;cursor:pointer">⚔ Novo Personagem</button>'+
+    '</div>';
+  el.style.display='flex';
+}
+
+function showTPKScreen(){
+  var el=document.getElementById('death-screen');
+  if(!el){el=document.createElement('div');el.id='death-screen';el.style.cssText='position:fixed;inset:0;z-index:4000;background:radial-gradient(ellipse at center,rgba(40,0,0,.99),rgba(0,0,0,.999));display:flex;flex-direction:column;align-items:center;justify-content:center;animation:fadeInDeath 2s ease-out;';document.body.appendChild(el);}
+  el.innerHTML=
+    '<div style="font-size:4rem;margin-bottom:1rem">⚔💀⚔</div>'+
+    '<div style="font-family:Cinzel Decorative,serif;font-size:1.6rem;color:#6b0000;letter-spacing:4px;margin-bottom:.5rem">TPK</div>'+
+    '<div style="font-family:Cinzel,serif;font-size:.8rem;color:rgba(200,168,74,.5);letter-spacing:3px;margin-bottom:.5rem">TOTAL PARTY KILL</div>'+
+    '<div style="font-family:Cormorant Garamond,serif;font-size:1rem;color:rgba(200,168,74,.4);font-style:italic;margin-bottom:2rem;text-align:center;max-width:320px">Todos os heróis tombaram.<br>A escuridão venceu.</div>'+
+    '<button onclick="restartGame()" style="background:rgba(192,57,43,.2);border:1px solid rgba(192,57,43,.5);border-radius:10px;color:#e74c3c;font-family:Cinzel,serif;font-size:.75rem;padding:.8rem 1.5rem;cursor:pointer;letter-spacing:1px">⚔ Nova Campanha</button>';
+  el.style.display='flex';
+}
+
+function continueAfterDeath(){
+  // Personagem morreu mas companheiros continuam
+  var el=document.getElementById('death-screen');if(el)el.style.display='none';
+  addMsg('sys','A campanha continua... mas sem '+( window.CHAR_NAME||'o herói')+'.');
+}
+
+function restartGame(){
+  var el=document.getElementById('death-screen');if(el)el.style.display='none';
+  gameOver=false;isDead=false;isUnconscious=false;
+  deathSaves={successes:0,failures:0,stable:false};
+  partyNPCs=[];
+  goToMainMenu();
+}
+
 function showRollToast(msg){const t=document.getElementById('roll-toast');t.textContent=msg;t.style.opacity='1';clearTimeout(rollToastTimer);rollToastTimer=setTimeout(()=>{t.style.opacity='0';},2500);}
 function showSaveToast(msg){const t=document.getElementById('save-toast');t.textContent='💾 '+msg;t.style.opacity='1';clearTimeout(t._timer);t._timer=setTimeout(()=>{t.style.opacity='0';},2500);}
 
@@ -3951,6 +4195,17 @@ function parseAndApplyUpdates(raw){
       }
       updQuest(qu.id,qu.status);
     });
+    // HP changes from narration
+    if(u.hp_damage){adjHP(-(parseInt(u.hp_damage)||0));msgs.push('💥 -'+u.hp_damage+' PV');}
+    if(u.hp_heal){adjHP(parseInt(u.hp_heal)||0);msgs.push('💚 +'+u.hp_heal+' PV');}
+    // Death save result from narration
+    if(u.death_save_result){
+      if(u.death_save_result==='success')deathSaves.successes=Math.min(3,deathSaves.successes+1);
+      else if(u.death_save_result==='failure')deathSaves.failures=Math.min(3,deathSaves.failures+1);
+      updateDeathModal();
+    }
+    // Party NPC fell
+    if(u.party_npc_fell){partyNPCFalls(u.party_npc_fell);}
     if(u.xp_gain){
       var xpSrc=u.xp_source||'Narrativa';
       addXP(u.xp_gain, xpSrc);
@@ -4126,6 +4381,7 @@ function getState(){
     charSubclass:window.CHAR_SUBCLASS||'',charRegion:window.CHAR_REGION||'',
     campaignTitle:window.CAMPAIGN_TITLE||'',
     systemOverride:window.SYSTEM_OVERRIDE||'',
+    deathSaves:deathSaves,isUnconscious:isUnconscious,isDead:isDead,partyNPCs:partyNPCs,
     spells:spells,spellSlots:spellSlots,
     notas:document.getElementById('notes-d')?.value||'',
     chat:document.getElementById('chat')?.innerHTML||'',
@@ -4158,6 +4414,11 @@ function loadProgress(slot='auto'){
   if(s.attrs) Object.assign(ATTRS,s.attrs);
   if(s.charName){
     window.CHAR_NAME=s.charName;
+  if(s.deathSaves!==undefined)deathSaves=s.deathSaves;
+  if(s.isUnconscious!==undefined)isUnconscious=s.isUnconscious;
+  if(s.isDead!==undefined)isDead=s.isDead;
+  if(s.partyNPCs!==undefined)partyNPCs=s.partyNPCs;
+  if(isUnconscious)showDeathModal();
     window.CHAR_RACE=s.charRace||'';
     window.CHAR_CLASS=s.charClass||'';
     window.CHAR_REGION=s.charRegion||'';
@@ -5488,7 +5749,7 @@ async function startNewGame(){
     +'- Use nomes e locais CANÔNICOS dos Forgotten Realms.\n'
     +'- NPCs SEMPRE com nomes únicos e culturalmente coerentes. NUNCA repita um nome já usado nesta sessão.\n\n- Se o personagem tiver informações incompletas (nome de família nobre, deidade, mestre, etc.), INVENTE detalhes coerentes com Forgotten Realms e USE-OS naturalmente na narração.\n'
     +'SISTEMA DE ATUALIZAÇÃO — ao final se houver mudanças inclua (JSON puro, sem markdown):\n'
-    +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300,"gold_reward":50}],"xp_gain":150,"xp_source":"Combate","gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena."}}\n'
+    +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300,"gold_reward":50}],"hp_damage":5,"hp_heal":0,"xp_gain":150,"xp_source":"Combate","gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena."}}\n'
     +'OBRIGATÓRIO:\n'
     +'- Moedas: gold_add (receber) / gold_remove (gastar). Nunca pule.\n'
     +'- Missões: quest_add ao iniciar qualquer objetivo; quest_update ao concluir/falhar. Sempre com xp_reward.\n'
