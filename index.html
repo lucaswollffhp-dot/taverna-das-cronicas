@@ -3740,7 +3740,7 @@ async function callAI(userMsg){
       var body=JSON.stringify({
         system_instruction:{parts:[{text:SYSTEM}]},
         contents:gemHist,
-        generationConfig:{maxOutputTokens:1200,temperature:0.85}
+        generationConfig:{maxOutputTokens:1800,temperature:0.85}
       });
       var controller=new AbortController();
       var timeoutId=setTimeout(function(){controller.abort();},30000);
@@ -3759,7 +3759,7 @@ async function callAI(userMsg){
         var rurl='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+apiKey;
         var rc=new AbortController();
         setTimeout(function(){rc.abort();},25000);
-        var rr=await fetch(rurl,{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({system_instruction:{parts:[{text:sys||SYSTEM}]},contents:gemHist,generationConfig:{maxOutputTokens:1200,temperature:0.85}}),signal:rc.signal});
+        var rr=await fetch(rurl,{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({system_instruction:{parts:[{text:sys||SYSTEM}]},contents:gemHist,generationConfig:{maxOutputTokens:1800,temperature:0.85}}),signal:rc.signal});
         if(rr.ok){response=rr;break;}
       }catch(re){lastErr=re.message;}
     }
@@ -4740,7 +4740,8 @@ async function startNewGame(){
   setTimeout(function(){if(bar)bar.style.width='90%';if(status)status.textContent='O Mestre prepara o cenário...';},2500);
 
   // Build dynamic system prompt
-  var dynSystem='Você é o Mestre de D&D 5e narrando uma campanha nos Forgotten Realms OFICIAIS em português do Brasil.\n\n'
+  var dynSystem='Você é o Mestre de D&D 5e narrando uma campanha nos Forgotten Realms OFICIAIS em português do Brasil.\n'
+    +'REGRA DE ABERTURA: A primeira mensagem [INÍCIO DE CAMPANHA] deve ser SOMENTE narração — sem JSON, sem UPDATES. Os JSONs começam da segunda mensagem em diante.\n\n'
     +'PERSONAGEM: '+name+' | '+race+' '+cls+(subclass?' ('+subclass+')':'')+' | Nível 1 | '+align+'\n'
     +'Antecedente: '+bg+(story?' | História: '+story:'')+'\n'
     +'Atributos: FOR '+newAttrs.FOR+' DES '+newAttrs.DES+' CON '+newAttrs.CON+' INT '+newAttrs.INT+' SAB '+newAttrs.SAB+' CAR '+newAttrs.CAR+'\n'
@@ -4774,7 +4775,12 @@ async function startNewGame(){
     if(bg==='Nobre'&&!story){
       charDetails=' Família nobre: gere um nome de casa nobre coerente com '+region.name+' (ex: Casa Raventhorn, Família Auldren).';
     }
-    var openingPrompt='Personagem: '+name+' ('+race+' '+cls+', '+align+'). Região: '+region.name+'. Escreva APENAS 2 parágrafos de abertura. Seja direto e envolvente. Termine com: O que você faz?';
+    // Opening narration — rich, no JSON required (keeps it from truncating)
+    var openingPrompt='[INÍCIO DE CAMPANHA] Personagem: '+name+', '+race+' '+cls+' de nível 1, '+align+', antecedente: '+bg+'.'
+      +(story?' Motivação: '+story:charDetails)
+      +' Região: '+region.name+'.'
+      +' Crie a cena de abertura da aventura nos Forgotten Realms: apresente o local com detalhes canônicos, a situação inicial e um gancho de aventura envolvente e original adequado ao nível 1.'
+      +' IMPORTANTE: NÃO inclua nenhum JSON ou bloco de UPDATES nesta resposta — apenas a narração pura. Termine com: O que você faz?';
 
     hidStartScreen();
     init();
@@ -4785,9 +4791,7 @@ async function startNewGame(){
 
     if(bar)bar.style.width='100%';
     addLoad();
-    window._openingCall=true;
     var r=await callAIWithSystem(openingPrompt,dynSystem);
-    window._openingCall=false;
     rmLoad();
     // Extract campaign name from response (first bold or quoted title, else generate one)
     var campTitle=name+' e as Crônicas de '+region.name;
@@ -4796,6 +4800,14 @@ async function startNewGame(){
     setCampaignTitle(campTitle, race+' '+cls+' · Nível 1 · '+region.name);
     window.CAMPAIGN_TITLE=campTitle;
     addMsg('dm',r.replace(/\n/g,'<br>'));
+    // Silent setup call: generate initial quest + diary entry from the opening scene
+    setTimeout(async function(){
+      try{
+        var setupPrompt='Com base na cena de abertura que acabou de ser narrada, gere silenciosamente APENAS o JSON de setup inicial (sem texto narrativo adicional): uma missão inicial adequada ao contexto, entrada de diário, e XP inicial se pertinente. Responda SOMENTE com o JSON {"UPDATES":{...}}.';
+        var setupResult=await callAIWithSystem(setupPrompt,dynSystem);
+        // setupResult may be empty text if AI followed instructions — that's fine
+      }catch(e){console.warn('Setup call failed:',e.message);}
+    },1500);
     // Inform magic class about their starting spells and offer to customize
     if(window.CHAR_NEEDS_SPELLS){
       window.CHAR_NEEDS_SPELLS=false;
@@ -4840,11 +4852,10 @@ async function callAIWithSystem(userMsg,systemOverride){
   for(var i=0;i<models.length;i++){
     try{
       var url='https://generativelanguage.googleapis.com/v1beta/models/'+models[i]+':generateContent?key='+apiKey;
-      var maxTok=window._openingCall?600:1200;
       var body=JSON.stringify({
         system_instruction:{parts:[{text:sys}]},
         contents:gemHist,
-        generationConfig:{maxOutputTokens:maxTok,temperature:0.85}
+        generationConfig:{maxOutputTokens:1800,temperature:0.85}
       });
       var controller=new AbortController();
       var timeoutId=setTimeout(function(){controller.abort();},30000);
