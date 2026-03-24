@@ -1314,167 +1314,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   <!-- ════════════════════════════════════════════
        STEP-NEW: Criação de personagem (5 etapas)
   ════════════════════════════════════════════ -->
-  <div id="step-new" style="display:none;position:absolute;inset:0;z-index:6;background:#060408;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:2rem;visibility:hidden">
-
-      <!-- Progress steps indicator -->
-      <div style="display:flex;justify-content:center;gap:.3rem;margin-bottom:1.2rem" id="cc-steps-bar">
-        <div class="cc-step-dot active" id="ccdot-0">Raça</div>
-        <div class="cc-step-line"></div>
-        <div class="cc-step-dot" id="ccdot-1">Classe</div>
-        <div class="cc-step-line"></div>
-        <div class="cc-step-dot" id="ccdot-2">Identidade</div>
-        <div class="cc-step-line"></div>
-        <div class="cc-step-dot" id="ccdot-3">Atributos</div>
-        <div class="cc-step-line"></div>
-        <div class="cc-step-dot" id="ccdot-4">História</div>
-      </div>
-
-      <!-- STEP 0: RAÇA -->
-      <div class="cc-panel" id="cc-panel-0">
-        <div class="cc-section-title">🧬 Escolha sua Raça</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.7rem" id="race-grid"></div>
-        <!-- Sub-raça -->
-        <div id="subrace-area" style="display:none;margin-bottom:.7rem">
-          <div class="cc-section-title" style="font-size:.5rem">Sub-raça</div>
-          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.35rem" id="subrace-grid"></div>
-        </div>
-        <!-- Traços da raça -->
-        <div id="race-traits-area" style="display:none;background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.12);border-radius:8px;padding:.7rem;margin-bottom:.7rem">
-          <div style="font-family:Cinzel,serif;font-size:.52rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.4rem">Traços Raciais</div>
-          <div id="race-traits-list" style="font-size:.78rem;color:var(--text2);line-height:1.6"></div>
-        </div>
-        <!-- Draconato dragon type -->
-        <div id="dragon-area" style="display:none;margin-bottom:.7rem">
-          <label class="cc-label">Ancestral Dracônico</label>
-          <select id="dragon-type" class="cc-select"><option>Vermelho (Fogo)</option></select>
-        </div>
-        <!-- Características físicas -->
-        <div style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:10px;padding:.8rem;margin-bottom:.7rem">
-          <div class="cc-section-title" style="font-size:.5rem">✨ Aparência Física</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem" id="physique-grid"></div>
-          <div style="margin-top:.5rem">
-            <label class="cc-label">Descrição adicional (opcional)</label>
-            <input id="cc-appearance" placeholder="Cicatriz, tatuagem, traço marcante..." class="cc-input"/>
-          </div>
-        </div>
-        <div class="cc-nav-row">
-          <button onclick="showStep('step-menu')" class="cc-btn-sec">← Menu</button>
-          <button onclick="ccNext(0)" class="cc-btn-pri">Próximo: Classe →</button>
-        </div>
-      </div>
-
-      <!-- STEP 1: CLASSE -->
-      <div class="cc-panel" id="cc-panel-1" style="display:none">
-        <div class="cc-section-title">⚔ Escolha sua Classe</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.7rem" id="class-grid"></div>
-        <!-- Subclasse nível 1 (Clérigo, Bruxo, Feiticeiro) -->
-        <div id="subclass1-area" style="display:none;margin-bottom:.7rem">
-          <div class="cc-section-title" style="font-size:.5rem" id="subclass1-label">Domínio / Patrono / Origem</div>
-          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.35rem" id="subclass1-grid"></div>
-        </div>
-        <!-- Escolhas de classe nível 1 -->
-        <div id="class-choices-area" style="display:none;background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.12);border-radius:8px;padding:.7rem;margin-bottom:.7rem">
-          <div class="cc-section-title" style="font-size:.5rem">Escolhas de Nível 1</div>
-          <div id="class-choices-list"></div>
-        </div>
-        <!-- Skills selection -->
-        <div id="skills-choice-area" style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:10px;padding:.8rem;margin-bottom:.7rem">
-          <div class="cc-section-title" style="font-size:.5rem">🎯 Perícias</div>
-          <!-- Antecedente aqui para atualizar skills em tempo real -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.7rem">
-            <div>
-              <label class="cc-label">Antecedente</label>
-              <select id="new-bg" class="cc-select" onchange="renderSkillsChoice()">
-                <option>Forasteiro</option><option>Soldado</option><option>Criminoso</option>
-                <option>Sábio</option><option>Nobre</option><option>Herói do Povo</option>
-                <option>Eremita</option><option>Marinheiro</option><option>Charlatão</option>
-                <option>Artesão de Guilda</option><option>Acólito</option><option>Artista</option>
-              </select>
-            </div>
-            <div id="bg-skills-area">
-              <label class="cc-label">Perícias do antecedente</label>
-              <div id="bg-skills-list" style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:4px"></div>
-            </div>
-          </div>
-          <!-- Classe skill choices -->
-          <div id="skills-choice-hint" style="font-size:.7rem;color:rgba(200,168,74,.5);font-style:italic;margin-bottom:.4rem"></div>
-          <div id="skills-choice-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:.3rem"></div>
-          <!-- Ladino expertise -->
-          <div id="expertise-area" style="display:none;margin-top:.6rem">
-            <div style="font-family:Cinzel,serif;font-size:.5rem;color:var(--arc3);text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem">⭐ Especialização — escolha 2 perícias para proficiência dupla</div>
-            <div id="expertise-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:.3rem"></div>
-          </div>
-        </div>
-        <!-- Equipment preview -->
-        <div id="equip-preview" style="background:rgba(58,144,200,.04);border:1px solid rgba(58,144,200,.18);border-radius:10px;padding:.7rem .9rem;margin-bottom:.7rem;font-size:.78rem;color:#e8dfc8"></div>
-        <div class="cc-nav-row">
-          <button onclick="ccPrev(1)" class="cc-btn-sec">← Raça</button>
-          <button onclick="ccNext(1)" class="cc-btn-pri">Próximo: Identidade →</button>
-        </div>
-      </div>
-
-      <!-- STEP 2: IDENTIDADE -->
-      <div class="cc-panel" id="cc-panel-2" style="display:none">
-        <div class="cc-section-title">📛 Identidade</div>
-        <div style="margin-bottom:.6rem">
-          <label class="cc-label">Nome do Personagem *</label>
-          <input id="new-name" placeholder="Como você é chamado?" class="cc-input cc-input-lg"/>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.6rem">
-          <div>
-            <label class="cc-label">Alinhamento</label>
-            <select id="new-align" class="cc-select">
-              <option>Leal e Bom</option><option>Neutro e Bom</option><option>Caótico e Bom</option>
-              <option>Leal e Neutro</option><option>Neutro</option><option>Caótico e Neutro</option>
-              <option>Leal e Mau</option><option>Neutro e Mau</option><option>Caótico e Mau</option>
-            </select>
-          </div>
-          <div>
-            <label class="cc-label">Antecedente</label>
-            <div id="bg-display-step2" style="padding:.5rem .7rem;background:rgba(200,168,74,.05);border:1px solid rgba(200,168,74,.2);border-radius:7px;font-family:Cormorant Garamond,serif;font-size:.9rem;color:var(--gold2)">— definido na etapa anterior —</div>
-          </div>
-        </div>
-        <div style="margin-bottom:.6rem">
-          <div class="cc-section-title" style="font-size:.5rem">🗺 Região de Início</div>
-          <div id="region-list" style="display:flex;flex-wrap:wrap;gap:.35rem"></div>
-        </div>
-        <div class="cc-nav-row">
-          <button onclick="ccPrev(2)" class="cc-btn-sec">← Classe</button>
-          <button onclick="ccNext(2)" class="cc-btn-pri">Próximo: Atributos →</button>
-        </div>
-      </div>
-
-      <!-- STEP 3: ATRIBUTOS -->
-      <div class="cc-panel" id="cc-panel-3" style="display:none">
-        <div class="cc-section-title">⚡ Atributos</div>
-        <div style="font-size:.7rem;color:rgba(200,168,74,.4);font-style:italic;margin-bottom:.6rem">Array padrão: 15, 14, 13, 12, 10, 8 — ajuste conforme quiser</div>
-        <div id="attr-builder" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.7rem"></div>
-        <!-- Racial bonuses reminder -->
-        <div id="racial-bonus-hint" style="font-size:.72rem;color:var(--arc3);background:rgba(107,63,160,.06);border:1px solid rgba(107,63,160,.15);border-radius:7px;padding:.5rem .7rem;margin-bottom:.7rem"></div>
-        <div class="cc-nav-row">
-          <button onclick="ccPrev(3)" class="cc-btn-sec">← Identidade</button>
-          <button onclick="ccNext(3)" class="cc-btn-pri">Próximo: História →</button>
-        </div>
-      </div>
-
-      <!-- STEP 4: HISTÓRIA -->
-      <div class="cc-panel" id="cc-panel-4" style="display:none">
-        <div class="cc-section-title">📖 História & Motivação</div>
-        <div style="margin-bottom:.6rem">
-          <label class="cc-label">Motivação (opcional)</label>
-          <textarea id="new-story" placeholder="De onde vem? O que busca? Qual seu maior medo? Quem é sua família?" class="cc-input" style="min-height:80px;resize:none;line-height:1.5"></textarea>
-        </div>
-        <!-- Summary card -->
-        <div id="char-summary" style="background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.2);border-radius:10px;padding:.8rem;margin-bottom:.8rem">
-          <div style="font-family:Cinzel,serif;font-size:.54rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.5rem">Resumo do Personagem</div>
-          <div id="char-summary-content" style="font-size:.8rem;color:var(--text2);line-height:1.6"></div>
-        </div>
-        <div class="cc-nav-row">
-          <button onclick="ccPrev(4)" class="cc-btn-sec">← Atributos</button>
-          <button onclick="startNewGame()" class="cc-btn-start">⚔ Iniciar Aventura</button>
-        </div>
-      </div>
-    </div><!-- /step-new -->
+  <!-- /step-new -->
 
   <!-- ════════════════════════════════════════════
        STEP-GENERATING: Tela de carregamento
@@ -2108,6 +1948,20 @@ function initParticleCanvas(){
 // step-api-hidden = estado "não visível" (volta para hero)
 // ═══════════════════════════════════════════
 function showStartHero(){
+  // Esconder steps fixed
+  ['step-new','step-generating','step-api','step-menu','step-patchnotes'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){ el.style.display='none'; el.style.visibility='hidden'; }
+  });
+  var overlay=document.getElementById('ss-steps-overlay');
+  if(overlay) overlay.style.display='none';
+  var scroller=document.getElementById('ss-scroller');
+  if(scroller){ scroller.style.display='flex'; scroller.scrollTo({top:0,behavior:'smooth'}); }
+  var ss=document.getElementById('start-screen');
+  if(ss){ ss.style.display='flex'; ss.style.visibility='visible'; }
+  var app=document.getElementById('app');
+  if(app){ app.style.display='none'; app.style.visibility='hidden'; }
+}function showStartHero(){
   var ALL = ['step-api','step-menu','step-new','step-generating','step-patchnotes'];
   ALL.forEach(function(id){
     var el=document.getElementById(id);
@@ -6250,32 +6104,33 @@ let selectedRegion='waterdeep';
 function showStep(id){
   if(id==='step-api-hidden'){ showStartHero(); return; }
 
-  var OVERLAY_STEPS    = ['step-api','step-menu','step-patchnotes'];
-  var FULLSCREEN_STEPS = ['step-new'];
-  var ALL_STEPS        = OVERLAY_STEPS.concat(FULLSCREEN_STEPS);
+  // step-new e step-generating são position:fixed — gerenciados separadamente
+  var OVERLAY_STEPS = ['step-api','step-menu','step-patchnotes'];
 
   var ss       = document.getElementById('start-screen');
   var overlay  = document.getElementById('ss-steps-overlay');
   var inner    = document.getElementById('ss-steps-inner');
   var scroller = document.getElementById('ss-scroller');
 
-  // step-generating é position:fixed independente — não é gerenciado aqui
-  // Só esconde os outros
-  ALL_STEPS.forEach(function(s){
-    var el = document.getElementById(s);
+  // Esconder steps de overlay
+  OVERLAY_STEPS.forEach(function(s){
+    var el=document.getElementById(s);
     if(el){ el.style.display='none'; el.style.visibility='hidden'; }
   });
+  // Esconder step-new (fixed) se não for o alvo
+  if(id !== 'step-new'){
+    var sn=document.getElementById('step-new');
+    if(sn){ sn.style.display='none'; sn.style.visibility='hidden'; }
+  }
 
-  var el = document.getElementById(id);
+  var el=document.getElementById(id);
   if(!el){ console.warn('[showStep] nao encontrado:', id); return; }
 
   if(id === 'step-new'){
-    // Criação: cobre o start-screen inteiro
-    if(ss){ ss.style.display='flex'; ss.style.visibility='visible'; }
-    if(scroller) scroller.style.display='none';
-    if(overlay)  overlay.style.display='none';
+    // Cobrir tudo com a tela de criação (position:fixed independente)
     el.style.display    = 'block';
     el.style.visibility = 'visible';
+    el.scrollTop = 0;
     ccStep(0);
   } else {
     // Menu / API / Patchnotes: overlay sobre o hero
@@ -6314,16 +6169,18 @@ var _ccSelectedSubclass1='';
 function ccStep(n){
   for(var i=0;i<5;i++){
     var p=document.getElementById('cc-panel-'+i);
-    if(p)p.style.display=i===n?'':'none';
+    if(p) p.style.display=i===n?'':'none';
     var dot=document.getElementById('ccdot-'+i);
-    if(dot)dot.className='cc-step-dot'+(i===n?' active':i<n?' done':'');
+    if(dot) dot.className='cc-step-dot'+(i===n?' active':i<n?' done':'');
   }
-  if(n===0)buildRaceGrid();
-  if(n===1)buildClassGrid();
-  if(n===2)buildRegionList();
-  if(n===3){buildAttrBuilder();updateRacialBonusHint();}
-  if(n===4)buildCharSummary();
-  window.scrollTo(0,0);
+  // Scroll ao topo dentro do step-new (que é position:fixed e scroll próprio)
+  var sn=document.getElementById('step-new');
+  if(sn) sn.scrollTop=0;
+  if(n===0) buildRaceGrid();
+  if(n===1) buildClassGrid();
+  if(n===2) buildRegionList();
+  if(n===3){ buildAttrBuilder(); updateRacialBonusHint(); }
+  if(n===4) buildCharSummary();
 }
 function ccNext(cur){
   if(cur===0){
@@ -6790,8 +6647,15 @@ function goToMainMenu(){
   saveProgress('auto');
   var chat=document.getElementById('chat');
   if(chat) chat.innerHTML='';
+  // Esconder app
   var app=document.getElementById('app');
   if(app){ app.style.display='none'; app.style.visibility='hidden'; }
+  // Esconder steps fixed que possam estar visíveis
+  ['step-new','step-generating'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){ el.style.display='none'; el.style.visibility='hidden'; }
+  });
+  // Mostrar start-screen com menu
   var ss=document.getElementById('start-screen');
   if(ss){ ss.style.display='flex'; ss.style.visibility='visible'; }
   var scroller=document.getElementById('ss-scroller');
@@ -7227,6 +7091,167 @@ if(_savedKey){
       <div id="gen-status" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(200,168,74,.55);margin-bottom:1.4rem">O Mestre consulta os tomos antigos...</div>
       <div style="width:220px;height:3px;background:rgba(200,168,74,.1);border-radius:2px;margin:0 auto;overflow:hidden">
         <div id="gen-bar" style="height:100%;background:linear-gradient(90deg,var(--blood),var(--gold2));border-radius:2px;width:0%;transition:width 1.5s ease;box-shadow:0 0 8px rgba(200,168,74,.4)"></div>
+      </div>
+    </div>
+<div id="step-new" style="display:none;position:fixed;inset:0;z-index:8000;background:#060408;overflow-y:auto;-webkit-overflow-scrolling:touch;visibility:hidden">
+
+      <!-- Progress steps indicator -->
+      <div style="display:flex;justify-content:center;gap:.3rem;margin-bottom:1.2rem" id="cc-steps-bar">
+        <div class="cc-step-dot active" id="ccdot-0">Raça</div>
+        <div class="cc-step-line"></div>
+        <div class="cc-step-dot" id="ccdot-1">Classe</div>
+        <div class="cc-step-line"></div>
+        <div class="cc-step-dot" id="ccdot-2">Identidade</div>
+        <div class="cc-step-line"></div>
+        <div class="cc-step-dot" id="ccdot-3">Atributos</div>
+        <div class="cc-step-line"></div>
+        <div class="cc-step-dot" id="ccdot-4">História</div>
+      </div>
+
+      <!-- STEP 0: RAÇA -->
+      <div class="cc-panel" id="cc-panel-0">
+        <div class="cc-section-title">🧬 Escolha sua Raça</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.7rem" id="race-grid"></div>
+        <!-- Sub-raça -->
+        <div id="subrace-area" style="display:none;margin-bottom:.7rem">
+          <div class="cc-section-title" style="font-size:.5rem">Sub-raça</div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.35rem" id="subrace-grid"></div>
+        </div>
+        <!-- Traços da raça -->
+        <div id="race-traits-area" style="display:none;background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.12);border-radius:8px;padding:.7rem;margin-bottom:.7rem">
+          <div style="font-family:Cinzel,serif;font-size:.52rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.4rem">Traços Raciais</div>
+          <div id="race-traits-list" style="font-size:.78rem;color:var(--text2);line-height:1.6"></div>
+        </div>
+        <!-- Draconato dragon type -->
+        <div id="dragon-area" style="display:none;margin-bottom:.7rem">
+          <label class="cc-label">Ancestral Dracônico</label>
+          <select id="dragon-type" class="cc-select"><option>Vermelho (Fogo)</option></select>
+        </div>
+        <!-- Características físicas -->
+        <div style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:10px;padding:.8rem;margin-bottom:.7rem">
+          <div class="cc-section-title" style="font-size:.5rem">✨ Aparência Física</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem" id="physique-grid"></div>
+          <div style="margin-top:.5rem">
+            <label class="cc-label">Descrição adicional (opcional)</label>
+            <input id="cc-appearance" placeholder="Cicatriz, tatuagem, traço marcante..." class="cc-input"/>
+          </div>
+        </div>
+        <div class="cc-nav-row">
+          <button onclick="showStep('step-menu')" class="cc-btn-sec">← Menu</button>
+          <button onclick="ccNext(0)" class="cc-btn-pri">Próximo: Classe →</button>
+        </div>
+      </div>
+
+      <!-- STEP 1: CLASSE -->
+      <div class="cc-panel" id="cc-panel-1" style="display:none">
+        <div class="cc-section-title">⚔ Escolha sua Classe</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.7rem" id="class-grid"></div>
+        <!-- Subclasse nível 1 (Clérigo, Bruxo, Feiticeiro) -->
+        <div id="subclass1-area" style="display:none;margin-bottom:.7rem">
+          <div class="cc-section-title" style="font-size:.5rem" id="subclass1-label">Domínio / Patrono / Origem</div>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.35rem" id="subclass1-grid"></div>
+        </div>
+        <!-- Escolhas de classe nível 1 -->
+        <div id="class-choices-area" style="display:none;background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.12);border-radius:8px;padding:.7rem;margin-bottom:.7rem">
+          <div class="cc-section-title" style="font-size:.5rem">Escolhas de Nível 1</div>
+          <div id="class-choices-list"></div>
+        </div>
+        <!-- Skills selection -->
+        <div id="skills-choice-area" style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:10px;padding:.8rem;margin-bottom:.7rem">
+          <div class="cc-section-title" style="font-size:.5rem">🎯 Perícias</div>
+          <!-- Antecedente aqui para atualizar skills em tempo real -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.7rem">
+            <div>
+              <label class="cc-label">Antecedente</label>
+              <select id="new-bg" class="cc-select" onchange="renderSkillsChoice()">
+                <option>Forasteiro</option><option>Soldado</option><option>Criminoso</option>
+                <option>Sábio</option><option>Nobre</option><option>Herói do Povo</option>
+                <option>Eremita</option><option>Marinheiro</option><option>Charlatão</option>
+                <option>Artesão de Guilda</option><option>Acólito</option><option>Artista</option>
+              </select>
+            </div>
+            <div id="bg-skills-area">
+              <label class="cc-label">Perícias do antecedente</label>
+              <div id="bg-skills-list" style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:4px"></div>
+            </div>
+          </div>
+          <!-- Classe skill choices -->
+          <div id="skills-choice-hint" style="font-size:.7rem;color:rgba(200,168,74,.5);font-style:italic;margin-bottom:.4rem"></div>
+          <div id="skills-choice-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:.3rem"></div>
+          <!-- Ladino expertise -->
+          <div id="expertise-area" style="display:none;margin-top:.6rem">
+            <div style="font-family:Cinzel,serif;font-size:.5rem;color:var(--arc3);text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem">⭐ Especialização — escolha 2 perícias para proficiência dupla</div>
+            <div id="expertise-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:.3rem"></div>
+          </div>
+        </div>
+        <!-- Equipment preview -->
+        <div id="equip-preview" style="background:rgba(58,144,200,.04);border:1px solid rgba(58,144,200,.18);border-radius:10px;padding:.7rem .9rem;margin-bottom:.7rem;font-size:.78rem;color:#e8dfc8"></div>
+        <div class="cc-nav-row">
+          <button onclick="ccPrev(1)" class="cc-btn-sec">← Raça</button>
+          <button onclick="ccNext(1)" class="cc-btn-pri">Próximo: Identidade →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: IDENTIDADE -->
+      <div class="cc-panel" id="cc-panel-2" style="display:none">
+        <div class="cc-section-title">📛 Identidade</div>
+        <div style="margin-bottom:.6rem">
+          <label class="cc-label">Nome do Personagem *</label>
+          <input id="new-name" placeholder="Como você é chamado?" class="cc-input cc-input-lg"/>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.6rem">
+          <div>
+            <label class="cc-label">Alinhamento</label>
+            <select id="new-align" class="cc-select">
+              <option>Leal e Bom</option><option>Neutro e Bom</option><option>Caótico e Bom</option>
+              <option>Leal e Neutro</option><option>Neutro</option><option>Caótico e Neutro</option>
+              <option>Leal e Mau</option><option>Neutro e Mau</option><option>Caótico e Mau</option>
+            </select>
+          </div>
+          <div>
+            <label class="cc-label">Antecedente</label>
+            <div id="bg-display-step2" style="padding:.5rem .7rem;background:rgba(200,168,74,.05);border:1px solid rgba(200,168,74,.2);border-radius:7px;font-family:Cormorant Garamond,serif;font-size:.9rem;color:var(--gold2)">— definido na etapa anterior —</div>
+          </div>
+        </div>
+        <div style="margin-bottom:.6rem">
+          <div class="cc-section-title" style="font-size:.5rem">🗺 Região de Início</div>
+          <div id="region-list" style="display:flex;flex-wrap:wrap;gap:.35rem"></div>
+        </div>
+        <div class="cc-nav-row">
+          <button onclick="ccPrev(2)" class="cc-btn-sec">← Classe</button>
+          <button onclick="ccNext(2)" class="cc-btn-pri">Próximo: Atributos →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: ATRIBUTOS -->
+      <div class="cc-panel" id="cc-panel-3" style="display:none">
+        <div class="cc-section-title">⚡ Atributos</div>
+        <div style="font-size:.7rem;color:rgba(200,168,74,.4);font-style:italic;margin-bottom:.6rem">Array padrão: 15, 14, 13, 12, 10, 8 — ajuste conforme quiser</div>
+        <div id="attr-builder" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.7rem"></div>
+        <!-- Racial bonuses reminder -->
+        <div id="racial-bonus-hint" style="font-size:.72rem;color:var(--arc3);background:rgba(107,63,160,.06);border:1px solid rgba(107,63,160,.15);border-radius:7px;padding:.5rem .7rem;margin-bottom:.7rem"></div>
+        <div class="cc-nav-row">
+          <button onclick="ccPrev(3)" class="cc-btn-sec">← Identidade</button>
+          <button onclick="ccNext(3)" class="cc-btn-pri">Próximo: História →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: HISTÓRIA -->
+      <div class="cc-panel" id="cc-panel-4" style="display:none">
+        <div class="cc-section-title">📖 História & Motivação</div>
+        <div style="margin-bottom:.6rem">
+          <label class="cc-label">Motivação (opcional)</label>
+          <textarea id="new-story" placeholder="De onde vem? O que busca? Qual seu maior medo? Quem é sua família?" class="cc-input" style="min-height:80px;resize:none;line-height:1.5"></textarea>
+        </div>
+        <!-- Summary card -->
+        <div id="char-summary" style="background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.2);border-radius:10px;padding:.8rem;margin-bottom:.8rem">
+          <div style="font-family:Cinzel,serif;font-size:.54rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.5rem">Resumo do Personagem</div>
+          <div id="char-summary-content" style="font-size:.8rem;color:var(--text2);line-height:1.6"></div>
+        </div>
+        <div class="cc-nav-row">
+          <button onclick="ccPrev(4)" class="cc-btn-sec">← Atributos</button>
+          <button onclick="startNewGame()" class="cc-btn-start">⚔ Iniciar Aventura</button>
+        </div>
       </div>
     </div>
 </body>
