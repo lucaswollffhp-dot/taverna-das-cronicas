@@ -6625,6 +6625,8 @@ function continueFromStorage(){
   var saves=JSON.parse(localStorage.getItem('killyn_v3')||'{}');
   if(!saves['auto']){showSaveToast('Nenhum save encontrado!');return;}
   hidStartScreen();
+  var app=document.getElementById('app');
+  if(app){app.style.display='';app.style.visibility='visible';}
   init();
   loadProgress('auto');
   showSaveToast('Aventura restaurada!');
@@ -6638,6 +6640,8 @@ function importSaveFromMenu(event){
       var state=JSON.parse(e.target.result);
       if(!state||!state.hist){showSaveToast('Arquivo inválido!');return;}
       hidStartScreen();
+      var appEl=document.getElementById('app');
+      if(appEl){appEl.style.display='';appEl.style.visibility='visible';}
       init();
       hpC=state.hpC||HP_MAX;
       HP_MAX=state.HP_MAX||HP_MAX_BASE;
@@ -6664,23 +6668,28 @@ function importSaveFromMenu(event){
 }
 
 function hidStartScreen(){
+  // Esconder start-screen
   var ss=document.getElementById('start-screen');
   if(ss){ss.style.display='none';ss.style.visibility='hidden';}
   var overlay=document.getElementById('ss-steps-overlay');
   if(overlay)overlay.style.display='none';
+  // MOSTRAR o app — sem isso a tela fica preta
+  var app=document.getElementById('app');
+  if(app){app.style.display='';app.style.visibility='visible';}
 }
 
 function goToMainMenu(){
   if(!confirm('Voltar ao menu principal? O progresso será salvo automaticamente.')) return;
   saveProgress('auto');
+  // Limpar chat
   var chat=document.getElementById('chat');
   if(chat) chat.innerHTML='';
   // Esconder app, mostrar start-screen
   var app=document.getElementById('app');
-  if(app) app.style.display='none';
+  if(app){app.style.display='none';app.style.visibility='hidden';}
   var ss=document.getElementById('start-screen');
-  if(ss){ ss.style.display='flex'; }
-  // Scroll de volta ao topo do hero
+  if(ss){ss.style.display='flex';ss.style.visibility='visible';}
+  // Scroll topo do hero
   var scroller=document.getElementById('ss-scroller');
   if(scroller) scroller.scrollTo({top:0,behavior:'instant'});
   showStep('step-menu');
@@ -7003,6 +7012,9 @@ async function startNewGame(){
   if(window.CAMPAIGN_TITLE) setCampaignTitle(window.CAMPAIGN_TITLE,(window.CHAR_RACE||'')+' '+(window.CHAR_CLASS||'')+' · Nível '+charLevel+' · '+(window.CHAR_REGION||''));
     saveProgress('auto');
   }catch(e){
+    // Mostrar app mesmo com erro para não ficar tela preta
+    var app=document.getElementById('app');
+    if(app){app.style.display='';app.style.visibility='visible';}
     hidStartScreen();
     addMsg('sys','Erro ao gerar campanha. Tente novamente: '+e.message);
     console.error(e);
@@ -7067,8 +7079,9 @@ callAI=async function(userMsg){
 };
 
 // ─── START ───
-init();
-// Iniciar partículas
+// NÃO chamar init() aqui — só é chamado quando o jogo começa de verdade
+// init() é chamado em: continueFromStorage(), importSaveFromMenu(), startNewGame()
+// Iniciar partículas (não depende do jogo)
 initParticleCanvas();
 
 // Restaurar sessão Google
@@ -7079,11 +7092,8 @@ if(savedKey){
   apiKey=savedKey;
   showStep('step-menu');
   checkStorageSave();
-  // Injetar no contexto do narrador
-  var rollCtxD='[DADO] d'+sides+(rawMod!==0?'+'+rawMod+'='+total:'='+result)+(sides===20&&result===20?' CRÍTICO NATURAL':sides===20&&result===1?' FALHA CRÍTICA':sides===20&&total>=15?' sucesso sólido':sides===20&&total<=5?' falha':'');
-  window._pendingRollCtx=(window._pendingRollCtx||'')+rollCtxD+'\n';
 }
-// Se não tiver chave, mostra o hero (start-screen já está visível)
+// Se não tiver chave, o hero fica visível (start-screen já visible por padrão)
 </script>
 </body>
 </html>
