@@ -1041,7 +1041,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 <body>
 
 <!-- TELA INICIAL -->
-<div id="start-screen" style="position:fixed;inset:0;z-index:600;overflow:hidden;background:#04020a;">
+<div id="start-screen" style="position:fixed;inset:0;z-index:600;overflow:hidden;background:#04020a;display:flex;flex-direction:column;">
 
   <!-- ── CANVAS DE PARTÍCULAS ── -->
   <canvas id="particle-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.6"></canvas>
@@ -1056,6 +1056,11 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
     <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,140,40,.4),transparent);"></div>
     <!-- Textura de ruído (canvas-based) - evita imagem externa -->
     <div id="grain-overlay" style="position:absolute;inset:0;opacity:.03;mix-blend-mode:screen;pointer-events:none"></div>
+  </div>
+
+  <!-- ── STEPS OVERLAY (menu, api, new, patchnotes) ── -->
+  <div id="ss-steps-overlay" style="position:absolute;inset:0;z-index:10;display:none;align-items:center;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;background:rgba(4,2,10,.96);backdrop-filter:blur(20px);padding:2rem 1rem;">
+    <div id="ss-steps-inner" style="width:100%;max-width:440px;"></div>
   </div>
 
   <!-- ── SCROLL CONTAINER ── -->
@@ -1318,7 +1323,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   <div class="modal-box" id="dyn-modal-content"></div>
 </div>
 
-<div id="app">
+<div id="app" style="display:none">
   <!-- HDR -->
   <div class="hdr">
     <div class="hdr-left">
@@ -1777,6 +1782,8 @@ function initParticleCanvas(){
 function showStartHero(){
   var ss = document.getElementById('start-screen');
   var scroller = document.getElementById('ss-scroller');
+  var app = document.getElementById('app');
+  if(app) app.style.display = 'none';
   if(ss) ss.style.display = 'flex';
   if(scroller) scroller.scrollTo({top:0, behavior:'smooth'});
   ['step-api','step-menu','step-patchnotes','step-new','step-generating'].forEach(function(id){
@@ -1846,7 +1853,7 @@ const BARBARIAN_RAGE_BONUS={1:2,2:2,3:2,4:2,5:2,6:2,7:2,8:2,9:3,10:3,11:3,12:3,1
 const XP_BY_CR={0:10,'1/8':25,'1/4':50,'1/2':100,1:200,2:450,3:700,4:1100,5:1800,6:2300,7:2900,8:3900,9:5000,10:5900,11:7200,12:8400,13:10000,14:11500,15:13000,16:15000,17:18000,18:20000,19:22000,20:25000};
 
 // SYSTEM PROMPT
-const SYSTEM='Você é o Mestre de D&D 5e narrando em português do Brasil.\n'+'REGRAS OBRIGATÓRIAS:\n'+'1. NUNCA mencione dados internos como [PV], [CA], [ESTADO_OCULTO] no texto narrativo.\n'+'2. NPCs SEMPRE com nomes únicos e DIFERENTES. PROIBIDO repetir nomes. Nomes culturalmente coerentes com o local.\n'+'3. Rolagens SEMPRE com modificador. Ex: Role d20+3 de Percepção. VANTAGEM: Role 2d20+X use o maior. DESVANTAGEM: use o menor.\n'+'3b. MECÂNICAS ESPECIAIS POR CLASSE:\n'+'   Bárbaro em Fúria: resistência a dano físico (metade do dano contundente/cortante/perfurante), não pode conjurar magias.\n'+'   Ladino: Ataque Furtivo requer vantagem OU aliado adjacente ao alvo — confirme antes de adicionar o dano extra.\n'+'   Paladino: pode declarar Smite Divino APÓS acertar (gasta espaço de magia para +2d8 dano radiante por slot, +1d8 por nível adicional).\n'+'   Monge: pode usar DES ou FOR em ataques desarmados; sem armadura usa CA = 10+DES+SAB.\n'+'   Feiticeiro Dracônico: CA natural = 13+DES sem armadura.\n'+'3. Rolagens SEMPRE com modificador. Ex: Role d20+3 de Percepção. Role 2d20+X (maior) para VANTAGEM, (menor) para DESVANTAGEM. Não explique ao jogador o motivo.\n'+'4. Linguagem clara e direta. Sem palavras rebuscadas.\n'+'5. AO FINAL: pergunte APENAS \"O que você faz?\" — não liste opções.\n'+'6. Nunca resolva combates sem rolagens do jogador.\n'+'6b. HP/DANO: Quando o personagem sofre dano, inclua hp_damage no JSON. Quando recebe cura, inclua hp_heal. Quando morre: se houver companheiros na cena, narre a reação deles e continue. TPK só quando TODOS caem.\n'+'6f. INSPIRAÇÃO: Quando o jogador fizer algo extraordinariamente criativo, em personagem ou heroico, inclua grant_inspiration:true no JSON para conceder Inspiração.\n'
+const SYSTEM='Você é o Mestre de D&D 5e narrando em português do Brasil.\n'+'REGRAS OBRIGATÓRIAS:\n'+'1. NUNCA mencione dados internos como [PV], [CA], [ESTADO_OCULTO] no texto narrativo.\n'+'2. NPCs SEMPRE com nomes únicos e DIFERENTES. PROIBIDO repetir nomes. Nomes culturalmente coerentes com o local.\n'+'3. Rolagens SEMPRE com modificador. Ex: Role d20+3 de Percepção. VANTAGEM: Role 2d20+X use o maior. DESVANTAGEM: use o menor.\n'+'3c. RESULTADOS DE ROLAGEM: quando uma mensagem [ROLAGEM AUTOMÁTICA] aparecer no contexto, use o resultado exato fornecido — não peça para o jogador rolar de novo, não ignore o resultado. O sistema já rolou os dados automaticamente.\n'+'3b. MECÂNICAS ESPECIAIS POR CLASSE:\n'+'   Bárbaro em Fúria: resistência a dano físico (metade do dano contundente/cortante/perfurante), não pode conjurar magias.\n'+'   Ladino: Ataque Furtivo requer vantagem OU aliado adjacente ao alvo — confirme antes de adicionar o dano extra.\n'+'   Paladino: pode declarar Smite Divino APÓS acertar (gasta espaço de magia para +2d8 dano radiante por slot, +1d8 por nível adicional).\n'+'   Monge: pode usar DES ou FOR em ataques desarmados; sem armadura usa CA = 10+DES+SAB.\n'+'   Feiticeiro Dracônico: CA natural = 13+DES sem armadura.\n'+'3. Rolagens SEMPRE com modificador. Ex: Role d20+3 de Percepção. Role 2d20+X (maior) para VANTAGEM, (menor) para DESVANTAGEM. Não explique ao jogador o motivo.\n'+'4. Linguagem clara e direta. Sem palavras rebuscadas.\n'+'5. AO FINAL: pergunte APENAS \"O que você faz?\" — não liste opções.\n'+'6. Nunca resolva combates sem rolagens do jogador.\n'+'6b. HP/DANO: Quando o personagem sofre dano, inclua hp_damage no JSON. Quando recebe cura, inclua hp_heal. Quando morre: se houver companheiros na cena, narre a reação deles e continue. TPK só quando TODOS caem.\n'+'6f. INSPIRAÇÃO: Quando o jogador fizer algo extraordinariamente criativo, em personagem ou heroico, inclua grant_inspiration:true no JSON para conceder Inspiração.\n'
 +'6e. CONCENTRAÇÃO: Quando o personagem conjura magia de concentração, inclua concentration_start:"Nome da Magia". Se a concentração for quebrada (dano, nova magia), inclua concentration_break:"motivo".\n'
 +'6d. CONDIÇÕES: Quando o personagem sofre uma condição (Envenenado, Agarrado, Assustado, Atordoado, Caído, Cego, Encantado, Enfeitiçado, Exausto, Incapacitado, Inconsciente, Invisível, Paralisado, Petrificado), inclua condition_add no JSON com o nome exato. Quando a condição termina, inclua condition_remove. Aplique os efeitos mecânicos da condição na narração.\n'+'6c. TESTES DE MORTE: Quando personagem está em 0 PV, peça "Role d20 de Teste de Morte". ≥10=sucesso, <10=falha. 3 sucessos=estabiliza, 3 falhas=morte, natural 20=acorda com 1 PV, natural 1=2 falhas.\n'+'7. OURO: gold_add (receber) ou gold_remove (gastar) no JSON. O contexto mostra [Tesouro:X PO] — nunca deixe gastar mais do que possui.\n'+'8. SALDO INSUFICIENTE: [SISTEMA: moedas insuficientes] → NPC percebe e reage naturalmente.\n'+'9. MISSÕES OBRIGATÓRIO: quest_add ao iniciar qualquer missão/objetivo com id, titulo, desc, xp estimado. quest_update ao concluir/falhar com xp_reward e gold_reward (se houver pagamento prometido). Na conclusão, o narrador deve descrever a entrega da recompensa ANTES de incluir o JSON.\n'+'10. XP NARRATIVO: xp_gain+xp_source — Combate:50-500, Diplomacia:50-200, Descoberta:25-150, Desafio:25-100. Nunca para ações triviais.\n'+'11. Nunca mencione o JSON — inclua silenciosamente ao final.';
 
@@ -2452,11 +2459,16 @@ function rollAttack(id){
     }
   }
 
-  const msg=miss?`⚔ ${a.name}: FALHA CRÍTICA! (d20=1)`
-    :crit?`⚔ ${a.name}: ACERTO CRÍTICO! d20=20 → Total ${total} | 💥 Dano: ${dmg} ${a.type} (dados dobrados!)`
-    :`⚔ ${a.name}: d20=${hitRoll} → Total ${total} | Dano: ${dmg} ${a.type}`;
+  const msg=miss?`⚔ ${a.name}: FALHA CRÍTICA! (d20=1) — ataque errou automaticamente`
+    :crit?`⚔ ${a.name}: ACERTO CRÍTICO! d20=20 → Total ${total} → HIT GARANTIDO | 💥 Dano: ${dmg} ${a.type} (dados dobrados!)`
+    :`⚔ ${a.name}: d20=${hitRoll} → Total ${total} → ${total>=15?'ACERTO provável':'pode errar dependendo da CA'} | Dano: ${dmg} ${a.type}`;
   addMsg('roll',msg);
+  // Injetar no hist para que o AI veja o resultado real da rolagem
+  hist.push({role:'user', content:'[ROLAGEM AUTOMÁTICA] '+msg.replace(/<[^>]+>/g,'')});
   showRollToast(crit?'🌟 CRÍTICO! '+dmg+' de dano':miss?'💀 Falha Crítica!':'Acerto '+total+' | '+dmg+' de dano');
+  // Injetar resultado no hist para o narrador processar
+  var rollCtx='[DADO] Ataque com '+a.name+': '+(miss?'FALHA CRÍTICA (d20=1) — erra automaticamente':crit?'ACERTO CRÍTICO (d20=20) — dano dobrado: '+dmg+' de dano '+a.type:('d20='+hitRoll+' + bônus='+a.bonus+' → total '+total+' | Dano '+dmg+' de dano '+a.type+(total>=10?' — acertou':' — verificar CA do inimigo')));
+  window._pendingRollCtx = (window._pendingRollCtx||'') + rollCtx + '\n';
 }
 function openAttackModal(){
   const html=`<div class="modal-title">⚔ Novo Ataque</div>
@@ -3128,37 +3140,64 @@ function getTotalPO(){
 // Desconta na ordem: PO → PP → PE → PA → PC.
 // Retorna {ok:true} se conseguiu, ou {ok:false, total:X} se insuficiente.
 function spendPO(amtPO){
-  var total=getTotalPO();
-  if(amtPO>total+0.001){
-    return{ok:false,total:total,falta:Math.round((amtPO-total)*100)/100};
+  // Trabalha em centavos de PC para evitar float imprecision
+  // Conversão: 1 PP=1000pc, 1 PO=100pc, 1 PE=50pc, 1 PA=10pc, 1 PC=1pc
+  var totalPC = Math.round(getTotalPO() * 100);
+  var costPC  = Math.round(amtPO * 100);
+  if(costPC > totalPC){
+    return{ok:false,total:getTotalPO(),falta:Math.round((amtPO-getTotalPO())*100)/100};
   }
-  var rem=amtPO;
-  // Descontar de PO primeiro
-  var fromPO=Math.min(coins.PO,Math.floor(rem));
-  coins.PO-=fromPO; rem-=fromPO;
-  // PP (1 PP = 10 PO)
-  if(rem>0.001){
-    var fromPP=Math.min(coins.PP,Math.ceil(rem/10));
-    coins.PP-=fromPP; rem-=fromPP*10; coins.PO+=Math.round(-rem<0?0:-rem);
-    rem=Math.max(0,rem);
+  // Montar pool de moedas em PC
+  var pool = {
+    PP: coins.PP * 1000,
+    PO: coins.PO * 100,
+    PE: coins.PE * 50,
+    PA: coins.PA * 10,
+    PC: coins.PC * 1
+  };
+  var rem = costPC;
+  var used = {PP:0,PO:0,PE:0,PA:0,PC:0};
+  // Gastar na ordem: moeda mais valiosa que caiba
+  var order = ['PP','PO','PE','PA','PC'];
+  var vals   = {PP:1000,PO:100,PE:50,PA:10,PC:1};
+  order.forEach(function(k){
+    if(rem <= 0) return;
+    var maxCoins = Math.floor(rem / vals[k]);
+    var avail    = Math.floor(pool[k] / vals[k]); // quantas moedas inteiras disponíveis
+    var spend    = Math.min(maxCoins, avail);
+    used[k]      = spend;
+    rem         -= spend * vals[k];
+  });
+  // Se sobrou resto (ex: custo é 5 PA mas só tem PA=2, precisa trocar 1 PO por 10 PA)
+  // Estratégia: gastar 1 unidade da menor moeda que cobre o resto
+  if(rem > 0){
+    order.forEach(function(k){
+      if(rem <= 0) return;
+      var avail = Math.floor(pool[k] / vals[k]) - used[k];
+      if(avail > 0 && vals[k] > rem){
+        used[k]++;
+        var troco = vals[k] - rem;
+        rem = 0;
+        // Dar troco nas menores moedas disponíveis
+        // Troco em PC → dividir pelas moedas abaixo
+        var trocoPC = troco;
+        var trocoOrder = ['PO','PE','PA','PC'];
+        trocoOrder.forEach(function(tk){
+          if(trocoPC <= 0) return;
+          if(vals[tk] <= trocoPC){
+            var qtd = Math.floor(trocoPC / vals[tk]);
+            coins[tk] = (coins[tk]||0) + qtd;
+            trocoPC -= qtd * vals[tk];
+          }
+        });
+        if(trocoPC > 0) coins.PC = (coins.PC||0) + trocoPC; // resto em PC
+      }
+    });
   }
-  // PE (1 PE = 0.5 PO)
-  if(rem>0.001){
-    var fromPE=Math.min(coins.PE,Math.ceil(rem/0.5));
-    coins.PE-=fromPE; rem-=fromPE*0.5; rem=Math.max(0,rem);
-  }
-  // PA (1 PA = 0.1 PO)
-  if(rem>0.01){
-    var fromPA=Math.min(coins.PA,Math.ceil(rem/0.1));
-    coins.PA-=fromPA; rem-=fromPA*0.1; rem=Math.max(0,rem);
-  }
-  // PC (1 PC = 0.01 PO)
-  if(rem>0.001){
-    var fromPC=Math.min(coins.PC,Math.ceil(rem/0.01));
-    coins.PC-=fromPC;
-  }
-  // Clamp all to 0
-  Object.keys(coins).forEach(function(k){coins[k]=Math.max(0,Math.round(coins[k]*100)/100);});
+  // Subtrair moedas usadas
+  Object.keys(used).forEach(function(k){ coins[k] = Math.max(0, (coins[k]||0) - used[k]); });
+  Object.keys(coins).forEach(function(k){ coins[k] = Math.max(0, Math.round(coins[k])); });
+  renderAllCoins();
   return{ok:true,total:getTotalPO()};
 }
 
@@ -4818,6 +4857,47 @@ function renderInspiration(){
   else el.style.animation='none';
 }
 
+// Rolagem de dado genérica pedida pelo narrador
+function rollGenericDice(diceStr, label, modifier){
+  // diceStr: "d20", "d6", etc. | modifier: número
+  var parts = (diceStr||'d20').toLowerCase().split('d');
+  var sides = parseInt(parts[1]) || 20;
+  var result = cryptoRandInt(1, sides);
+  var mod = parseInt(modifier)||0;
+  var total = result + mod;
+  var nat20 = sides===20 && result===20;
+  var nat1  = sides===20 && result===1;
+  var txt = '🎲 '+(label||diceStr||'Dado')+': d'+sides+'='+result+(mod!==0?(mod>0?'+':'')+mod:'')+(mod!==0?' → '+total:'')+(nat20?' ✨ CRÍTICO!':nat1?' 💀 FALHA!':'');
+  addMsg('roll', txt);
+  showRollToast(nat20?'✨ CRÍTICO NATURAL!':nat1?'💀 Falha Crítica!':'🎲 '+total+(label?' — '+label:''));
+  // Injetar no hist para narrador
+  var rollCtx = '[DADO] '+( label||diceStr)+': d'+sides+'='+result+(mod!==0?(mod>0?'+':'')+mod+' → total '+total:'')+( nat20?' CRÍTICO NATURAL — sucesso automático extraordinário':nat1?' FALHA CRÍTICA — falha automática':total>=15?' — sucesso sólido':total>=10?' — sucesso':' — falha');
+  window._pendingRollCtx = (window._pendingRollCtx||'') + rollCtx + '\n';
+  return total;
+}
+
+function openQuickRoll(){
+  var html='<div class="modal-title">🎲 Rolar Dado</div>'    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.8rem">'    +['d4','d6','d8','d10','d12','d20'].map(function(d){      return '<button data-dice="'+d+'" onclick="quickRollDice(this.dataset.dice)" style="background:rgba(107,63,160,.12);border:1px solid rgba(107,63,160,.35);border-radius:8px;padding:.6rem;font-family:Cinzel,serif;font-size:.72rem;color:var(--arc2);cursor:pointer;transition:all .2s">'+d+'</button>';    }).join('')    +'</div>'    +'<div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem">'    +'<input id="qr-mod" type="number" placeholder="Mod (+3)" style="flex:1;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-family:Cinzel,serif;font-size:.78rem;color:var(--parch);outline:none"/>'    +'<input id="qr-label" type="text" placeholder="Label (Ex: Percepção)" style="flex:2;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-family:Cinzel,serif;font-size:.78rem;color:var(--parch);outline:none"/>'    +'</div>'    +'<button onclick="closeDynModal()" class="mbtn secondary" style="width:100%">Cancelar</button>';
+  openDynModal(html);
+}
+
+function quickRollDice(diceStr){
+  var mod = parseInt(document.getElementById('qr-mod')?.value)||0;
+  var label = document.getElementById('qr-label')?.value||diceStr;
+  closeDynModal();
+  var total = rollGenericDice(diceStr, label, mod);
+  // Auto-enviar resultado ao narrador
+  var msgToAI = (window._pendingRollCtx||'');
+  window._pendingRollCtx = '';
+  if(msgToAI){
+    // Pequeno delay para o toast aparecer antes
+    setTimeout(function(){
+      addLoad();
+      callAI(msgToAI).then(function(r){rmLoad();addMsg('dm',r.replace(/\n/g,'<br>'));}).catch(function(e){rmLoad();console.error(e);});
+    },300);
+  }
+}
+
 function showRollToast(msg){const t=document.getElementById('roll-toast');t.textContent=msg;t.style.opacity='1';clearTimeout(rollToastTimer);rollToastTimer=setTimeout(()=>{t.style.opacity='0';},2500);}
 function showSaveToast(msg){const t=document.getElementById('save-toast');t.textContent='💾 '+msg;t.style.opacity='1';clearTimeout(t._timer);t._timer=setTimeout(()=>{t.style.opacity='0';},2500);}
 
@@ -4834,8 +4914,8 @@ function addMsg(tipo,txt){
   d.innerHTML=lbl+'<div class="bbl">'+txt+'</div>';
   box.appendChild(d);
   box.scrollTop=box.scrollHeight;
-  // hist armazena apenas narrativa (dm/pl) — sys/roll/update NAO vao para o AI
-  if(tipo==='dm'||tipo==='pl'){
+  // hist: dm/pl/roll vão para contexto do AI. sys/update são internos.
+  if(tipo==='dm'||tipo==='pl'||tipo==='roll'){
     var clean=txt.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
     var role=tipo==='dm'?'assistant':'user';
     hist.push({role:role,content:clean});
@@ -5074,7 +5154,13 @@ async function send(){
   const inp=document.getElementById('inp');const txt=inp.value.trim();if(!txt)return;
   busy=true;document.getElementById('sbtn').disabled=true;inp.value='';
   addMsg('pl',txt);addLoad();
-  try{const r=await callAI(txt);rmLoad();addMsg('dm',r.replace(/\n/g,'<br>'));}
+  // Se houver rolagens pendentes, incluir no contexto enviado ao narrador
+  var msgToAI = txt;
+  if(window._pendingRollCtx){
+    msgToAI = window._pendingRollCtx + '[Jogador diz/faz]: ' + txt;
+    window._pendingRollCtx = '';
+  }
+  try{const r=await callAI(msgToAI);rmLoad();addMsg('dm',r.replace(/\n/g,'<br>'));}
   catch(e){
     rmLoad();
     console.error('API error:',e);
@@ -5831,12 +5917,38 @@ let selectedRegion='waterdeep';
 
 function showStep(id){
   if(id==='step-api-hidden'){ showStartHero(); return; }
-  ['step-api','step-menu','step-new','step-generating','step-patchnotes'].forEach(s=>{
+
+  var overlay=document.getElementById('ss-steps-overlay');
+  var inner=document.getElementById('ss-steps-inner');
+  var scroller=document.getElementById('ss-scroller');
+
+  // Ocultar todos os steps primeiro
+  ['step-api','step-menu','step-new','step-generating','step-patchnotes'].forEach(function(s){
     var el=document.getElementById(s);if(el)el.style.display='none';
   });
-  var el=document.getElementById(id);if(el)el.style.display='block';
-  if(id==='step-new'){ccStep(0);}
-  if(id==='step-menu'){ checkStorageSave(); restoreGoogleSession(); }
+
+  var el=document.getElementById(id);
+  if(!el) return;
+
+  if(id==='step-new'||id==='step-generating'){
+    // New game e generating: full screen por cima do overlay
+    if(overlay) overlay.style.display='none';
+    if(scroller) scroller.style.display='flex';
+    el.style.display='block';
+    if(id==='step-new') ccStep(0);
+  } else {
+    // Menu, API, patchnotes: mostrar no overlay centrado
+    el.style.display='block';
+    if(overlay){
+      overlay.style.display='flex';
+      // Mover o step para dentro do inner se não estiver lá
+      if(inner && el.parentElement !== inner){
+        inner.appendChild(el);
+      }
+    }
+    if(scroller) scroller.style.display='flex';
+    if(id==='step-menu'){ checkStorageSave(); restoreGoogleSession(); }
+  }
 }
 
 function checkStorageSave(){
@@ -6273,6 +6385,8 @@ function confirmApiKey(){
   var k=document.getElementById('api-inp').value.trim();
   if(!k.startsWith('AIza')){alert('Chave inválida. Deve começar com AIza...');return;}
   apiKey=k;localStorage.setItem('killyn_gemini_key',k);
+  var ss=document.getElementById('start-screen');
+  if(ss) ss.style.display='flex';
   showStep('step-menu');
 }
 
@@ -6327,18 +6441,24 @@ function importSaveFromMenu(event){
 
 function hidStartScreen(){
   var ss=document.getElementById('start-screen');
-  if(ss)ss.style.display='none';
+  if(ss){ss.style.display='none';ss.style.visibility='hidden';}
+  var overlay=document.getElementById('ss-steps-overlay');
+  if(overlay)overlay.style.display='none';
 }
 
 function goToMainMenu(){
   if(!confirm('Voltar ao menu principal? O progresso será salvo automaticamente.')) return;
   saveProgress('auto');
-  // Reset chat
   var chat=document.getElementById('chat');
   if(chat) chat.innerHTML='';
-  // Show start screen at menu step
+  // Esconder app, mostrar start-screen
+  var app=document.getElementById('app');
+  if(app) app.style.display='none';
   var ss=document.getElementById('start-screen');
-  if(ss) ss.style.display='flex';
+  if(ss){ ss.style.display='flex'; }
+  // Scroll de volta ao topo do hero
+  var scroller=document.getElementById('ss-scroller');
+  if(scroller) scroller.scrollTo({top:0,behavior:'instant'});
   showStep('step-menu');
   checkStorageSave();
 }
@@ -6580,19 +6700,11 @@ async function startNewGame(){
     +'Perícias com proficiência: '+Object.keys(skillProficiencies).filter(function(k){return skillProficiencies[k];}).join(', ')+'\n'
     +'PV: '+HP_MAX+' | CA: '+charCA+'\n'
     +'Região de início: '+region.name+' ('+region.desc+')\n\n'
-    +'CAMPANHA: Gere uma campanha ORIGINAL mas baseada no universo oficial dos Forgotten Realms. Use localidades, facções, deuses, história e personagens CANÔNICOS do setting (Waterdeep, Zhentarim, Harpers, Sembia, deuses do Faerûn etc). A aventura deve ser coerente com o nível 1 do personagem.\n\n'
-    +'DIRETRIZES:\n'
-    +'- Narre em português claro e direto, como um bom Mestre. Sem palavras rebuscadas desnecessárias.\n'
-    +'- Máximo 3 parágrafos por resposta. Seja direto e envolvente.\n'
-    +'- Para testes inclua o modificador: "Role d20+X de Y". Nunca só "role d20".\n'
-    +'- Nunca resolva combates sem rolls do jogador.\n'
-    +'- AO FINAL: pergunte somente "O que você faz?" — NÃO liste opções nem sugira ações.\n'
-    +'- Use nomes e locais CANÔNICOS dos Forgotten Realms.\n'
-    +'- NPCs SEMPRE com nomes únicos e culturalmente coerentes. NUNCA repita um nome já usado nesta sessão. Quando um NPC importante for introduzido pela primeira vez, inclua npc_add no JSON.\n\n- Se o personagem tiver informações incompletas (nome de família nobre, deidade, mestre, etc.), INVENTE detalhes coerentes com Forgotten Realms e USE-OS naturalmente na narração.\n'
-    +'SISTEMA DE ATUALIZAÇÃO — ao final se houver mudanças inclua (JSON puro, sem markdown):\n'
+    +'CAMPANHA: Gere uma campanha ORIGINAL baseada nos Forgotten Realms. A aventura deve ser coerente com o nível 1.\n'    +'INIMIGOS — USE VARIEDADE OBRIGATÓRIA. Nunca use só organizações criminosas como Zhentarim ou Harpers como antagonistas. Rotacione entre: monstros (goblinoides, mortos-vivos, bestas, aberrações), cultos de deuses obscuros, elementos naturais (dragões jovens, gigantes), facções políticas corrompidas, criaturas únicas do Underdark, NPCs com motivações pessoais, e APENAS ocasionalmente organizações criminosas. Crie pelo menos 1 antagonista original por campanha com motivação não-criminal.\n\n'
+    +'DIRETRIZES GERAIS:\n'    +'- Narre em português claro e direto, como um bom Mestre. Sem palavras rebuscadas desnecessárias.\n'    +'- Máximo 3 parágrafos por resposta. Seja direto e envolvente.\n'    +'- Para testes: "Role d20+X de Habilidade". NUNCA só "role d20".\n'    +'- NUNCA resolva combates sem rolls do jogador.\n'    +'- AO FINAL: pergunte somente "O que você faz?" — jamais sugira opções.\n'    +'\nNOMES DE NPCs:\n'    +'- NPCs SEMPRE com nomes únicos, variados e culturalmente coerentes com Faerûn. PROIBIDO: Elara, Borin, Gareth, Mira, Lyra, Aria, Nyx, Torin, Aldric, Theron, Kira, Seraphina (nomes clichê genéricos de fantasia).\n'    +'- Use nomes por cultura: Waterdeep/Cormyr (Vashti, Corren, Maelys, Baerovus, Sindra) | Sembia (Dramun, Chelva, Torst) | Anão (Brikka, Durval, Thorgis) | Elfo (Ilyriel, Caelwen, Sorvian) | Halfling (Perro, Gwendy, Callum) | Calimshan (Rashan, Zafira, Khalid) | Thay (Szass, Ilvara, Nevron).\n'    +'- Registre NPCs com npc_add e mantenha consistência de nome entre cenas.\n'    +'\nFALAS DO JOGADOR:\n'    +'- NUNCA repita ou parafraseie o que o jogador acabou de escrever. A fala JÁ aconteceu — narre SOMENTE a reação do mundo.\n'    +'- ERRADO: "Você diz: Preciso de trabalho. O taberneiro te responde..." | CERTO: "O taberneiro ergue os olhos e te avalia de cima a baixo..."\n'    +'\nNOMES E IDENTIDADE:\n'    +'- NPCs desconhecem o nome do personagem até ele se apresentar explicitamente.\n'    +'- O personagem desconhece o nome de NPCs até ser apresentado, ouvir alguém chamar, ou perguntar.\n'    +'- NPCs não revelados: use descrições físicas ("o guarda baixo", "a mulher de cabelos brancos").\n'    +'- O que foi revelado persiste. O que não foi, permanece desconhecido.\n'    +'\nCONSISTÊNCIA DE MUNDO:\n'    +'- O mundo existe independente do jogador. NPCs têm rotinas, objetivos e memória.\n'    +'- O personagem NÃO tem acesso a informações que não foram reveladas a ele (sem onisciência).\n'    +'- Clima, hora do dia, localizações e estado de NPCs devem ser consistentes entre cenas.\n'    +'\nINIMIGOS E AMEAÇAS:\n'    +'- PROIBIDO usar exclusivamente organizações criminosas (Zhentarim, Mão Negra, etc.) como vilões principais. Usá-las como elemento secundário ou de cor é permitido.\n'    +'- VARIE as ameaças: criaturas selvagens com motivação (lobo defendendo território, harpia colecionadora), facções regionais (culto de deus obscuro, família nobre corrompida, deserotores), fenômenos mágicos (ruína que drena magia, espírito territorial), monstros canônicos FR com personalidade.\n'    +'- Antagonistas têm nomes únicos e motivações próprias — não são obstáculos genéricos.\n'    +'\nROLAGENS DE DADOS:\n'    +'- Mensagens iniciadas com [DADO] contêm o resultado de uma rolagem real do sistema. INTERPRETE diretamente: alto=sucesso, baixo=falha/parcial. NUNCA peça para rolar de novo.\n'    +'- O resultado [DADO] é a realidade narrativa daquele momento.\n'    +'\n'    +'SISTEMA DE ATUALIZAÇÃO — ao final se houver mudanças inclua (JSON puro, sem markdown):\n'
     +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300,"gold_reward":50}],"hp_damage":5,"hp_heal":0,"condition_add":[{"name":"Envenenado","duration":"1 hora"}],"condition_remove":["Envenenado"],"xp_gain":150,"xp_source":"Combate","gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena.","npc_add":[{"name":"Nome","location":"Local","relation":"aliado"}]}}\n'
     +'OBRIGATÓRIO:\n'
-    +'- Moedas: gold_add (receber) / gold_remove (gastar). Nunca pule.\n'
+    +'- Moedas: gold_add (receber em PO) / gold_remove (gastar em PO). O sistema converte e dá troco automaticamente. Narre o troco em moeda miúda quando relevante: \"o mercador devolve 3 PA e 5 PC\".\n'
     +'- Missões: quest_add ao iniciar qualquer objetivo; quest_update ao concluir/falhar. Sempre com xp_reward.\n'
     +'- XP: xp_gain + xp_source em todo evento significativo. Combate:50-500, Diplomacia:50-200, Descoberta:25-150, Desafio:25-100.\n'
     +'- Diário: diary_entry a cada cena importante.\n'
@@ -6743,6 +6855,9 @@ if(savedKey){
   apiKey=savedKey;
   showStep('step-menu');
   checkStorageSave();
+  // Injetar no contexto do narrador
+  var rollCtxD='[DADO] d'+sides+(rawMod!==0?'+'+rawMod+'='+total:'='+result)+(sides===20&&result===20?' CRÍTICO NATURAL':sides===20&&result===1?' FALHA CRÍTICA':sides===20&&total>=15?' sucesso sólido':sides===20&&total<=5?' falha':'');
+  window._pendingRollCtx=(window._pendingRollCtx||'')+rollCtxD+'\n';
 }
 // Se não tiver chave, mostra o hero (start-screen já está visível)
 </script>
