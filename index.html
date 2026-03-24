@@ -10,7 +10,7 @@
    TAVERNA DAS CRÔNICAS — DESIGN v3
    Dark Luxury · Medieval Tech · Refined
 ═══════════════════════════════════════ */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=MedievalSharp&display=swap');
 
 *{box-sizing:border-box;margin:0;padding:0}
 
@@ -211,8 +211,9 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
 
 .sidebar{
   width:var(--sidebar-w);flex-shrink:0;
-  background:var(--bg2);
-  border-right:1px solid var(--border);
+  background:rgba(5,3,9,.97);
+  border-right:1px solid rgba(200,140,40,.1);
+  box-shadow:inset -1px 0 0 rgba(200,140,40,.05);
   display:flex;flex-direction:column;
   overflow-y:auto;padding:.9rem .75rem;gap:.7rem;
 }
@@ -308,6 +309,10 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .skill-prof.exp{background:var(--arc2);border-color:var(--arc2);box-shadow:0 0 4px var(--arc2)}
 /* Condition badges pulse on critical conditions */
 #conditions-hdr-badges>div{animation:condPulse 3s ease-in-out infinite}
+@keyframes scrollBounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+@keyframes heroFadeIn{0%{opacity:0;transform:translateY(30px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes particleDrift{0%{transform:translateY(0) translateX(0) scale(1);opacity:.7}100%{transform:translateY(-100vh) translateX(var(--dx,20px)) scale(.5);opacity:0}}
+@keyframes borderGlow{0%,100%{border-color:rgba(200,140,40,.25)}50%{border-color:rgba(200,140,40,.55)}}
 @keyframes condPulse{0%,100%{opacity:.8}50%{opacity:1}}
 @keyframes concPulse{0%,100%{box-shadow:0 0 4px rgba(165,105,189,.3)}50%{box-shadow:0 0 10px rgba(165,105,189,.6)}}
 @keyframes inspPulse{0%,100%{box-shadow:0 0 4px rgba(241,196,15,.3)}50%{box-shadow:0 0 12px rgba(241,196,15,.7)}}
@@ -558,23 +563,18 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 
 /* Narrador */
 .msg-dm .bbl{
-  background:rgba(200,168,74,.04);
-  border:1px solid var(--border);border-left:2px solid var(--gold);
-  border-radius:0 10px 10px 10px;
-  padding:.75rem 1rem;
-  font-size:1rem;line-height:1.75;color:var(--text);
-  max-width:93%;
+  background:linear-gradient(135deg,rgba(180,120,20,.08),rgba(140,80,10,.04));
+  border:1px solid rgba(200,140,40,.18);
+  border-left:2px solid rgba(200,140,40,.35);
   box-shadow:0 2px 12px rgba(0,0,0,.3);
-}
+  border-radius:0 12px 12px 12px}
 /* Jogador */
 .msg-pl .bbl{
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.08);border-right:2px solid rgba(255,255,255,.15);
-  border-radius:10px 0 10px 10px;
-  padding:.55rem 1rem;font-size:.95rem;
-  color:var(--text2);font-style:italic;
-  align-self:flex-end;max-width:80%;
-}
+  background:linear-gradient(135deg,rgba(155,35,53,.09),rgba(120,20,40,.05));
+  border:1px solid rgba(180,40,60,.2);
+  border-right:2px solid rgba(180,40,60,.35);
+  box-shadow:0 2px 12px rgba(0,0,0,.3);
+  border-radius:12px 0 12px 12px}
 /* Sistema */
 .msg-sys .bbl{
   background:rgba(155,35,53,.06);border:1px solid rgba(155,35,53,.18);
@@ -1035,130 +1035,246 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 }
 
 </style>
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async></script>
 </head>
 <body>
 
 <!-- TELA INICIAL -->
-<div id="start-screen" style="position:fixed;inset:0;z-index:600;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#060408;">
+<div id="start-screen" style="position:fixed;inset:0;z-index:600;overflow:hidden;background:#04020a;">
 
-  <!-- Animated background layers -->
-  <div style="position:fixed;inset:0;pointer-events:none;z-index:0">
-    <!-- Radial glow center -->
-    <div style="position:absolute;top:20%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(ellipse,rgba(180,130,40,.07) 0%,transparent 70%);pointer-events:none"></div>
-    <!-- Top edge glow -->
-    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 0%,rgba(200,168,74,.6) 30%,rgba(200,168,74,.9) 50%,rgba(200,168,74,.6) 70%,transparent 100%)"></div>
-    <!-- Corner ornaments -->
-    <div style="position:absolute;top:12px;left:12px;width:40px;height:40px;border-top:1px solid rgba(200,168,74,.4);border-left:1px solid rgba(200,168,74,.4)"></div>
-    <div style="position:absolute;top:12px;right:12px;width:40px;height:40px;border-top:1px solid rgba(200,168,74,.4);border-right:1px solid rgba(200,168,74,.4)"></div>
-    <div style="position:absolute;bottom:12px;left:12px;width:40px;height:40px;border-bottom:1px solid rgba(200,168,74,.4);border-left:1px solid rgba(200,168,74,.4)"></div>
-    <div style="position:absolute;bottom:12px;right:12px;width:40px;height:40px;border-bottom:1px solid rgba(200,168,74,.4);border-right:1px solid rgba(200,168,74,.4)"></div>
-    <!-- Subtle grid pattern -->
-    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(200,168,74,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(200,168,74,.025) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%)"></div>
+  <!-- ── CANVAS DE PARTÍCULAS ── -->
+  <canvas id="particle-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.6"></canvas>
+
+  <!-- ── BACKGROUND LAYERS ── -->
+  <div style="position:absolute;inset:0;pointer-events:none;z-index:1">
+    <!-- Vinheta central dourada -->
+    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(900px,100%);height:100%;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(160,100,20,.12) 0%,transparent 70%);"></div>
+    <!-- Borda superior sangue -->
+    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(180,30,50,.8),rgba(200,140,40,.6),rgba(180,30,50,.8),transparent);"></div>
+    <!-- Borda inferior -->
+    <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,140,40,.4),transparent);"></div>
+    <!-- Textura de ruído (canvas-based) - evita imagem externa -->
+    <div id="grain-overlay" style="position:absolute;inset:0;opacity:.03;mix-blend-mode:screen;pointer-events:none"></div>
   </div>
 
-  <!-- Main content container -->
-  <div style="position:relative;z-index:1;max-width:560px;width:100%;margin:0 auto;padding:2.5rem 1.5rem 4rem;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start">
+  <!-- ── SCROLL CONTAINER ── -->
+  <div id="ss-scroller" style="position:relative;z-index:2;width:100%;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;align-items:center;">
 
-    <!-- ══ LOGO SECTION ══ -->
-    <div style="text-align:center;margin-bottom:2rem;width:100%">
+    <!-- ════ HERO SECTION ════ -->
+    <div id="ss-hero" style="width:100%;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;position:relative;flex-shrink:0;">
 
-      <!-- Emblem -->
-      <div style="position:relative;display:inline-flex;align-items:center;justify-content:center;margin-bottom:1.2rem">
-        <div style="width:88px;height:88px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(200,168,74,.2),rgba(6,4,8,.8));border:1px solid rgba(200,168,74,.35);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(200,168,74,.15),inset 0 1px 0 rgba(200,168,74,.2)">
-          <span style="font-size:2.6rem;filter:drop-shadow(0 0 12px rgba(200,168,74,.5))">⚔</span>
+      <!-- Ornamento topo -->
+      <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:2rem;opacity:.7">
+        <div style="height:1px;width:60px;background:linear-gradient(90deg,transparent,rgba(200,140,40,.6))"></div>
+        <span style="font-family:'Cinzel',serif;font-size:.55rem;color:rgba(200,140,40,.7);letter-spacing:4px;text-transform:uppercase">Forgotten Realms · D&D 5e</span>
+        <div style="height:1px;width:60px;background:linear-gradient(90deg,rgba(200,140,40,.6),transparent)"></div>
+      </div>
+
+      <!-- TÍTULO HERO — estilo outlined + sólido em camadas -->
+      <div style="position:relative;text-align:center;margin-bottom:1.2rem;user-select:none">
+        <!-- Palavra outline grande (atrás) -->
+        <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(3.5rem,14vw,9rem);font-weight:700;color:transparent;-webkit-text-stroke:1px rgba(200,140,40,.22);letter-spacing:-.02em;line-height:.9;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;white-space:nowrap;transform:scale(1.06)">TAVERNA</div>
+        <!-- Palavra principal (frente) -->
+        <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(3.5rem,14vw,9rem);font-weight:700;color:#c8a040;letter-spacing:-.02em;line-height:.9;text-shadow:0 0 80px rgba(200,140,40,.35),0 2px 4px rgba(0,0,0,.9);position:relative;white-space:nowrap">TAVERNA</div>
+        <!-- Sub-título em vermelho sólido bold -->
+        <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(1.8rem,7vw,4.5rem);font-weight:700;color:#c0304a;letter-spacing:.06em;line-height:1;margin-top:.1rem;text-shadow:0 0 40px rgba(180,30,50,.5),0 2px 4px rgba(0,0,0,.9)">DAS CRÔNICAS</div>
+        <!-- Terceira linha outline -->
+        <div style="font-family:'Cinzel',serif;font-size:clamp(.8rem,3vw,1.6rem);font-weight:600;color:transparent;-webkit-text-stroke:1px rgba(200,140,40,.5);letter-spacing:.2em;margin-top:.4rem">NARRADOR IA</div>
+      </div>
+
+      <!-- Subtítulo flavor text -->
+      <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(.9rem,2.5vw,1.2rem);color:rgba(232,210,170,.55);text-align:center;max-width:420px;line-height:1.6;margin-bottom:2.4rem">
+        O legado do RPG encontra a inteligência artificial.<br>Sua aventura começa aqui.
+      </p>
+
+      <!-- CARDS DE ACESSO -->
+      <div id="ss-auth-area" style="width:100%;max-width:400px;display:flex;flex-direction:column;gap:.9rem">
+
+        <!-- Google Sign In -->
+        <button id="btn-google-signin" onclick="signInWithGoogle()" style="
+          width:100%;display:flex;align-items:center;justify-content:center;gap:.7rem;
+          background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);
+          border-radius:10px;padding:.85rem 1.2rem;cursor:pointer;transition:all .25s;
+          font-family:'Cinzel',serif;font-size:.72rem;color:#e8dfc8;letter-spacing:.5px;
+          position:relative;overflow:hidden">
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.06),transparent);pointer-events:none"></div>
+          <svg width="18" height="18" viewBox="0 0 24 24" style="flex-shrink:0">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          Entrar com Google
+        </button>
+
+        <!-- Divisor -->
+        <div style="display:flex;align-items:center;gap:.7rem">
+          <div style="flex:1;height:1px;background:rgba(200,140,40,.2)"></div>
+          <span style="font-family:'Cinzel',serif;font-size:.5rem;color:rgba(200,140,40,.4);letter-spacing:2px">OU</span>
+          <div style="flex:1;height:1px;background:rgba(200,140,40,.2)"></div>
         </div>
-        <!-- Orbit ring -->
-        <div style="position:absolute;width:104px;height:104px;border-radius:50%;border:1px solid rgba(200,168,74,.15);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-        <div style="position:absolute;width:120px;height:120px;border-radius:50%;border:1px dashed rgba(200,168,74,.08);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+
+        <!-- Continuar como convidado / chave API -->
+        <button onclick="showStep('step-api')" style="
+          width:100%;display:flex;align-items:center;justify-content:center;gap:.6rem;
+          background:rgba(155,35,53,.08);border:1px solid rgba(155,35,53,.3);
+          border-radius:10px;padding:.8rem 1.2rem;cursor:pointer;transition:all .25s;
+          font-family:'Cinzel',serif;font-size:.68rem;color:rgba(220,100,120,.8);letter-spacing:.5px"
+          onmouseover="this.style.borderColor='rgba(200,50,70,.5)';this.style.background='rgba(155,35,53,.15)'"
+          onmouseout="this.style.borderColor='rgba(155,35,53,.3)';this.style.background='rgba(155,35,53,.08)'">
+          🔑 Usar Chave de API
+        </button>
+
       </div>
 
-      <!-- Title -->
-      <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(1.4rem,5vw,2rem);color:#e8c860;letter-spacing:3px;line-height:1.2;margin-bottom:.4rem;text-shadow:0 0 30px rgba(200,168,74,.4),0 2px 4px rgba(0,0,0,.8)">
-        Taverna das Crônicas
-      </div>
-
-      <!-- Subtitle with ornaments -->
-      <div style="display:flex;align-items:center;gap:.6rem;justify-content:center;margin-bottom:1rem">
-        <div style="height:1px;flex:1;max-width:60px;background:linear-gradient(90deg,transparent,rgba(200,168,74,.5))"></div>
-        <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.88rem;color:rgba(200,168,74,.65);letter-spacing:1px">Narrador IA · D&D 5e · Forgotten Realms</span>
-        <div style="height:1px;flex:1;max-width:60px;background:linear-gradient(90deg,rgba(200,168,74,.5),transparent)"></div>
-      </div>
-
-      <!-- Decorative divider -->
-      <div style="display:flex;align-items:center;gap:.5rem;justify-content:center">
-        <div style="height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(200,168,74,.3))"></div>
-        <span style="color:rgba(200,168,74,.35);font-size:.7rem">✦</span>
-        <span style="color:rgba(200,168,74,.55);font-size:.6rem">✦</span>
-        <span style="color:rgba(200,168,74,.35);font-size:.7rem">✦</span>
-        <div style="height:1px;flex:1;background:linear-gradient(90deg,rgba(200,168,74,.3),transparent)"></div>
+      <!-- Scroll indicator -->
+      <div style="position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.4rem;opacity:.4;animation:scrollBounce 2s ease-in-out infinite">
+        <span style="font-family:'Cinzel',serif;font-size:.45rem;color:rgba(200,140,40,.7);letter-spacing:3px;text-transform:uppercase">Role para descobrir</span>
+        <div style="width:1px;height:24px;background:linear-gradient(180deg,rgba(200,140,40,.6),transparent)"></div>
       </div>
     </div>
 
-    <!-- ══ STEP 1: API KEY ══ -->
-    <div id="step-api" style="display:block;width:100%">
-      <div style="background:rgba(255,255,255,.02);border:1px solid rgba(200,168,74,.18);border-radius:14px;padding:1.5rem;backdrop-filter:blur(10px)">
-        <div style="font-family:'Cinzel',serif;font-size:.65rem;color:rgba(200,168,74,.6);text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:.8rem">Acesso ao Oráculo</div>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:1rem;color:rgba(232,223,200,.7);line-height:1.6;text-align:center;margin-bottom:1.2rem">
-          Insira sua chave gratuita do Google AI Studio para invocar o Narrador.
-        </p>
-        <div style="margin-bottom:.6rem">
-          <input id="api-inp" type="password" placeholder="AIza..." style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(200,168,74,.3);border-radius:8px;padding:.7rem 1rem;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#e8dfc8;outline:none;transition:border .2s;letter-spacing:1px"/>
+    <!-- ════ FEATURES SECTION ════ -->
+    <div style="width:100%;max-width:580px;padding:3rem 1.5rem;flex-shrink:0">
+
+      <!-- Separador -->
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem">
+        <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(200,140,40,.3))"></div>
+        <span style="font-family:'Cinzel',serif;font-size:.5rem;color:rgba(200,140,40,.5);letter-spacing:3px">O QUE VOCÊ ENCONTRA</span>
+        <div style="flex:1;height:1px;background:linear-gradient(90deg,rgba(200,140,40,.3),transparent)"></div>
+      </div>
+
+      <!-- Grid de features -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:3rem">
+        <div style="background:rgba(255,255,255,.02);border:1px solid rgba(200,140,40,.1);border-radius:12px;padding:1rem;transition:all .3s"
+             onmouseover="this.style.borderColor='rgba(200,140,40,.3)';this.style.background='rgba(200,140,40,.05)'"
+             onmouseout="this.style.borderColor='rgba(200,140,40,.1)';this.style.background='rgba(255,255,255,.02)'">
+          <div style="font-size:1.3rem;margin-bottom:.5rem">⚔</div>
+          <div style="font-family:'Cinzel',serif;font-size:.62rem;color:#c8a040;margin-bottom:.3rem">12 Classes</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:.78rem;color:rgba(200,180,150,.5);line-height:1.4">Todas as classes do LdJ com mecânicas reais</div>
         </div>
-        <a href="https://aistudio.google.com/app/apikey" target="_blank" style="display:block;text-align:center;font-family:'Cinzel',serif;font-size:.6rem;color:rgba(200,168,74,.5);letter-spacing:1px;text-decoration:none;margin-bottom:1rem">
-          OBTER CHAVE GRATUITA →
-        </a>
-        <button onclick="confirmApiKey()" style="width:100%;background:linear-gradient(135deg,#8b1a2a 0%,#c0392b 50%,#8b1a2a 100%);border:1px solid rgba(200,168,74,.45);border-radius:10px;color:#f5db96;font-family:'Cinzel',serif;font-size:.85rem;padding:.8rem;letter-spacing:2px;cursor:pointer;transition:all .25s;text-transform:uppercase;box-shadow:0 4px 20px rgba(155,35,53,.3)">
-          ⚔ &nbsp; Entrar na Taverna
+        <div style="background:rgba(255,255,255,.02);border:1px solid rgba(200,140,40,.1);border-radius:12px;padding:1rem;transition:all .3s"
+             onmouseover="this.style.borderColor='rgba(200,140,40,.3)';this.style.background='rgba(200,140,40,.05)'"
+             onmouseout="this.style.borderColor='rgba(200,140,40,.1)';this.style.background='rgba(255,255,255,.02)'">
+          <div style="font-size:1.3rem;margin-bottom:.5rem">🗺</div>
+          <div style="font-family:'Cinzel',serif;font-size:.62rem;color:#c8a040;margin-bottom:.3rem">34 Regiões</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:.78rem;color:rgba(200,180,150,.5);line-height:1.4">Forgotten Realms canônico como cenário</div>
+        </div>
+        <div style="background:rgba(255,255,255,.02);border:1px solid rgba(200,140,40,.1);border-radius:12px;padding:1rem;transition:all .3s"
+             onmouseover="this.style.borderColor='rgba(200,140,40,.3)';this.style.background='rgba(200,140,40,.05)'"
+             onmouseout="this.style.borderColor='rgba(200,140,40,.1)';this.style.background='rgba(255,255,255,.02)'">
+          <div style="font-size:1.3rem;margin-bottom:.5rem">🎲</div>
+          <div style="font-family:'Cinzel',serif;font-size:.62rem;color:#c8a040;margin-bottom:.3rem">Dados Criptográficos</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:.78rem;color:rgba(200,180,150,.5);line-height:1.4">Aleatoriedade real via crypto API</div>
+        </div>
+        <div style="background:rgba(255,255,255,.02);border:1px solid rgba(200,140,40,.1);border-radius:12px;padding:1rem;transition:all .3s"
+             onmouseover="this.style.borderColor='rgba(200,140,40,.3)';this.style.background='rgba(200,140,40,.05)'"
+             onmouseout="this.style.borderColor='rgba(200,140,40,.1)';this.style.background='rgba(255,255,255,.02)'">
+          <div style="font-size:1.3rem;margin-bottom:.5rem">💀</div>
+          <div style="font-family:'Cinzel',serif;font-size:.62rem;color:#c8a040;margin-bottom:.3rem">Death Saves + TPK</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:.78rem;color:rgba(200,180,150,.5);line-height:1.4">Mecânicas de morte oficiais do D&D 5e</div>
+        </div>
+      </div>
+
+      <!-- CTA final -->
+      <div style="text-align:center">
+        <button onclick="document.getElementById('ss-hero').scrollIntoView({behavior:'smooth'})" style="background:linear-gradient(135deg,rgba(180,100,20,.2),rgba(180,30,50,.15));border:1px solid rgba(200,140,40,.4);border-radius:10px;padding:.8rem 2rem;font-family:'Cinzel',serif;font-size:.68rem;color:#c8a040;cursor:pointer;letter-spacing:1px;transition:all .3s"
+          onmouseover="this.style.background='linear-gradient(135deg,rgba(180,100,20,.35),rgba(180,30,50,.25))';this.style.borderColor='rgba(200,140,40,.7)'"
+          onmouseout="this.style.background='linear-gradient(135deg,rgba(180,100,20,.2),rgba(180,30,50,.15))';this.style.borderColor='rgba(200,140,40,.4)'">
+          ↑ Começar sua aventura
         </button>
       </div>
     </div>
 
-    <!-- ══ STEP 2: MAIN MENU ══ -->
-    <div id="step-menu" style="display:none;width:100%">
-      <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;color:rgba(200,168,74,.6);text-align:center;margin-bottom:1.4rem;line-height:1.5">
+    <!-- ════ STEP-API (chave Gemini) ════ -->
+    <div id="step-api" style="display:none;width:100%;max-width:400px;padding:2rem 1rem;flex-shrink:0">
+      <div style="background:rgba(10,6,16,.95);border:1px solid rgba(200,140,40,.25);border-radius:16px;padding:1.8rem;backdrop-filter:blur(20px)">
+        <div style="text-align:center;margin-bottom:1.2rem">
+          <div style="font-size:1.8rem;margin-bottom:.5rem">🔮</div>
+          <div style="font-family:'Cinzel',serif;font-size:.6rem;color:rgba(200,140,40,.6);text-transform:uppercase;letter-spacing:2px">Acesso ao Oráculo</div>
+        </div>
+        <p style="font-family:'Cormorant Garamond',serif;font-size:.92rem;color:rgba(232,210,170,.65);text-align:center;margin-bottom:1.2rem;line-height:1.6">
+          Insira sua chave do Google AI Studio para invocar o narrador.
+        </p>
+        <div style="margin-bottom:.8rem">
+          <input id="api-inp" type="password" placeholder="AIza..." style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(200,140,40,.25);border-radius:8px;padding:.7rem .9rem;font-family:'Cinzel',serif;font-size:.78rem;color:#e8dfc8;outline:none;transition:border .2s;box-sizing:border-box"
+            onfocus="this.style.borderColor='rgba(200,140,40,.5)'" onblur="this.style.borderColor='rgba(200,140,40,.25)'"
+            onkeydown="if(event.key==='Enter')confirmApiKey()"/>
+        </div>
+        <button onclick="confirmApiKey()" style="width:100%;background:linear-gradient(135deg,rgba(180,100,20,.3),rgba(120,20,40,.3));border:1px solid rgba(200,140,40,.45);border-radius:8px;padding:.75rem;font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;cursor:pointer;letter-spacing:1px;transition:all .2s"
+          onmouseover="this.style.background='linear-gradient(135deg,rgba(180,100,20,.5),rgba(120,20,40,.5))'"
+          onmouseout="this.style.background='linear-gradient(135deg,rgba(180,100,20,.3),rgba(120,20,40,.3))'">
+          Confirmar Chave
+        </button>
+        <div style="text-align:center;margin-top:.8rem">
+          <a href="https://aistudio.google.com/apikey" target="_blank" style="font-family:'Cinzel',serif;font-size:.55rem;color:rgba(200,140,40,.45);text-decoration:none;letter-spacing:1px">
+            Obter chave gratuita →
+          </a>
+        </div>
+        <div style="text-align:center;margin-top:.6rem">
+          <button onclick="showStep('step-api-hidden')" style="background:none;border:none;font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,140,40,.3);cursor:pointer;letter-spacing:1px">
+            ← Voltar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ STEP-MENU ════ -->
+    <div id="step-menu" style="display:none;width:100%;max-width:400px;padding:2rem 1rem;flex-shrink:0">
+
+      <!-- User badge (quando logado com Google) -->
+      <div id="google-user-badge" style="display:none;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.6rem .9rem;margin-bottom:1rem;display:none;align-items:center;gap:.6rem">
+        <img id="google-avatar" src="" width="28" height="28" style="border-radius:50%;display:none" />
+        <div>
+          <div id="google-name" style="font-family:'Cinzel',serif;font-size:.6rem;color:#e8dfc8"></div>
+          <div id="google-email" style="font-family:'Cinzel',serif;font-size:.5rem;color:rgba(200,140,40,.5)"></div>
+        </div>
+        <button onclick="signOut()" style="margin-left:auto;background:none;border:none;font-family:'Cinzel',serif;font-size:.48rem;color:rgba(200,140,40,.35);cursor:pointer">Sair</button>
+      </div>
+
+      <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:rgba(200,168,74,.6);text-align:center;margin-bottom:1.3rem;line-height:1.5">
         "As portas da taverna se abrem. O que traz você até aqui?"
       </p>
 
-      <div style="display:flex;flex-direction:column;gap:.8rem">
+      <div style="display:flex;flex-direction:column;gap:.75rem">
 
         <!-- Nova Aventura -->
-        <button onclick="showStep('step-new')" style="background:rgba(155,35,53,.08);border:1px solid rgba(155,35,53,.35);border-radius:12px;padding:1.1rem 1.3rem;text-align:left;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;display:block;width:100%"
-          onmouseover="this.style.borderColor='rgba(200,64,64,.7)';this.style.background='rgba(155,35,53,.15)'"
+        <button onclick="showStep('step-new')" style="background:rgba(155,35,53,.08);border:1px solid rgba(155,35,53,.35);border-radius:12px;padding:1rem 1.2rem;text-align:left;cursor:pointer;transition:all .25s;display:block;width:100%;position:relative;overflow:hidden"
+          onmouseover="this.style.borderColor='rgba(200,64,64,.7)';this.style.background='rgba(155,35,53,.18)'"
           onmouseout="this.style.borderColor='rgba(155,35,53,.35)';this.style.background='rgba(155,35,53,.08)'">
-          <div style="position:absolute;top:0;right:0;width:80px;height:100%;background:linear-gradient(270deg,rgba(155,35,53,.15),transparent);pointer-events:none"></div>
-          <div style="display:flex;align-items:center;gap:.8rem">
-            <div style="width:38px;height:38px;border-radius:8px;background:rgba(155,35,53,.2);border:1px solid rgba(155,35,53,.4);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0">⚔</div>
+          <div style="position:absolute;top:0;right:0;width:60px;height:100%;background:linear-gradient(270deg,rgba(155,35,53,.15),transparent);pointer-events:none"></div>
+          <div style="display:flex;align-items:center;gap:.7rem">
+            <div style="width:36px;height:36px;border-radius:8px;background:rgba(155,35,53,.2);border:1px solid rgba(155,35,53,.4);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">⚔</div>
             <div>
-              <div style="font-family:'Cinzel',serif;font-size:.88rem;color:#e06060;margin-bottom:.25rem;letter-spacing:.5px">Nova Aventura</div>
-              <div style="font-family:'Cormorant Garamond',serif;font-size:.84rem;color:rgba(232,223,200,.55);font-style:italic">Criar personagem e iniciar campanha nos Forgotten Realms</div>
+              <div style="font-family:'Cinzel',serif;font-size:.82rem;color:#e06060;margin-bottom:.2rem;letter-spacing:.5px">Nova Aventura</div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:.8rem;color:rgba(232,210,170,.5);font-style:italic">Criar personagem nos Forgotten Realms</div>
             </div>
           </div>
         </button>
 
         <!-- Continuar -->
-        <button onclick="continueFromStorage()" id="btn-continue" style="background:rgba(200,168,74,.06);border:1px solid rgba(200,168,74,.28);border-radius:12px;padding:1.1rem 1.3rem;text-align:left;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;display:block;width:100%"
+        <button onclick="continueFromStorage()" id="btn-continue" style="background:rgba(200,168,74,.06);border:1px solid rgba(200,168,74,.28);border-radius:12px;padding:1rem 1.2rem;text-align:left;cursor:pointer;transition:all .25s;display:block;width:100%;position:relative;overflow:hidden"
           onmouseover="this.style.borderColor='rgba(200,168,74,.6)';this.style.background='rgba(200,168,74,.12)'"
           onmouseout="this.style.borderColor='rgba(200,168,74,.28)';this.style.background='rgba(200,168,74,.06)'">
-          <div style="position:absolute;top:0;right:0;width:80px;height:100%;background:linear-gradient(270deg,rgba(200,168,74,.08),transparent);pointer-events:none"></div>
-          <div style="display:flex;align-items:center;gap:.8rem">
-            <div style="width:38px;height:38px;border-radius:8px;background:rgba(200,168,74,.12);border:1px solid rgba(200,168,74,.3);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0">📖</div>
+          <div style="display:flex;align-items:center;gap:.7rem">
+            <div style="width:36px;height:36px;border-radius:8px;background:rgba(200,168,74,.12);border:1px solid rgba(200,168,74,.3);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">📖</div>
             <div>
-              <div style="font-family:'Cinzel',serif;font-size:.88rem;color:#e8c860;margin-bottom:.25rem;letter-spacing:.5px">Continuar Aventura</div>
-              <div id="continue-info" style="font-family:'Cormorant Garamond',serif;font-size:.84rem;color:rgba(232,223,200,.55);font-style:italic">Retomar save do navegador</div>
+              <div style="font-family:'Cinzel',serif;font-size:.82rem;color:#e8c860;margin-bottom:.2rem;letter-spacing:.5px">Continuar Aventura</div>
+              <div id="continue-info" style="font-family:'Cormorant Garamond',serif;font-size:.8rem;color:rgba(232,210,170,.5);font-style:italic">Retomar save anterior</div>
             </div>
           </div>
         </button>
 
-        <!-- Importar Save -->
-        <label style="background:rgba(45,122,74,.06);border:1px solid rgba(45,122,74,.28);border-radius:12px;padding:1.1rem 1.3rem;text-align:left;cursor:pointer;display:block;transition:all .25s;position:relative;overflow:hidden"
+        <!-- Importar -->
+        <label style="background:rgba(45,122,74,.06);border:1px solid rgba(45,122,74,.28);border-radius:12px;padding:1rem 1.2rem;text-align:left;cursor:pointer;display:block;transition:all .25s"
           onmouseover="this.style.borderColor='rgba(45,122,74,.6)';this.style.background='rgba(45,122,74,.12)'"
           onmouseout="this.style.borderColor='rgba(45,122,74,.28)';this.style.background='rgba(45,122,74,.06)'">
-          <div style="position:absolute;top:0;right:0;width:80px;height:100%;background:linear-gradient(270deg,rgba(45,122,74,.08),transparent);pointer-events:none"></div>
-          <div style="display:flex;align-items:center;gap:.8rem">
-            <div style="width:38px;height:38px;border-radius:8px;background:rgba(45,122,74,.12);border:1px solid rgba(45,122,74,.3);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0">📥</div>
+          <div style="display:flex;align-items:center;gap:.7rem">
+            <div style="width:36px;height:36px;border-radius:8px;background:rgba(45,122,74,.12);border:1px solid rgba(45,122,74,.3);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">📥</div>
             <div>
-              <div style="font-family:'Cinzel',serif;font-size:.88rem;color:#6dbf6d;margin-bottom:.25rem;letter-spacing:.5px">Importar Save</div>
-              <div style="font-family:'Cormorant Garamond',serif;font-size:.84rem;color:rgba(232,223,200,.55);font-style:italic">Carregar arquivo .json de outro dispositivo</div>
+              <div style="font-family:'Cinzel',serif;font-size:.82rem;color:#6dbf6d;margin-bottom:.2rem;letter-spacing:.5px">Importar Save</div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:.8rem;color:rgba(232,210,170,.5);font-style:italic">Carregar arquivo .json</div>
             </div>
           </div>
           <input type="file" accept=".json" style="display:none" onchange="importSaveFromMenu(event)"/>
@@ -1166,347 +1282,21 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 
       </div>
 
+      <!-- Links inferiores -->
       <div style="text-align:center;margin-top:1.2rem;display:flex;flex-direction:column;gap:.5rem;align-items:center">
-        <button onclick="showStep('step-patchnotes')" style="background:rgba(107,63,160,.08);border:1px solid rgba(107,63,160,.3);border-radius:8px;padding:.4rem 1.1rem;color:var(--arc2);font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:all .2s"
+        <button onclick="showStep('step-patchnotes')" style="background:rgba(107,63,160,.08);border:1px solid rgba(107,63,160,.3);border-radius:8px;padding:.4rem 1rem;color:var(--arc2);font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:1px;cursor:pointer;transition:all .2s;text-transform:uppercase"
           onmouseover="this.style.borderColor='rgba(165,105,189,.6)'" onmouseout="this.style.borderColor='rgba(107,63,160,.3)'">
           📜 Notas da Versão
         </button>
-        <button onclick="showStep('step-api')" style="background:none;border:none;color:rgba(200,168,74,.3);font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:color .2s"
+        <button onclick="showStep('step-api')" style="background:none;border:none;color:rgba(200,168,74,.3);font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:color .2s"
           onmouseover="this.style.color='rgba(200,168,74,.7)'" onmouseout="this.style.color='rgba(200,168,74,.3)'">
           🔑 Trocar chave de API
         </button>
       </div>
     </div>
 
-    <!-- ══ STEP 3: CHARACTER CREATION ══ -->
-    <div     <!-- ══ PATCH NOTES ══ -->
-    <div id="step-patchnotes" style="display:none;width:100%;padding-bottom:2rem">
-      <div style="text-align:center;margin-bottom:1.2rem">
-        <div style="display:inline-flex;align-items:center;gap:.5rem;background:rgba(107,63,160,.08);border:1px solid rgba(107,63,160,.3);border-radius:8px;padding:.4rem .9rem">
-          <span style="color:var(--arc2)">📜</span>
-          <span style="font-family:Cinzel,serif;font-size:.78rem;color:var(--arc2);letter-spacing:1px">Notas da Taverna</span>
-        </div>
-        <div style="font-family:Cormorant Garamond,serif;font-size:.88rem;color:rgba(200,168,74,.5);font-style:italic;margin-top:.4rem">Cartas do Mestre para seus aventureiros</div>
-      </div>
-
-      <div style="max-height:72vh;overflow-y:auto;padding-right:.2rem" class="pnscroll">
-
-        <!-- v1.5 — Março 2026 -->
-        <div class="pn-version">
-          <div class="pn-ver-badge">v1.5 <span class="pn-date">Março 2026</span></div>
-          <div class="pn-ver-title">O Dia das Quatro Bênçãos</div>
-          <div class="pn-ver-sub">Quatro novas mecânicas chegam à Taverna — cada uma forjada para trazer o combate à vida</div>
-
-          <div class="pn-category">⚔ Combate</div>
-          <ul class="pn-list">
-            <li><strong>HP dos Inimigos</strong> — Agora você pode registrar os pontos de vida de cada criatura ao iniciar o combate. As barras de saúde aparecem nos tokens, mudando de verde para vermelho conforme o inimigo sangra. Clique no token para abrir o editor e ajustar o dano. Quando o último inimigo cair, o combate se encerra sozinho.</li>
-            <li><strong>Testes de Morte</strong> — Quando seus PV chegam a zero, o destino não é imediato. Três círculos dourados e três vermelhos surgem na tela — role o d20 a cada rodada. Natural 20: acorde com 1 PV. Natural 1: duas falhas de uma vez. Três sucessos: estabilize. Três falhas: o herói tomba.</li>
-            <li><strong>Game Over e TPK</strong> — Se aliados ainda respiram quando você cai, a narrativa continua com eles. Apenas quando <em>todos</em> tombarem o fim chega: a tela escura de TPK.  Total. Party. Kill.</li>
-          </ul>
-
-          <div class="pn-category">🔮 Magia</div>
-          <ul class="pn-list">
-            <li><strong>Concentração</strong> — Quarenta magias agora exigem seu foco mental. O badge roxo pulsante no cabeçalho mostra qual magia está ativa. Ao sofrer dano, o sistema rola automaticamente seu Teste de Resistência de Constituição — falhou? A magia se desfaz. Conjure outra magia de concentração e a anterior é quebrada sem cerimônia.</li>
-            <li><strong>Ícones de concentração</strong> — A lista de magias agora mostra 🔮 em todas que requerem foco, e ✓ Ativa na que está em efeito.</li>
-          </ul>
-
-          <div class="pn-category">⚡ Condições</div>
-          <ul class="pn-list">
-            <li><strong>14 condições oficiais</strong> — Agarrado, Assustado, Atordoado, Caído, Cego, Encantado, Enfeitiçado, Envenenado, Exausto, Incapacitado, Inconsciente, Invisível, Paralisado, Petrificado. Cada uma com cor, ícone, descrição mecânica e o TR necessário para resistir. Badges coloridos pulsam no cabeçalho. O narrador aplica e remove condições automaticamente.</li>
-          </ul>
-
-          <div class="pn-category">👥 Mundo Vivo</div>
-          <ul class="pn-list">
-            <li><strong>Rastreador de NPCs</strong> — Nunca mais esqueça o nome do ferreiro que te ajudou ou do guarda que te odeia. Cada NPC importante é registrado com nome, localização e relação (🤝 aliado · 😐 neutro · ⚔ inimigo). O narrador os adiciona automaticamente ao detectar uma introdução importante.</li>
-            <li><strong>Inspiração</strong> — O botão ☆ no cabeçalho. Quando você fizer algo extraordinariamente heroico, criativo ou brilhantemente dramático, o Mestre concede Inspiração. A estrela acende dourada. Use-a para ter vantagem quando mais precisar.</li>
-          </ul>
-        </div>
-
-        <!-- v1.4 — Fevereiro 2026 (b) -->
-        <div class="pn-version">
-          <div class="pn-ver-badge">v1.4b <span class="pn-date">Fevereiro 2026</span></div>
-          <div class="pn-ver-title">A Forja das Perícias</div>
-          <div class="pn-ver-sub">A ficha de personagem cresce com proficiências, antecedentes e especializações</div>
-
-          <div class="pn-category">🎯 Criação de Personagem</div>
-          <ul class="pn-list">
-            <li><strong>Perícias de classe</strong> — Cada classe tem sua lista oficial (LdJ). Guerreiro escolhe 2 de 7, Bardo escolhe 3 de todas, Ladino escolhe 4 de 10. As perícias do antecedente aparecem automaticamente em roxo com 📜 BG — não gastam suas escolhas de classe.</li>
-            <li><strong>Antecedente na etapa de classe</strong> — Mudei de posição para que as perícias do antecedente atualizem em tempo real enquanto você escolhe.</li>
-            <li><strong>Especialização do Ladino</strong> — Após escolher as 4 perícias, selecione 2 para Especialização ⭐ — proficiência dobrada, representada por um dot roxo na ficha.</li>
-            <li><strong>Subclasses por nível correto</strong> — Clérigo, Bruxo e Feiticeiro escolhem no nível 1. Mago e Druida no nível 2. Os outros veem uma prévia das opções disponíveis no nível 3.</li>
-          </ul>
-        </div>
-
-        <!-- v1.4 — Fevereiro 2026 (a) -->
-        <div class="pn-version">
-          <div class="pn-ver-badge">v1.4 <span class="pn-date">Fevereiro 2026</span></div>
-          <div class="pn-ver-title">A Criação Renascida</div>
-          <div class="pn-ver-sub">A tela de criação de personagem foi completamente reconstruída</div>
-
-          <div class="pn-category">🧬 Nova Criação em 5 Etapas</div>
-          <ul class="pn-list">
-            <li><strong>Raça com sub-raças</strong> — Elfo Alto, Elfo da Floresta, Drow. Anão da Colina ou da Montanha. Cards clicáveis com traços raciais listados abaixo.</li>
-            <li><strong>Aparência física</strong> — Campos abertos para pele, cabelo, olhos, porte e altura — com sugestões específicas para cada raça como placeholder.</li>
-            <li><strong>Classe com escolhas</strong> — Guerreiro escolhe Estilo de Combate. Patrulheiro escolhe Inimigo Favorito e Terreno. Cards visuais com dado de vida.</li>
-            <li><strong>Regiões variadas</strong> — Além das grandes cidades, agora você pode começar em Phandalin, Daggerford, Greenest, Triboar, ou nas selvagens Floresta das Névoas e Anauroch.</li>
-            <li><strong>Resumo final</strong> — O passo 5 mostra um cartão completo do personagem antes de embarcar.</li>
-          </ul>
-        </div>
-
-        <!-- v1.3 — Janeiro 2026 -->
-        <div class="pn-version">
-          <div class="pn-ver-badge">v1.3 <span class="pn-date">Janeiro 2026</span></div>
-          <div class="pn-ver-title">O Arsenal do Aventureiro</div>
-          <div class="pn-ver-sub">Dados, missões, ouro e o rolador criptográfico</div>
-
-          <div class="pn-category">🎲 Rolador de Dados</div>
-          <ul class="pn-list">
-            <li><strong>7 dados do D&D</strong> — d4, d6, d8, d10, d12, d20 e d100, todos acima do campo de texto. Campo de modificador à esquerda.</li>
-            <li><strong>Aleatoriedade real</strong> — Usa <code>crypto.getRandomValues()</code> com rejection sampling. Sem Math.random, sem viés. Natural 20 brilha verde, natural 1 pulsa vermelho.</li>
-          </ul>
-
-          <div class="pn-category">💰 Tesouro e Missões</div>
-          <ul class="pn-list">
-            <li><strong>Sistema de ouro inteligente</strong> — Tenta gastar mais do que tem? O NPC percebe e reage. O saldo total considera todas as moedas (PP, PO, PE, PA, PC) com as conversões corretas.</li>
-            <li><strong>Missões com recompensas</strong> — Ao concluir uma missão, XP e ouro são concedidos automaticamente. O diário registra. O narrador deve narrar a entrega antes do JSON.</li>
-            <li><strong>Toast de XP animado</strong> — Cada ganho de experiência mostra a fonte (Combate, Missão, Descoberta) e uma barra animada do progresso atual para o próximo nível.</li>
-          </ul>
-        </div>
-
-        <!-- v1.2 — Dezembro 2025 -->
-        <div class="pn-version">
-          <div class="pn-ver-badge">v1.2 <span class="pn-date">Dezembro 2025</span></div>
-          <div class="pn-ver-title">Os Primeiros Feitiços</div>
-          <div class="pn-ver-sub">Magias, mobile e a estrutura que tudo sustenta</div>
-
-          <div class="pn-category">✨ Magias e Habilidades</div>
-          <ul class="pn-list">
-            <li><strong>Gerenciador de magias</strong> — Círculos clicáveis por nível de magia com limites por classe e nível (LdJ oficial). Paladino e Patrulheiro bloqueados no nível 1 com mensagem clara.</li>
-            <li><strong>Habilidades de classe</strong> — Segunda Rajada, Sentido Divino, Fúria, Ataque Furtivo, Inspiração de Bardo e mais, todos configurados automaticamente para o nível 1.</li>
-          </ul>
-
-          <div class="pn-category">📱 Mobile</div>
-          <ul class="pn-list">
-            <li><strong>6 abas na barra inferior</strong> — Chat · Ficha · Itens · Missões · Diário · Mais. Botões que ocupam toda a largura, igualmente espaçados.</li>
-            <li><strong>Header limpo no mobile</strong> — Título oculto. O ícone da classe abre a sinopse da campanha com XP e missões ativas.</li>
-          </ul>
-        </div>
-
-        <!-- v1.0 — Novembro 2025 -->
-        <div class="pn-version pn-version-first">
-          <div class="pn-ver-badge">v1.0 <span class="pn-date">Novembro 2025</span></div>
-          <div class="pn-ver-title">A Taverna Abre Suas Portas</div>
-          <div class="pn-ver-sub">O começo de tudo</div>
-          <ul class="pn-list">
-            <li>Narrador IA com Google Gemini 2.5 Flash rodando campanhas completas de D&D 5e nos Forgotten Realms</li>
-            <li>Ficha completa: atributos, salvaguardas, CA, HP, inventário, equipamentos, ataques</li>
-            <li>Sistema de combate por turno com ordem de iniciativa</li>
-            <li>Descanso curto e longo com recuperação de recursos</li>
-            <li>Sistema de missões, diário de aventuras, anotações e conquistas</li>
-            <li>Save/load com 3 slots + exportar/importar .json</li>
-          </ul>
-        </div>
-
-      </div>
-
-      <div style="text-align:center;margin-top:1rem">
-        <button onclick="showStep('step-menu')" style="background:rgba(200,168,74,.08);border:1px solid rgba(200,168,74,.25);border-radius:8px;padding:.5rem 1.4rem;color:rgba(200,168,74,.7);font-family:Cinzel,serif;font-size:.68rem;letter-spacing:1px;cursor:pointer;transition:all .2s"
-          onmouseover="this.style.borderColor='rgba(200,168,74,.5)'" onmouseout="this.style.borderColor='rgba(200,168,74,.25)'">
-          ← Voltar à Taverna
-        </button>
-      </div>
-    </div>
-
-    <div id="step-new" style="display:none;text-align:left;width:100%;padding-bottom:2rem">
-
-      <!-- Progress steps indicator -->
-      <div style="display:flex;justify-content:center;gap:.3rem;margin-bottom:1.2rem" id="cc-steps-bar">
-        <div class="cc-step-dot active" id="ccdot-0">Raça</div>
-        <div class="cc-step-line"></div>
-        <div class="cc-step-dot" id="ccdot-1">Classe</div>
-        <div class="cc-step-line"></div>
-        <div class="cc-step-dot" id="ccdot-2">Identidade</div>
-        <div class="cc-step-line"></div>
-        <div class="cc-step-dot" id="ccdot-3">Atributos</div>
-        <div class="cc-step-line"></div>
-        <div class="cc-step-dot" id="ccdot-4">História</div>
-      </div>
-
-      <!-- STEP 0: RAÇA -->
-      <div class="cc-panel" id="cc-panel-0">
-        <div class="cc-section-title">🧬 Escolha sua Raça</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.7rem" id="race-grid"></div>
-        <!-- Sub-raça -->
-        <div id="subrace-area" style="display:none;margin-bottom:.7rem">
-          <div class="cc-section-title" style="font-size:.5rem">Sub-raça</div>
-          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.35rem" id="subrace-grid"></div>
-        </div>
-        <!-- Traços da raça -->
-        <div id="race-traits-area" style="display:none;background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.12);border-radius:8px;padding:.7rem;margin-bottom:.7rem">
-          <div style="font-family:Cinzel,serif;font-size:.52rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.4rem">Traços Raciais</div>
-          <div id="race-traits-list" style="font-size:.78rem;color:var(--text2);line-height:1.6"></div>
-        </div>
-        <!-- Draconato dragon type -->
-        <div id="dragon-area" style="display:none;margin-bottom:.7rem">
-          <label class="cc-label">Ancestral Dracônico</label>
-          <select id="dragon-type" class="cc-select"><option>Vermelho (Fogo)</option></select>
-        </div>
-        <!-- Características físicas -->
-        <div style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:10px;padding:.8rem;margin-bottom:.7rem">
-          <div class="cc-section-title" style="font-size:.5rem">✨ Aparência Física</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem" id="physique-grid"></div>
-          <div style="margin-top:.5rem">
-            <label class="cc-label">Descrição adicional (opcional)</label>
-            <input id="cc-appearance" placeholder="Cicatriz, tatuagem, traço marcante..." class="cc-input"/>
-          </div>
-        </div>
-        <div class="cc-nav-row">
-          <button onclick="showStep('step-menu')" class="cc-btn-sec">← Menu</button>
-          <button onclick="ccNext(0)" class="cc-btn-pri">Próximo: Classe →</button>
-        </div>
-      </div>
-
-      <!-- STEP 1: CLASSE -->
-      <div class="cc-panel" id="cc-panel-1" style="display:none">
-        <div class="cc-section-title">⚔ Escolha sua Classe</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.7rem" id="class-grid"></div>
-        <!-- Subclasse nível 1 (Clérigo, Bruxo, Feiticeiro) -->
-        <div id="subclass1-area" style="display:none;margin-bottom:.7rem">
-          <div class="cc-section-title" style="font-size:.5rem" id="subclass1-label">Domínio / Patrono / Origem</div>
-          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.35rem" id="subclass1-grid"></div>
-        </div>
-        <!-- Escolhas de classe nível 1 -->
-        <div id="class-choices-area" style="display:none;background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.12);border-radius:8px;padding:.7rem;margin-bottom:.7rem">
-          <div class="cc-section-title" style="font-size:.5rem">Escolhas de Nível 1</div>
-          <div id="class-choices-list"></div>
-        </div>
-        <!-- Skills selection -->
-        <div id="skills-choice-area" style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:10px;padding:.8rem;margin-bottom:.7rem">
-          <div class="cc-section-title" style="font-size:.5rem">🎯 Perícias</div>
-          <!-- Antecedente aqui para atualizar skills em tempo real -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.7rem">
-            <div>
-              <label class="cc-label">Antecedente</label>
-              <select id="new-bg" class="cc-select" onchange="renderSkillsChoice()">
-                <option>Forasteiro</option><option>Soldado</option><option>Criminoso</option>
-                <option>Sábio</option><option>Nobre</option><option>Herói do Povo</option>
-                <option>Eremita</option><option>Marinheiro</option><option>Charlatão</option>
-                <option>Artesão de Guilda</option><option>Acólito</option><option>Artista</option>
-              </select>
-            </div>
-            <div id="bg-skills-area">
-              <label class="cc-label">Perícias do antecedente</label>
-              <div id="bg-skills-list" style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:4px"></div>
-            </div>
-          </div>
-          <!-- Classe skill choices -->
-          <div id="skills-choice-hint" style="font-size:.7rem;color:rgba(200,168,74,.5);font-style:italic;margin-bottom:.4rem"></div>
-          <div id="skills-choice-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:.3rem"></div>
-          <!-- Ladino expertise -->
-          <div id="expertise-area" style="display:none;margin-top:.6rem">
-            <div style="font-family:Cinzel,serif;font-size:.5rem;color:var(--arc3);text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem">⭐ Especialização — escolha 2 perícias para proficiência dupla</div>
-            <div id="expertise-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:.3rem"></div>
-          </div>
-        </div>
-        <!-- Equipment preview -->
-        <div id="equip-preview" style="background:rgba(58,144,200,.04);border:1px solid rgba(58,144,200,.18);border-radius:10px;padding:.7rem .9rem;margin-bottom:.7rem;font-size:.78rem;color:#e8dfc8"></div>
-        <div class="cc-nav-row">
-          <button onclick="ccPrev(1)" class="cc-btn-sec">← Raça</button>
-          <button onclick="ccNext(1)" class="cc-btn-pri">Próximo: Identidade →</button>
-        </div>
-      </div>
-
-      <!-- STEP 2: IDENTIDADE -->
-      <div class="cc-panel" id="cc-panel-2" style="display:none">
-        <div class="cc-section-title">📛 Identidade</div>
-        <div style="margin-bottom:.6rem">
-          <label class="cc-label">Nome do Personagem *</label>
-          <input id="new-name" placeholder="Como você é chamado?" class="cc-input cc-input-lg"/>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.6rem">
-          <div>
-            <label class="cc-label">Alinhamento</label>
-            <select id="new-align" class="cc-select">
-              <option>Leal e Bom</option><option>Neutro e Bom</option><option>Caótico e Bom</option>
-              <option>Leal e Neutro</option><option>Neutro</option><option>Caótico e Neutro</option>
-              <option>Leal e Mau</option><option>Neutro e Mau</option><option>Caótico e Mau</option>
-            </select>
-          </div>
-          <div>
-            <label class="cc-label">Antecedente</label>
-            <div id="bg-display-step2" style="padding:.5rem .7rem;background:rgba(200,168,74,.05);border:1px solid rgba(200,168,74,.2);border-radius:7px;font-family:Cormorant Garamond,serif;font-size:.9rem;color:var(--gold2)">— definido na etapa anterior —</div>
-          </div>
-        </div>
-        <div style="margin-bottom:.6rem">
-          <div class="cc-section-title" style="font-size:.5rem">🗺 Região de Início</div>
-          <div id="region-list" style="display:flex;flex-wrap:wrap;gap:.35rem"></div>
-        </div>
-        <div class="cc-nav-row">
-          <button onclick="ccPrev(2)" class="cc-btn-sec">← Classe</button>
-          <button onclick="ccNext(2)" class="cc-btn-pri">Próximo: Atributos →</button>
-        </div>
-      </div>
-
-      <!-- STEP 3: ATRIBUTOS -->
-      <div class="cc-panel" id="cc-panel-3" style="display:none">
-        <div class="cc-section-title">⚡ Atributos</div>
-        <div style="font-size:.7rem;color:rgba(200,168,74,.4);font-style:italic;margin-bottom:.6rem">Array padrão: 15, 14, 13, 12, 10, 8 — ajuste conforme quiser</div>
-        <div id="attr-builder" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.7rem"></div>
-        <!-- Racial bonuses reminder -->
-        <div id="racial-bonus-hint" style="font-size:.72rem;color:var(--arc3);background:rgba(107,63,160,.06);border:1px solid rgba(107,63,160,.15);border-radius:7px;padding:.5rem .7rem;margin-bottom:.7rem"></div>
-        <div class="cc-nav-row">
-          <button onclick="ccPrev(3)" class="cc-btn-sec">← Identidade</button>
-          <button onclick="ccNext(3)" class="cc-btn-pri">Próximo: História →</button>
-        </div>
-      </div>
-
-      <!-- STEP 4: HISTÓRIA -->
-      <div class="cc-panel" id="cc-panel-4" style="display:none">
-        <div class="cc-section-title">📖 História & Motivação</div>
-        <div style="margin-bottom:.6rem">
-          <label class="cc-label">Motivação (opcional)</label>
-          <textarea id="new-story" placeholder="De onde vem? O que busca? Qual seu maior medo? Quem é sua família?" class="cc-input" style="min-height:80px;resize:none;line-height:1.5"></textarea>
-        </div>
-        <!-- Summary card -->
-        <div id="char-summary" style="background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.2);border-radius:10px;padding:.8rem;margin-bottom:.8rem">
-          <div style="font-family:Cinzel,serif;font-size:.54rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.5rem">Resumo do Personagem</div>
-          <div id="char-summary-content" style="font-size:.8rem;color:var(--text2);line-height:1.6"></div>
-        </div>
-        <div class="cc-nav-row">
-          <button onclick="ccPrev(4)" class="cc-btn-sec">← Atributos</button>
-          <button onclick="startNewGame()" class="cc-btn-start">⚔ Iniciar Aventura</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══ STEP 4: GENERATING ══ -->
-    <div id="step-generating" style="display:none;text-align:center;width:100%;padding:2rem 0">
-      <div style="margin-bottom:1.5rem">
-        <div style="width:72px;height:72px;border-radius:50%;border:2px solid rgba(200,168,74,.3);border-top-color:var(--gold2);display:inline-flex;align-items:center;justify-content:center;animation:spin 1.5s linear infinite">
-          <span style="font-size:1.8rem">🎲</span>
-        </div>
-      </div>
-      <div style="font-family:'Cinzel Decorative',serif;font-size:1rem;color:var(--gold2);margin-bottom:.5rem;letter-spacing:1px">Tecendo o Destino</div>
-      <div id="gen-status" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(200,168,74,.55);margin-bottom:1.4rem">O Mestre consulta os tomos antigos...</div>
-      <div style="width:220px;height:3px;background:rgba(200,168,74,.1);border-radius:2px;margin:0 auto;overflow:hidden">
-        <div id="gen-bar" style="height:100%;background:linear-gradient(90deg,var(--blood),var(--gold2));border-radius:2px;width:0%;transition:width 1.5s ease;box-shadow:0 0 8px rgba(200,168,74,.4)"></div>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div style="text-align:center;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(200,168,74,.08)">
-      <div style="display:flex;align-items:center;justify-content:center;gap:.4rem">
-        <div style="height:1px;width:30px;background:rgba(200,168,74,.2)"></div>
-        <span style="font-family:'Cinzel',serif;font-size:.5rem;color:rgba(200,168,74,.25);letter-spacing:2px;text-transform:uppercase">Forgotten Realms · D&D 5e</span>
-        <div style="height:1px;width:30px;background:rgba(200,168,74,.2)"></div>
-      </div>
-    </div>
-
-  </div>
-  </div>
+  </div><!-- /ss-scroller -->
 </div>
-
-
 <!-- API modal (oculto, mantido para compatibilidade) -->
 <div class="overlay" id="overlay" style="display:none">
   <div class="modal-box" style="max-width:400px">
@@ -1811,6 +1601,189 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 </div>
 
 <script>
+// ══════════════════════════════════════════════════════
+// GOOGLE AUTH — Identity Services
+// ══════════════════════════════════════════════════════
+var googleUser = null;
+// CLIENT ID: substitua pelo seu em console.cloud.google.com
+// Para testes locais funciona sem clientId (modo popup)
+var GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
+
+function signInWithGoogle(){
+  if(typeof google === 'undefined'){
+    // GIS não carregou — fallback para chave manual
+    showStep('step-api');
+    return;
+  }
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleGoogleCredential,
+    auto_select: false,
+    cancel_on_tap_outside: true,
+  });
+  google.accounts.id.prompt(function(notification){
+    if(notification.isNotDisplayed() || notification.isSkippedMoment()){
+      // Prompt não apareceu — usar popup
+      google.accounts.oauth2.initTokenClient({
+        client_id: GOOGLE_CLIENT_ID,
+        scope: 'email profile',
+        callback: function(response){
+          if(response.access_token){
+            fetchGoogleProfile(response.access_token);
+          }
+        }
+      }).requestAccessToken();
+    }
+  });
+}
+
+function handleGoogleCredential(response){
+  // Decode JWT (sem verificação server-side — client only)
+  var payload = JSON.parse(atob(response.credential.split('.')[1]));
+  googleUser = {
+    name: payload.name,
+    email: payload.email,
+    picture: payload.picture,
+    sub: payload.sub
+  };
+  onGoogleSignedIn();
+}
+
+function fetchGoogleProfile(token){
+  fetch('https://www.googleapis.com/oauth2/v3/userinfo',{
+    headers:{Authorization:'Bearer '+token}
+  }).then(r=>r.json()).then(function(p){
+    googleUser = {name:p.name, email:p.email, picture:p.picture, sub:p.sub};
+    onGoogleSignedIn();
+  }).catch(function(){
+    // Falhou — ir para chave manual
+    showStep('step-api');
+  });
+}
+
+function onGoogleSignedIn(){
+  // Salvar usuário no localStorage
+  localStorage.setItem('killyn_google_user', JSON.stringify(googleUser));
+  // Atualizar badge
+  updateGoogleBadge();
+  // Ir para menu
+  showStep('step-menu');
+  checkStorageSave();
+  // Exibir badge
+  var badge = document.getElementById('google-user-badge');
+  if(badge) badge.style.display = 'flex';
+}
+
+function updateGoogleBadge(){
+  if(!googleUser) return;
+  var name = document.getElementById('google-name');
+  var email = document.getElementById('google-email');
+  var avatar = document.getElementById('google-avatar');
+  var badge = document.getElementById('google-user-badge');
+  if(name) name.textContent = googleUser.name;
+  if(email) email.textContent = googleUser.email;
+  if(avatar && googleUser.picture){ avatar.src = googleUser.picture; avatar.style.display = 'block'; }
+  if(badge) badge.style.display = 'flex';
+}
+
+function signOut(){
+  googleUser = null;
+  localStorage.removeItem('killyn_google_user');
+  var badge = document.getElementById('google-user-badge');
+  if(badge) badge.style.display = 'none';
+  showStep('step-api-hidden');
+  // Mostrar hero novamente
+  var ss = document.getElementById('start-screen');
+  var scroller = document.getElementById('ss-scroller');
+  if(ss){ ss.style.display = 'flex'; }
+  if(scroller){ scroller.scrollTo(0,0); }
+}
+
+// Restaurar sessão Google se já logou antes
+function restoreGoogleSession(){
+  var saved = localStorage.getItem('killyn_google_user');
+  if(saved){
+    try{ googleUser = JSON.parse(saved); updateGoogleBadge(); }catch(e){}
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// SISTEMA DE PARTÍCULAS — canvas de magia flutuante
+// ══════════════════════════════════════════════════════
+function initParticleCanvas(){
+  var canvas = document.getElementById('particle-canvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var particles = [];
+  var W, H;
+
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Criar partículas mágicas
+  var colors = ['rgba(200,140,40,', 'rgba(180,30,50,', 'rgba(140,80,200,', 'rgba(255,255,255,'];
+  for(var i = 0; i < 60; i++){
+    particles.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      size: Math.random() * 2 + .5,
+      speedY: -(Math.random() * .4 + .1),
+      speedX: (Math.random() - .5) * .3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      opacity: Math.random() * .6 + .2,
+      life: Math.random() * 200 + 100,
+      age: 0,
+    });
+  }
+
+  function drawParticles(){
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(function(p, i){
+      p.age++;
+      p.x += p.speedX;
+      p.y += p.speedY;
+      var fade = Math.min(1, Math.min(p.age/20, (p.life - p.age)/20));
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+      ctx.fillStyle = p.color + (p.opacity * fade) + ')';
+      ctx.fill();
+      // Resetar quando sair da tela ou morrer
+      if(p.y < -10 || p.age > p.life || p.x < -10 || p.x > W+10){
+        particles[i] = {
+          x: Math.random() * W,
+          y: H + 10,
+          size: Math.random() * 2 + .5,
+          speedY: -(Math.random() * .4 + .1),
+          speedX: (Math.random() - .5) * .3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          opacity: Math.random() * .6 + .2,
+          life: Math.random() * 200 + 100,
+          age: 0,
+        };
+      }
+    });
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+}
+
+// ═══════════════════════════════════════════
+// step-api-hidden = estado "não visível" (volta para hero)
+// ═══════════════════════════════════════════
+function showStartHero(){
+  var ss = document.getElementById('start-screen');
+  var scroller = document.getElementById('ss-scroller');
+  if(ss) ss.style.display = 'flex';
+  if(scroller) scroller.scrollTo({top:0, behavior:'smooth'});
+  ['step-api','step-menu','step-patchnotes','step-new','step-generating'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.style.display = 'none';
+  });
+}
+
 // ─── ESTADO ───
 const HP_MAX_BASE=16;
 let HP_MAX=16,hpC=16,hist=[],busy=false,apiKey='',mobActive='chat';
@@ -5857,12 +5830,13 @@ let newCharData={};
 let selectedRegion='waterdeep';
 
 function showStep(id){
+  if(id==='step-api-hidden'){ showStartHero(); return; }
   ['step-api','step-menu','step-new','step-generating','step-patchnotes'].forEach(s=>{
     var el=document.getElementById(s);if(el)el.style.display='none';
   });
   var el=document.getElementById(id);if(el)el.style.display='block';
   if(id==='step-new'){ccStep(0);}
-  if(id==='step-menu') checkStorageSave();
+  if(id==='step-menu'){ checkStorageSave(); restoreGoogleSession(); }
 }
 
 function checkStorageSave(){
@@ -6758,14 +6732,19 @@ callAI=async function(userMsg){
 
 // ─── START ───
 init();
+// Iniciar partículas
+initParticleCanvas();
+
+// Restaurar sessão Google
+restoreGoogleSession();
+
 var savedKey=localStorage.getItem('killyn_gemini_key');
 if(savedKey){
   apiKey=savedKey;
   showStep('step-menu');
   checkStorageSave();
-} else {
-  showStep('step-api');
 }
+// Se não tiver chave, mostra o hero (start-screen já está visível)
 </script>
 </body>
 </html>
