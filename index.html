@@ -83,7 +83,7 @@ body::before{
   pointer-events:none;z-index:9999;opacity:.5;
 }
 
-#app{display:flex;flex-direction:column;height:100vh;height:100dvh}
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
 button{cursor:pointer;touch-action:manipulation}
 input,textarea,select{-webkit-appearance:none;appearance:none}
 
@@ -567,14 +567,18 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   border:1px solid rgba(200,140,40,.18);
   border-left:2px solid rgba(200,140,40,.35);
   box-shadow:0 2px 12px rgba(0,0,0,.3);
-  border-radius:0 12px 12px 12px}
+  border-radius:0 12px 12px 12px;
+  word-break:break-word;overflow-wrap:break-word;
+  word-break:break-word;overflow-wrap:anywhere;}
 /* Jogador */
 .msg-pl .bbl{
   background:linear-gradient(135deg,rgba(155,35,53,.09),rgba(120,20,40,.05));
   border:1px solid rgba(180,40,60,.2);
   border-right:2px solid rgba(180,40,60,.35);
   box-shadow:0 2px 12px rgba(0,0,0,.3);
-  border-radius:12px 0 12px 12px}
+  border-radius:12px 0 12px 12px;
+  word-break:break-word;overflow-wrap:break-word;
+  word-break:break-word;overflow-wrap:anywhere;}
 /* Sistema */
 .msg-sys .bbl{
   background:rgba(155,35,53,.06);border:1px solid rgba(155,35,53,.18);
@@ -5420,8 +5424,7 @@ function loadProgress(slot='auto'){
   if(s.savedNotes) savedNotes=s.savedNotes;
   if(s.conquistas) CONQUISTAS=s.conquistas;
   if(s.attrs) Object.assign(ATTRS,s.attrs);
-  if(s.charName){
-    window.CHAR_NAME=s.charName;
+  // Restaurar estado de combate/condições SEMPRE (fora do if charName)
   if(s.deathSaves!==undefined)deathSaves=s.deathSaves;
   if(s.isUnconscious!==undefined)isUnconscious=s.isUnconscious;
   if(s.isDead!==undefined)isDead=s.isDead;
@@ -5430,16 +5433,23 @@ function loadProgress(slot='auto'){
   if(s.concentrationSpell!==undefined)concentrationSpell=s.concentrationSpell;
   if(s.furyActive!==undefined)furyActive=s.furyActive;
   if(s.npcTracker!==undefined)npcTracker=s.npcTracker;
+  // Restaurar estado de combate (independente do charName)
   if(s.combatants!==undefined)combatants=s.combatants;
-  if(s.combatActive!==undefined){combatActive=s.combatActive;if(combatActive){var cb=document.getElementById('combat-bar');if(cb)cb.classList.add('active');renderTurnOrder();}}
+  if(s.combatActive!==undefined){
+    combatActive=s.combatActive;
+    if(combatActive){var cb=document.getElementById('combat-bar');if(cb)cb.classList.add('active');renderTurnOrder();}
+  }
   if(s.currentTurn!==undefined)currentTurn=s.currentTurn;
   if(s.roundNum!==undefined)roundNum=s.roundNum;
   if(s.hasInspiration!==undefined)hasInspiration=s.hasInspiration;
   if(isUnconscious)showDeathModal();
-    window.CHAR_RACE=s.charRace||'';
-    window.CHAR_CLASS=s.charClass||'';
-    window.CHAR_REGION=s.charRegion||'';
-    window.CHAR_SUBCLASS=s.charSubclass||'';
+  // Restaurar identidade do personagem
+  if(s.charName){
+    window.CHAR_NAME    = s.charName;
+    window.CHAR_RACE    = s.charRace    || '';
+    window.CHAR_CLASS   = s.charClass   || '';
+    window.CHAR_REGION  = s.charRegion  || '';
+    window.CHAR_SUBCLASS= s.charSubclass|| '';
   }
   if(s.campaignTitle) window.CAMPAIGN_TITLE=s.campaignTitle;
   if(s.systemOverride) window.SYSTEM_OVERRIDE=s.systemOverride;
@@ -7093,7 +7103,8 @@ if(_savedKey){
         <div id="gen-bar" style="height:100%;background:linear-gradient(90deg,var(--blood),var(--gold2));border-radius:2px;width:0%;transition:width 1.5s ease;box-shadow:0 0 8px rgba(200,168,74,.4)"></div>
       </div>
     </div>
-<div id="step-new" style="display:none;position:fixed;inset:0;z-index:8000;background:#060408;overflow-y:auto;-webkit-overflow-scrolling:touch;visibility:hidden">
+<div id="step-new" style="display:none;position:fixed;inset:0;z-index:8000;background:#060408;overflow-y:auto;-webkit-overflow-scrolling:touch;visibility:hidden;padding:1rem 1rem 3rem;">
+<div style="max-width:480px;margin:0 auto;width:100%;">
 
       <!-- Progress steps indicator -->
       <div style="display:flex;justify-content:center;gap:.3rem;margin-bottom:1.2rem" id="cc-steps-bar">
@@ -7254,5 +7265,6 @@ if(_savedKey){
         </div>
       </div>
     </div>
+</div><!-- /max-width wrapper -->
 </body>
 </html>
