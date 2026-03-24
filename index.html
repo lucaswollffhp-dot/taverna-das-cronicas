@@ -62,7 +62,7 @@
   --glow-gold: 0 0 20px rgba(200,168,74,.2);
 
   --nav-h:68px;
-  --sidebar-w:256px;
+  --sidebar-w:240px;
   --hdr-h:48px;
 }
 
@@ -185,7 +185,7 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
    SIDEBAR
 ══════════════════════════════════════ */
 .ability-sidebar{
-  width:220px;flex-shrink:0;
+  width:240px;flex-shrink:0;
   background:var(--bg2);
   border-left:1px solid var(--border);
   display:flex;flex-direction:column;
@@ -223,6 +223,10 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
 }
 .sidebar::-webkit-scrollbar{width:2px}
 .sidebar::-webkit-scrollbar-thumb{background:rgba(200,168,74,.2);border-radius:2px}
+/* Sidebar typography */
+.sidebar-section-title{font-family:'Cinzel',serif;font-size:.6rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.5rem;padding-bottom:.3rem;border-bottom:1px solid var(--border)}
+.attr-val{font-size:1.3rem;font-family:'Cinzel',serif;color:var(--gold2);line-height:1}
+.attr-mod{font-size:.8rem;color:var(--text2)}
 .sidebar::before{
   content:'';position:sticky;top:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,transparent,var(--border2),transparent);
@@ -572,8 +576,8 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 /* Sistema */
 .msg-sys .bbl{
   background:rgba(155,35,53,.06);border:1px solid rgba(155,35,53,.18);
-  border-radius:7px;padding:.4rem .85rem;
-  font-size:.82rem;color:var(--blood2);text-align:center;font-style:italic;align-self:center;
+  border-radius:7px;padding:.5rem 1rem;
+  font-size:.88rem;color:var(--blood2);text-align:center;font-style:italic;align-self:center;
 }
 /* Atualização */
 .msg-update .bbl{
@@ -1060,8 +1064,8 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .attr-box{background:rgba(4,2,10,.8);border:1px solid rgba(200,168,74,.2);border-radius:10px;padding:.7rem .5rem;text-align:center;transition:border .2s}
 .attr-box:focus-within{border-color:rgba(200,168,74,.5)}
 /* ── Bolhas de chat melhoradas ── */
-.msg-dm .bbl{background:linear-gradient(135deg,rgba(18,12,26,.92),rgba(12,8,20,.95));border:1px solid rgba(200,168,74,.2);border-left:2px solid rgba(200,168,74,.5);border-radius:0 12px 12px 12px;box-shadow:0 2px 12px rgba(0,0,0,.4);word-break:break-word;overflow-wrap:anywhere}
-.msg-pl .bbl{background:linear-gradient(135deg,rgba(155,35,53,.12),rgba(120,20,40,.08));border:1px solid rgba(180,40,60,.25);border-right:2px solid rgba(180,40,60,.5);border-radius:12px 0 12px 12px;box-shadow:0 2px 12px rgba(0,0,0,.4);word-break:break-word;overflow-wrap:anywhere}
+.msg-dm .bbl{background:linear-gradient(135deg,rgba(18,12,26,.92),rgba(12,8,20,.95));border:1px solid rgba(200,168,74,.2);border-left:2px solid rgba(200,168,74,.5);border-radius:0 12px 12px 12px;box-shadow:0 2px 12px rgba(0,0,0,.4);word-break:break-word;overflow-wrap:anywhere;font-size:1rem;line-height:1.75;padding:.75rem 1rem}
+.msg-pl .bbl{background:linear-gradient(135deg,rgba(155,35,53,.12),rgba(120,20,40,.08));border:1px solid rgba(180,40,60,.25);border-right:2px solid rgba(180,40,60,.5);border-radius:12px 0 12px 12px;box-shadow:0 2px 12px rgba(0,0,0,.4);word-break:break-word;overflow-wrap:anywhere;font-size:1rem;line-height:1.7;padding:.7rem 1rem}
 /* ── Chat area scrollbar ── */
 .chat-area::-webkit-scrollbar{width:3px}
 .chat-area::-webkit-scrollbar-thumb{background:rgba(200,168,74,.2);border-radius:2px}
@@ -1099,7 +1103,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   </div>
 
   <!-- ── STEPS OVERLAY (menu, api, new, patchnotes) ── -->
-  <div id="ss-steps-overlay" style="position:absolute;inset:0;z-index:10;display:none;align-items:center;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;background:rgba(4,2,10,.96);backdrop-filter:blur(20px);padding:2rem 1rem;">
+  <div id="ss-steps-overlay" style="position:absolute;inset:0;z-index:10;display:none;align-items:center;justify-content:center;overflow-y:auto;-webkit-overflow-scrolling:touch;background:rgba(2,1,6,.97);backdrop-filter:blur(30px);border-right:none;padding:2rem 1rem;">
     <div id="ss-steps-inner" style="width:100%;max-width:440px;"></div>
   </div>
 
@@ -1233,112 +1237,170 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
     </div>
 
     <!-- ════ STEP-API (chave Gemini) ════ -->
-    <div id="step-api" style="display:none;width:100%;max-width:400px;padding:2rem 1rem;flex-shrink:0">
-      <div style="background:rgba(10,6,16,.95);border:1px solid rgba(200,140,40,.25);border-radius:16px;padding:1.8rem;backdrop-filter:blur(20px)">
-        <div style="text-align:center;margin-bottom:1.2rem">
-          <div style="font-size:1.8rem;margin-bottom:.5rem">🔮</div>
-          <div style="font-family:'Cinzel',serif;font-size:.6rem;color:rgba(200,140,40,.6);text-transform:uppercase;letter-spacing:2px">Acesso ao Oráculo</div>
-        </div>
-        <p style="font-family:'Cormorant Garamond',serif;font-size:.92rem;color:rgba(232,210,170,.65);text-align:center;margin-bottom:1.2rem;line-height:1.6">
-          Insira sua chave do Google AI Studio para invocar o narrador.
-        </p>
-        <div style="margin-bottom:.8rem">
-          <input id="api-inp" type="password" placeholder="AIza..." style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(200,140,40,.25);border-radius:8px;padding:.7rem .9rem;font-family:'Cinzel',serif;font-size:.78rem;color:#e8dfc8;outline:none;transition:border .2s;box-sizing:border-box"
-            onfocus="this.style.borderColor='rgba(200,140,40,.5)'" onblur="this.style.borderColor='rgba(200,140,40,.25)'"
-            onkeydown="if(event.key==='Enter')confirmApiKey()"/>
-        </div>
-        <button onclick="confirmApiKey()" style="width:100%;background:linear-gradient(135deg,rgba(180,100,20,.3),rgba(120,20,40,.3));border:1px solid rgba(200,140,40,.45);border-radius:8px;padding:.75rem;font-family:'Cinzel',serif;font-size:.7rem;color:#c8a040;cursor:pointer;letter-spacing:1px;transition:all .2s"
-          onmouseover="this.style.background='linear-gradient(135deg,rgba(180,100,20,.5),rgba(120,20,40,.5))'"
-          onmouseout="this.style.background='linear-gradient(135deg,rgba(180,100,20,.3),rgba(120,20,40,.3))'">
-          Confirmar Chave
-        </button>
-        <div style="text-align:center;margin-top:.8rem">
-          <a href="https://aistudio.google.com/apikey" target="_blank" style="font-family:'Cinzel',serif;font-size:.55rem;color:rgba(200,140,40,.45);text-decoration:none;letter-spacing:1px">
-            Obter chave gratuita →
-          </a>
-        </div>
-        <div style="text-align:center;margin-top:.6rem">
-          <button onclick="showStep('step-api-hidden')" style="background:none;border:none;font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,140,40,.3);cursor:pointer;letter-spacing:1px">
-            ← Voltar
-          </button>
-        </div>
+    <div id="step-api" style="display:none;width:100%;max-width:420px;padding:2rem 1rem;margin:0 auto;flex-shrink:0">
+  <div style="background:rgba(8,5,16,.92);border:1px solid rgba(200,168,74,.22);border-radius:16px;padding:1.8rem 1.6rem;backdrop-filter:blur(20px)">
+
+    <!-- Título -->
+    <div style="text-align:center;margin-bottom:1.4rem">
+      <div style="font-size:2rem;margin-bottom:.5rem">🔮</div>
+      <div style="font-family:'Cinzel Decorative',serif;font-size:1rem;color:#c8a040;letter-spacing:1px;margin-bottom:.3rem">Taverna das Crônicas</div>
+      <div style="font-family:'Cinzel',serif;font-size:.58rem;color:rgba(200,168,74,.55);text-transform:uppercase;letter-spacing:2px">Configuração do Narrador IA</div>
+    </div>
+
+    <!-- Explicação -->
+    <div style="background:rgba(200,168,74,.05);border:1px solid rgba(200,168,74,.15);border-radius:10px;padding:.8rem 1rem;margin-bottom:1.2rem">
+      <p style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:rgba(232,210,170,.7);line-height:1.6;margin:0">
+        Para jogar, você precisa de uma <strong style="color:#c8a040">chave da API Gemini</strong> (Google AI Studio). É gratuita e leva menos de 1 minuto para obter.
+      </p>
+    </div>
+
+    <!-- Input da chave -->
+    <div style="margin-bottom:.8rem">
+      <label style="font-family:'Cinzel',serif;font-size:.55rem;color:rgba(200,168,74,.6);text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:.4rem">Chave da API Gemini</label>
+      <div style="position:relative">
+        <input id="api-inp" type="password" placeholder="AIza..." style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(200,168,74,.25);border-radius:8px;padding:.65rem .9rem;font-family:'Cinzel',serif;font-size:.78rem;color:#e8dfc8;outline:none;transition:border .2s,box-shadow .2s;box-sizing:border-box"
+          onfocus="this.style.borderColor='rgba(200,168,74,.55)';this.style.boxShadow='0 0 0 3px rgba(200,168,74,.08)'"
+          onblur="this.style.borderColor='rgba(200,168,74,.25)';this.style.boxShadow='none'"
+          onkeydown="if(event.key==='Enter')confirmApiKey()"/>
       </div>
     </div>
+
+    <!-- Botão confirmar -->
+    <button onclick="confirmApiKey()" style="width:100%;background:linear-gradient(135deg,rgba(180,100,20,.3),rgba(120,20,40,.3));border:1px solid rgba(200,168,74,.45);border-radius:9px;padding:.8rem;font-family:'Cinzel',serif;font-size:.72rem;color:#c8a040;cursor:pointer;letter-spacing:1px;transition:all .2s;margin-bottom:.8rem"
+      onmouseover="this.style.background='linear-gradient(135deg,rgba(180,100,20,.5),rgba(120,20,40,.5))';this.style.borderColor='rgba(200,168,74,.7)'"
+      onmouseout="this.style.background='linear-gradient(135deg,rgba(180,100,20,.3),rgba(120,20,40,.3))';this.style.borderColor='rgba(200,168,74,.45)'">
+      ✓ Confirmar Chave e Continuar
+    </button>
+
+    <!-- Link para obter chave -->
+    <div style="text-align:center;margin-bottom:.6rem">
+      <a href="https://aistudio.google.com/apikey" target="_blank" style="font-family:'Cinzel',serif;font-size:.56rem;color:rgba(200,168,74,.5);text-decoration:none;letter-spacing:.5px;border-bottom:1px solid rgba(200,168,74,.2);padding-bottom:1px"
+        onmouseover="this.style.color='rgba(200,168,74,.8)'" onmouseout="this.style.color='rgba(200,168,74,.5)'">
+        🔗 Obter chave gratuita no Google AI Studio →
+      </a>
+    </div>
+
+    <!-- Voltar (só se já tiver chave) -->
+    <div id="api-back-btn" style="text-align:center;display:none">
+      <button onclick="showStep('step-menu')" style="background:none;border:none;font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.3);cursor:pointer;letter-spacing:.5px;transition:color .2s"
+        onmouseover="this.style.color='rgba(200,168,74,.6)'" onmouseout="this.style.color='rgba(200,168,74,.3)'">
+        ← Voltar ao menu
+      </button>
+    </div>
+
+  </div>
+</div>
 
     <!-- ════ STEP-MENU ════ -->
-    <div id="step-menu" style="display:none;width:100%;max-width:400px;padding:2rem 1rem;flex-shrink:0">
+    <div id="step-menu" style="display:none;width:100%;max-width:460px;padding:1.5rem 1rem 2.5rem;margin:0 auto;flex-shrink:0">
 
-      <!-- User badge (quando logado com Google) -->
-      <div id="google-user-badge" style="display:none;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.6rem .9rem;margin-bottom:1rem;display:none;align-items:center;gap:.6rem">
-        <img id="google-avatar" src="" width="28" height="28" style="border-radius:50%;display:none" />
-        <div>
-          <div id="google-name" style="font-family:'Cinzel',serif;font-size:.6rem;color:#e8dfc8"></div>
-          <div id="google-email" style="font-family:'Cinzel',serif;font-size:.5rem;color:rgba(200,140,40,.5)"></div>
-        </div>
-        <button onclick="signOut()" style="margin-left:auto;background:none;border:none;font-family:'Cinzel',serif;font-size:.48rem;color:rgba(200,140,40,.35);cursor:pointer">Sair</button>
-      </div>
-
-      <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:rgba(200,168,74,.6);text-align:center;margin-bottom:1.3rem;line-height:1.5">
-        "As portas da taverna se abrem. O que traz você até aqui?"
-      </p>
-
-      <div style="display:flex;flex-direction:column;gap:.75rem">
-
-        <!-- Nova Aventura -->
-        <button onclick="showStep('step-new')" style="background:rgba(155,35,53,.08);border:1px solid rgba(155,35,53,.35);border-radius:12px;padding:1rem 1.2rem;text-align:left;cursor:pointer;transition:all .25s;display:block;width:100%;position:relative;overflow:hidden"
-          onmouseover="this.style.borderColor='rgba(200,64,64,.7)';this.style.background='rgba(155,35,53,.18)'"
-          onmouseout="this.style.borderColor='rgba(155,35,53,.35)';this.style.background='rgba(155,35,53,.08)'">
-          <div style="position:absolute;top:0;right:0;width:60px;height:100%;background:linear-gradient(270deg,rgba(155,35,53,.15),transparent);pointer-events:none"></div>
-          <div style="display:flex;align-items:center;gap:.7rem">
-            <div style="width:36px;height:36px;border-radius:8px;background:rgba(155,35,53,.2);border:1px solid rgba(155,35,53,.4);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">⚔</div>
-            <div>
-              <div style="font-family:'Cinzel',serif;font-size:.82rem;color:#e06060;margin-bottom:.2rem;letter-spacing:.5px">Nova Aventura</div>
-              <div style="font-family:'Cormorant Garamond',serif;font-size:.8rem;color:rgba(232,210,170,.5);font-style:italic">Criar personagem nos Forgotten Realms</div>
-            </div>
-          </div>
-        </button>
-
-        <!-- Continuar -->
-        <button onclick="continueFromStorage()" id="btn-continue" style="background:rgba(200,168,74,.06);border:1px solid rgba(200,168,74,.28);border-radius:12px;padding:1rem 1.2rem;text-align:left;cursor:pointer;transition:all .25s;display:block;width:100%;position:relative;overflow:hidden"
-          onmouseover="this.style.borderColor='rgba(200,168,74,.6)';this.style.background='rgba(200,168,74,.12)'"
-          onmouseout="this.style.borderColor='rgba(200,168,74,.28)';this.style.background='rgba(200,168,74,.06)'">
-          <div style="display:flex;align-items:center;gap:.7rem">
-            <div style="width:36px;height:36px;border-radius:8px;background:rgba(200,168,74,.12);border:1px solid rgba(200,168,74,.3);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">📖</div>
-            <div>
-              <div style="font-family:'Cinzel',serif;font-size:.82rem;color:#e8c860;margin-bottom:.2rem;letter-spacing:.5px">Continuar Aventura</div>
-              <div id="continue-info" style="font-family:'Cormorant Garamond',serif;font-size:.8rem;color:rgba(232,210,170,.5);font-style:italic">Retomar save anterior</div>
-            </div>
-          </div>
-        </button>
-
-        <!-- Importar -->
-        <label style="background:rgba(45,122,74,.06);border:1px solid rgba(45,122,74,.28);border-radius:12px;padding:1rem 1.2rem;text-align:left;cursor:pointer;display:block;transition:all .25s"
-          onmouseover="this.style.borderColor='rgba(45,122,74,.6)';this.style.background='rgba(45,122,74,.12)'"
-          onmouseout="this.style.borderColor='rgba(45,122,74,.28)';this.style.background='rgba(45,122,74,.06)'">
-          <div style="display:flex;align-items:center;gap:.7rem">
-            <div style="width:36px;height:36px;border-radius:8px;background:rgba(45,122,74,.12);border:1px solid rgba(45,122,74,.3);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">📥</div>
-            <div>
-              <div style="font-family:'Cinzel',serif;font-size:.82rem;color:#6dbf6d;margin-bottom:.2rem;letter-spacing:.5px">Importar Save</div>
-              <div style="font-family:'Cormorant Garamond',serif;font-size:.8rem;color:rgba(232,210,170,.5);font-style:italic">Carregar arquivo .json</div>
-            </div>
-          </div>
-          <input type="file" accept=".json" style="display:none" onchange="importSaveFromMenu(event)"/>
-        </label>
-
-      </div>
-
-      <!-- Links inferiores -->
-      <div style="text-align:center;margin-top:1.2rem;display:flex;flex-direction:column;gap:.5rem;align-items:center">
-        <button onclick="showStep('step-patchnotes')" style="background:rgba(107,63,160,.08);border:1px solid rgba(107,63,160,.3);border-radius:8px;padding:.4rem 1rem;color:var(--arc2);font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:1px;cursor:pointer;transition:all .2s;text-transform:uppercase"
-          onmouseover="this.style.borderColor='rgba(165,105,189,.6)'" onmouseout="this.style.borderColor='rgba(107,63,160,.3)'">
-          📜 Notas da Versão
-        </button>
-        <button onclick="showStep('step-api')" style="background:none;border:none;color:rgba(200,168,74,.3);font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:color .2s"
-          onmouseover="this.style.color='rgba(200,168,74,.7)'" onmouseout="this.style.color='rgba(200,168,74,.3)'">
-          🔑 Trocar chave de API
-        </button>
-      </div>
+  <!-- ── TÍTULO DO SISTEMA ── -->
+  <div style="text-align:center;margin-bottom:1.6rem;position:relative">
+    <!-- Ornamento topo -->
+    <div style="display:flex;align-items:center;gap:.6rem;justify-content:center;margin-bottom:.8rem">
+      <div style="height:1px;flex:1;max-width:60px;background:linear-gradient(90deg,transparent,rgba(200,168,74,.4))"></div>
+      <span style="font-size:.55rem;color:rgba(200,168,74,.35);letter-spacing:3px;font-family:'Cinzel',serif">D&amp;D 5e · FORGOTTEN REALMS</span>
+      <div style="height:1px;flex:1;max-width:60px;background:linear-gradient(90deg,rgba(200,168,74,.4),transparent)"></div>
     </div>
+    <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(1.6rem,5.5vw,2.2rem);color:#c8a040;letter-spacing:2px;line-height:1.1;text-shadow:0 0 40px rgba(200,168,74,.3),0 2px 4px rgba(0,0,0,.8)">Taverna das</div>
+    <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(1.6rem,5.5vw,2.2rem);color:#c0304a;letter-spacing:2px;line-height:1.1;text-shadow:0 0 40px rgba(180,30,50,.4),0 2px 4px rgba(0,0,0,.8)">Crônicas</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.88rem;color:rgba(200,168,74,.4);margin-top:.5rem">Narrador IA · D&amp;D 5e · Forgotten Realms</div>
+    <!-- Linha decorativa -->
+    <div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin-top:.8rem">
+      <div style="height:1px;width:30px;background:linear-gradient(90deg,transparent,rgba(200,168,74,.3))"></div>
+      <div style="font-size:.5rem;color:rgba(200,168,74,.25)">✦ ✦ ✦</div>
+      <div style="height:1px;width:30px;background:linear-gradient(90deg,rgba(200,168,74,.3),transparent)"></div>
+    </div>
+  </div>
+
+  <!-- ── STATUS BAR: API + Google ── -->
+  <div id="menu-status-bar" style="margin-bottom:1.2rem;display:flex;flex-direction:column;gap:.4rem">
+
+    <!-- Status da chave Gemini -->
+    <div id="menu-api-status" style="display:flex;align-items:center;gap:.5rem;background:rgba(0,0,0,.35);border:1px solid rgba(200,168,74,.12);border-radius:8px;padding:.45rem .75rem">
+      <div id="menu-api-dot" style="width:7px;height:7px;border-radius:50%;background:rgba(200,168,74,.3);flex-shrink:0"></div>
+      <span id="menu-api-label" style="font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.45);letter-spacing:.5px;flex:1">API Gemini: não configurada</span>
+      <button onclick="showStep('step-api')" id="menu-api-btn" style="background:rgba(200,168,74,.1);border:1px solid rgba(200,168,74,.25);border-radius:5px;padding:2px 8px;font-family:'Cinzel',serif;font-size:.48rem;color:var(--gold);cursor:pointer;letter-spacing:.5px">Configurar</button>
+    </div>
+
+    <!-- Status do usuário Google -->
+    <div id="google-user-badge" style="display:none;align-items:center;gap:.5rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.45rem .75rem">
+      <img id="google-avatar" src="" width="22" height="22" style="border-radius:50%;display:none;flex-shrink:0"/>
+      <div style="flex:1;min-width:0">
+        <div id="google-name" style="font-family:'Cinzel',serif;font-size:.58rem;color:#e8dfc8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+        <div id="google-email" style="font-family:'Cinzel',serif;font-size:.48rem;color:rgba(200,168,74,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+      </div>
+      <button onclick="signOut()" style="background:none;border:none;font-family:'Cinzel',serif;font-size:.48rem;color:rgba(200,168,74,.3);cursor:pointer;white-space:nowrap;padding:2px 4px">Sair</button>
+    </div>
+  </div>
+
+  <!-- ── FRASE FLAVOR ── -->
+  <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(200,168,74,.55);text-align:center;margin-bottom:1.2rem;line-height:1.6;padding:0 .5rem">
+    "As portas da taverna se abrem. O que traz você até aqui?"
+  </p>
+
+  <!-- ── AÇÕES PRINCIPAIS ── -->
+  <div style="display:flex;flex-direction:column;gap:.7rem;margin-bottom:1rem">
+
+    <!-- Nova Aventura -->
+    <button onclick="showStep('step-new')" style="background:linear-gradient(135deg,rgba(155,35,53,.12),rgba(100,15,30,.1));border:1px solid rgba(155,35,53,.4);border-radius:12px;padding:1rem 1.2rem;text-align:left;cursor:pointer;transition:all .25s;display:block;width:100%;position:relative;overflow:hidden"
+      onmouseover="this.style.borderColor='rgba(200,50,70,.65)';this.style.background='linear-gradient(135deg,rgba(155,35,53,.22),rgba(100,15,30,.18))'"
+      onmouseout="this.style.borderColor='rgba(155,35,53,.4)';this.style.background='linear-gradient(135deg,rgba(155,35,53,.12),rgba(100,15,30,.1))'">
+      <div style="position:absolute;top:0;right:0;width:80px;height:100%;background:linear-gradient(270deg,rgba(155,35,53,.1),transparent);pointer-events:none"></div>
+      <div style="display:flex;align-items:center;gap:.8rem">
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(155,35,53,.2);border:1px solid rgba(155,35,53,.4);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">⚔</div>
+        <div>
+          <div style="font-family:'Cinzel',serif;font-size:.85rem;color:#e06060;margin-bottom:.25rem;letter-spacing:.5px">Nova Aventura</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:.82rem;color:rgba(232,210,170,.5);font-style:italic">Criar personagem e começar nos Forgotten Realms</div>
+        </div>
+        <div style="margin-left:auto;font-size:.8rem;color:rgba(200,50,70,.4)">›</div>
+      </div>
+    </button>
+
+    <!-- Continuar -->
+    <button onclick="continueFromStorage()" id="btn-continue" style="background:linear-gradient(135deg,rgba(200,168,74,.07),rgba(160,120,30,.05));border:1px solid rgba(200,168,74,.28);border-radius:12px;padding:1rem 1.2rem;text-align:left;cursor:pointer;transition:all .25s;display:block;width:100%"
+      onmouseover="this.style.borderColor='rgba(200,168,74,.6)';this.style.background='linear-gradient(135deg,rgba(200,168,74,.15),rgba(160,120,30,.12))'"
+      onmouseout="this.style.borderColor='rgba(200,168,74,.28)';this.style.background='linear-gradient(135deg,rgba(200,168,74,.07),rgba(160,120,30,.05))'">
+      <div style="display:flex;align-items:center;gap:.8rem">
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(200,168,74,.1);border:1px solid rgba(200,168,74,.3);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">📖</div>
+        <div>
+          <div style="font-family:'Cinzel',serif;font-size:.85rem;color:#e8c860;margin-bottom:.25rem;letter-spacing:.5px">Continuar Aventura</div>
+          <div id="continue-info" style="font-family:'Cormorant Garamond',serif;font-size:.82rem;color:rgba(232,210,170,.5);font-style:italic">Retomar save anterior</div>
+        </div>
+        <div style="margin-left:auto;font-size:.8rem;color:rgba(200,168,74,.3)">›</div>
+      </div>
+    </button>
+
+    <!-- Importar Save -->
+    <label style="background:linear-gradient(135deg,rgba(45,122,74,.07),rgba(30,80,50,.05));border:1px solid rgba(45,122,74,.28);border-radius:12px;padding:1rem 1.2rem;text-align:left;cursor:pointer;display:block;transition:all .25s"
+      onmouseover="this.style.borderColor='rgba(45,122,74,.6)';this.style.background='linear-gradient(135deg,rgba(45,122,74,.15),rgba(30,80,50,.12))'"
+      onmouseout="this.style.borderColor='rgba(45,122,74,.28)';this.style.background='linear-gradient(135deg,rgba(45,122,74,.07),rgba(30,80,50,.05))'">
+      <div style="display:flex;align-items:center;gap:.8rem">
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(45,122,74,.12);border:1px solid rgba(45,122,74,.3);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">📥</div>
+        <div>
+          <div style="font-family:'Cinzel',serif;font-size:.85rem;color:#6dbf6d;margin-bottom:.25rem;letter-spacing:.5px">Importar Save</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:.82rem;color:rgba(232,210,170,.5);font-style:italic">Carregar arquivo .json</div>
+        </div>
+        <div style="margin-left:auto;font-size:.8rem;color:rgba(45,122,74,.4)">›</div>
+      </div>
+      <input type="file" accept=".json" style="display:none" onchange="importSaveFromMenu(event)"/>
+    </label>
+
+  </div>
+
+  <!-- ── LINKS SECUNDÁRIOS ── -->
+  <div style="display:flex;flex-direction:column;align-items:center;gap:.45rem;padding-top:.6rem;border-top:1px solid rgba(200,168,74,.1)">
+    <button onclick="showStep('step-patchnotes')" style="background:rgba(107,63,160,.08);border:1px solid rgba(107,63,160,.25);border-radius:7px;padding:.38rem 1rem;color:var(--arc2);font-family:'Cinzel',serif;font-size:.56rem;letter-spacing:1px;cursor:pointer;transition:all .2s;text-transform:uppercase"
+      onmouseover="this.style.borderColor='rgba(165,105,189,.5)'" onmouseout="this.style.borderColor='rgba(107,63,160,.25)'">
+      📜 Notas da Versão
+    </button>
+    <button onclick="showStep('step-api')" style="background:none;border:none;color:rgba(200,168,74,.3);font-family:'Cinzel',serif;font-size:.54rem;letter-spacing:1px;cursor:pointer;transition:color .2s;text-transform:uppercase"
+      onmouseover="this.style.color='rgba(200,168,74,.65)'" onmouseout="this.style.color='rgba(200,168,74,.3)'">
+      🔑 Trocar Chave de API
+    </button>
+  </div>
+
+</div>
 
   </div><!-- /ss-scroller -->
 </div>
@@ -1894,6 +1956,60 @@ function signOut(){
 }
 
 // Restaurar sessão Google se já logou antes
+function apiKeyBack(){
+  // Se tem apiKey ou googleUser salvo, ir pro menu; senão ir pro hero
+  if(apiKey || localStorage.getItem('killyn_google_user')){
+    showStep('step-menu');
+  } else {
+    showStartHero();
+  }
+}
+function updateApiStatus(){
+  var dot=document.getElementById('api-status-dot');
+  var txt=document.getElementById('api-status-text');
+  if(!dot||!txt) return;
+  if(apiKey){
+    dot.style.background='#4aba4a';
+    dot.style.boxShadow='0 0 6px rgba(70,180,70,.5)';
+    txt.textContent='API GEMINI ATIVA';
+    txt.style.color='rgba(120,200,120,.7)';
+  } else {
+    dot.style.background='rgba(200,168,74,.4)';
+    dot.style.boxShadow='none';
+    txt.textContent='API NÃO CONFIGURADA';
+    txt.style.color='rgba(200,168,74,.45)';
+  }
+}
+
+function showApiStep(){
+  // Mostrar botão "Voltar" se já tem chave configurada
+  var backBtn = document.getElementById('api-back-btn');
+  if(backBtn) backBtn.style.display = apiKey ? 'block' : 'none';
+  // Pre-preencher o input com a chave atual (mascarada)
+  var inp = document.getElementById('api-inp');
+  if(inp && apiKey) inp.placeholder = 'Chave ativa — digite para substituir';
+}
+
+function updateMenuApiStatus(){
+  var dot=document.getElementById('menu-api-dot');
+  var lbl=document.getElementById('menu-api-label');
+  var btn=document.getElementById('menu-api-btn');
+  if(!dot||!lbl) return;
+  if(apiKey && apiKey.startsWith('AIza')){
+    dot.style.background='#45b06a';
+    dot.style.boxShadow='0 0 6px rgba(69,176,106,.5)';
+    lbl.textContent='API Gemini: ativa ✓';
+    lbl.style.color='rgba(69,176,106,.8)';
+    if(btn) btn.textContent='Trocar';
+  } else {
+    dot.style.background='rgba(200,168,74,.3)';
+    dot.style.boxShadow='none';
+    lbl.textContent='API Gemini: não configurada';
+    lbl.style.color='rgba(200,168,74,.45)';
+    if(btn) btn.textContent='Configurar';
+  }
+}
+
 function restoreGoogleSession(){
   // Restaurar usuário Google do localStorage
   var saved = localStorage.getItem('killyn_google_user');
@@ -6186,7 +6302,7 @@ function showStep(id){
     if(inner && el.parentElement !== inner) inner.appendChild(el);
     el.style.display    = 'block';
     el.style.visibility = 'visible';
-    if(id==='step-menu'){ checkStorageSave(); restoreGoogleSession(); }
+    if(id==='step-menu'){ checkStorageSave(); restoreGoogleSession(); updateApiStatus(); }
   }
 }
 
@@ -6623,17 +6739,26 @@ function selectRegion(id){
 }
 
 function confirmApiKey(){
-  var inp = document.getElementById('api-inp');
-  var k = inp ? inp.value.trim() : '';
-  if(!k || !k.startsWith('AIza')){
+  var inp=document.getElementById('api-inp');
+  var k=inp?inp.value.trim():'';
+  if(!k||!k.startsWith('AIza')){
     alert('Chave inválida. Deve começar com AIza...');
     return;
   }
-  apiKey = k;
-  localStorage.setItem('killyn_gemini_key', k);
-  var ss = document.getElementById('start-screen');
-  if(ss){ ss.style.display='flex'; ss.style.visibility='visible'; }
-  showStep('step-menu');
+  apiKey=k;
+  localStorage.setItem('killyn_gemini_key',k);
+  var ss=document.getElementById('start-screen');
+  if(ss){ss.style.display='flex';ss.style.visibility='visible';}
+  // Se estava tentando iniciar jogo, voltar ao último painel do step-new
+  if(window._pendingNewGame){
+    window._pendingNewGame=false;
+    // Mostrar step-new diretamente no painel 4 (Resumo)
+    var snEl=document.getElementById('step-new');
+    if(snEl){snEl.style.display='block';snEl.style.visibility='visible';}
+    ccStep(4); // ir direto para o painel de resumo/história
+  } else {
+    showStep('step-menu');
+  }
 }
 
 function saveKeyModal(){
@@ -6750,8 +6875,8 @@ function setCampaignTitle(title,sub){
 async function startNewGame(){
   // Verificar pré-requisitos
   if(!apiKey){
-    // Mostrar mensagem visível e redirecionar para inserir chave
-    showSaveToast('⚠ Configure sua chave de API Gemini primeiro!');
+    showSaveToast('⚠ Configure sua chave Gemini primeiro!');
+    window._pendingNewGame = true; // flag para retornar ao step-new após api
     showStep('step-api');
     return;
   }
@@ -6789,6 +6914,9 @@ async function startNewGame(){
   hist=[];quests=[];
   CONQUISTAS=[];
   window._processedGold=new Set();
+  // Limpar chat visual ANTES de iniciar
+  var chatEl=document.getElementById('chat');
+  if(chatEl) chatEl.innerHTML='';
   // Reset combat
   combatants=[];extraCombatants=[];currentTurn=0;roundNum=1;combatActive=false;
   var combatBar=document.getElementById('combat-bar');if(combatBar)combatBar.classList.remove('active');
@@ -6939,7 +7067,10 @@ async function startNewGame(){
   // Store char info for system prompt
   newCharData={name,cls,race,bg,align,story,region:region.name,regionDesc:region.desc,attrs:newAttrs};
 
-  // Mostrar loading screen (fixed, independente do start-screen)
+  // 1. Esconder step-new imediatamente
+  var snEl=document.getElementById('step-new');
+  if(snEl){snEl.style.display='none';snEl.style.visibility='hidden';}
+  // 2. Mostrar loading screen (position:fixed z-index:9999)
   showLoadingScreen('Consultando os Tomos Esquecidos...');
   var bar=document.getElementById('gen-bar');
   var status=document.getElementById('gen-status');
@@ -6987,15 +7118,15 @@ async function startNewGame(){
       +' Crie a cena de abertura da aventura nos Forgotten Realms: apresente o local com detalhes canônicos, a situação inicial e um gancho de aventura envolvente e original adequado ao nível 1.'
       +' IMPORTANTE: NÃO inclua nenhum JSON ou bloco de UPDATES nesta resposta — apenas a narração pura. Termine com: O que você faz?';
 
-    showApp();         // esconde start-screen, mostra app
-    hideLoadingScreen(); // remove tela de loading
+    // Mostrar app e preparar UI ANTES do await (sem tela preta)
+    showApp();
     init();
     magicItems=[];diary=[];
     updHP();updCA();updXP();renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();renderSpells();renderMagicItems();renderDiary();renderAllCoins();
-    // Update header with character info
     updateHeader(name,race,cls+(subclass?' — '+subclass:''),1,region.name);
-
+    // Loading spinner no chat enquanto API responde
     if(bar)bar.style.width='100%';
+    hideLoadingScreen(); // remover loading screen — app já está visível
     addLoad();
     var r=await callAIWithSystem(openingPrompt,dynSystem);
     rmLoad();
@@ -7130,13 +7261,19 @@ function hideLoadingScreen(){
   if(el){ el.style.display='none'; el.style.visibility='hidden'; }
 }
 function showApp(){
-  // Esconder start-screen e mostrar app
-  var ss = document.getElementById('start-screen');
-  if(ss){ ss.style.display='none'; ss.style.visibility='hidden'; }
-  var overlay = document.getElementById('ss-steps-overlay');
+  // Esconder start-screen e todos os steps fixed
+  var ss=document.getElementById('start-screen');
+  if(ss){ss.style.display='none';ss.style.visibility='hidden';}
+  var overlay=document.getElementById('ss-steps-overlay');
   if(overlay) overlay.style.display='none';
-  var app = document.getElementById('app');
-  if(app){ app.style.display=''; app.style.visibility='visible'; }
+  // Esconder steps fixed (position:fixed independentes)
+  ['step-new','step-generating'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){el.style.display='none';el.style.visibility='hidden';}
+  });
+  // Mostrar app
+  var app=document.getElementById('app');
+  if(app){app.style.display='flex';app.style.visibility='visible';}
 }
 
 // ─── START ───
@@ -7148,9 +7285,11 @@ if(_savedKey){
   apiKey = _savedKey;
   showStep('step-menu');
   checkStorageSave();
+  updateMenuApiStatus();
 } else {
-  // Sem chave: mostrar hero com botão de login Google / chave manual
-  // start-screen já está display:flex por padrão
+  // Sem chave: mostrar step-api PRIMEIRO (prioridade máxima)
+  // O step-api será movido para o overlay pelo showStep
+  showStep('step-api');
 }
 </script>
 <div id="step-generating" style="display:none;position:fixed;inset:0;z-index:9999;background:#060408;flex-direction:column;align-items:center;justify-content:center;visibility:hidden">
