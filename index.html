@@ -1479,18 +1479,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   <!-- ════════════════════════════════════════════
        STEP-GENERATING: Tela de carregamento
   ════════════════════════════════════════════ -->
-  <div id="step-generating" style="display:none;position:absolute;inset:0;z-index:6;background:#060408;flex-direction:column;align-items:center;justify-content:center;visibility:hidden">
-      <div style="margin-bottom:1.5rem">
-        <div style="width:72px;height:72px;border-radius:50%;border:2px solid rgba(200,168,74,.3);border-top-color:var(--gold2);display:inline-flex;align-items:center;justify-content:center;animation:spin 1.5s linear infinite">
-          <span style="font-size:1.8rem">🎲</span>
-        </div>
-      </div>
-      <div style="font-family:'Cinzel Decorative',serif;font-size:1rem;color:var(--gold2);margin-bottom:.5rem;letter-spacing:1px">Tecendo o Destino</div>
-      <div id="gen-status" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(200,168,74,.55);margin-bottom:1.4rem">O Mestre consulta os tomos antigos...</div>
-      <div style="width:220px;height:3px;background:rgba(200,168,74,.1);border-radius:2px;margin:0 auto;overflow:hidden">
-        <div id="gen-bar" style="height:100%;background:linear-gradient(90deg,var(--blood),var(--gold2));border-radius:2px;width:0%;transition:width 1.5s ease;box-shadow:0 0 8px rgba(200,168,74,.4)"></div>
-      </div>
-    </div>
+  
 
   <!-- ════════════════════════════════════════════
        STEP-PATCHNOTES: Notas de versão
@@ -6261,40 +6250,40 @@ let selectedRegion='waterdeep';
 function showStep(id){
   if(id==='step-api-hidden'){ showStartHero(); return; }
 
-  var ALL = ['step-api','step-menu','step-new','step-generating','step-patchnotes'];
-  var OVERLAY_STEPS = ['step-api','step-menu','step-patchnotes'];
-  var FULLSCREEN_STEPS = ['step-new','step-generating'];
+  var OVERLAY_STEPS    = ['step-api','step-menu','step-patchnotes'];
+  var FULLSCREEN_STEPS = ['step-new'];
+  var ALL_STEPS        = OVERLAY_STEPS.concat(FULLSCREEN_STEPS);
 
-  var ss      = document.getElementById('start-screen');
-  var overlay = document.getElementById('ss-steps-overlay');
-  var inner   = document.getElementById('ss-steps-inner');
-  var scroller= document.getElementById('ss-scroller');
+  var ss       = document.getElementById('start-screen');
+  var overlay  = document.getElementById('ss-steps-overlay');
+  var inner    = document.getElementById('ss-steps-inner');
+  var scroller = document.getElementById('ss-scroller');
 
-  // Garantir start-screen visível
-  if(ss){ ss.style.display='flex'; ss.style.visibility='visible'; }
-
-  // Esconder todos os steps
-  ALL.forEach(function(s){
-    var el=document.getElementById(s);
+  // step-generating é position:fixed independente — não é gerenciado aqui
+  // Só esconde os outros
+  ALL_STEPS.forEach(function(s){
+    var el = document.getElementById(s);
     if(el){ el.style.display='none'; el.style.visibility='hidden'; }
   });
 
   var el = document.getElementById(id);
-  if(!el){ console.warn('[showStep] elemento nao encontrado:', id); return; }
+  if(!el){ console.warn('[showStep] nao encontrado:', id); return; }
 
-  if(FULLSCREEN_STEPS.indexOf(id) >= 0){
-    // Criação / Loading: cobre o start-screen inteiro
+  if(id === 'step-new'){
+    // Criação: cobre o start-screen inteiro
+    if(ss){ ss.style.display='flex'; ss.style.visibility='visible'; }
     if(scroller) scroller.style.display='none';
     if(overlay)  overlay.style.display='none';
-    el.style.display = (id==='step-generating') ? 'flex' : 'block';
+    el.style.display    = 'block';
     el.style.visibility = 'visible';
-    if(id==='step-new') ccStep(0);
+    ccStep(0);
   } else {
     // Menu / API / Patchnotes: overlay sobre o hero
+    if(ss){ ss.style.display='flex'; ss.style.visibility='visible'; }
     if(scroller) scroller.style.display='flex';
     if(overlay)  overlay.style.display='flex';
     if(inner && el.parentElement !== inner) inner.appendChild(el);
-    el.style.display = 'block';
+    el.style.display    = 'block';
     el.style.visibility = 'visible';
     if(id==='step-menu'){ checkStorageSave(); restoreGoogleSession(); }
   }
@@ -6792,13 +6781,8 @@ function importSaveFromMenu(event){
 }
 
 function hidStartScreen(){
-  var ss = document.getElementById('start-screen');
-  if(ss){ ss.style.display='none'; ss.style.visibility='hidden'; }
-  var overlay = document.getElementById('ss-steps-overlay');
-  if(overlay) overlay.style.display='none';
-  // CRÍTICO: revelar o app — sem isso a tela fica preta
-  var app = document.getElementById('app');
-  if(app){ app.style.display=''; app.style.visibility='visible'; }
+  // Wrapper de retrocompatibilidade — chama showApp()
+  showApp();
 }
 
 function goToMainMenu(){
@@ -7031,12 +7015,11 @@ async function startNewGame(){
   // Store char info for system prompt
   newCharData={name,cls,race,bg,align,story,region:region.name,regionDesc:region.desc,attrs:newAttrs};
 
-  // Show generating screen
-  showStep('step-generating');
+  // Mostrar loading screen (fixed, independente do start-screen)
+  showLoadingScreen('Consultando os Tomos Esquecidos...');
   var bar=document.getElementById('gen-bar');
   var status=document.getElementById('gen-status');
   if(bar)bar.style.width='30%';
-  if(status)status.textContent='Consultando os Tomos Esquecidos...';
 
   setTimeout(function(){if(bar)bar.style.width='65%';if(status)status.textContent='Tecendo os fios do destino...';},1200);
   setTimeout(function(){if(bar)bar.style.width='90%';if(status)status.textContent='O Mestre prepara o cenário...';},2500);
@@ -7080,7 +7063,8 @@ async function startNewGame(){
       +' Crie a cena de abertura da aventura nos Forgotten Realms: apresente o local com detalhes canônicos, a situação inicial e um gancho de aventura envolvente e original adequado ao nível 1.'
       +' IMPORTANTE: NÃO inclua nenhum JSON ou bloco de UPDATES nesta resposta — apenas a narração pura. Termine com: O que você faz?';
 
-    hidStartScreen();
+    showApp();         // esconde start-screen, mostra app
+    hideLoadingScreen(); // remove tela de loading
     init();
     magicItems=[];diary=[];
     updHP();updCA();updXP();renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();renderSpells();renderMagicItems();renderDiary();renderAllCoins();
@@ -7132,10 +7116,8 @@ async function startNewGame(){
   if(window.CAMPAIGN_TITLE) setCampaignTitle(window.CAMPAIGN_TITLE,(window.CHAR_RACE||'')+' '+(window.CHAR_CLASS||'')+' · Nível '+charLevel+' · '+(window.CHAR_REGION||''));
     saveProgress('auto');
   }catch(e){
-    // Mostrar app mesmo com erro para não ficar tela preta
-    var app=document.getElementById('app');
-    if(app){app.style.display='';app.style.visibility='visible';}
-    hidStartScreen();
+    showApp();           // garantir que o app aparece mesmo com erro
+    hideLoadingScreen(); // remover loading
     addMsg('sys','Erro ao gerar campanha. Tente novamente: '+e.message);
     console.error(e);
   }
@@ -7198,6 +7180,29 @@ callAI=async function(userMsg){
   return _origCallAI(userMsg);
 };
 
+// ─── HELPERS DE LOADING ───
+function showLoadingScreen(status){
+  var el = document.getElementById('step-generating');
+  if(el){ el.style.display='flex'; el.style.visibility='visible'; }
+  var s = document.getElementById('gen-status');
+  if(s && status) s.textContent = status;
+  var b = document.getElementById('gen-bar');
+  if(b) b.style.width = '0%';
+}
+function hideLoadingScreen(){
+  var el = document.getElementById('step-generating');
+  if(el){ el.style.display='none'; el.style.visibility='hidden'; }
+}
+function showApp(){
+  // Esconder start-screen e mostrar app
+  var ss = document.getElementById('start-screen');
+  if(ss){ ss.style.display='none'; ss.style.visibility='hidden'; }
+  var overlay = document.getElementById('ss-steps-overlay');
+  if(overlay) overlay.style.display='none';
+  var app = document.getElementById('app');
+  if(app){ app.style.display=''; app.style.visibility='visible'; }
+}
+
 // ─── START ───
 initParticleCanvas();
 restoreGoogleSession();
@@ -7212,5 +7217,17 @@ if(_savedKey){
   // start-screen já está display:flex por padrão
 }
 </script>
+<div id="step-generating" style="display:none;position:fixed;inset:0;z-index:9999;background:#060408;flex-direction:column;align-items:center;justify-content:center;visibility:hidden">
+      <div style="margin-bottom:1.5rem">
+        <div style="width:72px;height:72px;border-radius:50%;border:2px solid rgba(200,168,74,.3);border-top-color:var(--gold2);display:inline-flex;align-items:center;justify-content:center;animation:spin 1.5s linear infinite">
+          <span style="font-size:1.8rem">🎲</span>
+        </div>
+      </div>
+      <div style="font-family:'Cinzel Decorative',serif;font-size:1rem;color:var(--gold2);margin-bottom:.5rem;letter-spacing:1px">Tecendo o Destino</div>
+      <div id="gen-status" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(200,168,74,.55);margin-bottom:1.4rem">O Mestre consulta os tomos antigos...</div>
+      <div style="width:220px;height:3px;background:rgba(200,168,74,.1);border-radius:2px;margin:0 auto;overflow:hidden">
+        <div id="gen-bar" style="height:100%;background:linear-gradient(90deg,var(--blood),var(--gold2));border-radius:2px;width:0%;transition:width 1.5s ease;box-shadow:0 0 8px rgba(200,168,74,.4)"></div>
+      </div>
+    </div>
 </body>
 </html>
