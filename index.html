@@ -63,7 +63,7 @@
 
   --nav-h:68px;
   --sidebar-w:240px;
-  --hdr-h:48px;
+  --hdr-h:52px;
 }
 
 html,body{
@@ -247,12 +247,15 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 /* ── ATTRIBUTES ── */
 .attrs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.3rem}
 .attr-box{
-  background:var(--surface);
-  border:1px solid var(--border);border-radius:8px;
-  text-align:center;padding:.35rem .15rem;
-  transition:all .2s;cursor:default;
-  position:relative;overflow:hidden;
+  background:rgba(0,0,0,.3);
+  border:1px solid rgba(200,168,74,.15);
+  border-radius:8px;
+  padding:.45rem .25rem;
+  text-align:center;
+  transition:border .2s, background .2s;
+  cursor:default;
 }
+.attr-box:hover{border-color:rgba(200,168,74,.35);background:rgba(200,168,74,.05);}
 .attr-box::before{
   content:'';position:absolute;inset:0;
   background:radial-gradient(circle at 50% 0%,rgba(200,168,74,.06),transparent 70%);
@@ -1070,13 +1073,157 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .chat-area::-webkit-scrollbar{width:3px}
 .chat-area::-webkit-scrollbar-thumb{background:rgba(200,168,74,.2);border-radius:2px}
 /* ── Input field ── */
-#inp{background:rgba(4,2,10,.8);border:1px solid rgba(200,168,74,.2);border-radius:9px;color:#e8dfc8;font-family:'Cormorant Garamond',serif;font-size:.95rem;padding:.55rem .8rem;flex:1;outline:none;transition:border .2s,box-shadow .2s}
+#inp{background:rgba(4,2,10,.8);border:1px solid rgba(200,168,74,.2);border-radius:9px;color:#e8dfc8;font-family:'Cormorant Garamond',serif;font-size:1rem;padding:.65rem .9rem;flex:1;outline:none;transition:border .2s,box-shadow .2s}
 #inp:focus{border-color:rgba(200,168,74,.5);box-shadow:0 0 0 3px rgba(200,168,74,.07)}
 /* ── Mobile grids ── */
 @media(max-width:740px){
   #race-grid,#class-grid{grid-template-columns:repeat(3,1fr)!important;gap:.3rem!important}
   #attr-builder{grid-template-columns:repeat(3,1fr)!important;gap:.4rem!important}
   #region-list{gap:.3rem!important}
+}
+
+/* ══ UX: Hierarquia visual no sidebar ══ */
+.sb-vital-group{
+  background:rgba(200,168,74,.05);
+  border:1px solid rgba(200,168,74,.15);
+  border-radius:10px;
+  padding:.6rem .7rem;
+  margin-bottom:.5rem;
+}
+.sb-section{
+  margin-bottom:.4rem;
+}
+.sb-section-hdr{
+  font-family:'Cinzel',serif;
+  font-size:.56rem;
+  color:rgba(200,168,74,.5);
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  margin-bottom:.35rem;
+  display:flex;
+  align-items:center;
+  gap:.3rem;
+  cursor:pointer;
+  user-select:none;
+}
+.sb-section-hdr:hover{color:rgba(200,168,74,.8);}
+
+/* ── HP display maior ── */
+.hp-mini{
+  font-family:'Cinzel',serif;
+  font-size:.8rem !important;
+  padding:3px 7px;
+  white-space:nowrap;
+}
+
+/* ── CA badge maior ── */
+.ca-badge{
+  font-family:'Cinzel',serif;
+  font-size:.8rem !important;
+  padding:3px 7px;
+}
+
+/* ── Atributos na sidebar ── */
+.attr-val{
+  font-family:'Cinzel',serif;
+  font-size:1.1rem;
+  color:var(--gold2);
+  line-height:1;
+}
+.attr-mod-display{
+  font-size:.75rem;
+  color:var(--text2);
+}
+.attr-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:.3rem;
+}
+.attr-cell{
+  background:rgba(0,0,0,.3);
+  border:1px solid rgba(200,168,74,.12);
+  border-radius:7px;
+  padding:.35rem .2rem;
+  text-align:center;
+}
+.attr-name{
+  font-family:'Cinzel',serif;
+  font-size:.48rem;
+  color:rgba(200,168,74,.6);
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+.attr-value{
+  font-family:'Cinzel',serif;
+  font-size:.95rem;
+  color:var(--gold2);
+  line-height:1.1;
+}
+.attr-modifier{
+  font-size:.7rem;
+  color:var(--text3);
+}
+
+/* ── Quick actions bar ── */
+.qa-bar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.3rem;
+  padding:.4rem;
+  background:rgba(0,0,0,.2);
+  border-radius:8px;
+  margin-bottom:.3rem;
+}
+.qa-btn{
+  font-family:'Cinzel',serif;
+  font-size:.55rem;
+  color:var(--text2);
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(200,168,74,.2);
+  border-radius:6px;
+  padding:4px 8px;
+  cursor:pointer;
+  transition:all .15s;
+  white-space:nowrap;
+}
+.qa-btn:hover{background:rgba(200,168,74,.12);color:var(--gold2);}
+
+/* ── Chat bubbles maior ── */
+.bbl{
+  font-size:1.02rem !important;
+  line-height:1.75 !important;
+  padding:.7rem 1rem !important;
+}
+
+/* ── Efeitos de tela nos overlays (step-new, step-api, menus) ── */
+#step-new::before,
+#step-api::before,
+#step-patchnotes::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 30%, rgba(180,100,20,.06) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 80% 70%, rgba(155,35,53,.04) 0%, transparent 60%);
+}
+#ss-steps-overlay::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse 50% 50% at 50% 30%, rgba(180,100,20,.08) 0%, transparent 70%),
+    radial-gradient(ellipse 30% 40% at 20% 80%, rgba(107,63,160,.06) 0%, transparent 60%);
+}
+
+/* ── Partículas background para step-new ── */
+#step-new{
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 20%, rgba(155,35,53,.04) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 80% at 80% 60%, rgba(180,120,20,.03) 0%, transparent 60%),
+    #060408;
 }
 </style>
   <!-- Google Identity Services -->
@@ -2243,17 +2390,10 @@ function renderAttrs(){
   el.innerHTML=Object.entries(ATTRS).map(function(e){
     var a=e[0],v=e[1];
     var modVal=mod(v);
-    return'<div class="attr-box" data-attr="'+a+'">'
-      +'<div class="attr-lbl">'+a+'</div>'
-      +'<div class="attr-val">'+modVal+'</div>'
-      +'<div class="attr-score">'+v+'</div>'
-      +'<div style="display:flex;justify-content:center;gap:2px;margin-top:1px">'
-      +'<button class="attr-adj-btn" data-a="'+a+'" data-d="-1">−</button>'
-      +'<button class="attr-adj-btn" data-a="'+a+'" data-d="1">+</button>'
-      +'</div>'
-      +'</div>';
+    var modColor=v>=16?'#6ecfa0':v>=14?'#e6c76a':v<=8?'#e74c3c':'var(--text2)';
+    var valColor=v>=16?'rgba(110,207,160,.8)':v>=14?'rgba(230,199,106,.8)':v<=8?'rgba(231,76,60,.7)':'var(--gold2)';
+    return'<div class="attr-box" data-attr="'+a+'">'      +'<div class="attr-lbl" style="font-size:.5rem;letter-spacing:1px">'+a+'</div>'      +'<div class="attr-val" style="font-size:1.3rem;color:'+valColor+';line-height:1.1">'+modVal+'</div>'      +'<div class="attr-score" style="font-size:.78rem;color:var(--text3)">'+v+'</div>'      +'<div style="display:flex;justify-content:center;gap:2px;margin-top:2px">'      +'<button class="attr-adj-btn" data-a="'+a+'" data-d="-1">−</button>'      +'<button class="attr-adj-btn" data-a="'+a+'" data-d="1">+</button>'      +'</div>'      +'</div>';
   }).join('');
-  // Bind events after render
   el.querySelectorAll('.attr-adj-btn').forEach(function(btn){
     btn.addEventListener('click',function(){
       adjAttr(this.dataset.a,parseInt(this.dataset.d));
@@ -2261,7 +2401,11 @@ function renderAttrs(){
   });
   el.querySelectorAll('.attr-score').forEach(function(el2){
     var box=el2.closest('[data-attr]');
-    if(box) el2.addEventListener('click',function(){editAttr(box.dataset.attr);});
+    if(box) el2.addEventListener('click',function(){
+      var cur=ATTRS[box.dataset.attr];
+      var nv=parseInt(prompt('Valor de '+box.dataset.attr+' (3-20):',cur));
+      if(!isNaN(nv)&&nv>=3&&nv<=20){adjAttr(box.dataset.attr,nv-cur);}
+    });
   });
 }
 
@@ -5228,16 +5372,20 @@ function quickRollDice(diceStr){
   var label = document.getElementById('qr-label')?.value||diceStr;
   closeDynModal();
   var total = rollGenericDice(diceStr, label, mod);
-  // Auto-enviar resultado ao narrador
-  var msgToAI = (window._pendingRollCtx||'');
-  window._pendingRollCtx = '';
-  if(msgToAI){
-    // Pequeno delay para o toast aparecer antes
-    setTimeout(function(){
-      addLoad();
-      callAI(msgToAI).then(function(r){rmLoad();addMsg('dm',r.replace(/\n/g,'<br>'));}).catch(function(e){rmLoad();console.error(e);});
-    },300);
-  }
+  // Sempre enviar ao narrador automaticamente (não esperar o jogador digitar)
+  setTimeout(function(){
+    var ctx = window._pendingRollCtx||'';
+    window._pendingRollCtx = '';
+    if(!ctx) return;
+    addLoad();
+    callAI(ctx).then(function(r){
+      rmLoad();
+      addMsg('dm',r.replace(/\n/g,'<br>'));
+    }).catch(function(e){
+      rmLoad();
+      console.error('Roll AI error:',e);
+    });
+  },400);
 }
 
 function showRollToast(msg){const t=document.getElementById('roll-toast');t.textContent=msg;t.style.opacity='1';clearTimeout(rollToastTimer);rollToastTimer=setTimeout(()=>{t.style.opacity='0';},2500);}
@@ -5564,7 +5712,7 @@ function loadProgress(slot='auto'){
   quests=s.quests||[];attacks=s.attacks||[];abilities=s.abilities||[];
   equipped=s.equipped||{arma:null,armadura:null,escudo:null,acessorio:null};
   coins=s.coins||{PP:0,PO:10,PE:0,PA:0,PC:0};
-  charLevel=s.charLevel||2;charXP=s.charXP||300;
+  charLevel=s.charLevel||1;charXP=s.charXP||0;
   saveProficiencies=s.saveProficiencies||{FOR:true,CON:true,DES:false,INT:false,SAB:false,CAR:false};
   if(s.skillProficiencies)skillProficiencies=s.skillProficiencies;
   mapSrc=s.mapSrc||null;
@@ -6342,7 +6490,20 @@ function ccStep(n){
   if(n===1) buildClassGrid();
   if(n===2) buildRegionList();
   if(n===3){ buildAttrBuilder(); updateRacialBonusHint(); }
-  if(n===4) buildCharSummary();
+  if(n===4){
+    buildCharSummary();
+    // Atualizar resumo em tempo real quando campos mudam
+    setTimeout(function(){
+      ['new-name','new-align','new-bg','new-story'].forEach(function(id){
+        var el=document.getElementById(id);
+        if(el && !el._summaryListener){
+          el._summaryListener=true;
+          el.addEventListener('input',buildCharSummary);
+          el.addEventListener('change',buildCharSummary);
+        }
+      });
+    },100);
+  }
 }
 function ccNext(cur){
   if(cur===0){
@@ -6616,38 +6777,89 @@ function renderClassChoices(){
   list.innerHTML=choices.map(function(ch){return'<div style="margin-bottom:.5rem"><label class="cc-label">'+ch.label+'</label><select id="cc-choice-'+ch.id+'" class="cc-select">'+ch.opts.map(function(o){return'<option>'+o+'</option>';}).join('')+'</select></div>';}).join('');
 }
 function buildCharSummary(){
-  var el=document.getElementById('char-summary-content');if(!el)return;
-  var name=document.getElementById('new-name')?.value||'?';
-  var align=document.getElementById('new-align')?.value||'';var bg=document.getElementById('new-bg')?.value||'';
+  var el=document.getElementById('char-summary-content');
+  if(!el)return;
+  var name=document.getElementById('new-name')?.value||'Sem nome';
+  var align=document.getElementById('new-align')?.value||'Neutro';
+  var bg=document.getElementById('new-bg')?.value||'Forasteiro';
   var region=FR_REGIONS.find(function(r){return r.id===selectedRegion;})||FR_REGIONS[0];
-  var physParts=[];['phys-height','phys-build','phys-skin','phys-hair','phys-eyes'].forEach(function(id){var e=document.getElementById(id);if(e)physParts.push(e.value);});
+  var sub=_ccSelectedSubrace?(' ('+_ccSelectedSubrace+')'):'';
+  var sub1=_ccSelectedSubclass1?(' — '+_ccSelectedSubclass1):'';
+  var cls=_ccSelectedClass||'Guerreiro';
+  var race=_ccSelectedRace||'Humano';
+  var defs=CLASS_DEFAULTS[cls]||{hp:8};
+  var conVal=parseInt(document.getElementById('nb-CON')?.value)||14;
+  var conMod=Math.floor((conVal-10)/2);
+  var hp=defs.hp+(conMod>0?conMod:0);
+  // Atributos com bônus racial
+  var raceDef=RACES_DB[race]||{};
+  var raceBonus=raceDef.attrBonus||{};
+  var attrs=ATTR_NAMES.map(function(a){
+    var base=parseInt(document.getElementById('nb-'+a)?.value)||10;
+    return a+': '+(base>9?'':' ')+base;
+  }).join(' | ');
+  // Perícias selecionadas
+  var skills=Object.keys(window._ccSkills||{}).filter(function(k){return window._ccSkills[k];});
+  var bgSkills=BG_SKILLS[bg]||[];
+  var allSkills=skills.concat(bgSkills.filter(function(s){return skills.indexOf(s)<0;}));
+  // Aparência física
+  var physParts=[];
+  ['phys-height','phys-build','phys-skin','phys-hair','phys-eyes'].forEach(function(id){
+    var e=document.getElementById(id);if(e&&e.value)physParts.push(e.value);
+  });
   var appear=window._ccAppearance||'';if(appear)physParts.push(appear);
-  var sub=_ccSelectedSubrace?(' ('+_ccSelectedSubrace+')'):'';var sub1=_ccSelectedSubclass1?(' — '+_ccSelectedSubclass1):'';
-  var defs=CLASS_DEFAULTS[_ccSelectedClass]||{};var hp=defs.hp||8;
-  var conMod=Math.floor(((parseInt(document.getElementById('nb-CON')?.value)||14)-10)/2);
-  el.innerHTML='<b style="color:var(--gold2)">'+name+'</b> — '+_ccSelectedRace+sub+' '+_ccSelectedClass+sub1+'<br>'+'Alinhamento: '+align+' · Antecedente: '+bg+'<br>'+'Região: '+region.name+(region.start?' ('+region.start+')':'')+'<br>'+'PV iniciais: '+(hp+conMod)+'<br>'+(physParts.length?'Aparência: '+physParts.join(', ')+'<br>':'')+'<span style="color:var(--arc3)">Equipamento inicial carregado automaticamente.</span>';
+  // Ouro inicial estimado
+  var goldDef=STARTING_GOLD[cls]||{dice:5,sides:4,mult:10};
+  var goldMin=goldDef.dice*goldDef.mult;
+  var goldMax=goldDef.dice*goldDef.sides*goldDef.mult;
+  el.innerHTML=
+    '<div style="margin-bottom:.5rem">'    +'<span style="color:var(--gold2);font-weight:700;font-size:1rem">'+name+'</span>'    +' <span style="color:var(--text2)">— '+race+sub+' '+cls+sub1+'</span>'    +'</div>'    +'<div style="color:var(--text3);margin-bottom:.3rem;font-size:.82rem">'    +'Alinhamento: '+align+' · Antecedente: '+bg+'</div>'    +'<div style="color:var(--text3);margin-bottom:.3rem;font-size:.82rem">'    +'Região: '+region.name+'</div>'    +'<div style="margin-bottom:.5rem;padding:.4rem .6rem;background:rgba(200,168,74,.06);border-radius:6px;font-size:.75rem;font-family:Cinzel,serif;color:var(--text2)">'    +'❤ PV iniciais: '+hp+' · 🛡 CA base: 10+DES · ✨ Ouro: '+goldMin+'–'+goldMax+' PO'    +'</div>'    +(physParts.length?'<div style="color:var(--text3);margin-bottom:.3rem;font-size:.8rem">Aparência: '+physParts.join(', ')+'</div>':'')    +(allSkills.length?'<div style="color:rgba(90,200,130,.7);margin-bottom:.3rem;font-size:.78rem">📚 Perícias: '+allSkills.join(', ')+'</div>':'')    +'<div style="color:rgba(58,144,200,.7);font-size:.75rem;font-style:italic">✅ Equipamento inicial carregado automaticamente.</div>';
+  // Mostrar o div do resumo
+  var charSum=document.getElementById('char-summary');
+  if(charSum) charSum.style.display='block';
 }
 
 function buildAttrBuilder(){
   var el=document.getElementById('attr-builder');if(!el)return;
-  var cls=document.getElementById('new-class')?.value||'Guerreiro';
+  var cls=_ccSelectedClass||document.getElementById('new-class')?.value||'Guerreiro';
+  var race=_ccSelectedRace||'Humano';
   var defs=CLASS_DEFAULTS[cls]||CLASS_DEFAULTS['Guerreiro'];
-  el.innerHTML=ATTR_NAMES.map(function(a,i){
-    var vals=[15,14,13,12,10,8];
-    var v=defs.attrs[a]||vals[i];
+  // Bônus raciais para compensar no ponto-compra
+  var raceDef=RACES_DB[race]||{};
+  var raceBonus=raceDef.attrBonus||{};
+  // Custo de ponto-compra LdJ: valor→custo acumulado
+  var COST={8:0,9:1,10:2,11:3,12:4,13:5,14:7,15:9};
+  function calcPointsUsed(){
+    var used=0;
+    ATTR_NAMES.forEach(function(a){
+      var raw=parseInt(document.getElementById('nb-'+a)?.value)||8;
+      var base=Math.max(8,raw-(raceBonus[a]||0));
+      used+=COST[Math.min(15,Math.max(8,base))]||0;
+    });
+    return used;
+  }
+  el.innerHTML=ATTR_NAMES.map(function(a){
+    var suggested=defs.attrs[a]||10;
+    var v=suggested;
     var ms=fmtMod(v);
     var mc=v>=16?'#6ecfa0':v>=14?'#e6c76a':v<=8?'#e74c3c':'rgba(237,224,188,.6)';
-    return'<div class="attr-build-box">'
-      +'<div style="font-family:Cinzel,serif;font-size:.56rem;color:rgba(200,168,74,.8);text-transform:uppercase;letter-spacing:1.5px">'+a+'</div>'
-      +'<div style="display:flex;align-items:center;gap:6px;margin:2px 0">'
-      +'<button type="button" data-a="'+a+'" data-d="-1" class="attr-step-btn">−</button>'
-      +'<input type="number" id="nb-'+a+'" data-attr="'+a+'" min="3" max="20" value="'+v+'" class="attr-step-inp"'
-      +' style="width:42px;background:transparent;border:none;border-bottom:2px solid rgba(200,168,74,.35);font-family:Cinzel,serif;font-size:1.3rem;color:#e6c76a;outline:none;text-align:center;padding:2px 0"/>'
-      +'<button type="button" data-a="'+a+'" data-d="1" class="attr-step-btn">+</button>'
-      +'</div>'
-      +'<div id="nbm-'+a+'" style="font-family:Cinzel Decorative,serif;font-size:1rem;font-weight:700;color:'+mc+';transition:color .2s">'+ms+'</div>'
-      +'</div>';
+    var rb=raceBonus[a]?'<span style="font-size:.48rem;color:#9060cc;margin-left:2px">+'+raceBonus[a]+'✦</span>':'';
+    return'<div class="attr-build-box" style="position:relative">'      +'<div style="font-family:Cinzel,serif;font-size:.54rem;color:rgba(200,168,74,.8);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;justify-content:center;gap:2px">'+a+rb+'</div>'      +'<div style="display:flex;align-items:center;gap:4px;margin:3px 0">'      +'<button type="button" data-a="'+a+'" data-d="-1" class="attr-step-btn">−</button>'      +'<input type="number" id="nb-'+a+'" data-attr="'+a+'" min="8" max="15" value="'+v+'" class="attr-step-inp"'      +' style="width:40px;background:transparent;border:none;border-bottom:2px solid rgba(200,168,74,.35);font-family:Cinzel,serif;font-size:1.2rem;color:#e6c76a;outline:none;text-align:center;padding:2px 0"/>'      +'<button type="button" data-a="'+a+'" data-d="1" class="attr-step-btn">+</button>'      +'</div>'      +'<div id="nbm-'+a+'" style="font-family:Cinzel Decorative,serif;font-size:.95rem;font-weight:700;color:'+mc+';transition:color .2s">'+ms+'</div>'      +'</div>';
   }).join('');
+  // Contador de pontos
+  var counterHtml='<div id="pb-counter" style="grid-column:1/-1;text-align:center;padding:.5rem;background:rgba(0,0,0,.3);border:1px solid rgba(200,168,74,.2);border-radius:8px;font-family:Cinzel,serif;font-size:.6rem;color:var(--gold);margin-top:.3rem">'    +'🎯 Pontos de compra: <span id="pb-used">0</span>/27 usados — mínimo 8, máximo 15 (antes do bônus racial)</div>';
+  el.innerHTML+=counterHtml;
+  function updCounter(){
+    var used=calcPointsUsed();
+    var el2=document.getElementById('pb-used');
+    if(el2){
+      el2.textContent=used;
+      el2.style.color=used>27?'#e74c3c':used===27?'#6ecfa0':used>20?'#e6c76a':'var(--text2)';
+    }
+    var counterEl=document.getElementById('pb-counter');
+    if(counterEl) counterEl.style.borderColor=used>27?'rgba(231,76,60,.5)':used===27?'rgba(110,207,160,.4)':'rgba(200,168,74,.2)';
+  }
+  updCounter();
   // Event delegation
   el.addEventListener('click',function(ev){
     var btn=ev.target.closest('.attr-step-btn');
@@ -6655,12 +6867,18 @@ function buildAttrBuilder(){
     var a=btn.dataset.a,d=parseInt(btn.dataset.d);
     var inp=document.getElementById('nb-'+a);
     if(!inp)return;
-    inp.value=Math.max(3,Math.min(20,(parseInt(inp.value)||10)+d));
-    updAttrMod(a,inp.value);
+    var newVal=Math.max(8,Math.min(15,(parseInt(inp.value)||10)+d));
+    inp.value=newVal;
+    updAttrMod(a,newVal);
+    updCounter();
   });
   el.addEventListener('input',function(ev){
     var inp=ev.target.closest('.attr-step-inp');
-    if(inp)updAttrMod(inp.dataset.attr,inp.value);
+    if(inp){
+      inp.value=Math.max(8,Math.min(15,parseInt(inp.value)||8));
+      updAttrMod(inp.dataset.attr,inp.value);
+      updCounter();
+    }
   });
 }
 
@@ -7088,11 +7306,19 @@ async function startNewGame(){
     +(physString?'Aparência física: '+physString+'\n':'')
     +'Idiomas: Comum'+(cls==='Ladino'?' + Jargão de Ladrões (linguagem secreta de criminosos)':cls==='Druida'?' + Druídico (linguagem secreta)':cls==='Bruxo'&&subclass.includes('Grande Ancião')?'':'')
     +'\n'
-    +'Perícias com proficiência: '+Object.keys(skillProficiencies).filter(function(k){return skillProficiencies[k];}).join(', ')+'\n'
+    +'Perícias com proficiência: '+Object.keys(skillProficiencies).filter(function(k){return skillProficiencies[k];}).map(function(k){
+      var profBonus=charLevel<5?2:charLevel<9?3:charLevel<13?4:charLevel<17?5:6;
+      var sk=SKILLS_DATA.find(function(x){return x.name===k;});
+      var attrMod=sk?Math.floor(((ATTRS[sk.attr]||10)-10)/2):0;
+      var expertise=skillProficiencies[k+'_expertise']?profBonus:0;
+      var total=attrMod+(expertise||profBonus);
+      return k+'('+(total>=0?'+':'')+total+')';
+    }).join(', ')+'\n'
+    +'Bônus de proficiência: +'+(charLevel<5?2:charLevel<9?3:charLevel<13?4:charLevel<17?5:6)+'\n'
     +'PV: '+HP_MAX+' | CA: '+charCA+'\n'
     +'Região de início: '+region.name+' ('+region.desc+')\n\n'
     +'CAMPANHA: Gere uma campanha ORIGINAL baseada nos Forgotten Realms. A aventura deve ser coerente com o nível 1.\n'    +'INIMIGOS — USE VARIEDADE OBRIGATÓRIA. Nunca use só organizações criminosas como Zhentarim ou Harpers como antagonistas. Rotacione entre: monstros (goblinoides, mortos-vivos, bestas, aberrações), cultos de deuses obscuros, elementos naturais (dragões jovens, gigantes), facções políticas corrompidas, criaturas únicas do Underdark, NPCs com motivações pessoais, e APENAS ocasionalmente organizações criminosas. Crie pelo menos 1 antagonista original por campanha com motivação não-criminal.\n\n'
-    +'DIRETRIZES GERAIS:\n'    +'- Narre em português claro e direto, como um bom Mestre. Sem palavras rebuscadas desnecessárias.\n'    +'- Máximo 3 parágrafos por resposta. Seja direto e envolvente.\n'    +'- Para testes: "Role d20+X de Habilidade". NUNCA só "role d20".\n'    +'- NUNCA resolva combates sem rolls do jogador.\n'    +'- AO FINAL: pergunte somente "O que você faz?" — jamais sugira opções.\n'    +'\nNOMES DE NPCs:\n'    +'- NPCs SEMPRE com nomes únicos, variados e culturalmente coerentes com Faerûn. PROIBIDO: Elara, Borin, Gareth, Mira, Lyra, Aria, Nyx, Torin, Aldric, Theron, Kira, Seraphina (nomes clichê genéricos de fantasia).\n'    +'- Use nomes por cultura: Waterdeep/Cormyr (Vashti, Corren, Maelys, Baerovus, Sindra) | Sembia (Dramun, Chelva, Torst) | Anão (Brikka, Durval, Thorgis) | Elfo (Ilyriel, Caelwen, Sorvian) | Halfling (Perro, Gwendy, Callum) | Calimshan (Rashan, Zafira, Khalid) | Thay (Szass, Ilvara, Nevron).\n'    +'- Registre NPCs com npc_add e mantenha consistência de nome entre cenas.\n'    +'\nFALAS DO JOGADOR:\n'    +'- NUNCA repita ou parafraseie o que o jogador acabou de escrever. A fala JÁ aconteceu — narre SOMENTE a reação do mundo.\n'    +'- ERRADO: "Você diz: Preciso de trabalho. O taberneiro te responde..." | CERTO: "O taberneiro ergue os olhos e te avalia de cima a baixo..."\n'    +'\nNOMES E IDENTIDADE:\n'    +'- NPCs desconhecem o nome do personagem até ele se apresentar explicitamente.\n'    +'- O personagem desconhece o nome de NPCs até ser apresentado, ouvir alguém chamar, ou perguntar.\n'    +'- NPCs não revelados: use descrições físicas ("o guarda baixo", "a mulher de cabelos brancos").\n'    +'- O que foi revelado persiste. O que não foi, permanece desconhecido.\n'    +'\nCONSISTÊNCIA DE MUNDO:\n'    +'- O mundo existe independente do jogador. NPCs têm rotinas, objetivos e memória.\n'    +'- O personagem NÃO tem acesso a informações que não foram reveladas a ele (sem onisciência).\n'    +'- Clima, hora do dia, localizações e estado de NPCs devem ser consistentes entre cenas.\n'    +'\nINIMIGOS E AMEAÇAS:\n'    +'- PROIBIDO usar exclusivamente organizações criminosas (Zhentarim, Mão Negra, etc.) como vilões principais. Usá-las como elemento secundário ou de cor é permitido.\n'    +'- VARIE as ameaças: criaturas selvagens com motivação (lobo defendendo território, harpia colecionadora), facções regionais (culto de deus obscuro, família nobre corrompida, deserotores), fenômenos mágicos (ruína que drena magia, espírito territorial), monstros canônicos FR com personalidade.\n'    +'- Antagonistas têm nomes únicos e motivações próprias — não são obstáculos genéricos.\n'    +'\nROLAGENS DE DADOS:\n'    +'- Mensagens iniciadas com [DADO] contêm o resultado de uma rolagem real do sistema. INTERPRETE diretamente: alto=sucesso, baixo=falha/parcial. NUNCA peça para rolar de novo.\n'    +'- O resultado [DADO] é a realidade narrativa daquele momento.\n'    +'\n'    +'SISTEMA DE ATUALIZAÇÃO — ao final se houver mudanças inclua (JSON puro, sem markdown):\n'
+    +'DIRETRIZES GERAIS:\n'    +'- Narre em português claro e direto, como um bom Mestre. Sem palavras rebuscadas desnecessárias.\n'    +'- Máximo 3 parágrafos por resposta. Seja direto e envolvente.\n'    +'- Para testes: "Role d20+X de Habilidade". NUNCA só "role d20".\n'    +'- NUNCA resolva combates sem rolls do jogador.\n'    +'- AO FINAL: pergunte somente "O que você faz?" — jamais sugira opções.\n'    +'\nNOMES DE NPCs:\n'    +'- NPCs SEMPRE com nomes únicos, variados e culturalmente coerentes com Faerûn. PROIBIDO: Elara, Borin, Gareth, Mira, Lyra, Aria, Nyx, Torin, Aldric, Theron, Kira, Seraphina (nomes clichê genéricos de fantasia).\n'    +'- Use nomes por cultura: Waterdeep/Cormyr (Vashti, Corren, Maelys, Baerovus, Sindra) | Sembia (Dramun, Chelva, Torst) | Anão (Brikka, Durval, Thorgis) | Elfo (Ilyriel, Caelwen, Sorvian) | Halfling (Perro, Gwendy, Callum) | Calimshan (Rashan, Zafira, Khalid) | Thay (Szass, Ilvara, Nevron).\n'    +'- Registre NPCs com npc_add e mantenha consistência de nome entre cenas.\n'    +'\nFALAS DO JOGADOR:\n'    +'- NUNCA repita ou parafraseie o que o jogador acabou de escrever. A fala JÁ aconteceu — narre SOMENTE a reação do mundo.\n'    +'- ERRADO: "Você diz: Preciso de trabalho. O taberneiro te responde..." | CERTO: "O taberneiro ergue os olhos e te avalia de cima a baixo..."\n'    +'\nNOMES E IDENTIDADE:\n'    +'- NPCs desconhecem o nome do personagem até ele se apresentar explicitamente.\n'    +'- O personagem desconhece o nome de NPCs até ser apresentado, ouvir alguém chamar, ou perguntar.\n'    +'- NPCs não revelados: use descrições físicas ("o guarda baixo", "a mulher de cabelos brancos").\n'    +'- O que foi revelado persiste. O que não foi, permanece desconhecido.\n'    +'\nCONSISTÊNCIA DE MUNDO:\n'    +'- O mundo existe independente do jogador. NPCs têm rotinas, objetivos e memória.\n'    +'- O personagem NÃO tem acesso a informações que não foram reveladas a ele (sem onisciência).\n'    +'- Clima, hora do dia, localizações e estado de NPCs devem ser consistentes entre cenas.\n'    +'\nINIMIGOS E AMEAÇAS:\n'    +'- PROIBIDO usar exclusivamente organizações criminosas (Zhentarim, Mão Negra, etc.) como vilões principais. Usá-las como elemento secundário ou de cor é permitido.\n'    +'- VARIE as ameaças: criaturas selvagens com motivação (lobo defendendo território, harpia colecionadora), facções regionais (culto de deus obscuro, família nobre corrompida, deserotores), fenômenos mágicos (ruína que drena magia, espírito territorial), monstros canônicos FR com personalidade.\n'    +'- Antagonistas têm nomes únicos e motivações próprias — não são obstáculos genéricos.\n'    +'\\nROLAGENS DE DADOS:\\n'+'- Ao solicitar teste: especifique a perícia E o modificador do personagem. Ex: \'Role d20+3 de Furtividade (DC15)\'.\\n'+'- DCs LdJ: Fácil=DC10, Médio=DC15, Difícil=DC20, Muito Difícil=DC25.\\n'+'- [DADO]: resultado real do sistema. Total>=DC=sucesso. Narre consequência imediatamente.\\n'+'\\n'    +'SISTEMA DE ATUALIZAÇÃO — ao final se houver mudanças inclua (JSON puro, sem markdown):\n'
     +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300,"gold_reward":50}],"hp_damage":5,"hp_heal":0,"condition_add":[{"name":"Envenenado","duration":"1 hora"}],"condition_remove":["Envenenado"],"xp_gain":150,"xp_source":"Combate","gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena.","npc_add":[{"name":"Nome","location":"Local","relation":"aliado"}]}}\n'
     +'OBRIGATÓRIO:\n'
     +'- Moedas: gold_add (receber em PO) / gold_remove (gastar em PO). O sistema converte e dá troco automaticamente. Narre o troco em moeda miúda quando relevante: \"o mercador devolve 3 PA e 5 PC\".\n'
