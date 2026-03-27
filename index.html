@@ -4924,6 +4924,39 @@ function rollDie(sides){
   if(sides===20&&result===20)line+=' — 🌟 CRÍTICO NATURAL!';
   if(sides===20&&result===1)line+=' — ☠ FALHA CRÍTICA!';
   addMsg('roll',line);
+
+  // ── ENVIAR RESULTADO AO NARRADOR AUTOMATICAMENTE ──
+  // Construir contexto interpretável pelo AI
+  var qualifier='';
+  if(sides===20){
+    if(result===20) qualifier='CRÍTICO NATURAL — sucesso extraordinário automático';
+    else if(result===1) qualifier='FALHA CRÍTICA — falha automática catastrófica';
+    else if(total>=20) qualifier='total '+total+' — sucesso excepcional';
+    else if(total>=15) qualifier='total '+total+' — sucesso sólido (DC15 atingido)';
+    else if(total>=10) qualifier='total '+total+' — sucesso parcial (DC10 atingido)';
+    else qualifier='total '+total+' — falha (abaixo de DC10)';
+  } else {
+    qualifier='resultado '+result+(rawMod!==0?' → total '+total:'');
+  }
+  var rollLabel=document.getElementById('dice-mod')?.dataset?.label||('d'+sides);
+  var rollCtx='[DADO] d'+sides+'='+result+(rawMod!==0?(rawMod>0?'+':'')+rawMod+'='+total:'')+' — '+qualifier;
+  window._pendingRollCtx=(window._pendingRollCtx||'')+rollCtx+'\n';
+
+  // Enviar ao narrador com delay para o flash visual aparecer primeiro
+  setTimeout(function(){
+    var ctx=window._pendingRollCtx||'';
+    if(!ctx) return;
+    window._pendingRollCtx='';
+    if(typeof callAI!=='function') return;
+    addLoad();
+    callAI(ctx).then(function(r){
+      rmLoad();
+      addMsg('dm',r.replace(/\n/g,'<br>'));
+    }).catch(function(e){
+      rmLoad();
+      console.error('rollDie AI error:',e);
+    });
+  },500);
 }
 var _diceFlashTimer=null;
 function showDiceFlash(sides,result,mod,total,numClass,emoji){
@@ -5929,8 +5962,13 @@ var concentrationSpell=null;   // nome da magia em concentração ou null
 
 // ─── RAÇAS COM SUB-RAÇAS E TRAÇOS FÍSICOS (LdJ) ───
 const RACES_DB={
-  'Humano':    {sub:[],speed:9,size:'Médio',
+  'Humano':    {sub:['Humano Padrão','Humano Variante'],speed:9,size:'Médio',
     traits:['Versátil: +1 em todos os atributos','Proficiência em uma perícia extra','Idioma extra'],
+    subTraits:{
+      'Humano Padrão':['Atributos: +1 em FOR, DES, CON, INT, SAB e CAR','1 idioma extra à escolha'],
+      'Humano Variante':['Atributos: +1 em dois atributos à escolha','1 Talento à escolha (com aprovação do DM)','Proficiência em 1 perícia à escolha','1 idioma extra à escolha']
+    },
+    attrBonus:{'FOR':1,'DES':1,'CON':1,'INT':1,'SAB':1,'CAR':1},
     physique:{skin:['clara','morena','escura','azeitonada','bronzeada'],hair:['castanho','preto','loiro','ruivo','grisalho','branco'],eyes:['castanhos','azuis','verdes','cinzas','avelã'],build:['esguio','atlético','corpulento','mediano'],height:['1,60m','1,70m','1,75m','1,80m','1,85m','1,90m']}},
   'Elfo':      {sub:['Elfo Alto','Elfo da Floresta','Elfo Negro (Drow)'],speed:9,size:'Médio',
     traits:['Visão no escuro 18m','Resistência a encantamento','Transe em vez de sono'],
@@ -5971,7 +6009,7 @@ const RACES_DB={
 // ─── SUBCLASSES NÍVEL 1 com escolhas (Clérigo domínio, Bruxo patrono, Feiticeiro origem) ───
 // Classes que escolhem subclasse antes do nível 3
 const SUBCLASS_LEVEL1=['Clérigo','Bruxo','Feiticeiro']; // nível 1
-const SUBCLASS_LEVEL2=['Mago','Druida']; // nível 2 — podem escolher já na criação
+const SUBCLASS_LEVEL2=['Mago','Druida','Paladino','Guerreiro','Bárbaro','Ladino','Bardo','Monge','Patrulheiro']; // nível 2/3 — escolhem na criação (confirmado mais tarde)
 
 // ─── PERÍCIAS (LdJ p.174) ───
 const SKILLS_DATA=[
@@ -6112,7 +6150,17 @@ const ARMOR_DB=[
 // ─── SUBCLASSES OFICIAIS (Livro do Jogador) ───
 const SUBCLASSES={
   'Guerreiro':['Campeão','Mestre de Batalha','Cavaleiro Místico'],
-  'Paladino':['Juramento de Devoção','Juramento dos Anciões','Juramento de Vingança'],
+  'Paladino':[
+    'Juramento de Devoção',
+    'Juramento dos Anciões',
+    'Juramento de Vingança',
+    'Juramento do Abismo (Quebrado)',
+    'Juramento da Coroa',
+    'Juramento da Conquista',
+    'Juramento da Glória',
+    'Juramento dos Guardiões',
+    'Juramento da Redenção',
+  ],
   'Bárbaro':['Caminho do Furioso','Caminho do Guerreiro Totêmico'],
   'Ladino':['Trapaceiro','Assassino','Arquimago Arcano'],
   'Mago':['Escola de Abjuração','Escola de Conjuração','Escola de Adivinhação','Escola de Encantamento','Escola de Evocação','Escola de Ilusão','Escola de Necromancia','Escola de Transmutação'],
@@ -6613,14 +6661,22 @@ function renderSubclass1Area(){
   var isLv3=!isLv1&&!isLv2;
   area.style.display='';
   var subs=SUBCLASSES[_ccSelectedClass]||[];
-  var labels={Clérigo:'Domínio Divino (Nível 1)',Bruxo:'Patrono Transcendental (Nível 1)',Feiticeiro:'Origem de Feitiçaria (Nível 1)',Mago:'Tradição Arcana (Nível 2)',Druida:'Círculo Druídico (Nível 2)'};
+  var labels={
+    Clérigo:'Domínio Divino (Nível 1)',
+    Bruxo:'Patrono Transcendental (Nível 1)',
+    Feiticeiro:'Origem de Feitiçaria (Nível 1)',
+    Mago:'Tradição Arcana (Nível 2)',
+    Druida:'Círculo Druídico (Nível 2)',
+    Paladino:'Juramento Sagrado (confirmado Nível 3)',
+    Guerreiro:'Arquétipo Marcial (confirmado Nível 3)',
+    Bárbaro:'Caminho Primitivo (confirmado Nível 3)',
+    Ladino:'Arquétipo de Ladino (confirmado Nível 3)',
+    Bardo:'Colégio de Bardo (confirmado Nível 3)',
+    Monge:'Tradição Monástica (confirmado Nível 3)',
+    Patrulheiro:'Arquétipo de Patrulheiro (confirmado Nível 3)',
+  };
   var lv3classes={Guerreiro:'Arquétipo Marcial',Paladino:'Juramento Sagrado',Bárbaro:'Caminho Primitivo',Ladino:'Arquétipo de Ladino',Bardo:'Colégio de Bardo',Monge:'Tradição Monástica',Patrulheiro:'Arquétipo de Patrulheiro'};
-  if(isLv3){
-    if(lbl)lbl.textContent=(lv3classes[_ccSelectedClass]||'Subclasse')+' — escolhida no Nível 3';
-    grid.innerHTML='<div style="grid-column:1/-1;padding:.5rem .6rem;background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.12);border-radius:7px;font-size:.74rem;color:var(--text3);font-style:italic">Você escolherá sua subclasse ao atingir o nível 3. Opções: '
-      +subs.join(', ')+'</div>';
-    return;
-  }
+  if(isLv3){ /* todas classes agora mostram subclasse */ }
   if(lbl)lbl.textContent=labels[_ccSelectedClass]||'Subclasse';
   grid.innerHTML=subs.map(function(s){
     return'<div class="cc-card'+(s===_ccSelectedSubclass1?' selected':'')+'" data-s="'+s+'" onclick="selectSubclass1(this.dataset.s)"><div class="cc-card-name" style="font-size:.44rem;line-height:1.3">'+s+'</div></div>';
@@ -7323,7 +7379,7 @@ async function startNewGame(){
     +'OBRIGATÓRIO:\n'
     +'- Moedas: gold_add (receber em PO) / gold_remove (gastar em PO). O sistema converte e dá troco automaticamente. Narre o troco em moeda miúda quando relevante: \"o mercador devolve 3 PA e 5 PC\".\n'
     +'- Missões: quest_add ao iniciar qualquer objetivo; quest_update ao concluir/falhar. Sempre com xp_reward.\n'
-    +'- XP: xp_gain + xp_source em todo evento significativo. Combate:50-500, Diplomacia:50-200, Descoberta:25-150, Desafio:25-100.\n'
+    +'- XP: SEMPRE incluir xp_gain ao superar obstáculo. Combate fácil=50, normal=150, difícil=300, chefe=500. Roleplay=50-200. Descoberta=25-150. Missão concluída=bônus 50-500.\n'
     +'- Diário: diary_entry a cada cena importante.\n'
     +'- Saldo insuficiente: narre o NPC percebendo a falta.';
 
