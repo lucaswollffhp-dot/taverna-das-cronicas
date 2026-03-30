@@ -1,4 +1,10 @@
-<!DOCTYPE html>
+
+    <div id="firebase-user-badge" style="display:none;align-items:center;gap:.4rem;margin-left:auto">
+      <img id="firebase-user-photo" src="" width="20" height="20" style="border-radius:50%;display:none"/>
+      <span id="firebase-user-name" style="font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.7)"></span>
+      <button onclick="firebaseLogout()" style="background:none;border:1px solid rgba(200,168,74,.2);border-radius:4px;padding:1px 6px;font-family:'Cinzel',serif;font-size:.44rem;color:rgba(200,168,74,.4);cursor:pointer">Sair</button>
+    </div>
+    <span id="cloud-sync-status" style="font-family:'Cinzel',serif;font-size:.48rem;margin-left:auto"></span><!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"/>
@@ -1228,6 +1234,72 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 </style>
   <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async></script>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as fbSignOut, onAuthStateChanged }
+      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+    import { getFirestore, doc, setDoc, getDoc }
+      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    const FB_CONFIG = {
+      apiKey: "AIzaSyBKAABmYGTjHrd99EPKIGCBQ6bEBmTO2Es",
+      authDomain: "taverna-das-cronicas.firebaseapp.com",
+      projectId: "taverna-das-cronicas",
+      appId: "1:973923505396:web:eccad5b864fc4171967aa1"
+    };
+    const fbApp  = initializeApp(FB_CONFIG);
+    const fbAuth = getAuth(fbApp);
+    const fbDb   = getFirestore(fbApp);
+
+    // ── Expor globalmente para o código legado ──
+    window.FB_AUTH = fbAuth;
+    window.FB_DB   = fbDb;
+    window.FB_DOC  = doc;
+    window.FB_SET  = setDoc;
+    window.FB_GET  = getDoc;
+
+    // ── Login com Google (popup) ──
+    window.firebaseGoogleLogin = async function(){
+      try{
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(fbAuth, provider);
+      }catch(e){ console.error('Firebase login error:', e); }
+    };
+
+    // ── Logout Firebase ──
+    window.firebaseSignOut = async function(){
+      try{ await fbSignOut(fbAuth); }catch(e){ console.error(e); }
+    };
+
+    // ── Salvar estado no Firestore ──
+    window.saveToCloud = async function(state){
+      if(!fbAuth.currentUser) return false;
+      try{
+        const uid = fbAuth.currentUser.uid;
+        await setDoc(doc(fbDb,'usuarios',uid), { saves: state }, { merge: true });
+        return true;
+      }catch(e){ console.error('Firestore save error:', e); return false; }
+    };
+
+    // ── Carregar estado do Firestore ──
+    window.loadFromCloud = async function(){
+      if(!fbAuth.currentUser) return null;
+      try{
+        const uid = fbAuth.currentUser.uid;
+        const snap = await getDoc(doc(fbDb,'usuarios',uid));
+        return snap.exists() ? snap.data().saves : null;
+      }catch(e){ console.error('Firestore load error:', e); return null; }
+    };
+
+    // ── Observer de auth ── 
+    onAuthStateChanged(fbAuth, function(user){
+      window.FB_USER = user;
+      if(typeof window.onFirebaseAuthChange === 'function'){
+        window.onFirebaseAuthChange(user);
+      }
+    });
+  </script>
 </head>
 <body>
 
@@ -1717,6 +1789,13 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 <div id="roll-toast"></div>
 <div id="quest-notif"></div>
 
+<!-- OVERLAY DE PAUSA -->
+<div id="pause-overlay" style="display:none;position:fixed;inset:0;z-index:8500;background:rgba(4,2,10,.92);backdrop-filter:blur(12px);align-items:center;justify-content:center;flex-direction:column;gap:1rem">
+  <div style="font-family:'Cinzel Decorative',serif;font-size:1.8rem;color:#c8a040;text-shadow:0 0 30px rgba(200,168,74,.4)">⏸ Jogo Pausado</div>
+  <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:rgba(200,168,74,.5)">Sua aventura aguarda seu retorno</div>
+  <button onclick="togglePause()" style="margin-top:.5rem;background:linear-gradient(135deg,rgba(45,122,74,.3),rgba(30,80,50,.2));border:1px solid rgba(45,122,74,.6);border-radius:12px;padding:.8rem 2rem;font-family:'Cinzel',serif;font-size:.85rem;color:#6dbf6d;cursor:pointer;letter-spacing:1px;transition:all .2s">▶ Continuar Aventura</button>
+</div>
+
 <!-- MODAIS DINÂMICOS -->
 <div class="overlay" id="dyn-modal" style="display:none" onclick="if(event.target===this)closeDynModal()">
   <div class="modal-box" id="dyn-modal-content"></div>
@@ -1772,6 +1851,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
       <!-- action buttons -->
       <button class="hbtn" onclick="openCombat()" id="combat-toggle-btn">⚔</button>
       <button class="hbtn gold" onclick="openSaveModal()">💾</button>
+      <button id="pause-btn" class="hbtn" onclick="togglePause()" title="Pausar/Continuar" style="min-width:32px">⏸</button>
       <button class="hbtn hbtn-hide-mob" onclick="goToMainMenu()" title="Menu">🏠</button>
       <button class="hbtn hbtn-hide-mob" onclick="exportSave()" title="Exportar">📤</button>
       <label class="hbtn hbtn-hide-mob" title="Importar" style="cursor:pointer">📥<input type="file" accept=".json" style="display:none" onchange="importSave(event)"></label>
@@ -1795,6 +1875,17 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   <div class="main">
     <!-- SIDEBAR DESKTOP -->
     <div class="sidebar">
+  <!-- Foto do personagem -->
+  <div id="char-photo-section" style="display:flex;flex-direction:column;align-items:center;gap:.4rem;margin-bottom:.3rem">
+    <div style="position:relative;width:72px;height:72px;flex-shrink:0">
+      <img id="char-photo-img" src="" alt="" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(200,168,74,.4);display:none;cursor:pointer" onclick="document.getElementById('char-photo-input').click()" title="Clique para trocar foto"/>
+      <div id="char-photo-placeholder" onclick="document.getElementById('char-photo-input').click()" style="width:72px;height:72px;border-radius:50%;border:2px dashed rgba(200,168,74,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(0,0,0,.3);transition:all .2s;font-size:1.4rem" title="Adicionar foto do personagem" onmouseover="this.style.borderColor='rgba(200,168,74,.6)'" onmouseout="this.style.borderColor='rgba(200,168,74,.25)'">🧙</div>
+      <input type="file" id="char-photo-input" accept="image/*" style="display:none" onchange="handleCharPhoto(event)"/>
+    </div>
+    <div id="sidebar-char-name" style="font-family:'Cinzel',serif;font-size:.68rem;color:var(--gold2);text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+    <div id="char-alignment-badge" style="display:none;font-family:'Cinzel',serif;font-size:.44rem;color:rgba(200,168,74,.5);text-align:center;border:1px solid rgba(200,168,74,.15);border-radius:8px;padding:2px 7px"></div>
+  </div>
+  <hr class="sdiv">
       <!-- PERSONAGEM -->
       <div>
         <div class="slbl"><span id="sidebar-char-name">⚔ Personagem</span> — Nível <span id="level-d">1</span></div>
@@ -1891,7 +1982,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
         <div class="slbl">👥 NPCs
           <button onclick="openNPCTracker()" style="background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.3);border-radius:4px;color:#6ecfa0;font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:4px;cursor:pointer">+ Ver</button>
         </div>
-        <div id="npc-sidebar-list"></div>
+        <div id="npc-tracker-list" style="max-height:280px;overflow-y:auto"></div>
       </div>
       <hr class="sdiv">
       <div>
@@ -2111,6 +2202,42 @@ function apiKeyBack(){
     showStartHero();
   }
 }
+function handleCharPhoto(event){
+  var file = event.target.files[0];
+  if(!file) return;
+  if(!file.type.startsWith('image/')){ showSaveToast('Selecione uma imagem válida.'); return; }
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var dataUrl = e.target.result;
+    window.CHAR_PHOTO = dataUrl;
+    showCharPhoto(dataUrl);
+    saveProgress('auto');
+  };
+  reader.readAsDataURL(file);
+}
+
+function showCharPhoto(url){
+  var img = document.getElementById('char-photo-img');
+  var ph  = document.getElementById('char-photo-placeholder');
+  if(!img || !ph) return;
+  if(url){
+    img.src = url;
+    img.style.display = 'block';
+    ph.style.display  = 'none';
+  } else {
+    img.style.display = 'none';
+    ph.style.display  = 'flex';
+  }
+}
+
+function updateAlignmentBadge(){
+  var badge = document.getElementById('char-alignment-badge');
+  if(!badge) return;
+  var al = window.CHAR_ALIGNMENT || '';
+  if(al){ badge.textContent = al; badge.style.display = 'block'; }
+  else { badge.style.display = 'none'; }
+}
+
 function updateApiStatus(){
   var dot=document.getElementById('api-status-dot');
   var txt=document.getElementById('api-status-text');
@@ -2306,37 +2433,73 @@ let spells=[], spellSlots={1:{total:2,used:0}};
 
 // ─── ESPAÇOS DE MAGIA OFICIAIS POR CLASSE (LdJ) ─── 
 // Formato: {nivel: {total, usado}}
-const SPELL_SLOTS_BY_CLASS={
-  'Mago':{      1:{total:2,used:0}},
-  'Feiticeiro':{ 1:{total:2,used:0}},
-  'Bruxo':{     1:{total:1,used:0}},
-  // TODO: Magia de Pacto (LdJ p.107-108):
-  //   Nível 1 → 1 espaço de nível 1
-  //   Nível 2 → 2 espaços de nível 1
-  //   Nível 3-4 → 2 espaços de nível 2
-  //   Nível 5-6 → 2 espaços de nível 3
-  //   Nível 7-8 → 2 espaços de nível 4
-  //   Nível 9+ → 2 espaços de nível 5
-  //   Nível 11+ → 3 espaços | Nível 17+ → 4 espaços
-  //   Todos recuperados em descanso CURTO (não longo)
-  //   O openLevelUp() deve recalcular spellSlots do Bruxo ao upar
-  'Clérigo':{   1:{total:2,used:0}},
-  'Druida':{    1:{total:2,used:0}},
-  'Bardo':{     1:{total:2,used:0}},
-  'Paladino':{  1:{total:0,used:0}},  // Paladino ganha slots no nv2, mas seleciona magias desde nv1
-  'Patrulheiro':{1:{total:0,used:0}}, // Patrulheiro ganha magias nv2
+// ── Tabela completa de espaços de magia por nível (LdJ p.114-215) ──
+// Conjuradores completos (Mago, Feiticeiro, Clérigo, Druida, Bardo)
+// Conjuradores metade (Paladino, Patrulheiro) — ganham slots no nível 2 da classe
+// Bruxo: tabela especial de Magia de Pacto (recuperação em descanso curto)
+const FULL_CASTER_SLOTS={
+  1: {1:{t:2,u:0}},
+  2: {1:{t:3,u:0}},
+  3: {1:{t:4,u:0},2:{t:2,u:0}},
+  4: {1:{t:4,u:0},2:{t:3,u:0}},
+  5: {1:{t:4,u:0},2:{t:3,u:0},3:{t:2,u:0}},
+  6: {1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0}},
+  7: {1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:1,u:0}},
+  8: {1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:2,u:0}},
+  9: {1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:3,u:0},5:{t:1,u:0}},
+  10:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:3,u:0},5:{t:2,u:0}},
+  11:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:3,u:0},5:{t:2,u:0},6:{t:1,u:0}},
+  12:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:3,u:0},5:{t:2,u:0},6:{t:1,u:0}},
+  13:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:3,u:0},5:{t:2,u:0},6:{t:1,u:0},7:{t:1,u:0}},
+  14:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:3,u:0},5:{t:2,u:0},6:{t:1,u:0},7:{t:1,u:0}},
+  15:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:3,u:0},5:{t:2,u:0},6:{t:1,u:0},7:{t:1,u:0},8:{t:1,u:0}},
+  16:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:3,u:0},5:{t:2,u:0},6:{t:1,u:0},7:{t:1,u:0},8:{t:1,u:0}},
+  17:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:3,u:0},5:{t:2,u:0},6:{t:1,u:0},7:{t:1,u:0},8:{t:1,u:0},9:{t:1,u:0}},
+  18:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:3,u:0},5:{t:3,u:0},6:{t:1,u:0},7:{t:1,u:0},8:{t:1,u:0},9:{t:1,u:0}},
+  19:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:3,u:0},5:{t:3,u:0},6:{t:2,u:0},7:{t:1,u:0},8:{t:1,u:0},9:{t:1,u:0}},
+  20:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:3,u:0},5:{t:3,u:0},6:{t:2,u:0},7:{t:2,u:0},8:{t:1,u:0},9:{t:1,u:0}},
 };
-let combatActive=false, combatants=[], currentTurn=0, roundNum=1;
-var CONQUISTAS=[];
-// XP_TABLE[i] = XP total necessário para alcançar nível i+1
-// Nível 1=0, Nível 2=300, Nível 3=900... (LdJ p.15 oficial)
-const XP_TABLE=[0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,120000,140000,165000,195000,225000,265000,305000,355000];
-// ─── TABELAS DE CRESCIMENTO POR NÍVEL (LdJ) ───
-const SNEAK_ATTACK_DICE={1:1,2:1,3:2,4:2,5:3,6:3,7:4,8:4,9:5,10:5,11:6,12:6,13:7,14:7,15:8,16:8,17:9,18:9,19:10,20:10};
-const MARTIAL_ARTS_DIE={1:4,2:4,3:4,4:4,5:6,6:6,7:6,8:6,9:6,10:6,11:8,12:8,13:8,14:8,15:8,16:8,17:10,18:10,19:10,20:10};
-const BARD_INSPIRATION_DIE={1:6,2:6,3:6,4:6,5:8,6:8,7:8,8:8,9:8,10:10,11:10,12:10,13:10,14:10,15:12,16:12,17:12,18:12,19:12,20:12};
-const BARBARIAN_RAGE_USES={1:2,2:2,3:3,4:3,5:3,6:4,7:4,8:4,9:4,10:4,11:4,12:5,13:5,14:5,15:5,16:5,17:6,18:6,19:6,20:999};
-const BARBARIAN_RAGE_BONUS={1:2,2:2,3:2,4:2,5:2,6:2,7:2,8:2,9:3,10:3,11:3,12:3,13:3,14:3,15:3,16:3,17:4,18:4,19:4,20:4};
+const HALF_CASTER_SLOTS={
+  1:{}, 2:{1:{t:2,u:0}}, 3:{1:{t:3,u:0}}, 4:{1:{t:3,u:0}},
+  5:{1:{t:4,u:0},2:{t:2,u:0}}, 6:{1:{t:4,u:0},2:{t:2,u:0}},
+  7:{1:{t:4,u:0},2:{t:3,u:0}}, 8:{1:{t:4,u:0},2:{t:3,u:0}},
+  9:{1:{t:4,u:0},2:{t:3,u:0},3:{t:2,u:0}}, 10:{1:{t:4,u:0},2:{t:3,u:0},3:{t:2,u:0}},
+  11:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0}}, 12:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0}},
+  13:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:1,u:0}}, 14:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:1,u:0}},
+  15:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:2,u:0}}, 16:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:2,u:0}},
+  17:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:3,u:0},5:{t:1,u:0}}, 18:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:3,u:0},5:{t:1,u:0}},
+  19:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:3,u:0},5:{t:2,u:0}}, 20:{1:{t:4,u:0},2:{t:3,u:0},3:{t:3,u:0},4:{t:3,u:0},5:{t:2,u:0}},
+};
+const WARLOCK_SLOTS={
+  1:{1:{t:1,u:0}}, 2:{1:{t:2,u:0}}, 3:{2:{t:2,u:0}}, 4:{2:{t:2,u:0}},
+  5:{3:{t:2,u:0}}, 6:{3:{t:2,u:0}}, 7:{4:{t:2,u:0}}, 8:{4:{t:2,u:0}},
+  9:{5:{t:2,u:0}}, 10:{5:{t:2,u:0}}, 11:{5:{t:3,u:0}}, 12:{5:{t:3,u:0}},
+  13:{5:{t:3,u:0}}, 14:{5:{t:3,u:0}}, 15:{5:{t:3,u:0}}, 16:{5:{t:3,u:0}},
+  17:{5:{t:4,u:0}}, 18:{5:{t:4,u:0}}, 19:{5:{t:4,u:0}}, 20:{5:{t:4,u:0}},
+};
+// Círculos de magia do Druida — quais níveis de magia ficam disponíveis
+const DRUID_CIRCLE_SPELLS={
+  1:['Nível 1'],2:['Nível 1'],3:['Nível 1','Nível 2'],4:['Nível 1','Nível 2'],
+  5:['Nível 1','Nível 2','Nível 3'],6:['Nível 1','Nível 2','Nível 3'],
+  7:['Nível 1','Nível 2','Nível 3','Nível 4'],8:['Nível 1','Nível 2','Nível 3','Nível 4'],
+  9:['Nível 1','Nível 2','Nível 3','Nível 4','Nível 5'],
+};
+// Magias novas por nível — o que o Druida pode preparar (simplificado)
+const DRUID_SPELL_POOL={
+  2:['Raio de Lua','Onda Trovejante','Encontrar Armadilhas','Incrementar Atributo'],
+  3:['Chamar Relâmpago','Crescimento de Plantas','Vento de Muro','Água Negra'],
+  4:['Infestação de Vermes','Forma Pedra','Controlar Água','Localizar Criatura'],
+  5:['Comunhão com a Natureza','Passagem Arbórea','Despertar','Viagem Planar'],
+};
+// Número de magias preparadas = nível + mod SAB
+function getDruidPreparedMax(){ return charLevel + Math.max(1,Math.floor((ATTRS.SAB-10)/2)); }
+
+const SPELL_SLOTS_BY_CLASS={
+  'Mago':{1:{total:2,used:0}},'Feiticeiro':{1:{total:2,used:0}},
+  'Bruxo':{1:{total:1,used:0}},'Clérigo':{1:{total:2,used:0}},
+  'Druida':{1:{total:2,used:0}},'Bardo':{1:{total:2,used:0}},
+  'Paladino':{1:{total:0,used:0}},'Patrulheiro':{1:{total:0,used:0}},
+};
 
 // XP de recompensa por CR (Livro do Mestre p.275) — usado para sugerir XP de encontros
 const XP_BY_CR={0:10,'1/8':25,'1/4':50,'1/2':100,1:200,2:450,3:700,4:1100,5:1800,6:2300,7:2900,8:3900,9:5000,10:5900,11:7200,12:8400,13:10000,14:11500,15:13000,16:15000,17:18000,18:20000,19:22000,20:25000};
@@ -3142,6 +3305,34 @@ function openNotesHistory(){
     +'<div class="modal-row"><button class="mbtn secondary" onclick="closeDynModal()">Fechar</button></div>');
 }
 
+function generateSummary(){
+  if(!window.CHAR_NAME){ showSaveToast('Inicie uma aventura primeiro!'); return; }
+  addLoad();
+  var ctx = hist.slice(-20).map(function(m){ return m.role+': '+m.content.replace(/<[^>]+>/g,'').trim(); }).join('\n');
+  var prompt = '[RESUMO] Gere um resumo narrativo e imersivo da sessão atual em 3-4 parágrafos. Inclua: '
+    +'1) Onde o personagem está e o que aconteceu recentemente, '
+    +'2) NPCs relevantes que foram encontrados e suas relações, '
+    +'3) Missões ativas e seu estado, '
+    +'4) Momento atual da narrativa. '
+    +'Escreva na segunda pessoa e no tempo presente, como uma entrada de diário épico. '
+    +'Não inclua JSON ou UPDATES. Contexto recente:\n'+ctx;
+  callAI(prompt).then(function(r){
+    rmLoad();
+    var clean = r.replace(/[\s\S]*```[\s\S]*```[\s\S]*/g,'').trim();
+    addDiaryEntry(clean);
+    addMsg('sys', '📜 Resumo adicionado ao diário da campanha.');
+    // Mostrar no diário
+    var drawer = document.getElementById('mob-drawer');
+    if(drawer && mobActive !== 'diary'){
+      showMobSection('diary');
+    }
+  }).catch(function(e){
+    rmLoad();
+    showSaveToast('Erro ao gerar resumo. Tente novamente.');
+    console.error('generateSummary error:',e);
+  });
+}
+
 function addDiaryEntry(text){
   if(!text||!text.trim()) return;
   var entry={
@@ -3885,6 +4076,32 @@ function updXP(){
     lvlupBtn.textContent='⬆ Upar!';
   }
 }
+// ── Sistema de Alinhamento Dinâmico ──
+var ALIGNMENT_AXES = {
+  lawChaos: 0,   // -100 (caótico) a +100 (leal)
+  goodEvil:  0,  // -100 (mau) a +100 (bom)
+};
+
+function shiftAlignment(lawChaosD, goodEvilD, reason){
+  ALIGNMENT_AXES.lawChaos = Math.max(-100, Math.min(100, ALIGNMENT_AXES.lawChaos + (lawChaosD||0)));
+  ALIGNMENT_AXES.goodEvil  = Math.max(-100, Math.min(100, ALIGNMENT_AXES.goodEvil  + (goodEvilD||0)));
+  var al = calcAlignment();
+  window.CHAR_ALIGNMENT = al;
+  updateAlignmentBadge();
+  if(reason) addMsg('sys', '⚖ Alinhamento: '+al+(reason?' ('+reason+')':''));
+}
+
+function calcAlignment(){
+  var lc = ALIGNMENT_AXES.lawChaos;
+  var ge = ALIGNMENT_AXES.goodEvil;
+  var law   = lc > 33 ? 'Leal'    : lc < -33 ? 'Caótico' : 'Neutro';
+  var good  = ge > 33 ? 'Bom'     : ge < -33 ? 'Mau'     : 'Neutro';
+  if(law==='Neutro'&&good==='Neutro') return 'Neutro';
+  if(law==='Neutro') return 'Neutro e '+good;
+  if(good==='Neutro') return law+' e Neutro';
+  return law+' e '+good;
+}
+
 function addXP(amount, source){
   var prev=charXP;
   charXP+=Math.round(amount);
@@ -4136,47 +4353,109 @@ function confirmLevelUp(newLvl){
     }
   });
   renderAbilities();
+  // ── Atualizar spell slots pela tabela oficial do LdJ ──
   if(MAGIC_CLS2.indexOf(clsLU)>=0){
-    // Bruxo: Magia de Pacto — tabela especial (LdJ p.107)
+    var FULL_CASTERS=['Mago','Feiticeiro','Clérigo','Druida','Bardo'];
+    var HALF_CASTERS=['Paladino','Patrulheiro'];
+    var newSlots={};
     if(clsLU==='Bruxo'){
-      var wTable={
-        1:{n:1,lv:1},2:{n:2,lv:1},3:{n:2,lv:2},4:{n:2,lv:2},
-        5:{n:2,lv:3},6:{n:2,lv:3},7:{n:2,lv:4},8:{n:2,lv:4},
-        9:{n:2,lv:5},10:{n:2,lv:5},11:{n:3,lv:5},12:{n:3,lv:5},
-        13:{n:3,lv:5},14:{n:3,lv:5},15:{n:3,lv:5},16:{n:3,lv:5},
-        17:{n:4,lv:5},18:{n:4,lv:5},19:{n:4,lv:5},20:{n:4,lv:5}
-      };
-      var we=wTable[newLvl]||wTable[1];
-      spellSlots={};
-      spellSlots[we.lv]={total:we.n,used:0};
-      addMsg('sys','🔮 Magia de Pacto (Nível '+newLvl+'): '+we.n+' espaço'+(we.n>1?'s':'')+' de nível '+we.lv+' — recuperados em descanso curto.');
-    } else {
-    // Update spell slots for new level (full/half casters)
-    if(newLvl>=2&&!spellSlots[1]) spellSlots[1]={total:2,used:0};
-    if(newLvl>=3&&!spellSlots[2]) spellSlots[2]={total:2,used:0};
-    if(newLvl>=5&&!spellSlots[3]) spellSlots[3]={total:2,used:0};
+      // Magia de Pacto — recuperação em descanso CURTO
+      var ws=WARLOCK_SLOTS[newLvl]||WARLOCK_SLOTS[1];
+      Object.keys(ws).forEach(function(lv){
+        newSlots[lv]={total:ws[lv].t,used:spellSlots[lv]?Math.min(ws[lv].t,spellSlots[lv].used):0};
+      });
+      addMsg('sys','🔮 Bruxo Nível '+newLvl+': espaços de Pacto atualizados (recuperação em descanso CURTO).');
+    } else if(FULL_CASTERS.indexOf(clsLU)>=0){
+      var fs=FULL_CASTER_SLOTS[newLvl]||FULL_CASTER_SLOTS[1];
+      Object.keys(fs).forEach(function(lv){
+        newSlots[lv]={total:fs[lv].t,used:spellSlots[lv]?Math.min(fs[lv].t,spellSlots[lv].used):0};
+      });
+    } else if(HALF_CASTERS.indexOf(clsLU)>=0){
+      var hs=HALF_CASTER_SLOTS[newLvl]||{};
+      Object.keys(hs).forEach(function(lv){
+        newSlots[lv]={total:hs[lv].t,used:spellSlots[lv]?Math.min(hs[lv].t,spellSlots[lv].used):0};
+      });
     }
+    // Mesclar: preservar slots usados, adicionar novos círculos
+    Object.keys(newSlots).forEach(function(lv){
+      if(!spellSlots[lv]){
+        spellSlots[lv]=newSlots[lv];
+        addMsg('sys','✨ Novo círculo de magia desbloqueado: '+lv+'° círculo!');
+      } else {
+        // Aumentar total se a tabela expandiu
+        if(newSlots[lv].total > spellSlots[lv].total){
+          spellSlots[lv].total=newSlots[lv].total;
+        }
+      }
+    });
     renderSpells();
-    // Show level-up notification with features + open spell manager
     setTimeout(function(){
       openLevelUpSpellNotice(clsLU, newLvl, newFeats);
     },400);
   }
   addMsg('sys','🌟 '+(window.CHAR_NAME||'Personagem')+' avançou para o Nível '+newLvl+'!');
+  // Notificar narrador sobre o level up para integração narrativa
+  var lvlUpCtx='[SISTEMA DE LEVEL UP] '+( window.CHAR_NAME||'Personagem')+' avançou para o Nível '+newLvl
+    +' de '+clsLU+'.'
+    +(window.CHAR_SUBCLASS?' Subclasse: '+window.CHAR_SUBCLASS+'.':'')
+    +' Novas características: '+(newFeats.join(', ')||'nenhuma')+'.'
+    +' Integre este avanço narrativamente — descreva como o personagem sente a evolução de poder.'
+    +' Se ganhou novos círculos de magia, crie um breve momento narrativo de descoberta.';
+  hist.push({role:'user', content: lvlUpCtx});
   saveProgress('auto');
 }
 function openLevelUpSpellNotice(cls, lvl, features){
   var featHtml=features.length
-    ?'<div style="margin-bottom:.8rem"><div style="font-family:Cinzel,serif;font-size:.6rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">✨ Características obtidas no nível '+lvl+'</div>'
-      +features.map(function(f){
+    ?'<div style="margin-bottom:.8rem"><div style="font-family:Cinzel,serif;font-size:.6rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">✨ Características do Nível '+lvl+'</div>'      +features.map(function(f){
         return'<div style="background:rgba(107,63,160,.06);border:1px solid rgba(107,63,160,.18);border-radius:5px;padding:4px 8px;margin-bottom:3px;font-family:Cinzel,serif;font-size:.68rem;color:var(--arc3)">'+f+'</div>';
       }).join('')+'</div>'
     :'';
-  var html='<div class="modal-title">⬆ '+cls+' — Nível '+lvl+'!</div>'
+
+  // Montar informações de magia específicas por classe
+  var spellInfo = '';
+  var FULL_CASTERS=['Mago','Feiticeiro','Clérigo','Druida','Bardo'];
+  var HALF_CASTERS=['Paladino','Patrulheiro'];
+
+  // Slots atuais após level up
+  var slotSummary = Object.keys(spellSlots).sort(function(a,b){return a-b;}).map(function(lv){
+    var s=spellSlots[lv];
+    return lv+'° Círculo: '+s.total+' espaço'+(s.total>1?'s':'');
+  }).join(' | ');
+
+  var clsNote = '';
+  if(cls==='Druida'){
+    var prepMax=getDruidPreparedMax();
+    var newPools=DRUID_SPELL_POOL[lvl]||[];
+    var circleInfo=DRUID_CIRCLE_SPELLS[lvl]||[];
+    clsNote='<div style="background:rgba(45,122,74,.08);border:1px solid rgba(45,122,74,.3);border-radius:8px;padding:.7rem;margin-bottom:.6rem">'
+      +'<div style="font-family:Cinzel,serif;font-size:.6rem;color:#6dbf6d;margin-bottom:.4rem">🌿 Druida — Círculos de Magia</div>'
+      +'<div style="font-size:.78rem;color:var(--text2);line-height:1.6">'
+      +'<b>Magias preparadas máximo:</b> '+prepMax+' (nível '+lvl+' + mod SAB)<br>'
+      +'<b>Círculos disponíveis:</b> '+circleInfo.join(', ')+'<br>'
+      +(newPools.length?'<b>Novas magias disponíveis ('+lvl+'° círculo):</b> '+newPools.join(', '):'')
+      +'</div></div>';
+  } else if(cls==='Mago'){
+    clsNote='<div style="background:rgba(107,63,160,.08);border:1px solid rgba(107,63,160,.25);border-radius:8px;padding:.7rem;margin-bottom:.6rem">'
+      +'<div style="font-family:Cinzel,serif;font-size:.6rem;color:var(--arc3);margin-bottom:.3rem">📖 Mago — Livro de Magias</div>'
+      +'<div style="font-size:.78rem;color:var(--text2);line-height:1.5">Você aprende 2 magias de qualquer círculo disponível e pode copiar outras ao encontrá-las. Prepare INT mod + nível magias por dia.</div></div>';
+  } else if(cls==='Bruxo'){
+    var ws=WARLOCK_SLOTS[lvl]||{};
+    var wLv=Object.keys(ws)[0]||1;
+    clsNote='<div style="background:rgba(107,63,160,.08);border:1px solid rgba(107,63,160,.25);border-radius:8px;padding:.7rem;margin-bottom:.6rem">'
+      +'<div style="font-family:Cinzel,serif;font-size:.6rem;color:var(--arc3);margin-bottom:.3rem">👁 Bruxo — Magia de Pacto</div>'
+      +'<div style="font-size:.78rem;color:var(--text2);line-height:1.5">Espaços de nível <b>'+wLv+'</b> — recuperados em <b>descanso curto</b>. Magias sempre conjuradas no nível máximo disponível.</div></div>';
+  } else if(cls==='Clérigo'||cls==='Paladino'){
+    clsNote='<div style="background:rgba(200,168,74,.06);border:1px solid rgba(200,168,74,.2);border-radius:8px;padding:.7rem;margin-bottom:.6rem">'
+      +'<div style="font-family:Cinzel,serif;font-size:.6rem;color:var(--gold);margin-bottom:.3rem">☩ '+cls+' — Magias Preparadas</div>'
+      +'<div style="font-size:.78rem;color:var(--text2);line-height:1.5">Prepare '+(cls==='Clérigo'?'SAB mod + nível':'CAR mod + metade do nível')+' magias. Troque diariamente após descanso longo.</div></div>';
+  }
+
+  var html='<div class="modal-title">🔮 Magia — Nível '+lvl+'</div>'
     +featHtml
-    +'<div style="background:rgba(107,63,160,.06);border:1px solid rgba(107,63,160,.2);border-radius:8px;padding:.7rem;margin-bottom:.8rem">'
-    +'<div style="font-family:Cinzel,serif;font-size:.65rem;color:var(--arc2);margin-bottom:.3rem">✨ Magias disponíveis</div>'
-    +'<div style="font-size:.78rem;color:var(--text2);line-height:1.5">Seu nível aumentou — novas magias podem estar disponíveis. Revise sua seleção no Gerenciador para ajustar as magias preparadas conforme os novos limites da sua classe.</div>'
+    +clsNote
+    +'<div style="background:rgba(200,168,74,.05);border:1px solid rgba(200,168,74,.15);border-radius:8px;padding:.6rem;margin-bottom:.8rem">'
+    +'<div style="font-family:Cinzel,serif;font-size:.6rem;color:var(--gold);margin-bottom:.3rem">⭐ Espaços de Magia Atuais</div>'
+    +'<div style="font-size:.78rem;color:var(--text2)">'+slotSummary+'</div>'
     +'</div>'
     +'<div class="modal-row">'
     +'<button class="mbtn secondary" onclick="closeDynModal()">Fechar</button>'
@@ -5254,12 +5533,29 @@ function renderConcentration(){
 }
 
 // ─── RASTREADOR DE NPCs ───
-function addNPC(name,location,relation,notes){
-  var id='npc_'+Date.now();
-  npcTracker.push({id:id,name:name,location:location||'',relation:relation||'neutro',notes:notes||''});
-  renderNPCs();
-  debouncedSave();
-  return id;
+function addNPC(name, location, relation, notes, description){
+  if(!name) return;
+  var existing = npcTracker.find(function(x){ return x.name.toLowerCase()===name.toLowerCase(); });
+  if(existing){
+    // Atualizar dados existentes
+    if(location) existing.location = location;
+    if(relation) existing.relation = relation;
+    if(notes) existing.notes = (existing.notes?existing.notes+'; ':'')+notes;
+    if(description) existing.description = description;
+  } else {
+    npcTracker.push({
+      id: 'npc_'+Date.now(),
+      name: name,
+      location: location||'',
+      relation: relation||'neutro',
+      notes: notes||'',
+      description: description||'',
+      firstSeen: new Date().toLocaleDateString('pt-BR'),
+      interactions: 1
+    });
+  }
+  renderNPCTracker();
+  saveProgress('auto');
 }
 
 function removeNPC(id){
@@ -5327,6 +5623,87 @@ function renderNPCsInModal(){
       +'<button data-nid="'+n.id+'" onclick="removeNPC(this.dataset.nid);renderNPCsInModal()" style="background:rgba(200,168,74,.06);border:1px solid var(--border);border-radius:4px;color:var(--text3);font-size:.6rem;padding:1px 5px;cursor:pointer">✕</button>'
       +'</div>';
   }).join('');
+}
+
+function renderNPCTracker(){
+  var el = document.getElementById('npc-tracker-list');
+  if(!el) return;
+  if(!npcTracker.length){
+    el.innerHTML='<div style="font-family:Cormorant Garamond,serif;font-style:italic;font-size:.8rem;color:var(--text3);text-align:center;padding:.5rem">Nenhum NPC encontrado ainda</div>';
+    return;
+  }
+  var relColors = {aliado:'rgba(45,122,74,.3)',neutro:'rgba(200,168,74,.2)',inimigo:'rgba(155,35,53,.3)'};
+  var relIcons  = {aliado:'🟢',neutro:'🟡',inimigo:'🔴'};
+  el.innerHTML = npcTracker.map(function(n,idx){
+    var rc = relColors[n.relation]||relColors.neutro;
+    var ri = relIcons[n.relation]||'🟡';
+    return '<div class="npc-card-item" data-npc-idx="'+idx+'" style="background:rgba(0,0,0,.35);border:1px solid '+rc+';border-radius:9px;padding:.55rem .7rem;margin-bottom:.4rem;cursor:pointer;transition:all .2s">'
+      +'<div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.2rem">'
+      +'<span style="font-size:.7rem">'+ri+'</span>'
+      +'<span style="font-family:Cinzel,serif;font-size:.65rem;color:var(--gold2)">'+n.name+'</span>'
+      +'<span style="font-family:Cinzel,serif;font-size:.44rem;color:var(--text3);margin-left:auto">'+(n.firstSeen||'')+'</span>'
+      +'</div>'
+      +(n.location?'<div style="font-family:Cormorant Garamond,serif;font-size:.72rem;color:var(--text3)">📍 '+n.location+'</div>':'')
+      +(n.description?'<div style="font-family:Cormorant Garamond,serif;font-size:.72rem;color:var(--text2);margin-top:.2rem;line-height:1.4">'+n.description+'</div>':'')
+      +'</div>';
+  }).join('');
+  el.querySelectorAll('.npc-card-item').forEach(function(card){
+    card.addEventListener('click', function(){
+      openNPCCard(npcTracker[parseInt(this.dataset.npcIdx)].id);
+    });
+    card.addEventListener('mouseover', function(){ this.style.borderColor='rgba(200,168,74,.4)'; });
+    card.addEventListener('mouseout',  function(){
+      var n = npcTracker[parseInt(this.dataset.npcIdx)];
+      var rc = {aliado:'rgba(45,122,74,.3)',neutro:'rgba(200,168,74,.2)',inimigo:'rgba(155,35,53,.3)'};
+      this.style.borderColor = rc[n.relation]||rc.neutro;
+    });
+  });
+}
+
+function openNPCCard(npcId){
+  var n = npcTracker.find(function(x){ return x.id===npcId; });
+  if(!n) return;
+  var relColors = {aliado:'#6dbf6d',neutro:'#e8c860',inimigo:'#e06060'};
+  window._editingNpcId = npcId;
+  var html = '<div class="modal-title">'+n.name+'</div>'
+    +'<div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem">'
+    +'<select id="npc-rel-sel" style="background:#0d0a10;border:1px solid rgba(200,168,74,.3);border-radius:6px;color:'+(relColors[n.relation]||'#e8c860')+';font-family:Cinzel,serif;font-size:.65rem;padding:.3rem .5rem">'
+    +'<option value="aliado"'+(n.relation==='aliado'?' selected':'')+'>🟢 Aliado</option>'
+    +'<option value="neutro"'+(n.relation==='neutro'?' selected':'')+'>🟡 Neutro</option>'
+    +'<option value="inimigo"'+(n.relation==='inimigo'?' selected':'')+'>🔴 Inimigo</option>'
+    +'</select>'
+    +(n.location?'<span style="font-family:Cinzel,serif;font-size:.55rem;color:var(--text3)">📍 '+n.location+'</span>':'')
+    +'</div>'
+    +'<label style="font-family:Cinzel,serif;font-size:.55rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px">Descrição / Aparência</label>'
+    +'<textarea id="npc-desc-inp" style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(200,168,74,.2);border-radius:6px;color:#e8dfc8;font-family:Cormorant Garamond,serif;font-size:.88rem;padding:.5rem;margin:.3rem 0 .6rem;resize:vertical;min-height:60px;box-sizing:border-box"></textarea>'
+    +'<label style="font-family:Cinzel,serif;font-size:.55rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px">Notas / Informações Conhecidas</label>'
+    +'<textarea id="npc-notes-inp" style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(200,168,74,.2);border-radius:6px;color:#e8dfc8;font-family:Cormorant Garamond,serif;font-size:.88rem;padding:.5rem;margin:.3rem 0 .6rem;resize:vertical;min-height:60px;box-sizing:border-box"></textarea>'
+    +'<div class="modal-row">'
+    +'<button class="mbtn secondary" onclick="closeDynModal()">Fechar</button>'
+    +'<button class="mbtn" id="npc-save-btn">💾 Salvar</button>'
+    +'</div>';
+  openDynModal(html);
+  // Preencher após render
+  setTimeout(function(){
+    var descEl  = document.getElementById('npc-desc-inp');
+    var notesEl = document.getElementById('npc-notes-inp');
+    var saveBtn = document.getElementById('npc-save-btn');
+    if(descEl)  descEl.value  = n.description||'';
+    if(notesEl) notesEl.value = n.notes||'';
+    if(saveBtn) saveBtn.addEventListener('click', function(){ saveNPCCard(window._editingNpcId); });
+  }, 50);
+}
+
+function saveNPCCard(npcId){
+  var n = npcTracker.find(function(x){ return x.id===npcId; });
+  if(!n) return;
+  n.relation    = document.getElementById('npc-rel-sel')?.value||n.relation;
+  n.description = document.getElementById('npc-desc-inp')?.value||n.description;
+  n.notes       = document.getElementById('npc-notes-inp')?.value||n.notes;
+  renderNPCTracker();
+  saveProgress('auto');
+  closeDynModal();
+  showSaveToast('NPC salvo!');
 }
 
 function renderNPCs(){
@@ -5400,6 +5777,35 @@ function openQuickRoll(){
   openDynModal(html);
 }
 
+function quickRollInline(dice, modifier, label){
+  // Rolar o dado e enviar ao narrador sem abrir modal
+  var parts = dice.toLowerCase().split('d');
+  var sides = parseInt(parts[1])||20;
+  var result = cryptoRandInt(1, sides);
+  var total = result + (modifier||0);
+  var mod = modifier||0;
+  var nat20 = sides===20&&result===20;
+  var nat1  = sides===20&&result===1;
+  var qualifier = nat20?'CRÍTICO NATURAL — sucesso automático extraordinário'
+    : nat1?'FALHA CRÍTICA — falha automática catastrófica'
+    : total>=20?'total '+total+' — sucesso excepcional'
+    : total>=15?'total '+total+' — sucesso sólido'
+    : total>=10?'total '+total+' — sucesso parcial'
+    : 'total '+total+' — falha';
+  var line = (nat20?'⭐ ':nat1?'💀 ':'🎲 ')+dice+(mod!==0?(mod>0?'+':'')+mod:'')+': '+result+(mod!==0?' → '+total:'')+(nat20?' — 🌟 CRÍTICO!':nat1?' — ☠ FALHA!':'');
+  addMsg('roll', line);
+  showRollToast(nat20?'✨ CRÍTICO NATURAL!':nat1?'💀 Falha Crítica!':'🎲 '+total+(label?' — '+label:''));
+  var ctx = '[DADO] '+dice+(mod!==0?(mod>0?'+':'')+mod:'')+(label?' de '+label:'')+': '+result+(mod!==0?' → total '+total:'')+' — '+qualifier;
+  window._pendingRollCtx = (window._pendingRollCtx||'') + ctx + '\n';
+  setTimeout(function(){
+    var pendingCtx = window._pendingRollCtx||'';
+    if(!pendingCtx) return;
+    window._pendingRollCtx = '';
+    addLoad();
+    callAI(pendingCtx).then(function(r){ rmLoad(); addMsg('dm',r.replace(/\n/g,'<br>')); }).catch(function(e){ rmLoad(); });
+  }, 500);
+}
+
 function quickRollDice(diceStr){
   var mod = parseInt(document.getElementById('qr-mod')?.value)||0;
   var label = document.getElementById('qr-label')?.value||diceStr;
@@ -5428,16 +5834,47 @@ function showSaveToast(msg){const t=document.getElementById('save-toast');t.text
 function addMsg(tipo,txt){
   const box=document.getElementById('chat');
   if(!box)return;
-  const d=document.createElement('div');d.className='msg msg-'+tipo;
+  const d=document.createElement('div');
+  d.className='msg msg-'+tipo;
   let lbl='';
-  if(tipo==='dm') lbl='<span class="mlbl">⚔ Narrador</span>';
-  else if(tipo==='pl') lbl='<span class="mlbl">'+(window.CHAR_NAME||'Jogador')+'</span>';
+  if(tipo==='dm')   lbl='<span class="mlbl">⚔ Narrador</span>';
+  else if(tipo==='pl')     lbl='<span class="mlbl">'+(window.CHAR_NAME||'Jogador')+'</span>';
   else if(tipo==='update') lbl='<span class="mlbl">⚙ Sistema</span>';
-  else if(tipo==='roll') lbl='<span class="mlbl">🎲 Dado</span>';
+  else if(tipo==='roll')   lbl='<span class="mlbl">🎲 Dado</span>';
+  else if(tipo==='sys')    lbl='<span class="mlbl">📜 Sistema</span>';
   d.innerHTML=lbl+'<div class="bbl">'+txt+'</div>';
   box.appendChild(d);
+
+  // Detectar pedidos de rolagem e injetar botões usando data-attrs (sem inline JS)
+  if(tipo==='dm'){
+    var bbl=d.querySelector('.bbl');
+    if(bbl){
+      // Padrão: "Role d20+N de Habilidade (DC N)" — unicode range para acentos
+      var rp=/[Rr]ol[ea]?\s+(d\d+)([+\-]\d+)?(?:\s+de\s+)?([\w\u00C0-\u00FF\s]+?)?(?:\s*\(DC\s*(\d+)\))?(?=[.,!?\s]|$)/g;
+      var btnCnt=0;
+      var newHtml=bbl.innerHTML.replace(rp,function(match,dice,mod,skill,dc){
+        var mn=parseInt(mod||'0')||0;
+        var sk=(skill||'').trim();
+        var dcn=dc?parseInt(dc):0;
+        var lbl2=dice+(mn>0?'+'+mn:mn<0?mn:'')+(sk?' '+sk:'')+(dcn?' DC'+dcn:'');
+        return match+' <button class="inline-roll-btn" data-dice="'+dice+'" data-mod="'+mn+'" data-skill="'+sk+'" data-dc="'+dcn+'">🎲 Rolar '+lbl2+'</button>';
+      });
+      if(newHtml!==bbl.innerHTML){
+        bbl.innerHTML=newHtml;
+        bbl.querySelectorAll('.inline-roll-btn').forEach(function(btn){
+          btn.addEventListener('click',function(){
+            if(this.disabled)return;
+            this.disabled=true;
+            this.style.opacity='.4';
+            quickRollInline(this.dataset.dice,parseInt(this.dataset.mod)||0,this.dataset.skill);
+          });
+        });
+      }
+    }
+  }
+
   box.scrollTop=box.scrollHeight;
-  // hist: dm/pl/roll vão para contexto do AI. sys/update são internos.
+  // hist: dm/pl/roll vão para contexto do AI
   if(tipo==='dm'||tipo==='pl'||tipo==='roll'){
     var clean=txt.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
     var role=tipo==='dm'?'assistant':'user';
@@ -5600,6 +6037,10 @@ function parseAndApplyUpdates(raw){
     if(u.diary_entry){
       addDiaryEntry(u.diary_entry);
     }
+    // Alignment shift from narration
+    if(u.alignment_shift){
+      shiftAlignment(u.alignment_shift.lawChaos||0, u.alignment_shift.goodEvil||0, u.alignment_shift.reason||'');
+    }
     if(msgs.length) setTimeout(()=>addMsg('update',msgs.join(' · ')),300);
   }catch(e){console.warn('update err',e);}
   return clean;
@@ -5672,6 +6113,30 @@ async function startNarration(){
   catch(e){rmLoad();addMsg('sys','Erro ao conectar. Verifique sua chave de API.');console.error(e);}
 }
 
+// ── Sistema de Pausa ──
+var gamePaused = false;
+
+function togglePause(){
+  gamePaused = !gamePaused;
+  var btn = document.getElementById('pause-btn');
+  var overlay = document.getElementById('pause-overlay');
+  if(gamePaused){
+    if(btn){ btn.textContent='▶ Continuar'; btn.style.background='rgba(45,122,74,.2)'; btn.style.borderColor='rgba(45,122,74,.5)'; }
+    if(overlay) overlay.style.display='flex';
+    saveProgress('auto');
+    // Injetar pausa no hist para o narrador saber
+    hist.push({role:'user', content:'[SISTEMA: O jogador pausou o jogo. Quando retornar, faça uma breve recapitulação do momento atual e pergunte "O que você faz?" para retomar.'});
+  } else {
+    if(btn){ btn.textContent='⏸ Pausar'; btn.style.background=''; btn.style.borderColor=''; }
+    if(overlay) overlay.style.display='none';
+    // Pedir ao narrador para retomar
+    addLoad();
+    callAI('[RETORNO DO JOGADOR] O jogador retornou. Faça uma recapitulação breve e envolvente da situação atual e pergunte "O que você faz?" para retomar.').then(function(r){
+      rmLoad(); addMsg('dm',r.replace(/\n/g,'<br>'));
+    }).catch(function(e){ rmLoad(); console.error(e); });
+  }
+}
+
 async function send(){
   if(busy)return;
   const inp=document.getElementById('inp');const txt=inp.value.trim();if(!txt)return;
@@ -5718,7 +6183,7 @@ function getState(){
     charLevel,charXP,saveProficiencies,skillProficiencies,mapSrc,conquistas:CONQUISTAS,
     charName:window.CHAR_NAME||'',charRace:window.CHAR_RACE||'',
     charClass:window.CHAR_CLASS||'',
-    charSubclass:window.CHAR_SUBCLASS||'',charRegion:window.CHAR_REGION||'',
+    charSubclass:window.CHAR_SUBCLASS||'',charRegion:window.CHAR_REGION||'',charPhoto:window.CHAR_PHOTO||'',charAlignment:window.CHAR_ALIGNMENT||'Neutro',
     campaignTitle:window.CAMPAIGN_TITLE||'',
     systemOverride:window.SYSTEM_OVERRIDE||'',
     deathSaves:deathSaves,isUnconscious:isUnconscious,isDead:isDead,furyActive:furyActive,partyNPCs:partyNPCs,activeConditions:activeConditions,concentrationSpell:concentrationSpell,npcTracker:npcTracker,hasInspiration:hasInspiration,combatants:combatants,combatActive:combatActive,currentTurn:currentTurn,roundNum:roundNum,
@@ -5735,8 +6200,13 @@ function debouncedSave(){
 }
 function saveProgress(slot='auto',showToast=false){
   const saves=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');
-  saves[slot]=getState();localStorage.setItem(SAVE_KEY,JSON.stringify(saves));
-  if(showToast)showSaveToast(slot==='auto'?'Salvo automaticamente':'Salvo no slot '+slot+'!');
+  saves[slot]=getState();
+  localStorage.setItem(SAVE_KEY,JSON.stringify(saves));
+  // Salvar também na nuvem se Firebase disponível
+  if(window.saveToCloud && window.FB_USER){
+    window.saveToCloud(saves).catch(function(e){ console.warn('Cloud save failed:',e); });
+  }
+  if(showToast) showSaveToast(slot==='auto'?'Salvo automaticamente':'Salvo no slot '+slot+'!');
 }
 function loadProgress(slot='auto'){
   const saves=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');const s=saves[slot];if(!s)return false;
@@ -5781,6 +6251,8 @@ function loadProgress(slot='auto'){
     window.CHAR_NAME    = s.charName;
     window.CHAR_RACE    = s.charRace    || '';
     window.CHAR_CLASS   = s.charClass   || '';
+    window.CHAR_PHOTO   = s.charPhoto   || '';
+    window.CHAR_ALIGNMENT = s.charAlignment || 'Neutro';
     window.CHAR_REGION  = s.charRegion  || '';
     window.CHAR_SUBCLASS= s.charSubclass|| '';
   }
@@ -7356,7 +7828,7 @@ async function startNewGame(){
   // Build dynamic system prompt
   var dynSystem='Você é o Mestre de D&D 5e narrando uma campanha nos Forgotten Realms OFICIAIS em português do Brasil.\n'
     +'REGRA DE ABERTURA: A primeira mensagem [INÍCIO DE CAMPANHA] deve ser SOMENTE narração — sem JSON, sem UPDATES. Os JSONs começam da segunda mensagem em diante.\n\n'
-    +'PERSONAGEM: '+name+' | '+race+' '+cls+(subclass?' ('+subclass+')':'')+' | Nível 1 | '+align+'\n'
+    +'NPCs CONHECIDOS: '+(npcTracker.length?npcTracker.map(function(n){ return n.name+(n.description?' ('+n.description+')':'')+(n.relation?' ['+n.relation+']':''); }).join('; '):'Nenhum ainda')+'\n'    +'PERSONAGEM: '+name+' | '+race+' '+cls+(subclass?' ('+subclass+')':'')+' | Nível 1 | '+align+'\n'
     +'Antecedente: '+bg+(story?' | História: '+story:'')+'\n'
     +'Atributos: FOR '+newAttrs.FOR+' DES '+newAttrs.DES+' CON '+newAttrs.CON+' INT '+newAttrs.INT+' SAB '+newAttrs.SAB+' CAR '+newAttrs.CAR+'\n'
     +(physString?'Aparência física: '+physString+'\n':'')
@@ -7376,7 +7848,7 @@ async function startNewGame(){
     +'CAMPANHA: Gere uma campanha ORIGINAL baseada nos Forgotten Realms. A aventura deve ser coerente com o nível 1.\n'    +'INIMIGOS — USE VARIEDADE OBRIGATÓRIA. Nunca use só organizações criminosas como Zhentarim ou Harpers como antagonistas. Rotacione entre: monstros (goblinoides, mortos-vivos, bestas, aberrações), cultos de deuses obscuros, elementos naturais (dragões jovens, gigantes), facções políticas corrompidas, criaturas únicas do Underdark, NPCs com motivações pessoais, e APENAS ocasionalmente organizações criminosas. Crie pelo menos 1 antagonista original por campanha com motivação não-criminal.\n\n'
     +'DIRETRIZES GERAIS:\n'    +'- Narre em português claro e direto, como um bom Mestre. Sem palavras rebuscadas desnecessárias.\n'    +'- Máximo 3 parágrafos por resposta. Seja direto e envolvente.\n'    +'- Para testes: "Role d20+X de Habilidade". NUNCA só "role d20".\n'    +'- NUNCA resolva combates sem rolls do jogador.\n'    +'- AO FINAL: pergunte somente "O que você faz?" — jamais sugira opções.\n'    +'\nNOMES DE NPCs:\n'    +'- NPCs SEMPRE com nomes únicos, variados e culturalmente coerentes com Faerûn. PROIBIDO: Elara, Borin, Gareth, Mira, Lyra, Aria, Nyx, Torin, Aldric, Theron, Kira, Seraphina (nomes clichê genéricos de fantasia).\n'    +'- Use nomes por cultura: Waterdeep/Cormyr (Vashti, Corren, Maelys, Baerovus, Sindra) | Sembia (Dramun, Chelva, Torst) | Anão (Brikka, Durval, Thorgis) | Elfo (Ilyriel, Caelwen, Sorvian) | Halfling (Perro, Gwendy, Callum) | Calimshan (Rashan, Zafira, Khalid) | Thay (Szass, Ilvara, Nevron).\n'    +'- Registre NPCs com npc_add e mantenha consistência de nome entre cenas.\n'    +'\nFALAS DO JOGADOR:\n'    +'- NUNCA repita ou parafraseie o que o jogador acabou de escrever. A fala JÁ aconteceu — narre SOMENTE a reação do mundo.\n'    +'- ERRADO: "Você diz: Preciso de trabalho. O taberneiro te responde..." | CERTO: "O taberneiro ergue os olhos e te avalia de cima a baixo..."\n'    +'\nNOMES E IDENTIDADE:\n'    +'- NPCs desconhecem o nome do personagem até ele se apresentar explicitamente.\n'    +'- O personagem desconhece o nome de NPCs até ser apresentado, ouvir alguém chamar, ou perguntar.\n'    +'- NPCs não revelados: use descrições físicas ("o guarda baixo", "a mulher de cabelos brancos").\n'    +'- O que foi revelado persiste. O que não foi, permanece desconhecido.\n'    +'\nCONSISTÊNCIA DE MUNDO:\n'    +'- O mundo existe independente do jogador. NPCs têm rotinas, objetivos e memória.\n'    +'- O personagem NÃO tem acesso a informações que não foram reveladas a ele (sem onisciência).\n'    +'- Clima, hora do dia, localizações e estado de NPCs devem ser consistentes entre cenas.\n'    +'\nINIMIGOS E AMEAÇAS:\n'    +'- PROIBIDO usar exclusivamente organizações criminosas (Zhentarim, Mão Negra, etc.) como vilões principais. Usá-las como elemento secundário ou de cor é permitido.\n'    +'- VARIE as ameaças: criaturas selvagens com motivação (lobo defendendo território, harpia colecionadora), facções regionais (culto de deus obscuro, família nobre corrompida, deserotores), fenômenos mágicos (ruína que drena magia, espírito territorial), monstros canônicos FR com personalidade.\n'    +'- Antagonistas têm nomes únicos e motivações próprias — não são obstáculos genéricos.\n'    +'\\nROLAGENS DE DADOS:\\n'+'- Ao solicitar teste: especifique a perícia E o modificador do personagem. Ex: \'Role d20+3 de Furtividade (DC15)\'.\\n'+'- DCs LdJ: Fácil=DC10, Médio=DC15, Difícil=DC20, Muito Difícil=DC25.\\n'+'- [DADO]: resultado real do sistema. Total>=DC=sucesso. Narre consequência imediatamente.\\n'+'\\n'    +'SISTEMA DE ATUALIZAÇÃO — ao final se houver mudanças inclua (JSON puro, sem markdown):\n'
     +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300,"gold_reward":50}],"hp_damage":5,"hp_heal":0,"condition_add":[{"name":"Envenenado","duration":"1 hora"}],"condition_remove":["Envenenado"],"xp_gain":150,"xp_source":"Combate","gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena.","npc_add":[{"name":"Nome","location":"Local","relation":"aliado"}]}}\n'
-    +'OBRIGATÓRIO:\n'
+    +'OBRIGATÓRIO:\n'+'- Alinhamento: use alignment_shift:{lawChaos:N,goodEvil:M,reason:"motivo"} quando o personagem toma decisão moralmente relevante. Ex: ação heroica goodEvil:+5, traição lawChaos:-10.\\n'
     +'- Moedas: gold_add (receber em PO) / gold_remove (gastar em PO). O sistema converte e dá troco automaticamente. Narre o troco em moeda miúda quando relevante: \"o mercador devolve 3 PA e 5 PC\".\n'
     +'- Missões: quest_add ao iniciar qualquer objetivo; quest_update ao concluir/falhar. Sempre com xp_reward.\n'
     +'- XP: SEMPRE incluir xp_gain ao superar obstáculo. Combate fácil=50, normal=150, difícil=300, chefe=500. Roleplay=50-200. Descoberta=25-150. Missão concluída=bônus 50-500.\n'
@@ -7556,6 +8028,64 @@ function showApp(){
   // Mostrar app
   var app=document.getElementById('app');
   if(app){app.style.display='flex';app.style.visibility='visible';}
+}
+
+// ── Firebase Auth Callback ──
+window.onFirebaseAuthChange = async function(user){
+  if(user){
+    // Atualizar badge Firebase (além do Google GIS)
+    updateFirebaseBadge(user);
+    // Tentar restaurar save da nuvem
+    try{
+      var cloudSaves = await window.loadFromCloud();
+      if(cloudSaves){
+        // Mesclar com localStorage (nuvem tem prioridade)
+        var local = JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');
+        var merged = Object.assign(local, cloudSaves);
+        localStorage.setItem(SAVE_KEY, JSON.stringify(merged));
+        // Atualizar btn-continue se tiver auto-save
+        checkStorageSave();
+        showSaveToast('☁ Dados sincronizados da nuvem!');
+      }
+    }catch(e){ console.warn('Cloud load error:', e); }
+  } else {
+    updateFirebaseBadge(null);
+  }
+};
+
+function updateFirebaseBadge(user){
+  var badge = document.getElementById('firebase-user-badge');
+  var photo = document.getElementById('firebase-user-photo');
+  var name  = document.getElementById('firebase-user-name');
+  var syncEl= document.getElementById('cloud-sync-status');
+  if(!badge) return;
+  if(user){
+    badge.style.display = 'flex';
+    if(photo){ photo.src=user.photoURL||''; photo.style.display=user.photoURL?'block':'none'; }
+    if(name) name.textContent = user.displayName||user.email||'';
+    if(syncEl){ syncEl.textContent='☁ Nuvem ativa'; syncEl.style.color='rgba(70,180,70,.8)'; }
+  } else {
+    badge.style.display = 'none';
+    if(syncEl){ syncEl.textContent=''; }
+  }
+}
+
+// ── Firebase Login via botão ──
+function firebaseLogin(){
+  if(window.firebaseGoogleLogin){
+    window.firebaseGoogleLogin().catch(function(e){
+      showSaveToast('Erro no login Firebase: '+e.message);
+    });
+  }
+}
+function firebaseLogout(){
+  if(window.firebaseSignOut){
+    window.firebaseSignOut();
+    localStorage.removeItem('killyn_google_user');
+    localStorage.removeItem('killyn_google_authed');
+    googleUser = null;
+    showStartHero();
+  }
 }
 
 // ─── START ───
