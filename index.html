@@ -1,10 +1,4 @@
-
-    <div id="firebase-user-badge" style="display:none;align-items:center;gap:.4rem;margin-left:auto">
-      <img id="firebase-user-photo" src="" width="20" height="20" style="border-radius:50%;display:none"/>
-      <span id="firebase-user-name" style="font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.7)"></span>
-      <button onclick="firebaseLogout()" style="background:none;border:1px solid rgba(200,168,74,.2);border-radius:4px;padding:1px 6px;font-family:'Cinzel',serif;font-size:.44rem;color:rgba(200,168,74,.4);cursor:pointer">Sair</button>
-    </div>
-    <span id="cloud-sync-status" style="font-family:'Cinzel',serif;font-size:.48rem;margin-left:auto"></span><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"/>
@@ -1235,70 +1229,53 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async></script>
   <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as fbSignOut, onAuthStateChanged }
-      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-    import { getFirestore, doc, setDoc, getDoc }
-      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script>
+    (function(){
+      var FB_CONFIG = {
+        apiKey: "AIzaSyBKAABmYGTjHrd99EPKIGCBQ6bEBmTO2Es",
+        authDomain: "taverna-das-cronicas.firebaseapp.com",
+        projectId: "taverna-das-cronicas",
+        appId: "1:973923505396:web:eccad5b864fc4171967aa1"
+      };
+      if(!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
+      var fbAuth = firebase.auth();
+      var fbDb   = firebase.firestore();
 
-    const FB_CONFIG = {
-      apiKey: "AIzaSyBKAABmYGTjHrd99EPKIGCBQ6bEBmTO2Es",
-      authDomain: "taverna-das-cronicas.firebaseapp.com",
-      projectId: "taverna-das-cronicas",
-      appId: "1:973923505396:web:eccad5b864fc4171967aa1"
-    };
-    const fbApp  = initializeApp(FB_CONFIG);
-    const fbAuth = getAuth(fbApp);
-    const fbDb   = getFirestore(fbApp);
-
-    // ── Expor globalmente para o código legado ──
-    window.FB_AUTH = fbAuth;
-    window.FB_DB   = fbDb;
-    window.FB_DOC  = doc;
-    window.FB_SET  = setDoc;
-    window.FB_GET  = getDoc;
-
-    // ── Login com Google (popup) ──
-    window.firebaseGoogleLogin = async function(){
-      try{
-        const provider = new GoogleAuthProvider();
-        await signInWithPopup(fbAuth, provider);
-      }catch(e){ console.error('Firebase login error:', e); }
-    };
-
-    // ── Logout Firebase ──
-    window.firebaseSignOut = async function(){
-      try{ await fbSignOut(fbAuth); }catch(e){ console.error(e); }
-    };
-
-    // ── Salvar estado no Firestore ──
-    window.saveToCloud = async function(state){
-      if(!fbAuth.currentUser) return false;
-      try{
-        const uid = fbAuth.currentUser.uid;
-        await setDoc(doc(fbDb,'usuarios',uid), { saves: state }, { merge: true });
-        return true;
-      }catch(e){ console.error('Firestore save error:', e); return false; }
-    };
-
-    // ── Carregar estado do Firestore ──
-    window.loadFromCloud = async function(){
-      if(!fbAuth.currentUser) return null;
-      try{
-        const uid = fbAuth.currentUser.uid;
-        const snap = await getDoc(doc(fbDb,'usuarios',uid));
-        return snap.exists() ? snap.data().saves : null;
-      }catch(e){ console.error('Firestore load error:', e); return null; }
-    };
-
-    // ── Observer de auth ── 
-    onAuthStateChanged(fbAuth, function(user){
-      window.FB_USER = user;
-      if(typeof window.onFirebaseAuthChange === 'function'){
-        window.onFirebaseAuthChange(user);
-      }
-    });
+      window.firebaseGoogleLogin = async function(){
+        try{
+          var provider = new firebase.auth.GoogleAuthProvider();
+          await fbAuth.signInWithPopup(provider);
+        }catch(e){ console.error('Firebase login error:', e); showSaveToast('Erro no login: '+e.message); }
+      };
+      window.firebaseSignOut = async function(){
+        try{ await fbAuth.signOut(); }catch(e){ console.error(e); }
+      };
+      window.saveToCloud = async function(state){
+        if(!fbAuth.currentUser) return false;
+        try{
+          var uid = fbAuth.currentUser.uid;
+          await fbDb.collection('usuarios').doc(uid).set({ saves: state }, { merge: true });
+          return true;
+        }catch(e){ console.error('Firestore save error:', e); return false; }
+      };
+      window.loadFromCloud = async function(){
+        if(!fbAuth.currentUser) return null;
+        try{
+          var uid = fbAuth.currentUser.uid;
+          var snap = await fbDb.collection('usuarios').doc(uid).get();
+          return snap.exists ? snap.data().saves : null;
+        }catch(e){ console.error('Firestore load error:', e); return null; }
+      };
+      fbAuth.onAuthStateChanged(function(user){
+        window.FB_USER = user;
+        if(typeof window.onFirebaseAuthChange === 'function'){
+          window.onFirebaseAuthChange(user);
+        }
+      });
+    })();
   </script>
 </head>
 <body>
@@ -2096,6 +2073,13 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 </div>
 
 <script>
+// ─── TABELAS DE CRESCIMENTO POR NÍVEL (LdJ) ───
+const SNEAK_ATTACK_DICE={1:1,2:1,3:2,4:2,5:3,6:3,7:4,8:4,9:5,10:5,11:6,12:6,13:7,14:7,15:8,16:8,17:9,18:9,19:10,20:10};
+const MARTIAL_ARTS_DIE={1:4,2:4,3:4,4:4,5:6,6:6,7:6,8:6,9:6,10:6,11:8,12:8,13:8,14:8,15:8,16:8,17:10,18:10,19:10,20:10};
+const BARD_INSPIRATION_DIE={1:6,2:6,3:6,4:6,5:8,6:8,7:8,8:8,9:8,10:10,11:10,12:10,13:10,14:10,15:12,16:12,17:12,18:12,19:12,20:12};
+const BARBARIAN_RAGE_USES={1:2,2:2,3:3,4:3,5:3,6:4,7:4,8:4,9:4,10:4,11:4,12:5,13:5,14:5,15:5,16:5,17:6,18:6,19:6,20:999};
+const BARBARIAN_RAGE_BONUS={1:2,2:2,3:2,4:2,5:2,6:2,7:2,8:2,9:3,10:3,11:3,12:3,13:3,14:3,15:3,16:4,17:4,18:4,19:4,20:4};
+
 // ══════════════════════════════════════════════════════
 // GOOGLE AUTH — Identity Services
 // ══════════════════════════════════════════════════════
@@ -2206,12 +2190,35 @@ function handleCharPhoto(event){
   var file = event.target.files[0];
   if(!file) return;
   if(!file.type.startsWith('image/')){ showSaveToast('Selecione uma imagem válida.'); return; }
+  // Redimensionar para max 120x120 para evitar QuotaExceededError no localStorage
+  var img = new Image();
   var reader = new FileReader();
   reader.onload = function(e){
-    var dataUrl = e.target.result;
-    window.CHAR_PHOTO = dataUrl;
-    showCharPhoto(dataUrl);
-    saveProgress('auto');
+    img.onload = function(){
+      var MAX = 120;
+      var canvas = document.createElement('canvas');
+      var ratio = Math.min(MAX/img.width, MAX/img.height);
+      canvas.width  = Math.round(img.width  * ratio);
+      canvas.height = Math.round(img.height * ratio);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+      window.CHAR_PHOTO = dataUrl;
+      showCharPhoto(dataUrl);
+      // Salvar apenas se não causar quota exceeded
+      try{
+        saveProgress('auto');
+      }catch(err){
+        if(err.name==='QuotaExceededError'||err.code===22){
+          // Salvar sem a foto
+          var tmp = window.CHAR_PHOTO;
+          window.CHAR_PHOTO = '';
+          try{ saveProgress('auto'); }catch(e2){}
+          window.CHAR_PHOTO = tmp;
+          showSaveToast('Foto salva apenas em memória (armazenamento cheio). Use Firebase para salvar na nuvem.');
+        }
+      }
+    };
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
@@ -6199,12 +6206,28 @@ function debouncedSave(){
   _saveDebounceTimer=setTimeout(function(){saveProgress('auto');},1800);
 }
 function saveProgress(slot='auto',showToast=false){
-  const saves=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');
-  saves[slot]=getState();
-  localStorage.setItem(SAVE_KEY,JSON.stringify(saves));
+  try{
+    var saves=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');
+    saves[slot]=getState();
+    localStorage.setItem(SAVE_KEY,JSON.stringify(saves));
+  }catch(err){
+    if(err.name==='QuotaExceededError'||err.code===22){
+      // Tentar salvar sem a foto e sem o histórico completo
+      try{
+        var saves2=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');
+        var st=getState();
+        st.charPhoto=''; // remover foto
+        if(st.hist&&st.hist.length>10) st.hist=st.hist.slice(-10); // reduzir histórico
+        saves2[slot]=st;
+        localStorage.setItem(SAVE_KEY,JSON.stringify(saves2));
+        console.warn('Save comprimido — quota cheia');
+      }catch(e2){ console.error('Save falhou mesmo comprimido:', e2); }
+    } else { console.error('Save error:', err); }
+  }
   // Salvar também na nuvem se Firebase disponível
   if(window.saveToCloud && window.FB_USER){
-    window.saveToCloud(saves).catch(function(e){ console.warn('Cloud save failed:',e); });
+    var saves3=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');
+    window.saveToCloud(saves3).catch(function(e){ console.warn('Cloud save failed:',e); });
   }
   if(showToast) showSaveToast(slot==='auto'?'Salvo automaticamente':'Salvo no slot '+slot+'!');
 }
