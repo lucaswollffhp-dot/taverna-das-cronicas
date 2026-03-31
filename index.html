@@ -102,21 +102,23 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
 .hdr{
   background:linear-gradient(180deg,#1a1208 0%,#120e08 100%);
   border-bottom:1px solid rgba(200,168,74,.18);
-  padding:.5rem 1rem;
-  display:flex;align-items:center;justify-content:space-between;
-  flex-shrink:0;gap:.5rem;
+  padding:.55rem 1.2rem;
+  display:grid;
+  grid-template-columns: minmax(0,2fr) minmax(0,2.5fr) minmax(0,1.8fr);
+  align-items:center;
+  gap:1.2rem;
+  flex-shrink:0;
   box-shadow:0 1px 0 rgba(200,168,74,.08),0 4px 20px rgba(0,0,0,.5);
   position:relative;z-index:10;
-  height:var(--hdr-h,48px);
   box-sizing:border-box;
-  backdrop-filter:blur(12px);
+  min-height:62px;
 }
 .hdr::after{
   content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,transparent,var(--gold2),transparent);
   opacity:.3;
 }
-.hdr-left{display:flex;align-items:center;gap:.6rem;min-width:0}
+
 .hdr-icon{
   width:36px;height:36px;flex-shrink:0;border-radius:50%;
   display:flex;align-items:center;justify-content:center;font-size:1rem;
@@ -1460,13 +1462,41 @@ input[type=number]{-moz-appearance:textfield}
 #sidebar-attrs-mini div:hover{background:rgba(200,168,74,.08) !important}
 /* ── Header responsivo ── */
 @media(max-width:900px){
-  .hdr{grid-template-columns:1fr auto;grid-template-rows:auto auto;}
-  .hdr-campaign-block{grid-column:1/-1;order:3;padding:.2rem 0 0;}
-  .hdr-actions-block{order:2;}
+  
+  
+  
 }
 @media(max-width:640px){
   .hdr-campaign-block{display:none}
+  
+}
+
+/* ══ HEADER: blocos ══ */
+.hdr-char-block{
+  display:flex;align-items:center;gap:.7rem;min-width:0;overflow:hidden;
+}
+.hdr-char-info-col{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;}
+.hdr-campaign-block{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;min-width:0;padding:0 .5rem;
+}
+.hdr-actions-block{
+  display:flex;align-items:center;gap:.4rem;justify-content:flex-end;
+  flex-wrap:nowrap;overflow:visible;
+}
+/* hbtn maior */
+.hbtn{
+  min-width:36px!important;height:36px!important;
+  font-size:.82rem!important;
+  border-radius:8px!important;
+}
+@media(max-width:900px){
+  .hdr{grid-template-columns:1fr 1fr;}
+  .hdr-campaign-block{grid-column:1/-1;border-top:1px solid rgba(200,168,74,.08);padding-top:.3rem;}
+}
+@media(max-width:640px){
   .hdr{grid-template-columns:1fr auto;}
+  .hdr-campaign-block{display:none;}
 }
 </style>
   <!-- Google Identity Services -->
@@ -2026,20 +2056,22 @@ input[type=number]{-moz-appearance:textfield}
   <div class="hdr">
   <!-- ESQUERDA: Info do personagem -->
   <div class="hdr-char-block">
-    <div class="hdr-char-avatar" id="hdr-avatar-wrap" onclick="openCharSheet()" title="Ver ficha" style="cursor:pointer">
-      <div id="hdr-class-sig" style="font-family:Cinzel,serif;font-size:.6rem;letter-spacing:1px;color:var(--gold2);width:36px;height:36px;border-radius:50%;border:1px solid rgba(200,168,74,.35);display:flex;align-items:center;justify-content:center;background:rgba(200,168,74,.06);flex-shrink:0">GUE</div>
+    <div id="hdr-avatar-wrap" onclick="openCharSheet()" title="Ver ficha — clique para abrir ficha" style="cursor:pointer;flex-shrink:0;position:relative">
+      <!-- Foto do personagem (se houver) ou sigla da classe -->
+      <img id="hdr-photo-img" src="" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(200,168,74,.4);display:none;"/>
+      <div id="hdr-class-sig" style="font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:1.5px;color:var(--gold2);width:44px;height:44px;border-radius:50%;border:2px solid rgba(200,168,74,.35);display:flex;align-items:center;justify-content:center;background:rgba(200,168,74,.06);flex-shrink:0;font-weight:600">GUE</div>
     </div>
     <div class="hdr-char-info-col" onclick="openCharSheet()" style="cursor:pointer">
       <div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap">
-        <span id="hdr-char-name" style="font-family:'Cinzel',serif;font-size:.88rem;color:var(--gold2);white-space:nowrap;max-width:130px;overflow:hidden;text-overflow:ellipsis">—</span>
-        <span id="level-badge" style="font-family:Cinzel,serif;font-size:.55rem;color:var(--blood3);background:rgba(155,35,53,.2);border:1px solid rgba(155,35,53,.35);border-radius:10px;padding:1px 7px;flex-shrink:0">Nv. 1</span>
+        <span id="hdr-char-name" style="font-family:'Cinzel',serif;font-size:1rem;color:var(--gold2);white-space:nowrap;max-width:170px;overflow:hidden;text-overflow:ellipsis">—</span>
+        <span id="level-badge" style="font-family:Cinzel,serif;font-size:.65rem;color:var(--blood3);background:rgba(155,35,53,.2);border:1px solid rgba(155,35,53,.35);border-radius:10px;padding:2px 10px;flex-shrink:0">Nv. 1</span>
       </div>
-      <div id="hdr-char-info" style="font-family:'Cormorant Garamond',serif;font-size:.72rem;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px">—</div>
+      <div id="hdr-char-info" style="font-family:'Cormorant Garamond',serif;font-size:.78rem;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px">—</div>
     </div>
     <!-- HP + CA inline -->
     <div style="display:flex;align-items:center;gap:.4rem;margin-left:.5rem">
-      <div class="hp-mini" id="hp-hdr" style="font-family:Cinzel,serif;font-size:.72rem">♥ —</div>
-      <div class="ca-badge" style="font-family:Cinzel,serif;font-size:.72rem">▣ <span id="ca-hdr">—</span></div>
+      <div class="hp-mini" id="hp-hdr" style="font-family:Cinzel,serif;font-size:.85rem;padding:3px 10px">♥ —</div>
+      <div class="ca-badge" style="font-family:Cinzel,serif;font-size:.85rem;padding:3px 10px">▣ <span id="ca-hdr">—</span></div>
       <div id="death-saves-hdr" style="display:none;align-items:center;gap:3px;background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.4);border-radius:7px;padding:2px 6px;cursor:pointer" onclick="showDeathModal()" title="Testes de Morte">
         <span style="font-family:Cinzel,serif;font-size:.52rem">✦<span id="ds-succ-hdr">0</span></span>
         <span style="font-family:Cinzel,serif;font-size:.44rem;color:rgba(255,255,255,.3)">/</span>
@@ -2050,16 +2082,16 @@ input[type=number]{-moz-appearance:textfield}
 
   <!-- CENTRO: Nome da campanha + XP bar -->
   <div class="hdr-campaign-block">
-    <div id="campaign-title" style="font-family:'Cinzel Decorative',serif;font-size:1.05rem;color:var(--gold2);letter-spacing:1.5px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 0 20px rgba(200,168,74,.25)">Taverna das Crônicas</div>
-    <div id="campaign-sub" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.7rem;color:var(--text3);text-align:center">Narrador IA · D&D 5e · Forgotten Realms</div>
+    <div id="campaign-title" style="font-family:'Cinzel Decorative',serif;font-size:1.18rem;color:var(--gold2);letter-spacing:2px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 0 24px rgba(200,168,74,.3)">Taverna das Crônicas</div>
+    <div id="campaign-sub" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;color:var(--text3);text-align:center">Narrador IA · D&D 5e · Forgotten Realms</div>
     <!-- XP Bar grande e visível -->
     <div id="hdr-xp" style="display:none;flex-direction:column;gap:2px;margin-top:3px;width:100%">
       <div style="display:flex;align-items:center;justify-content:space-between">
-        <span style="font-family:Cinzel,serif;font-size:.55rem;color:var(--text3)">Nv.<span id="hdr-level">1</span></span>
-        <span id="hdr-xp-cur-label" style="font-family:Cinzel,serif;font-size:.52rem;color:var(--text3)">0 / 300 XP</span>
+        <span style="font-family:Cinzel,serif;font-size:.65rem;color:var(--gold)">Nv.<span id="hdr-level">1</span></span>
+        <span id="hdr-xp-cur-label" style="font-family:Cinzel,serif;font-size:.65rem;color:var(--text2)">0 / 300 XP</span>
         <button onclick="openLevelUp()" id="hdr-lvlup-btn" style="display:none;background:rgba(110,207,160,.12);border:1px solid rgba(110,207,160,.4);border-radius:5px;font-family:Cinzel,serif;font-size:.5rem;color:#6ecfa0;cursor:pointer;padding:1px 7px;letter-spacing:.3px">▲ Upar!</button>
       </div>
-      <div style="background:rgba(200,168,74,.1);border-radius:4px;height:6px;overflow:hidden;width:100%">
+      <div style="background:rgba(200,168,74,.1);border-radius:4px;height:8px;overflow:hidden;width:100%;margin-top:2px">
         <div id="hdr-xp-bar" style="height:100%;background:linear-gradient(90deg,var(--blood2),var(--gold2));border-radius:4px;width:0%;transition:width .6s ease"></div>
       </div>
     </div>
@@ -2111,9 +2143,8 @@ input[type=number]{-moz-appearance:textfield}
     <div id="char-alignment-badge" style="display:none;font-family:'Cinzel',serif;font-size:.44rem;color:rgba(200,168,74,.5);text-align:center;border:1px solid rgba(200,168,74,.15);border-radius:8px;padding:2px 7px"></div>
   </div>
   <hr class="sdiv">
-      <!-- PERSONAGEM -->
+      <!-- PERSONAGEM: só a grade de attrs, sem label duplicado -->
       <div>
-        <div class="slbl"><span id="sidebar-char-name">◈ Personagem</span> — Nível <span id="level-d">1</span></div>
         <div class="attrs-grid" id="attrs-d"></div>
       </div>
       <hr class="sdiv">
@@ -2488,16 +2519,19 @@ function handleCharPhoto(event){
 }
 
 function showCharPhoto(url){
-  var img = document.getElementById('char-photo-img');
-  var ph  = document.getElementById('char-photo-placeholder');
-  if(!img || !ph) return;
-  if(url){
-    img.src = url;
-    img.style.display = 'block';
-    ph.style.display  = 'none';
-  } else {
-    img.style.display = 'none';
-    ph.style.display  = 'flex';
+  // Sidebar
+  var img=document.getElementById('char-photo-img');
+  var ph =document.getElementById('char-photo-placeholder');
+  if(img&&ph){
+    if(url){ img.src=url; img.style.display='block'; ph.style.display='none'; }
+    else   { img.style.display='none'; ph.style.display='flex'; }
+  }
+  // Header avatar
+  var hImg=document.getElementById('hdr-photo-img');
+  var hSig=document.getElementById('hdr-class-sig');
+  if(hImg&&hSig){
+    if(url){ hImg.src=url; hImg.style.display='block'; hSig.style.display='none'; }
+    else   { hImg.style.display='none'; hSig.style.display='flex'; }
   }
 }
 
