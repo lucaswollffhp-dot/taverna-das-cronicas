@@ -1,4 +1,23 @@
-<!DOCTYPE html>
+function checkStorageSave(){
+  try{
+    var saves=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');
+    var s=saves['auto']||saves['slot1'];
+    var btn=document.getElementById('btn-continue');
+    var info=document.getElementById('continue-info');
+    if(s&&s.charName){
+      if(btn) btn.style.opacity='1';
+      if(info){
+        var cls=s.charClass||'';
+        var lvl=s.charLevel||1;
+        var xp=s.charXP||0;
+        info.textContent=s.charName+' — '+cls+' Nível '+lvl+' ('+xp+' XP)';
+        info.style.color='rgba(200,168,74,.7)';
+      }
+    } else {
+      if(info){ info.textContent='Nenhum save encontrado'; info.style.color=''; }
+    }
+  }catch(e){ console.warn('checkStorageSave error:',e); }
+}<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23060408'/><text y='24' x='3' font-size='22'>⚔</text></svg>">
@@ -2116,6 +2135,7 @@ input[type=number]{-moz-appearance:textfield}
 
 <script>
 // ─── TABELAS DE CRESCIMENTO POR NÍVEL (LdJ) ───
+const XP_TABLE=[0,300,900,2700,6500,14000,23000,34000,48000,64000,85000,100000,120000,140000,165000,195000,225000,265000,305000,355000];
 const SNEAK_ATTACK_DICE={1:1,2:1,3:2,4:2,5:3,6:3,7:4,8:4,9:5,10:5,11:6,12:6,13:7,14:7,15:8,16:8,17:9,18:9,19:10,20:10};
 const MARTIAL_ARTS_DIE={1:4,2:4,3:4,4:4,5:6,6:6,7:6,8:6,9:6,10:6,11:8,12:8,13:8,14:8,15:8,16:8,17:10,18:10,19:10,20:10};
 const BARD_INSPIRATION_DIE={1:6,2:6,3:6,4:6,5:8,6:8,7:8,8:8,9:8,10:10,11:10,12:10,13:10,14:10,15:12,16:12,17:12,18:12,19:12,20:12};
@@ -2575,6 +2595,7 @@ function toggleSkillsPanel(){
 }
 function init(){
   renderAttrs();renderSaves();renderSkills();renderEquip();renderConditions();renderConcentration();renderNPCs();renderInspiration();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();renderSpells();
+  if(typeof renderNPCTracker==='function') renderNPCTracker();
   document.getElementById('achiev-d').innerHTML=CONQUISTAS.map(c=>`<div class="ach">${c}</div>`).join('');
   setQA(['Explorar','Falar com NPC','Ver companheiros','Partir em jornada','Usar habilidade','⚔ Iniciar combate']);
   updHP();updCA();updXP();
@@ -7099,12 +7120,31 @@ function ccNext(cur){
 function ccPrev(cur){ccStep(cur-1);}
 
 function buildRaceGrid(){
-  var el=document.getElementById('race-grid');if(!el)return;
+  var el=document.getElementById('race-grid'); if(!el)return;
   var icons={Humano:'👤',Elfo:'🧝','Meio-Elfo':'🧑',Anão:'⛏',Halfling:'🍀',Gnomo:'🔭','Meio-Orc':'💪',Tiefling:'😈',Draconato:'🐉'};
+  var descs={
+    Humano:'Versáteis. +1 em todos os atributos (Padrão) ou +1 em dois + 1 Talento (Variante). Nenhuma fraqueza específica.',
+    Elfo:'Ágeis e perceptivos. +2 DES. Visão no escuro, imune ao sono mágico. Subraças: Alto Elfo (mago), Elfo da Floresta (ranger), Drow.',
+    'Meio-Elfo':'+2 CAR, +1 em dois outros. Visão no escuro. Proficiência em 2 perícias extras. Melhor dos dois mundos.',
+    Anão:'Resistentes. +2 CON. Visão no escuro, resistência a veneno. Subraças: Montanha (+2 FOR) ou Colinas (+1 SAB).',
+    Halfling:'Sortudos e furtivos. +2 DES. Rerrola 1s nos dados. Subraças: Pés-Leves (furtividade) ou Robusto (resistência).',
+    Gnomo:'+2 INT. Vantagem em resistências mágicas. Subraças: Floresta (ilusões) ou Pedra (história e ferramentas).',
+    'Meio-Orc':'+2 FOR, +1 CON. Ataques críticos causam mais dano. Sobrevive com 1 PV uma vez por descanso longo.',
+    Tiefling:'+2 CAR, +1 INT. Resistência a fogo. Magias inatas: Taumaturgia, Chamas Infernais, Escuridão. Descendente infernal.',
+    Draconato:'+2 FOR, +1 CAR. Resistência + sopro de dano da linhagem dracônica. 10 ancestralidades dracônicas disponíveis.',
+  };
   el.innerHTML=Object.keys(RACES_DB).map(function(r){
-    return'<div class="cc-card'+(r===_ccSelectedRace?' selected':'')+'" data-r="'+r+'" onclick="selectRace(this.dataset.r)"><div class="cc-card-icon">'+(icons[r]||'⚔')+'</div><div class="cc-card-name">'+r+'</div></div>';
+    var rd=RACES_DB[r];
+    var traits=(rd.traits||[]).slice(0,2).map(function(t){return'<div style="font-size:.54rem;color:var(--text3);line-height:1.3;margin-top:1px">'+t+'</div>';}).join('');
+    var desc=descs[r]||'';
+    return'<div class="cc-card'+(r===_ccSelectedRace?' selected':'')+'" data-r="'+r+'" onclick="selectRace(this.dataset.r)" title="'+desc+'">'
+      +'<div class="cc-card-icon">'+(icons[r]||'⚔')+'</div>'
+      +'<div class="cc-card-name">'+r+'</div>'
+      +'</div>';
   }).join('');
-  renderSubraceArea();renderPhysiqueArea();renderRaceTraits();
+  el.querySelectorAll('.cc-card').forEach(function(card){
+    card.addEventListener('click',function(){ selectRace(this.dataset.r); });
+  });
 }
 function selectRace(r){
   _ccSelectedRace=r;_ccSelectedSubrace='';
@@ -7163,9 +7203,23 @@ function updateRacialBonusHint(){
 function buildClassGrid(){
   var el=document.getElementById('class-grid');if(!el)return;
   var icons={Guerreiro:'⚔',Paladino:'✝',Bárbaro:'🪓',Ladino:'🗡',Mago:'📖',Feiticeiro:'✨',Bruxo:'👁',Clérigo:'☩',Druida:'🌿',Bardo:'🎵',Monge:'👊',Patrulheiro:'🏹'};
+  var classDescs={
+    Guerreiro:'Domina todas as armas e armaduras. Múltiplos ataques por turno. Arquétipos: Campeão, Mestre de Batalha, Cavaleiro Místico.',
+    Paladino:'Guerreiro sagrado com magias de cura. Aura protetora aliada. Juramento define seu arquétipo e magias de círculo.',
+    Bárbaro:'Força bruta e fúria. Resistência a dano físico durante Fúria. Sem armadura pesada mas CA natural alta.',
+    Ladino:'Ataque furtivo massivo com vantagem. Esquiva e reflexos sobrenaturais. Versátil em perícias e habilidades especiais.',
+    Mago:'Arsenal de magias ofensivas e utilitárias. Livro de Magias expansível. Tradição arcana define o foco.',
+    Feiticeiro:'Magia inata de origem dracônica, selvagem ou divina. Pontos de Feitiçaria para metamagia.',
+    Bruxo:'Pacto com entidade poderosa. Magias recuperadas em descanso curto. Invocações customizáveis.',
+    Clérigo:'Cura e suporte divino. Acesso a TODAS as magias do seu domínio. Domínio define a divindade e estilo.',
+    Druida:'Comunhão com a natureza. Transforma em animais (Forma Selvagem). Círculo druídico define sub-estilo.',
+    Bardo:'Suporte versátil com música mágica. Proficiência em muitas perícias. Acesso a magias de qualquer lista.',
+    Monge:'Combate desarmado ágil. Pontos de Ki para técnicas. CA natural sem armadura.',
+    Patrulheiro:'Explorador e caçador. Inimigo Favorito e Terreno Favorito. Magias utilitárias de sobrevivência.',
+  };
   el.innerHTML=Object.keys(CLASS_DEFAULTS).map(function(c){
     var hp=CLASS_LEVEL_TABLE[c]?'d'+CLASS_LEVEL_TABLE[c].hpDie:'d8';
-    return'<div class="cc-card'+(c===_ccSelectedClass?' selected':'')+'" data-c="'+c+'" onclick="selectClass(this.dataset.c)"><div class="cc-card-icon">'+(icons[c]||'⚔')+'</div><div class="cc-card-name">'+c+'</div><div class="cc-card-sub">'+hp+'</div></div>';
+    return'<div class="cc-card'+(c===_ccSelectedClass?' selected':'')+'" data-c="'+c+'" onclick="selectClass(this.dataset.c)" title="'+(classDescs[c]||c)+'">'+'<div class="cc-card-icon">'+(icons[c]||'⚔')+'</div><div class="cc-card-name">'+c+'</div><div class="cc-card-sub">'+hp+'</div></div>';
   }).join('');
   // NÃO resetar _ccSkills ao mudar de classe — preservar seleções
   renderSubclass1Area();renderClassChoices();renderSkillsChoice();updateClassDefaults();
@@ -7372,7 +7426,11 @@ function buildCharSummary(){
   var hp=defs.hp+(conMod>0?conMod:0);
   // Atributos com bônus racial
   var raceDef=RACES_DB[race]||{};
-  var raceBonus=raceDef.attrBonus||{};
+  var raceBonus=Object.assign({},raceDef.attrBonus||{});
+  // Incluir bônus de sub-raça se selecionada
+  if(_ccSelectedSubrace && raceDef.subAttrBonus && raceDef.subAttrBonus[_ccSelectedSubrace]){
+    Object.assign(raceBonus, raceDef.subAttrBonus[_ccSelectedSubrace]);
+  }
   var attrs=ATTR_NAMES.map(function(a){
     var base=parseInt(document.getElementById('nb-'+a)?.value)||10;
     return a+': '+(base>9?'':' ')+base;
@@ -7422,7 +7480,8 @@ function buildAttrBuilder(){
     var v=suggested;
     var ms=fmtMod(v);
     var mc=v>=16?'#6ecfa0':v>=14?'#e6c76a':v<=8?'#e74c3c':'rgba(237,224,188,.6)';
-    var rb=raceBonus[a]?'<span style="font-size:.48rem;color:#9060cc;margin-left:2px">+'+raceBonus[a]+'✦</span>':'';
+    var rbv=raceBonus[a]||0;
+    var rb=rbv>0?'<span style="font-size:.48rem;color:#9060cc;margin-left:2px" title="Bônus racial">+'+rbv+'✦</span>':'';
     return'<div class="attr-build-box" style="position:relative">'      +'<div style="font-family:Cinzel,serif;font-size:.54rem;color:rgba(200,168,74,.8);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;justify-content:center;gap:2px">'+a+rb+'</div>'      +'<div style="display:flex;align-items:center;gap:4px;margin:3px 0">'      +'<button type="button" data-a="'+a+'" data-d="-1" class="attr-step-btn">−</button>'      +'<input type="number" id="nb-'+a+'" data-attr="'+a+'" min="8" max="15" value="'+v+'" class="attr-step-inp"'      +' style="width:40px;background:transparent;border:none;border-bottom:2px solid rgba(200,168,74,.35);font-family:Cinzel,serif;font-size:1.2rem;color:#e6c76a;outline:none;text-align:center;padding:2px 0"/>'      +'<button type="button" data-a="'+a+'" data-d="1" class="attr-step-btn">+</button>'      +'</div>'      +'<div id="nbm-'+a+'" style="font-family:Cinzel Decorative,serif;font-size:.95rem;font-weight:700;color:'+mc+';transition:color .2s">'+ms+'</div>'      +'</div>';
   }).join('');
   // Contador de pontos
