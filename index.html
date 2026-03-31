@@ -1084,6 +1084,10 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 @media(max-width:740px){
   #race-grid,#class-grid{grid-template-columns:repeat(3,1fr)!important;gap:.3rem!important}
   #attr-builder{grid-template-columns:repeat(3,1fr)!important;gap:.4rem!important}
+@media(max-width:540px){
+  #attr-builder{grid-template-columns:repeat(2,1fr)!important;gap:.5rem!important}
+  .attr-build-box{padding:.7rem .4rem!important}
+}
   #region-list{gap:.3rem!important}
 }
 
@@ -1495,8 +1499,56 @@ input[type=number]{-moz-appearance:textfield}
   .hdr-campaign-block{grid-column:1/-1;border-top:1px solid rgba(200,168,74,.08);padding-top:.3rem;}
 }
 @media(max-width:640px){
-  .hdr{grid-template-columns:1fr auto;}
-  .hdr-campaign-block{display:none;}
+  .hdr{
+    grid-template-columns:1fr auto;
+    grid-template-rows:auto;
+    padding:.4rem .7rem;
+    min-height:52px;
+    gap:.5rem;
+  }
+  .hdr-campaign-block{display:none!important;}
+  .hdr-char-block{overflow:hidden;gap:.4rem;}
+  .hdr-char-info-col .hp-ca-row{display:none;}
+  /* No mobile: HP e CA direto no char-block */
+  #hp-hdr, .ca-badge{font-size:.75rem!important;padding:2px 7px!important;}
+  .hbtn-hide-mob{display:none!important;}
+  .hbtn{min-width:32px!important;height:32px!important;font-size:.75rem!important;}
+  #hdr-char-name{max-width:90px!important;font-size:.85rem!important;}
+  #hdr-char-info{display:none;}
+  #level-badge{font-size:.58rem!important;padding:1px 6px!important;}
+}
+@media(max-width:400px){
+  #hdr-char-name{max-width:70px!important;}
+  .hdr-actions-block{gap:.2rem!important;}
+}
+
+/* ══ Blocos de lore nos painéis de criação ══ */
+.cc-lore-block{
+  background: rgba(200,168,74,.04);
+  border: 1px solid rgba(200,168,74,.12);
+  border-left: 3px solid rgba(200,168,74,.3);
+  border-radius: 8px;
+  padding: .6rem .8rem;
+  margin-bottom: .7rem;
+}
+.cc-lore-title{
+  font-family: 'Cinzel', serif;
+  font-size: .6rem;
+  color: var(--gold);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: .25rem;
+}
+.cc-lore-text{
+  font-family: 'Cormorant Garamond', serif;
+  font-size: .88rem;
+  color: var(--text2);
+  line-height: 1.55;
+}
+/* Mobile: lore blocks um pouco menores */
+@media(max-width:540px){
+  .cc-lore-text{ font-size:.82rem; }
+  .cc-lore-block{ padding:.5rem .6rem; }
 }
 </style>
   <!-- Google Identity Services -->
@@ -2109,7 +2161,7 @@ input[type=number]{-moz-appearance:textfield}
     <button class="hbtn" onclick="openCombat()" id="combat-toggle-btn" title="Combate">†</button>
     <button class="hbtn" id="pause-btn" onclick="togglePause()" title="Pausar">⏸</button>
     <button class="hbtn" onclick="openSaveModal()" title="Salvar">◧</button>
-    <button class="hbtn hbtn-hide-mob" onclick="goToMainMenu()" title="Menu">⌂</button>
+    <button class="hbtn" onclick="goToMainMenu()" title="Menu principal" style="font-size:.88rem">⌂</button>
     <button class="hbtn hbtn-hide-mob" onclick="exportSave()" title="Exportar">↑</button>
     <label class="hbtn hbtn-hide-mob" title="Importar" style="cursor:pointer">↓<input type="file" accept=".json" style="display:none" onchange="importSave(event)"></label>
     <button class="hbtn hbtn-hide-mob" onclick="resetKey()" title="Chave API">◉</button>
@@ -2479,6 +2531,32 @@ function updateSidebarMiniAttrs(){
       +'<div style="font-family:Cinzel,serif;font-size:.72rem;font-weight:700;color:'+col+';line-height:1.2">'+ms+'</div>'
       +'</div>';
   }).join('');
+}
+
+function handleCCPhoto(event){
+  // Foto na criação — preview + salvar em CHAR_PHOTO
+  var file=event.target.files[0]; if(!file)return;
+  if(!file.type.startsWith('image/')){ return; }
+  var img=new Image();
+  var reader=new FileReader();
+  reader.onload=function(e){
+    img.onload=function(){
+      var MAX=120; var canvas=document.createElement('canvas');
+      var ratio=Math.min(MAX/img.width,MAX/img.height);
+      canvas.width=Math.round(img.width*ratio); canvas.height=Math.round(img.height*ratio);
+      canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+      var dataUrl=canvas.toDataURL('image/jpeg',0.8);
+      window.CHAR_PHOTO=dataUrl;
+      // Preview na criação
+      var prev=document.getElementById('cc-photo-preview');
+      var pimg=document.getElementById('cc-photo-img');
+      if(prev&&pimg){ prev.style.display='none'; pimg.src=dataUrl; pimg.style.display='block'; }
+      // Já atualizar a sidebar e header se existirem
+      showCharPhoto(dataUrl);
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 function handleCharPhoto(event){
@@ -8382,14 +8460,14 @@ async function startNewGame(){
     +'PV: '+HP_MAX+' | CA: '+charCA+'\n'
     +'Região de início: '+region.name+' ('+region.desc+')\n\n'
     +'CAMPANHA: Gere uma campanha ORIGINAL baseada nos Forgotten Realms. A aventura deve ser coerente com o nível 1.\n'    +'INIMIGOS — USE VARIEDADE OBRIGATÓRIA. Nunca use só organizações criminosas como Zhentarim ou Harpers como antagonistas. Rotacione entre: monstros (goblinoides, mortos-vivos, bestas, aberrações), cultos de deuses obscuros, elementos naturais (dragões jovens, gigantes), facções políticas corrompidas, criaturas únicas do Underdark, NPCs com motivações pessoais, e APENAS ocasionalmente organizações criminosas. Crie pelo menos 1 antagonista original por campanha com motivação não-criminal.\n\n'
-    +'DIRETRIZES GERAIS:\n'    +'- Narre em português claro e direto, como um bom Mestre. Sem palavras rebuscadas desnecessárias.\n'    +'- Máximo 3 parágrafos por resposta. Seja direto e envolvente.\n'    +'- Para testes: "Role d20+X de Habilidade". NUNCA só "role d20".\n'    +'- NUNCA resolva combates sem rolls do jogador.\n'    +'- AO FINAL: pergunte somente "O que você faz?" — jamais sugira opções.\n'    +'\nNOMES DE NPCs:\n'    +'- NPCs SEMPRE com nomes únicos, variados e culturalmente coerentes com Faerûn. PROIBIDO: Elara, Borin, Gareth, Mira, Lyra, Aria, Nyx, Torin, Aldric, Theron, Kira, Seraphina (nomes clichê genéricos de fantasia).\n'    +'- Use nomes por cultura: Waterdeep/Cormyr (Vashti, Corren, Maelys, Baerovus, Sindra) | Sembia (Dramun, Chelva, Torst) | Anão (Brikka, Durval, Thorgis) | Elfo (Ilyriel, Caelwen, Sorvian) | Halfling (Perro, Gwendy, Callum) | Calimshan (Rashan, Zafira, Khalid) | Thay (Szass, Ilvara, Nevron).\n'    +'- Registre NPCs com npc_add e mantenha consistência de nome entre cenas.\n'    +'\nFALAS DO JOGADOR:\n'    +'- NUNCA repita ou parafraseie o que o jogador acabou de escrever. A fala JÁ aconteceu — narre SOMENTE a reação do mundo.\n'    +'- ERRADO: "Você diz: Preciso de trabalho. O taberneiro te responde..." | CERTO: "O taberneiro ergue os olhos e te avalia de cima a baixo..."\n'    +'\nNOMES E IDENTIDADE:\n'    +'- NPCs desconhecem o nome do personagem até ele se apresentar explicitamente.\n'    +'- O personagem desconhece o nome de NPCs até ser apresentado, ouvir alguém chamar, ou perguntar.\n'    +'- NPCs não revelados: use descrições físicas ("o guarda baixo", "a mulher de cabelos brancos").\n'    +'- O que foi revelado persiste. O que não foi, permanece desconhecido.\n'    +'\nCONSISTÊNCIA DE MUNDO:\n'    +'- O mundo existe independente do jogador. NPCs têm rotinas, objetivos e memória.\n'    +'- O personagem NÃO tem acesso a informações que não foram reveladas a ele (sem onisciência).\n'    +'- Clima, hora do dia, localizações e estado de NPCs devem ser consistentes entre cenas.\n'    +'\nINIMIGOS E AMEAÇAS:\n'    +'- PROIBIDO usar exclusivamente organizações criminosas (Zhentarim, Mão Negra, etc.) como vilões principais. Usá-las como elemento secundário ou de cor é permitido.\n'    +'- VARIE as ameaças: criaturas selvagens com motivação (lobo defendendo território, harpia colecionadora), facções regionais (culto de deus obscuro, família nobre corrompida, deserotores), fenômenos mágicos (ruína que drena magia, espírito territorial), monstros canônicos FR com personalidade.\n'    +'- Antagonistas têm nomes únicos e motivações próprias — não são obstáculos genéricos.\n'    +'\\nROLAGENS DE DADOS:\\n'+'- Ao solicitar teste: especifique a perícia E o modificador do personagem. Ex: \'Role d20+3 de Furtividade (DC15)\'.\\n'+'- DCs LdJ: Fácil=DC10, Médio=DC15, Difícil=DC20, Muito Difícil=DC25.\\n'+'- [DADO]: resultado real do sistema. Total>=DC=sucesso. Narre consequência imediatamente.\\n'+'\\n'    +'SISTEMA DE ATUALIZAÇÃO — ao final se houver mudanças inclua (JSON puro, sem markdown):\n'
+    +'DIRETRIZES GERAIS:\n'    +'- Narre em português claro e direto, como um bom Mestre. Sem palavras rebuscadas desnecessárias.\n'    +'- Máximo 3 parágrafos por resposta. Seja direto e envolvente.\n'    +'- Para testes: "Role d20+X de Habilidade". NUNCA só "role d20".\n'    +'- NUNCA resolva combates sem rolls do jogador.\n'    +'- AO FINAL: pergunte somente "O que você faz?" — jamais sugira opções.\n'    +'\nNOMES DE NPCs:\n'    +'- NPCs SEMPRE com nomes únicos, variados e culturalmente coerentes com Faerûn. PROIBIDO: Elara, Borin, Gareth, Mira, Lyra, Aria, Nyx, Torin, Aldric, Theron, Kira, Seraphina (nomes clichê genéricos de fantasia).\n'    +'- Use nomes por cultura: Waterdeep/Cormyr (Vashti, Corren, Maelys, Baerovus, Sindra) | Sembia (Dramun, Chelva, Torst) | Anão (Brikka, Durval, Thorgis) | Elfo (Ilyriel, Caelwen, Sorvian) | Halfling (Perro, Gwendy, Callum) | Calimshan (Rashan, Zafira, Khalid) | Thay (Szass, Ilvara, Nevron).\n'    +'- Registre NPCs com npc_add e mantenha consistência de nome entre cenas.\n'    +'\nFALAS DO JOGADOR:\n'    +'- NUNCA repita ou parafraseie o que o jogador acabou de escrever. A fala JÁ aconteceu — narre SOMENTE a reação do mundo.\n'    +'- ERRADO: "Você diz: Preciso de trabalho. O taberneiro te responde..." | CERTO: "O taberneiro ergue os olhos e te avalia de cima a baixo..."\n'    +'\nNOMES E IDENTIDADE:\n'    +'- NPCs desconhecem o nome do personagem até ele se apresentar explicitamente.\n'    +'- O personagem desconhece o nome de NPCs até ser apresentado, ouvir alguém chamar, ou perguntar.\n'    +'- NPCs não revelados: use descrições físicas ("o guarda baixo", "a mulher de cabelos brancos").\n'    +'- O que foi revelado persiste. O que não foi, permanece desconhecido.\n'    +'\nCONSISTÊNCIA DE MUNDO:\n'    +'- O mundo existe independente do jogador. NPCs têm rotinas, objetivos e memória.\n'    +'- O personagem NÃO tem acesso a informações que não foram reveladas a ele (sem onisciência).\n'    +'- Clima, hora do dia, localizações e estado de NPCs devem ser consistentes entre cenas.\n'    +'\nINIMIGOS E AMEAÇAS:\n'    +'- PROIBIDO usar exclusivamente organizações criminosas (Zhentarim, Mão Negra, etc.) como vilões principais. Usá-las como elemento secundário ou de cor é permitido.\n'    +'- VARIE as ameaças: criaturas selvagens com motivação (lobo defendendo território, harpia colecionadora), facções regionais (culto de deus obscuro, família nobre corrompida, deserotores), fenômenos mágicos (ruína que drena magia, espírito territorial), monstros canônicos FR com personalidade.\n'    +'- Antagonistas têm nomes únicos e motivações próprias — não são obstáculos genéricos.\n'    +'\\nROLAGENS DE DADOS:\\n'+'- Ao solicitar teste: especifique a perícia E o modificador do personagem. Ex: \'Role d20+3 de Furtividade (DC15)\'.\\n'+'- DCs LdJ: Fácil=DC10, Médio=DC15, Difícil=DC20, Muito Difícil=DC25.\\n'+'- [DADO]: resultado real do sistema. Total>=DC=sucesso. Narre consequência imediatamente.\\n'+'\\n'    +'SISTEMA DE ATUALIZAÇÃO AUTOMÁTICA — OBRIGATÓRIO incluir no final de TODA resposta que envolva mudanças:\n'
     +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300,"gold_reward":50}],"hp_damage":5,"hp_heal":0,"condition_add":[{"name":"Envenenado","duration":"1 hora"}],"condition_remove":["Envenenado"],"xp_gain":150,"xp_source":"Combate","gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena.","npc_add":[{"name":"Nome","location":"Local","relation":"aliado"}]}}\n'
     +'OBRIGATÓRIO:\n'+'- Alinhamento: use alignment_shift:{lawChaos:N,goodEvil:M,reason:"motivo"} quando o personagem toma decisão moralmente relevante. Ex: ação heroica goodEvil:+5, traição lawChaos:-10.\\n'
     +'- Moedas: gold_add (receber em PO) / gold_remove (gastar em PO). O sistema converte e dá troco automaticamente. Narre o troco em moeda miúda quando relevante: \"o mercador devolve 3 PA e 5 PC\".\n'
     +'- Missões: quest_add ao iniciar qualquer objetivo; quest_update ao concluir/falhar. Sempre com xp_reward.\n'
     +'- XP: SEMPRE incluir xp_gain ao superar obstáculo. Combate fácil=50, normal=150, difícil=300, chefe=500. Roleplay=50-200. Descoberta=25-150. Missão concluída=bônus 50-500.\n'
     +'- Diário: diary_entry a cada cena importante.\n'
-    +'- Saldo insuficiente: narre o NPC percebendo a falta.\n'
+    +'- Saldo insuficiente: narre o NPC percebendo a falta.\n'    +'- INVENTÁRIO AUTOMÁTICO: SEMPRE use inv_add quando personagem RECEBER qualquer item (compra, achado, presente, recolher do chão). SEMPRE use inv_remove quando PERDER item (usar, jogar, vender, destruir, roubar). Ex: jogou javelin=inv_remove:["Javelin"]. Recolheu espada=inv_add:["Espada Curta"].\n'    +'- MOEDAS AUTOMÁTICAS: SEMPRE use gold_add ao receber dinheiro. SEMPRE use gold_remove ao gastar. NUNCA omita transações monetárias.\n'    +'- LOOT DE COMBATE: ao derrotar inimigos, use inv_add com os itens que o personagem EFETIVAMENTE pegar. Se o personagem não registrar coleta, não adicione.\n'
     +'- Descanso: quando o personagem dormir ou repousar, inclua allow_rest na UPDATES: short=descanso curto, long=descanso longo. Isso libera os botões de descanso do jogador.';
 
   // Override SYSTEM for this session
@@ -8695,6 +8773,10 @@ if(_savedKey){
       <!-- STEP 0: RAÇA -->
       <div class="cc-panel" id="cc-panel-0">
         <div class="cc-section-title">🧬 Escolha sua Raça</div>
+        <div class="cc-lore-block">
+          <div class="cc-lore-title">O que é Raça?</div>
+          <div class="cc-lore-text">Em Forgotten Realms, o mundo é habitado por dezenas de povos com culturas, físicos e dons únicos. A raça define a origem biológica e cultural do seu personagem — ela concede bônus de atributo, traços raciais especiais e molda como o mundo o percebe. Cada raça tem sub-raças que refinam ainda mais esses dons. Passe o cursor sobre cada opção para ver os detalhes.</div>
+        </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.7rem" id="race-grid"></div>
         <!-- Sub-raça -->
         <div id="subrace-area" style="display:none;margin-bottom:.7rem">
@@ -8729,6 +8811,10 @@ if(_savedKey){
       <!-- STEP 1: CLASSE -->
       <div class="cc-panel" id="cc-panel-1" style="display:none">
         <div class="cc-section-title">† Escolha sua Classe</div>
+        <div class="cc-lore-block">
+          <div class="cc-lore-title">O que é Classe?</div>
+          <div class="cc-lore-text">A classe define a vocação e o conjunto de habilidades do seu personagem — como ele resolve problemas, combate e interage com o mundo. Um Guerreiro domina armas, um Mago domina feitiços, um Ladino usa furtividade. O dado de HP (d8, d10, d12) indica a robustez da classe. Passe o cursor sobre cada card para ver descrição e estilo de jogo.</div>
+        </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-bottom:.7rem" id="class-grid"></div>
         <!-- Subclasse nível 1 (Clérigo, Bruxo, Feiticeiro) -->
         <div id="subclass1-area" style="display:none;margin-bottom:.7rem">
@@ -8746,7 +8832,7 @@ if(_savedKey){
           <!-- Antecedente aqui para atualizar skills em tempo real -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.7rem">
             <div>
-              <label class="cc-label">Antecedente</label>
+              <label class="cc-label">Antecedente <span style="font-family:Cormorant Garamond,serif;font-style:italic;font-size:.65rem;color:var(--text3);font-weight:normal">— sua história antes da aventura</span></label>
               <select id="new-bg" class="cc-select" onchange="renderSkillsChoice()">
                 <option>Forasteiro</option><option>Soldado</option><option>Criminoso</option>
                 <option>Sábio</option><option>Nobre</option><option>Herói do Povo</option>
@@ -8779,13 +8865,27 @@ if(_savedKey){
       <!-- STEP 2: IDENTIDADE -->
       <div class="cc-panel" id="cc-panel-2" style="display:none">
         <div class="cc-section-title">📛 Identidade</div>
+        <!-- Upload de foto do personagem -->
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:.8rem;padding:.7rem;background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.15);border-radius:10px">
+          <div style="position:relative;flex-shrink:0">
+            <div id="cc-photo-preview" onclick="document.getElementById('cc-photo-input').click()" style="width:64px;height:64px;border-radius:50%;border:2px dashed rgba(200,168,74,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(0,0,0,.3);font-size:1.4rem;transition:all .2s;color:rgba(200,168,74,.4)" title="Adicionar foto" onmouseover="this.style.borderColor='rgba(200,168,74,.6)'" onmouseout="this.style.borderColor='rgba(200,168,74,.3)'">◈</div>
+            <img id="cc-photo-img" src="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(200,168,74,.4);display:none;cursor:pointer" onclick="document.getElementById('cc-photo-input').click()" title="Trocar foto"/>
+            <input type="file" id="cc-photo-input" accept="image/*" style="display:none" onchange="handleCCPhoto(event)"/>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="font-family:Cinzel,serif;font-size:.62rem;color:var(--gold);margin-bottom:.3rem;letter-spacing:.5px">FOTO DO PERSONAGEM</div>
+            <div style="font-family:Cormorant Garamond,serif;font-size:.78rem;color:var(--text3);line-height:1.4">Opcional. Aparece na sidebar e no header durante o jogo. Funciona em celular e desktop.</div>
+            <button type="button" onclick="document.getElementById('cc-photo-input').click()" style="margin-top:.4rem;background:rgba(200,168,74,.1);border:1px solid rgba(200,168,74,.3);border-radius:6px;font-family:Cinzel,serif;font-size:.58rem;color:var(--gold2);padding:3px 10px;cursor:pointer">↑ Escolher foto</button>
+          </div>
+        </div>
         <div style="margin-bottom:.6rem">
           <label class="cc-label">Nome do Personagem *</label>
           <input id="new-name" placeholder="Como você é chamado?" class="cc-input cc-input-lg"/>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.6rem">
           <div>
-            <label class="cc-label">Alinhamento</label>
+            <label class="cc-label">Alinhamento <span style="font-family:Cormorant Garamond,serif;font-style:italic;font-size:.65rem;color:var(--text3);font-weight:normal">— como você age moralmente</span></label>
+            <div style="font-family:Cormorant Garamond,serif;font-size:.74rem;color:var(--text3);line-height:1.4;margin-bottom:.3rem">Leal segue regras; Caótico age por impulso; Bom protege os fracos; Mau busca poder próprio. O alinhamento evolui dinamicamente com suas decisões durante o jogo.</div>
             <select id="new-align" class="cc-select">
               <option>Leal e Bom</option><option>Neutro e Bom</option><option>Caótico e Bom</option>
               <option>Leal e Neutro</option><option>Neutro</option><option>Caótico e Neutro</option>
@@ -8812,6 +8912,10 @@ if(_savedKey){
         <div class="cc-section-title">◈ Atributos</div>
         <div style="font-size:.7rem;color:rgba(200,168,74,.4);font-style:italic;margin-bottom:.6rem">Array padrão: 15, 14, 13, 12, 10, 8 — ajuste conforme quiser</div>
         <div id="attr-builder" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.7rem"></div>
+        <div class="cc-lore-block" style="margin-bottom:.5rem">
+          <div class="cc-lore-title">Sistema de Compra de Pontos (LdJ)</div>
+          <div class="cc-lore-text">Você tem <strong style="color:var(--gold2)">27 pontos</strong> para distribuir livremente entre os 6 atributos. Todos começam em 8. O custo aumenta conforme o valor: 8→9 custa 1pt, 13→14 custa 2pt, 14→15 custa 2pt. Máximo 15 antes do bônus racial. Os bônus da sua raça (✦) são adicionados automaticamente por cima e podem ultrapassar o 15.</div>
+        </div>
         <!-- Racial bonuses reminder -->
         <div id="racial-bonus-hint" style="font-size:.72rem;color:var(--arc3);background:rgba(107,63,160,.06);border:1px solid rgba(107,63,160,.15);border-radius:7px;padding:.5rem .7rem;margin-bottom:.7rem"></div>
         <div class="cc-nav-row">
