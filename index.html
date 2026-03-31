@@ -100,7 +100,7 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
    HEADER
 ══════════════════════════════════════ */
 .hdr{
-  background:linear-gradient(180deg,rgba(18,12,26,.98) 0%,rgba(12,8,18,.99) 100%);
+  background:linear-gradient(180deg,#1a1208 0%,#120e08 100%);
   border-bottom:1px solid rgba(200,168,74,.18);
   padding:.5rem 1rem;
   display:flex;align-items:center;justify-content:space-between;
@@ -217,7 +217,7 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
 
 .sidebar{
   width:var(--sidebar-w);flex-shrink:0;
-  background:linear-gradient(180deg,rgba(8,5,14,.98) 0%,rgba(6,3,10,.99) 100%);
+  background:linear-gradient(180deg,#130f08 0%,#0e0a06 100%);
   border-right:1px solid rgba(200,168,74,.12);
   box-shadow:inset -1px 0 0 rgba(200,168,74,.05),4px 0 20px rgba(0,0,0,.3);
   display:flex;flex-direction:column;
@@ -687,7 +687,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .mob-nav{
   display:none;position:fixed;bottom:0;left:0;right:0;
   height:var(--nav-h);
-  background:linear-gradient(180deg,rgba(10,6,18,.98) 0%,rgba(6,3,12,.99) 100%);
+  background:#0e0a06;border-top:2px solid rgba(160,110,40,.3);
   border-top:1px solid rgba(200,168,74,.22);
   z-index:100;flex-shrink:0;
   box-shadow:0 -6px 28px rgba(0,0,0,.7),0 -1px 0 rgba(200,168,74,.1);
@@ -924,13 +924,13 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .cc-btn-pri{flex:2;background:rgba(200,168,74,.1);border:1px solid rgba(200,168,74,.4);border-radius:9px;color:var(--gold2);font-family:'Cinzel',serif;font-size:.7rem;padding:.65rem;cursor:pointer;transition:all .2s;letter-spacing:.5px}
 .cc-btn-pri:hover{background:rgba(200,168,74,.2);border-color:rgba(200,168,74,.65);box-shadow:0 4px 16px rgba(200,168,74,.15)}
 .cc-btn-pri:hover{background:rgba(200,168,74,.2)}
-.cc-btn-start{flex:2;background:linear-gradient(135deg,#6b1020,#b02030,#6b1020);border:1px solid rgba(220,80,80,.5);border-radius:9px;color:#f5db96;font-family:'Cinzel',serif;font-size:.72rem;padding:.7rem;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 24px rgba(155,35,53,.3);transition:all .2s;position:relative;overflow:hidden}
+.cc-btn-start{flex:2;background:#6b1018;border:1px solid #8B2030;border-top:1px solid #a03040;border-radius:9px;color:#f5db96;font-family:'Cinzel',serif;font-size:.72rem;padding:.7rem;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 24px rgba(155,35,53,.3);transition:all .2s;position:relative;overflow:hidden}
 .cc-btn-start:hover{box-shadow:0 6px 32px rgba(155,35,53,.5);transform:translateY(-1px);filter:brightness(1.1)}
 
 /* Race/Class grid cards */
 .cc-card{background:rgba(10,7,16,.75);border:1px solid rgba(200,168,74,.18);border-radius:10px;padding:.6rem .4rem;text-align:center;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;overflow:hidden}
 .cc-card:hover{border-color:rgba(200,168,74,.45);background:rgba(20,14,30,.9);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.4)}
-.cc-card.selected{border-color:var(--gold2);background:rgba(200,168,74,.1);box-shadow:0 0 16px rgba(200,168,74,.2),0 4px 16px rgba(0,0,0,.4)}
+.cc-card.selected{border-color:var(--gold2);background:rgba(160,110,40,.15);box-shadow:inset 0 0 0 1px rgba(160,110,40,.3),0 4px 16px rgba(0,0,0,.6)}
 .cc-card:hover{border-color:rgba(200,168,74,.4);background:rgba(200,168,74,.04)}
 .cc-card.selected{border-color:var(--gold2);background:rgba(200,168,74,.1);box-shadow:0 0 10px rgba(200,168,74,.15)}
 .cc-card-icon{font-size:1.3rem;line-height:1}
@@ -1367,6 +1367,50 @@ input[type=number]{-moz-appearance:textfield}
   font-size: .72rem !important;
   padding: .6rem .8rem !important;
 }
+
+/* ══ Nova paleta: pedra, bronze, pergaminho ══ */
+.hdr::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,.03) 2px,
+    rgba(0,0,0,.03) 4px
+  );
+  pointer-events:none;
+}
+/* cc-card icon SVG sizing */
+.cc-card-icon svg{
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+.cc-card.selected .cc-card-icon{
+  color: var(--gold2);
+}
+.cc-card .cc-card-icon{
+  color: var(--text3);
+  transition: color .2s;
+}
+.cc-card:hover .cc-card-icon{
+  color: var(--gold);
+}
+/* Atributos no jogo — sem botões no lock */
+.attrs-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:.35rem;
+}
+/* Input de história — mais legível */
+#new-story{
+  font-size:.95rem;
+  line-height:1.6;
+}
+/* Remover emojis desnecessários nos btns do sistema */
+.qa-btn{ font-family:'Cinzel',serif; letter-spacing:.3px; }
 </style>
   <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async></script>
@@ -1924,7 +1968,7 @@ input[type=number]{-moz-appearance:textfield}
   <!-- HDR -->
   <div class="hdr">
     <div class="hdr-left">
-      <div class="hdr-icon" id="hdr-icon" style="font-size:1.1rem;cursor:pointer" onclick="openCampaignInfo()" title="Ver campanha">⚔</div>
+      <div class="hdr-icon" id="hdr-icon" style="font-family:Cinzel,serif;font-size:.65rem;cursor:pointer;letter-spacing:1px;color:var(--gold2)" onclick="openCampaignInfo()" title="Ver campanha">◈</div>
       <div class="hdr-title-block">
         <div class="hdr-title" id="campaign-title">Taverna das Crônicas</div>
         <div class="hdr-sub" id="campaign-sub">Narrador IA · D&D 5e · Forgotten Realms</div>
@@ -4237,7 +4281,7 @@ function updXP(){
   if(lvlupBtn&&XP_TABLE[charLevel]&&charXP>=XP_TABLE[charLevel]){
     lvlupBtn.style.background='rgba(200,168,74,.25)';
     lvlupBtn.style.color='var(--gold3)';
-    lvlupBtn.textContent='⬆ Upar!';
+    lvlupBtn.textContent='▲ Upar!';
   }
 }
 // ── Sistema de Alinhamento Dinâmico ──
@@ -4282,7 +4326,7 @@ function addXP(amount, source){
   // Level up check
   if(next&&charXP>=next){
     setTimeout(function(){
-      showRollToast('🌟 NÍVEL DISPONÍVEL! Toque em 📈 para upar!');
+      showRollToast('▲ NÍVEL DISPONÍVEL! Toque em 📈 para upar!');
       addMsg('sys','⬆ '+(window.CHAR_NAME||'Personagem')+' tem XP suficiente para o Nível '+(charLevel+1)+'! Toque em 📈 Upar para avançar e receber novas habilidades.');
     },1200);
   }
@@ -5970,11 +6014,11 @@ function addMsg(tipo,txt){
   const d=document.createElement('div');
   d.className='msg msg-'+tipo;
   let lbl='';
-  if(tipo==='dm')   lbl='<span class="mlbl">⚔ Narrador</span>';
+  if(tipo==='dm')   lbl='<span class="mlbl">◈ Narrador</span>';
   else if(tipo==='pl')     lbl='<span class="mlbl">'+(window.CHAR_NAME||'Jogador')+'</span>';
-  else if(tipo==='update') lbl='<span class="mlbl">⚙ Sistema</span>';
-  else if(tipo==='roll')   lbl='<span class="mlbl">🎲 Dado</span>';
-  else if(tipo==='sys')    lbl='<span class="mlbl">📜 Sistema</span>';
+  else if(tipo==='update') lbl='<span class="mlbl">§ Sistema</span>';
+  else if(tipo==='roll')   lbl='<span class="mlbl">⬡ Dado</span>';
+  else if(tipo==='sys')    lbl='<span class="mlbl">§ Sistema</span>';
   d.innerHTML=lbl+'<div class="bbl">'+txt+'</div>';
   box.appendChild(d);
 
@@ -6015,7 +6059,7 @@ function addMsg(tipo,txt){
     if(hist.length>30)hist=hist.slice(-30);
   }
 }
-function addLoad(){const box=document.getElementById('chat');const d=document.createElement('div');d.id='ldmsg';d.className='msg msg-dm';d.innerHTML='<span class="mlbl">⚔ Narrador</span><div class="loading-bbl"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';box.appendChild(d);box.scrollTop=box.scrollHeight;}
+function addLoad(){const box=document.getElementById('chat');const d=document.createElement('div');d.id='ldmsg';d.className='msg msg-dm';d.innerHTML='<span class="mlbl">◈ Narrador</span><div class="loading-bbl"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';box.appendChild(d);box.scrollTop=box.scrollHeight;}
 function rmLoad(){const e=document.getElementById('ldmsg');if(e)e.remove();}
 
 // ─── QUICK ACTIONS ───
@@ -6967,18 +7011,18 @@ const SPELLS_BY_CLASS={
 
 // ─── SÍMBOLOS E CORES POR CLASSE ───
 const CLASS_SYMBOLS={
-  'Guerreiro':  {symbol:'⚔',color:'#c0392b',bg:'rgba(192,57,43,.2)',label:'Guerreiro'},
-  'Paladino':   {symbol:'✝',color:'#f1c40f',bg:'rgba(241,196,15,.2)',label:'Paladino'},
-  'Bárbaro':    {symbol:'🪓',color:'#e67e22',bg:'rgba(230,126,34,.2)',label:'Bárbaro'},
-  'Ladino':     {symbol:'🗡',color:'#8e44ad',bg:'rgba(142,68,173,.2)',label:'Ladino'},
-  'Mago':       {symbol:'📖',color:'#2980b9',bg:'rgba(41,128,185,.2)',label:'Mago'},
-  'Feiticeiro': {symbol:'✨',color:'#e74c3c',bg:'rgba(231,76,60,.2)',label:'Feiticeiro'},
-  'Bruxo':      {symbol:'👁',color:'#6c3483',bg:'rgba(108,52,131,.2)',label:'Bruxo'},
-  'Clérigo':    {symbol:'☩',color:'#d4ac0d',bg:'rgba(212,172,13,.2)',label:'Clérigo'},
-  'Druida':     {symbol:'🌿',color:'#27ae60',bg:'rgba(39,174,96,.2)',label:'Druida'},
-  'Bardo':      {symbol:'🎵',color:'#16a085',bg:'rgba(22,160,133,.2)',label:'Bardo'},
-  'Monge':      {symbol:'👊',color:'#d35400',bg:'rgba(211,84,0,.2)',label:'Monge'},
-  'Patrulheiro':{symbol:'🏹',color:'#196f3d',bg:'rgba(25,111,61,.2)',label:'Patrulheiro'},
+  Guerreiro:{symbol:'GUE',color:'var(--blood2)'},
+  Paladino:{symbol:'PAL',color:'var(--gold2)'},
+  Bárbaro:{symbol:'BÁR',color:'var(--blood)'},
+  Ladino:{symbol:'LAD',color:'var(--arc2)'},
+  Mago:{symbol:'MAG',color:'var(--arc3)'},
+  Feiticeiro:{symbol:'FEI',color:'var(--arc2)'},
+  Bruxo:{symbol:'BRX',color:'var(--arc)'},
+  Clérigo:{symbol:'CLÉ',color:'var(--gold)'},
+  Druida:{symbol:'DRU',color:'var(--nat2)'},
+  Bardo:{symbol:'BAR',color:'var(--ocean2)'},
+  Monge:{symbol:'MON',color:'var(--text2)'},
+  Patrulheiro:{symbol:'PAT',color:'var(--nat)'},
 };
 
 // ─── EQUIPAMENTO INICIAL OFICIAL por Classe + Antecedente (Livro do Jogador) ───
@@ -7217,24 +7261,34 @@ function ccPrev(cur){ccStep(cur-1);}
 
 function buildRaceGrid(){
   var el=document.getElementById('race-grid'); if(!el)return;
-  var icons={Humano:'👤',Elfo:'🧝','Meio-Elfo':'🧑',Anão:'⛏',Halfling:'🍀',Gnomo:'🔭','Meio-Orc':'💪',Tiefling:'😈',Draconato:'🐉'};
+  var svgs={
+    'Humano':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><circle cx="12" cy="6" r="3"/><path d="M5 21C5 16 8 14 12 14C16 14 19 16 19 21"/><path d="M12 9V14"/></svg>',
+    'Elfo':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><circle cx="12" cy="6" r="2.5"/><path d="M7 4C7 4 9 2 12 2C15 2 17 4 17 4"/><path d="M5 21C5 16 8 14 12 14C16 14 19 16 19 21"/><path d="M9 3.5L7 1M15 3.5L17 1"/></svg>',
+    'Meio-Elfo':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><circle cx="12" cy="6" r="2.5"/><path d="M5 21C5 16 8 14 12 14C16 14 19 16 19 21"/><path d="M10 3.5L8.5 1M14 3.5L15.5 1"/></svg>',
+    'Anão':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><circle cx="12" cy="7" r="3"/><path d="M6 22C6 17 9 15 12 15C15 15 18 17 18 22"/><path d="M8 22L7 18M16 22L17 18M10 22V18M14 22V18"/></svg>',
+    'Halfling':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><circle cx="12" cy="8" r="3"/><path d="M7 22C7 17 9 16 12 16C15 16 17 17 17 22"/><path d="M7 10C5 11 4 13 5 15"/><path d="M17 10C19 11 20 13 19 15"/></svg>',
+    'Gnomo':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><circle cx="12" cy="8" r="2.5"/><path d="M7 22C7 18 9 16 12 16C15 16 17 18 17 22"/><path d="M8 6L5 3M16 6L19 3"/><path d="M9 5L8 2M15 5L16 2"/></svg>',
+    'Meio-Orc':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><circle cx="12" cy="6" r="3"/><path d="M5 21C5 16 8 14 12 14C16 14 19 16 19 21"/><path d="M10 8L9 10M14 8L15 10"/></svg>',
+    'Tiefling':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><circle cx="12" cy="8" r="3"/><path d="M9 5L7 2M15 5L17 2"/><path d="M11 5C11 5 11 3 12 2C13 3 13 5 13 5"/><path d="M5 21C5 16 8 14 12 14C16 14 19 16 19 21"/><path d="M12 19V22M12 22L10 20M12 22L14 20"/></svg>',
+    'Draconato':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path d="M12 2C9 2 7 4 7 7C7 9 8 11 12 12C16 11 17 9 17 7C17 4 15 2 12 2Z"/><path d="M5 21C5 16 8 15 12 15C16 15 19 16 19 21"/><path d="M8 6C8 6 6 4 4 6M16 6C16 6 18 4 20 6"/></svg>',
+  };
+
   var descs={
-    Humano:'Versáteis. +1 em todos os atributos (Padrão) ou +1 em dois + 1 Talento (Variante). Nenhuma fraqueza específica.',
-    Elfo:'Ágeis e perceptivos. +2 DES. Visão no escuro, imune ao sono mágico. Subraças: Alto Elfo (mago), Elfo da Floresta (ranger), Drow.',
-    'Meio-Elfo':'+2 CAR, +1 em dois outros. Visão no escuro. Proficiência em 2 perícias extras. Melhor dos dois mundos.',
-    Anão:'Resistentes. +2 CON. Visão no escuro, resistência a veneno. Subraças: Montanha (+2 FOR) ou Colinas (+1 SAB).',
-    Halfling:'Sortudos e furtivos. +2 DES. Rerrola 1s nos dados. Subraças: Pés-Leves (furtividade) ou Robusto (resistência).',
-    Gnomo:'+2 INT. Vantagem em resistências mágicas. Subraças: Floresta (ilusões) ou Pedra (história e ferramentas).',
-    'Meio-Orc':'+2 FOR, +1 CON. Ataques críticos causam mais dano. Sobrevive com 1 PV uma vez por descanso longo.',
-    Tiefling:'+2 CAR, +1 INT. Resistência a fogo. Magias inatas: Taumaturgia, Chamas Infernais, Escuridão. Descendente infernal.',
-    Draconato:'+2 FOR, +1 CAR. Resistência + sopro de dano da linhagem dracônica. 10 ancestralidades dracônicas disponíveis.',
+    Humano:'Versáteis. +1 em todos (Padrão) ou +1 dois atributos + 1 Talento (Variante).',
+    Elfo:'Ágeis e perceptivos. +2 DES. Visão no escuro. Subraças: Alto Elfo, Floresta, Drow.',
+    'Meio-Elfo':'+2 CAR, +1 em dois outros. Visão no escuro. Proficiência extra em 2 perícias.',
+    Anão:'Resistentes. +2 CON. Resistência a veneno. Subraças: Montanha (+2 FOR), Colinas (+1 SAB).',
+    Halfling:'Sortudos. +2 DES. Rerrola 1s. Subraças: Pés-Leves (furtividade), Robusto (resistência).',
+    Gnomo:'+2 INT. Resistência a magia. Subraças: Floresta (ilusões), Pedra (ferramentas).',
+    'Meio-Orc':'+2 FOR, +1 CON. Sobrevive com 1 PV uma vez por descanso. Ataques críticos mais fortes.',
+    Tiefling:'+2 CAR, +1 INT. Resistência a fogo. Magias inatas infernais.',
+    Draconato:'+2 FOR, +1 CAR. Sopro de dano dracônico. Resistência ao tipo do sopro.',
   };
   el.innerHTML=Object.keys(RACES_DB).map(function(r){
-    var rd=RACES_DB[r];
-    var traits=(rd.traits||[]).slice(0,2).map(function(t){return'<div style="font-size:.54rem;color:var(--text3);line-height:1.3;margin-top:1px">'+t+'</div>';}).join('');
-    var desc=descs[r]||'';
-    return'<div class="cc-card'+(r===_ccSelectedRace?' selected':'')+'" data-r="'+r+'" onclick="selectRace(this.dataset.r)" title="'+desc+'">'
-      +'<div class="cc-card-icon">'+(icons[r]||'⚔')+'</div>'
+    var desc=descs[r]||r;
+    var svg=svgs[r]||'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/></svg>';
+    return'<div class="cc-card'+(r===_ccSelectedRace?' selected':'')+'" data-r="'+r+'" title="'+desc+'">'
+      +'<div class="cc-card-icon" style="color:inherit;opacity:.85;line-height:1">'+svg+'</div>'
       +'<div class="cc-card-name">'+r+'</div>'
       +'</div>';
   }).join('');
@@ -7297,27 +7351,48 @@ function updateRacialBonusHint(){
   var b=bonusMap[_ccSelectedRace]||'';el.style.display=b?'':'none';if(b)el.textContent='Bônus racial: '+b;
 }
 function buildClassGrid(){
-  var el=document.getElementById('class-grid');if(!el)return;
-  var icons={Guerreiro:'⚔',Paladino:'✝',Bárbaro:'🪓',Ladino:'🗡',Mago:'📖',Feiticeiro:'✨',Bruxo:'👁',Clérigo:'☩',Druida:'🌿',Bardo:'🎵',Monge:'👊',Patrulheiro:'🏹'};
+  var el=document.getElementById('class-grid'); if(!el)return;
+  var svgs={
+    'Guerreiro':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path d="M12 2L14.5 9H21L15.5 13L18 20L12 16L6 20L8.5 13L3 9H9.5L12 2Z"/><line x1="12" y1="8" x2="12" y2="20"/></svg>',
+    'Paladino':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path d="M12 2L19 6V12C19 16.4 16 20.4 12 22C8 20.4 5 16.4 5 12V6L12 2Z"/><path d="M12 8V16M8 12H16"/></svg>',
+    'Bárbaro':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path d="M6 3L4 7L8 9L6 21M18 3L20 7L16 9L18 21M6 21H18"/><circle cx="12" cy="8" r="3"/></svg>',
+    'Ladino':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path d="M12 2L20 8V14L12 22L4 14V8L12 2Z"/><path d="M12 6L16 9V13L12 18L8 13V9L12 6Z" fill="currentColor" opacity=".3"/></svg>',
+    'Mago':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path d="M12 2L13.5 8.5L20 7L15 12L18 18.5L12 15L6 18.5L9 12L4 7L10.5 8.5L12 2Z"/><circle cx="12" cy="12" r="2"/></svg>',
+    'Feiticeiro':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path d="M12 2C6.5 2 3 6 3 10C3 15 7 18 12 22C17 18 21 15 21 10C21 6 17.5 2 12 2Z"/><path d="M12 6V18M8 10L16 14M16 10L8 14"/></svg>',
+    'Bruxo':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><circle cx="12" cy="8" r="3"/><path d="M12 11V22M6 15C6 12 9 11 12 11C15 11 18 12 18 15"/><path d="M4 6C4 6 6 3 8 5M20 6C20 6 18 3 16 5"/></svg>',
+    'Clérigo':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path d="M12 2V22M4 12H20"/><circle cx="12" cy="12" r="3"/><path d="M12 4L14 8H20L15 11L17 17L12 14L7 17L9 11L4 8H10L12 4Z" opacity=".3" fill="currentColor"/></svg>',
+    'Druida':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path d="M12 2C12 2 6 7 6 13C6 17 8.5 20 12 22C15.5 20 18 17 18 13C18 7 12 2 12 2Z"/><path d="M12 22V10"/><path d="M12 15L9 12M12 15L15 12"/></svg>',
+    'Bardo':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path d="M9 18C9 18 5 17 5 13C5 10 7 8 9 8L19 5L16 15C16 15 14 18 9 18Z"/><path d="M9 18C9 18 9 20 11 21C13 22 15 21 15 19"/><line x1="9" y1="13" x2="19" y2="10"/></svg>',
+    'Monge':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><circle cx="12" cy="5" r="2"/><path d="M8 8H16L17 14H7L8 8Z"/><path d="M9 14L7 22H17L15 14"/><line x1="12" y1="8" x2="12" y2="14"/></svg>',
+    'Patrulheiro':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path d="M3 12L12 4L21 12"/><path d="M5 10V20H19V10"/><path d="M12 4V20"/><circle cx="12" cy="14" r="2"/></svg>',
+  };
+
   var classDescs={
-    Guerreiro:'Domina todas as armas e armaduras. Múltiplos ataques por turno. Arquétipos: Campeão, Mestre de Batalha, Cavaleiro Místico.',
-    Paladino:'Guerreiro sagrado com magias de cura. Aura protetora aliada. Juramento define seu arquétipo e magias de círculo.',
-    Bárbaro:'Força bruta e fúria. Resistência a dano físico durante Fúria. Sem armadura pesada mas CA natural alta.',
-    Ladino:'Ataque furtivo massivo com vantagem. Esquiva e reflexos sobrenaturais. Versátil em perícias e habilidades especiais.',
-    Mago:'Arsenal de magias ofensivas e utilitárias. Livro de Magias expansível. Tradição arcana define o foco.',
-    Feiticeiro:'Magia inata de origem dracônica, selvagem ou divina. Pontos de Feitiçaria para metamagia.',
-    Bruxo:'Pacto com entidade poderosa. Magias recuperadas em descanso curto. Invocações customizáveis.',
-    Clérigo:'Cura e suporte divino. Acesso a TODAS as magias do seu domínio. Domínio define a divindade e estilo.',
-    Druida:'Comunhão com a natureza. Transforma em animais (Forma Selvagem). Círculo druídico define sub-estilo.',
-    Bardo:'Suporte versátil com música mágica. Proficiência em muitas perícias. Acesso a magias de qualquer lista.',
-    Monge:'Combate desarmado ágil. Pontos de Ki para técnicas. CA natural sem armadura.',
-    Patrulheiro:'Explorador e caçador. Inimigo Favorito e Terreno Favorito. Magias utilitárias de sobrevivência.',
+    Guerreiro:'Domina armas e armaduras. Múltiplos ataques. Arquétipos: Campeão, Mestre de Batalha, Cavaleiro Místico.',
+    Paladino:'Guerreiro sagrado com magias de cura. Aura protetora. Juramento define arquétipo e magias.',
+    Bárbaro:'Força bruta e fúria. Resistência a dano físico. CA natural alta sem armadura pesada.',
+    Ladino:'Ataque furtivo com vantagem. Esquiva sobrenatural. Versátil em perícias e habilidades.',
+    Mago:'Arsenal arcano extenso. Livro de Magias expansível. Tradição arcana define o foco.',
+    Feiticeiro:'Magia inata. Pontos de Feitiçaria para metamagia. Origem define a fonte do poder.',
+    Bruxo:'Pacto com entidade. Magias recuperadas em descanso curto. Invocações customizáveis.',
+    Clérigo:'Cura e suporte divino. Domínio define divindade e estilo de jogo.',
+    Druida:'Transforma em animais. Magia natural. Círculo druídico define sub-estilo.',
+    Bardo:'Suporte com música mágica. Acesso amplo a perícias e magias de qualquer lista.',
+    Monge:'Combate desarmado ágil. Pontos de Ki para técnicas especiais. CA natural.',
+    Patrulheiro:'Explorador e caçador. Inimigo Favorito. Magias de sobrevivência e rastreamento.',
   };
   el.innerHTML=Object.keys(CLASS_DEFAULTS).map(function(c){
     var hp=CLASS_LEVEL_TABLE[c]?'d'+CLASS_LEVEL_TABLE[c].hpDie:'d8';
-    return'<div class="cc-card'+(c===_ccSelectedClass?' selected':'')+'" data-c="'+c+'" onclick="selectClass(this.dataset.c)" title="'+(classDescs[c]||c)+'">'+'<div class="cc-card-icon">'+(icons[c]||'⚔')+'</div><div class="cc-card-name">'+c+'</div><div class="cc-card-sub">'+hp+'</div></div>';
+    var svg=svgs[c]||'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/></svg>';
+    return'<div class="cc-card'+(c===_ccSelectedClass?' selected':'')+'" data-c="'+c+'" title="'+(classDescs[c]||c)+'">'
+      +'<div class="cc-card-icon" style="color:inherit;opacity:.85;line-height:1">'+svg+'</div>'
+      +'<div class="cc-card-name">'+c+'</div>'
+      +'<div style="font-family:Cinzel,serif;font-size:.44rem;color:var(--text3);margin-top:1px">'+hp+'</div>'
+      +'</div>';
   }).join('');
-  // NÃO resetar _ccSkills ao mudar de classe — preservar seleções
+  // Preservar pericias validas ao mudar classe
+  var oldSkills=window._ccSkills||{};
+  window._ccSkills=oldSkills;
   renderSubclass1Area();renderClassChoices();renderSkillsChoice();updateClassDefaults();
 }
 function selectClass(c){
@@ -8158,7 +8233,7 @@ async function startNewGame(){
       showQuestNotif('📜 Nova Missão','A Chamada da Aventura','Sua jornada começa em '+region.name+'.');
     }
     // Add first conquest
-    CONQUISTAS=['🌟 Início de uma nova jornada em '+region.name];
+    CONQUISTAS=['✦ Início de uma nova jornada em '+region.name];
     document.getElementById('achiev-d').innerHTML=CONQUISTAS.map(function(c){return '<div class="ach">'+c+'</div>';}).join('');
   // Restore header if char data exists
   if(window.CHAR_NAME) updateHeader(window.CHAR_NAME,window.CHAR_RACE,window.CHAR_CLASS,charLevel,window.CHAR_REGION);
@@ -8368,7 +8443,7 @@ if(_savedKey){
         <div id="gen-bar" style="height:100%;background:linear-gradient(90deg,var(--blood),var(--gold2));border-radius:2px;width:0%;transition:width 1.5s ease;box-shadow:0 0 8px rgba(200,168,74,.4)"></div>
       </div>
     </div>
-<div id="step-new" style="display:none;position:fixed;inset:0;z-index:8000;background:#060408;overflow-y:auto;-webkit-overflow-scrolling:touch;visibility:hidden;padding:1rem 1rem 3rem;">
+<div id="step-new" style="display:none;position:fixed;inset:0;z-index:8000;background:#060408;overflow-y:auto;-webkit-overflow-scrolling:touch;visibility:hidden;padding:1rem 1rem 5rem;">
 <div style="max-width:480px;margin:0 auto;width:100%;">
 
       <!-- Header do step-new -->
@@ -8535,7 +8610,7 @@ if(_savedKey){
           <div style="font-family:Cinzel,serif;font-size:.54rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.5rem">Resumo do Personagem</div>
           <div id="char-summary-content" style="font-size:.8rem;color:var(--text2);line-height:1.6"></div>
         </div>
-        <div class="cc-nav-row">
+        <div class="cc-nav-row" style="position:sticky;bottom:0;background:rgba(6,4,8,.95);backdrop-filter:blur(8px);padding:.8rem .2rem .4rem;margin-left:-.2rem;margin-right:-.2rem;z-index:10">
           <button onclick="ccPrev(4)" class="cc-btn-sec">← Atributos</button>
           <button onclick="startNewGame()" class="cc-btn-start">⚔ Iniciar Aventura</button>
         </div>
