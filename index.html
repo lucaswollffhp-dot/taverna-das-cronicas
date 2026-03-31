@@ -1308,6 +1308,65 @@ input[type=number]{-moz-appearance:textfield}
 .mnav-btn span:not(.icon):not(.badge){font-size:.48rem !important}
 /* Mob drawer seções */
 #mob-drawer-content .slbl{font-size:.82rem !important}
+
+/* ══ PDF FEEDBACK: Uso do espaço e legibilidade ══ */
+/* Chat - fonte e espaçamento otimizados */
+.chat-area { padding: .8rem 1.2rem !important; }
+.msg-dm .bbl, .msg-pl .bbl {
+  font-size: 1.08rem !important;
+  line-height: 1.82 !important;
+  padding: .8rem 1.1rem !important;
+  max-width: 90% !important;
+}
+/* Sidebar - mais respiração */
+.sidebar { padding: 1rem .85rem !important; gap: .7rem !important; }
+/* Atributos - maiores e mais claros */
+.attr-box {
+  padding: .55rem .3rem !important;
+}
+.attr-val { font-size: 1.45rem !important; }
+.attr-score { font-size: .85rem !important; }
+/* Labels da criação de personagem */
+.cc-label { font-size: .76rem !important; letter-spacing: 1px !important; }
+.cc-section-title { font-size: .8rem !important; }
+.cc-card-name { font-size: .68rem !important; }
+/* Input principal */
+#inp { font-size: 1.08rem !important; padding: .72rem .95rem !important; }
+.sbtn { font-size: 1rem !important; padding: .72rem 1.6rem !important; }
+/* Header */
+.hdr-title { font-size: 1.02rem !important; }
+/* Criação: botao de atributo mais claro */
+.attr-step-btn {
+  width: 28px !important;
+  height: 28px !important;
+  font-size: 1.1rem !important;
+  border-radius: 6px !important;
+  background: rgba(200,168,74,.12) !important;
+  border: 1px solid rgba(200,168,74,.3) !important;
+  color: var(--gold2) !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: background .15s !important;
+  -webkit-user-select: none !important;
+}
+.attr-step-btn:hover { background: rgba(200,168,74,.25) !important; }
+.attr-step-inp {
+  text-align: center !important;
+  font-family: 'Cinzel', serif !important;
+  font-size: 1.2rem !important;
+  color: #e6c76a !important;
+  cursor: default !important;
+  caret-color: transparent !important;
+}
+/* Remover outline no readonly */
+.attr-step-inp:focus { outline: none !important; }
+/* Pontos de compra - contador mais visivel */
+#pb-counter {
+  font-size: .72rem !important;
+  padding: .6rem .8rem !important;
+}
 </style>
   <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async></script>
@@ -1984,7 +2043,7 @@ input[type=number]{-moz-appearance:textfield}
         <div class="slbl">🎯 Perícias
           <span id="skills-toggle" onclick="toggleSkillsPanel()" style="background:rgba(200,168,74,.08);border:1px solid rgba(200,168,74,.2);border-radius:4px;color:rgba(200,168,74,.5);font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;cursor:pointer;margin-left:4px" title="Expandir/recolher">▼</span>
         </div>
-        <div id="skills-d" style="display:none"></div>
+        <div id="skills-d" style="display:none"><div style="font-family:Cinzel,serif;font-size:.58rem;color:rgba(200,168,74,.35);font-style:italic;padding:3px 2px;margin-bottom:4px">Fixadas na criacao</div></div>
       </div>
       <hr class="sdiv">
       <div>
@@ -2642,26 +2701,39 @@ function init(){
 function renderAttrs(){
   var el=document.getElementById('attrs-d');
   if(!el)return;
+  var locked = window._attrsLocked !== false; // bloqueado por padrão no jogo
   el.innerHTML=Object.entries(ATTRS).map(function(e){
     var a=e[0],v=e[1];
     var modVal=mod(v);
     var modColor=v>=16?'#6ecfa0':v>=14?'#e6c76a':v<=8?'#e74c3c':'var(--text2)';
     var valColor=v>=16?'rgba(110,207,160,.8)':v>=14?'rgba(230,199,106,.8)':v<=8?'rgba(231,76,60,.7)':'var(--gold2)';
-    return'<div class="attr-box" data-attr="'+a+'">'      +'<div class="attr-lbl" style="font-size:.5rem;letter-spacing:1px">'+a+'</div>'      +'<div class="attr-val" style="font-size:1.3rem;color:'+valColor+';line-height:1.1">'+modVal+'</div>'      +'<div class="attr-score" style="font-size:.78rem;color:var(--text3)">'+v+'</div>'      +'<div style="display:flex;justify-content:center;gap:2px;margin-top:2px">'      +'<button class="attr-adj-btn" data-a="'+a+'" data-d="-1">−</button>'      +'<button class="attr-adj-btn" data-a="'+a+'" data-d="1">+</button>'      +'</div>'      +'</div>';
+    var adjBtns = locked ? '' :
+      '<div style="display:flex;justify-content:center;gap:2px;margin-top:2px">'
+      +'<button class="attr-adj-btn" data-a="'+a+'" data-d="-1">−</button>'
+      +'<button class="attr-adj-btn" data-a="'+a+'" data-d="1">+</button>'
+      +'</div>';
+    return'<div class="attr-box" data-attr="'+a+'">'
+      +'<div class="attr-lbl" style="font-size:.5rem;letter-spacing:1px">'+a+'</div>'
+      +'<div class="attr-val" style="font-size:1.3rem;color:'+valColor+';line-height:1.1">'+modVal+'</div>'
+      +'<div class="attr-score" style="font-size:.78rem;color:var(--text3);'+(locked?'':'cursor:pointer')+'" title="'+(locked?'Modificável apenas por ASI ou item mágico':'Clique para editar')+'">'+v+'</div>'
+      +adjBtns
+      +'</div>';
   }).join('');
-  el.querySelectorAll('.attr-adj-btn').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      adjAttr(this.dataset.a,parseInt(this.dataset.d));
+  if(!locked){
+    el.querySelectorAll('.attr-adj-btn').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        adjAttr(this.dataset.a,parseInt(this.dataset.d));
+      });
     });
-  });
-  el.querySelectorAll('.attr-score').forEach(function(el2){
-    var box=el2.closest('[data-attr]');
-    if(box) el2.addEventListener('click',function(){
-      var cur=ATTRS[box.dataset.attr];
-      var nv=parseInt(prompt('Valor de '+box.dataset.attr+' (3-20):',cur));
-      if(!isNaN(nv)&&nv>=3&&nv<=20){adjAttr(box.dataset.attr,nv-cur);}
+    el.querySelectorAll('.attr-score').forEach(function(el2){
+      var box=el2.closest('[data-attr]');
+      if(box) el2.addEventListener('click',function(){
+        var cur=ATTRS[box.dataset.attr];
+        var nv=parseInt(prompt('Valor de '+box.dataset.attr+' (3-20):',cur));
+        if(!isNaN(nv)&&nv>=3&&nv<=20){adjAttr(box.dataset.attr,nv-cur);}
+      });
     });
-  });
+  }
 }
 
 function adjAttr(a,delta){
@@ -4277,6 +4349,7 @@ function openLevelUp(){
 
   var asiHtml='';
   if(isASI){
+    window._attrsLocked = false; // Desbloquear temporariamente para ASI
     var attrOpts=Object.entries(ATTRS).map(function(e){
       return'<option value="'+e[0]+'" '+(e[1]>=20?'disabled':'')+'>'
         +e[0]+' ('+e[1]+', máx 20)</option>';
@@ -4494,6 +4567,7 @@ function confirmLevelUp(newLvl){
     +' Integre este avanço narrativamente — descreva como o personagem sente a evolução de poder.'
     +' Se ganhou novos círculos de magia, crie um breve momento narrativo de descoberta.';
   hist.push({role:'user', content: lvlUpCtx});
+  window._attrsLocked = true; // Recloquear após ASI
   saveProgress('auto');
 }
 function openLevelUpSpellNotice(cls, lvl, features){
@@ -7250,7 +7324,16 @@ function selectClass(c){
   _ccSelectedClass=c;_ccSelectedSubclass1='';
   document.querySelectorAll('#class-grid .cc-card').forEach(function(el){el.classList.toggle('selected',el.querySelector('.cc-card-name')?.textContent===c);});
   var nc=document.getElementById('new-class');if(nc)nc.value=c;
-  window._ccSkills={};renderSubclass1Area();renderClassChoices();renderSkillsChoice();updateClassDefaults();
+  // Preservar perícias que ainda são válidas para a nova classe
+  var oldSkills = window._ccSkills || {};
+  var newCS = (typeof CLASS_SKILLS !== 'undefined') ? (CLASS_SKILLS[c] || {from:[]}) : {from:[]};
+  var newFrom = newCS.from || [];
+  var preserved = {};
+  Object.keys(oldSkills).forEach(function(sk){
+    if(oldSkills[sk] && newFrom.indexOf(sk) >= 0) preserved[sk] = true;
+  });
+  window._ccSkills = preserved;
+  renderSubclass1Area();renderClassChoices();renderSkillsChoice();updateClassDefaults();
 }
 function renderSubclass1Area(){
   var area=document.getElementById('subclass1-area');var grid=document.getElementById('subclass1-grid');var lbl=document.getElementById('subclass1-label');
@@ -7504,7 +7587,7 @@ function buildAttrBuilder(){
     var mc=v>=16?'#6ecfa0':v>=14?'#e6c76a':v<=8?'#e74c3c':'rgba(237,224,188,.6)';
     var rbv=raceBonus[a]||0;
     var rb=rbv>0?'<span style="font-size:.48rem;color:#9060cc;margin-left:2px" title="Bônus racial">+'+rbv+'✦</span>':'';
-    return'<div class="attr-build-box" style="position:relative">'      +'<div style="font-family:Cinzel,serif;font-size:.54rem;color:rgba(200,168,74,.8);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;justify-content:center;gap:2px">'+a+rb+'</div>'      +'<div style="display:flex;align-items:center;gap:4px;margin:3px 0">'      +'<button type="button" data-a="'+a+'" data-d="-1" class="attr-step-btn">−</button>'      +'<input type="number" id="nb-'+a+'" data-attr="'+a+'" min="8" max="15" value="'+v+'" class="attr-step-inp"'      +' style="width:40px;background:transparent;border:none;border-bottom:2px solid rgba(200,168,74,.35);font-family:Cinzel,serif;font-size:1.2rem;color:#e6c76a;outline:none;text-align:center;padding:2px 0"/>'      +'<button type="button" data-a="'+a+'" data-d="1" class="attr-step-btn">+</button>'      +'</div>'      +'<div id="nbm-'+a+'" style="font-family:Cinzel Decorative,serif;font-size:.95rem;font-weight:700;color:'+mc+';transition:color .2s">'+ms+'</div>'      +'</div>';
+    return'<div class="attr-build-box" style="position:relative">'      +'<div style="font-family:Cinzel,serif;font-size:.54rem;color:rgba(200,168,74,.8);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;justify-content:center;gap:2px">'+a+rb+'</div>'      +'<div style="display:flex;align-items:center;gap:4px;margin:3px 0">'      +'<button type="button" data-a="'+a+'" data-d="-1" class="attr-step-btn">−</button>'      +'<input type="text" inputmode="numeric" id="nb-'+a+'" data-attr="'+a+'" min="8" max="15" value="'+v+'" class="attr-step-inp" readonly'      +' style="width:40px;background:transparent;border:none;border-bottom:2px solid rgba(200,168,74,.35);font-family:Cinzel,serif;font-size:1.2rem;color:#e6c76a;outline:none;text-align:center;padding:2px 0"/>'      +'<button type="button" data-a="'+a+'" data-d="1" class="attr-step-btn">+</button>'      +'</div>'      +'<div id="nbm-'+a+'" style="font-family:Cinzel Decorative,serif;font-size:.95rem;font-weight:700;color:'+mc+';transition:color .2s">'+ms+'</div>'      +'</div>';
   }).join('');
   // Contador de pontos
   var counterHtml='<div id="pb-counter" style="grid-column:1/-1;text-align:center;padding:.5rem;background:rgba(0,0,0,.3);border:1px solid rgba(200,168,74,.2);border-radius:8px;font-family:Cinzel,serif;font-size:.6rem;color:var(--gold);margin-top:.3rem">'    +'🎯 Pontos de compra: <span id="pb-used">0</span>/27 usados — mínimo 8, máximo 15 (antes do bônus racial)</div>';
