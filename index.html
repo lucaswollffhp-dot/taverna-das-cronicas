@@ -1,23 +1,4 @@
-function checkStorageSave(){
-  try{
-    var saves=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');
-    var s=saves['auto']||saves['slot1'];
-    var btn=document.getElementById('btn-continue');
-    var info=document.getElementById('continue-info');
-    if(s&&s.charName){
-      if(btn) btn.style.opacity='1';
-      if(info){
-        var cls=s.charClass||'';
-        var lvl=s.charLevel||1;
-        var xp=s.charXP||0;
-        info.textContent=s.charName+' — '+cls+' Nível '+lvl+' ('+xp+' XP)';
-        info.style.color='rgba(200,168,74,.7)';
-      }
-    } else {
-      if(info){ info.textContent='Nenhum save encontrado'; info.style.color=''; }
-    }
-  }catch(e){ console.warn('checkStorageSave error:',e); }
-}<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23060408'/><text y='24' x='3' font-size='22'>⚔</text></svg>">
@@ -91,6 +72,7 @@ html,body{
   background:var(--bg);
   color:var(--text);
   font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:16px;
   height:100%;
   overflow:hidden;
   -webkit-text-size-adjust:100%;
@@ -161,7 +143,7 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
 }
 
 /* HP badge */
-.hp-mini{
+.hp-mini{font-size:.85rem !important;
   background:rgba(155,35,53,.12);
   border:1px solid rgba(155,35,53,.35);
   border-radius:20px;padding:.2rem .65rem;
@@ -169,7 +151,7 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
   white-space:nowrap;
   transition:all .3s;
 }
-.ca-badge{
+.ca-badge{font-size:.85rem !important;
   background:rgba(30,95,138,.12);
   border:1px solid rgba(58,144,200,.3);
   border-radius:20px;padding:.2rem .65rem;
@@ -225,8 +207,8 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
 .abl-card.has-uses{border-left:3px solid var(--arc2)}
 .abl-card.short-rest-only{border-left:3px solid var(--ocean2)}
 .abl-card.passive{border-left:3px solid var(--text3)}
-.abl-name{font-family:Cinzel,serif;font-size:.66rem;color:var(--arc3);margin-bottom:2px}
-.abl-desc{font-size:.68rem;color:var(--text3);line-height:1.35;margin-bottom:3px}
+.abl-name{font-family:Cinzel,serif;font-size:.78rem;color:var(--arc3);margin-bottom:2px}
+.abl-desc{font-size:.78rem;color:var(--text3);line-height:1.4;margin-bottom:3px}
 .abl-uses-row{display:flex;align-items:center;gap:4px}
 .abl-pip{width:11px;height:11px;border-radius:50%;border:1.5px solid var(--arc2);cursor:pointer;transition:all .15s;flex-shrink:0}
 .abl-pip.used{background:rgba(107,63,160,.15);border-color:rgba(107,63,160,.3)}
@@ -292,7 +274,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   font-weight:600;line-height:1.2;
 }
 .attr-score{
-  font-family:'Cinzel',serif;font-size:.54rem;
+  font-family:'Cinzel',serif;font-size:.70rem;
   color:var(--text3);cursor:pointer;
 }
 .attr-adj-btn{
@@ -306,7 +288,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 /* ── HP ── */
 .hp-row{
   display:flex;justify-content:space-between;
-  font-family:'Cinzel',serif;font-size:.58rem;color:var(--blood2);margin-bottom:4px;
+  font-family:'Cinzel',serif;font-size:.84rem;color:var(--blood2);margin-bottom:4px;
 }
 .hp-track{
   background:rgba(155,35,53,.1);border-radius:4px;height:8px;
@@ -335,7 +317,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .save-prof{width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(200,168,74,.3);flex-shrink:0;transition:all .15s}
 .save-prof.on{background:var(--gold2);border-color:var(--gold2)}
 .save-lbl{font-family:Cinzel,serif;font-size:.48rem;color:var(--text3);text-transform:uppercase;flex:1}
-.save-val{font-family:Cinzel,serif;font-size:.72rem;color:var(--gold2)}
+.save-val{font-family:Cinzel,serif;font-size:.82rem;color:var(--gold2)}
 .skill-box{display:flex;align-items:center;gap:4px;padding:3px 5px;border-radius:4px;transition:background .12s}
 .skill-box:hover{background:rgba(200,168,74,.05)}
 .skill-prof{width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(200,168,74,.25);flex-shrink:0;transition:all .15s}
@@ -425,7 +407,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   border-color:rgba(58,144,200,.4);
   background:rgba(30,95,138,.1);
 }
-.eslot-lbl{font-family:'Cinzel',serif;font-size:.43rem;color:var(--ocean2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:1px}
+.eslot-lbl{font-family:'Cinzel',serif;font-size:.56rem;color:var(--ocean2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:1px}
 .eslot-val{font-size:.73rem;color:var(--text2);font-style:normal}
 .eslot-val.empty{color:var(--text3);font-style:italic}
 .ca-display{
@@ -562,7 +544,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .turn-token.dead-turn{opacity:.4;filter:grayscale(.8)}
 .turn-token.my-turn{border-color:var(--blood3);background:rgba(155,35,53,.12);box-shadow:0 0 8px rgba(155,35,53,.2)}
 .tt-name{font-family:'Cinzel',serif;font-size:.52rem;text-transform:uppercase;color:var(--text2)}
-.tt-init{font-family:'Cinzel',serif;font-size:.78rem;color:var(--gold2)}
+.tt-init{font-family:'Cinzel',serif;font-size:.88rem;color:var(--gold2)}
 .combat-btns{display:flex;gap:.3rem;flex-shrink:0}
 .cbtn{font-family:'Cinzel',serif;font-size:.58rem;border-radius:6px;padding:4px 10px;border:1px solid;transition:all .2s;letter-spacing:.3px}
 .cbtn.start{background:rgba(155,35,53,.15);border-color:var(--blood3);color:var(--blood3)}
@@ -728,7 +710,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   border:1px solid rgba(200,168,74,.18);
   border-radius:9px;
   color:rgba(200,168,74,.5);
-  font-family:Cinzel,serif;font-size:.36rem;text-transform:uppercase;letter-spacing:.5px;
+  font-family:Cinzel,serif;font-size:.5rem;text-transform:uppercase;letter-spacing:.5px;
   padding:4px 0;
   flex:1 1 0;width:0;min-width:0;
   position:relative;
@@ -919,7 +901,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .pn-date{font-family:Cinzel,serif;font-size:.55rem;color:rgba(200,168,74,.4);margin-left:.5rem;font-weight:normal}
 .pn-ver-title{font-family:Cinzel,serif;font-size:1rem;color:var(--gold2);margin-bottom:.15rem}
 .pn-ver-sub{font-family:Cormorant Garamond,serif;font-size:.88rem;color:rgba(200,168,74,.45);font-style:italic;margin-bottom:.7rem;padding-bottom:.5rem;border-bottom:1px solid rgba(200,168,74,.1)}
-.pn-category{font-family:Cinzel,serif;font-size:.56rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin:.6rem 0 .3rem}
+.pn-category{font-family:Cinzel,serif;font-size:.72rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin:.6rem 0 .3rem}
 .pn-list{margin:0;padding-left:1.1rem;list-style:none}
 .pn-list li{font-family:Cormorant Garamond,serif;font-size:.9rem;color:rgba(232,223,200,.75);margin-bottom:.35rem;line-height:1.5;position:relative}
 .pn-list li::before{content:"◆";color:rgba(200,168,74,.3);font-size:.5rem;position:absolute;left:-1rem;top:.35rem}
@@ -988,7 +970,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
     overflow-x:auto;
     scrollbar-width:none;
   }
-  .cc-step-dot{font-size:.38rem;padding:3px 6px;letter-spacing:0}
+  .cc-step-dot{font-size:.52rem;padding:3px 6px;letter-spacing:0}
   .cc-step-line{min-width:8px}
   .cc-panel{padding:.85rem .8rem}
   .cc-card{padding:.5rem .3rem}
@@ -1061,7 +1043,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   .hp-mini{font-size:.62rem;padding:2px 5px}
   .ca-badge{font-size:.62rem;padding:2px 5px}
   /* buttons compact */
-  .hbtn{font-size:.6rem;padding:4px 7px;border-radius:5px}
+  .hbtn{font-size:.72rem;padding:4px 7px;border-radius:5px}
 
   /* ── Drawer ── */
   .mob-drawer{
@@ -1248,12 +1230,12 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 }
 
 /* ── Acessibilidade: fontes maiores ── */
-.slbl{font-size:.7rem !important}
+.slbl{font-size:.82rem !important}
 .attr-lbl{font-size:.58rem !important}
 .attr-val{font-size:1.35rem !important}
 .attr-score{font-size:.8rem !important}
-.cc-label{font-size:.65rem !important}
-.cc-section-title{font-size:.68rem !important}
+.cc-label{font-size:.75rem !important}
+.cc-section-title{font-size:.78rem !important}
 #inp{font-size:1.05rem !important}
 .hdr-title{font-size:.95rem !important}
 .sbtn{font-size:.95rem !important}
@@ -1286,6 +1268,46 @@ input[type=number]{-moz-appearance:textfield}
   box-shadow:0 0 8px rgba(200,168,74,.2);
 }
 .inline-roll-btn:disabled{opacity:.4;cursor:default}
+
+/* ══ ACESSIBILIDADE: Fontes maiores em todo o sistema ══ */
+/* Sidebar */
+.attr-lbl{font-size:.62rem !important;letter-spacing:.8px !important}
+.attr-val{font-size:1.4rem !important}
+.attr-score{font-size:.82rem !important}
+.attr-mod-display{font-size:.78rem !important}
+/* Chat */
+.bbl{font-size:1.08rem !important;line-height:1.78 !important}
+.mlbl{font-size:.7rem !important}
+/* Labels gerais */
+.cc-label{font-size:.74rem !important;letter-spacing:1px !important}
+.cc-card-name{font-size:.66rem !important}
+.cc-section-title{font-size:.78rem !important}
+/* Input e botão principal */
+#inp{font-size:1.08rem !important;padding:.7rem .9rem !important}
+.sbtn{font-size:1rem !important;padding:.7rem 1.5rem !important}
+/* Header */
+.hdr-title{font-size:1rem !important}
+.hdr-sub{font-size:.72rem !important}
+/* Sidebar slbl (nome do personagem, seções) */
+.slbl{font-size:.82rem !important}
+/* Quests, inventário, habilidades */
+.quest-t{font-size:.82rem !important}
+.abl-name{font-size:.78rem !important}
+.abl-desc{font-size:.74rem !important}
+/* Botões de dado */
+.dice-lbl{font-size:.52rem !important}
+/* Modal */
+.modal-title{font-size:1.1rem !important}
+.mfield label{font-size:.75rem !important}
+/* Testes de resistência */
+.save-row{font-size:.78rem !important}
+/* HP/CA */
+.hp-mini{font-size:.88rem !important}
+.ca-badge{font-size:.88rem !important}
+/* Nav mobile */
+.mnav-btn span:not(.icon):not(.badge){font-size:.48rem !important}
+/* Mob drawer seções */
+#mob-drawer-content .slbl{font-size:.82rem !important}
 </style>
   <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async></script>
