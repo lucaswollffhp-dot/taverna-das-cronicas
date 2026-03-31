@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23060408'/><text y='24' x='3' font-size='22'>⚔</text></svg>">
+
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
 <title>Crônicas de Killyn</title>
@@ -1190,7 +1192,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 
 /* ── Chat bubbles maior ── */
 .bbl{
-  font-size:1.02rem !important;
+  font-size:1.05rem !important;
   line-height:1.75 !important;
   padding:.7rem 1rem !important;
 }
@@ -1225,6 +1227,46 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
     radial-gradient(ellipse 50% 80% at 80% 60%, rgba(180,120,20,.03) 0%, transparent 60%),
     #060408;
 }
+
+/* ── Acessibilidade: fontes maiores ── */
+.slbl{font-size:.7rem !important}
+.attr-lbl{font-size:.58rem !important}
+.attr-val{font-size:1.35rem !important}
+.attr-score{font-size:.8rem !important}
+.cc-label{font-size:.65rem !important}
+.cc-section-title{font-size:.68rem !important}
+#inp{font-size:1.05rem !important}
+.hdr-title{font-size:.95rem !important}
+.sbtn{font-size:.95rem !important}
+
+/* ── Remover setas dos inputs number ── */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
+
+/* ── Botões inline de rolagem — estilo do app ── */
+.inline-roll-btn{
+  display:inline-flex !important;
+  align-items:center;
+  gap:4px;
+  background:rgba(200,168,74,.14) !important;
+  border:1px solid rgba(200,168,74,.45) !important;
+  border-radius:7px;
+  padding:3px 10px !important;
+  font-family:'Cinzel',serif !important;
+  font-size:.68rem !important;
+  color:var(--gold2) !important;
+  cursor:pointer;
+  margin:2px;
+  transition:all .2s;
+  vertical-align:middle;
+  text-decoration:none;
+}
+.inline-roll-btn:hover{
+  background:rgba(200,168,74,.25) !important;
+  box-shadow:0 0 8px rgba(200,168,74,.2);
+}
+.inline-roll-btn:disabled{opacity:.4;cursor:default}
 </style>
   <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async></script>
@@ -5069,112 +5111,86 @@ function openCharSheet(){
   var clsBase=cls.split(' — ')[0];
   var sub=window.CHAR_SUBCLASS||'';
   var region=window.CHAR_REGION||'—';
-  var sym=CLASS_SYMBOLS[clsBase]||{symbol:'⚔',color:'var(--gold)'};
+  var align=window.CHAR_ALIGNMENT||'Neutro';
+  var sym=CLASS_SYMBOLS&&CLASS_SYMBOLS[clsBase]?CLASS_SYMBOLS[clsBase]:{symbol:'⚔',color:'var(--gold)'};
 
-  // Attributes section
+  // Atributos
   var attrHtml=Object.entries(ATTRS).map(function(e){
     var a=e[0],v=e[1];
-    var m=modNum(v);
-    var ms=(m>=0?'+':'')+m;
+    var m=modNum(v); var ms=(m>=0?'+':'')+m;
+    var col=v>=16?'#6ecfa0':v>=14?'#e6c76a':v<=8?'#e74c3c':'var(--gold2)';
     return'<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;text-align:center;padding:.5rem .3rem">'
       +'<div style="font-family:Cinzel,serif;font-size:.48rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px">'+a+'</div>'
-      +'<div style="font-family:Cinzel,serif;font-size:1.1rem;color:var(--gold2);font-weight:600">'+ms+'</div>'
+      +'<div style="font-family:Cinzel,serif;font-size:1.1rem;color:'+col+';font-weight:600">'+ms+'</div>'
       +'<div style="font-family:Cinzel,serif;font-size:.6rem;color:var(--text3)">'+v+'</div>'
       +'</div>';
   }).join('');
 
-  // Saves section
+  // Testes de resistência
   var saveHtml=Object.entries(ATTRS).map(function(e){
     var a=e[0],v=e[1];
     var prof=saveProficiencies[a];
-    var bonus=modNum(v)+(prof?(charLevel<5?2:charLevel<9?3:charLevel<13?4:charLevel<17?5:6):0);
-    return'<div style="display:flex;align-items:center;gap:5px;padding:3px 5px;background:var(--surface);border:1px solid var(--border);border-radius:5px">'
-      +'<div style="width:10px;height:10px;border-radius:50%;background:'+(prof?'var(--gold2)':'transparent')+';border:1.5px solid '+(prof?'var(--gold2)':'var(--text3)')+';flex-shrink:0"></div>'
-      +'<span style="font-family:Cinzel,serif;font-size:.5rem;color:var(--text3);text-transform:uppercase;flex:1">'+a+'</span>'
-      +'<span style="font-family:Cinzel,serif;font-size:.72rem;color:var(--gold2)">'+(bonus>=0?'+':'')+bonus+'</span>'
+    var pb=charLevel<5?2:charLevel<9?3:charLevel<13?4:charLevel<17?5:6;
+    var bonus=modNum(v)+(prof?pb:0);
+    var bs=(bonus>=0?'+':'')+bonus;
+    return'<div style="display:flex;align-items:center;gap:.3rem;padding:2px 0">'
+      +'<span style="font-size:.55rem;color:'+(prof?'var(--gold2)':'var(--text3)')+'">'+( prof?'●':'○')+'</span>'
+      +'<span style="font-family:Cinzel,serif;font-size:.6rem;color:var(--text2);flex:1">'+a+'</span>'
+      +'<span style="font-family:Cinzel,serif;font-size:.6rem;color:'+(prof?'var(--gold2)':'var(--text3)')+'">'+bs+'</span>'
       +'</div>';
   }).join('');
 
-  // Equipment
-  var eqHtml=['armadura','escudo','arma'].map(function(slot){
-    var eqId=equipped[slot];
-    var name2='—';
-    if(eqId){
-      var arm=ARMOR_DB.find(function(a){return a.id===eqId;});
-      var wpn=WEAPONS_DB.find(function(w){return w.id===eqId;});
-      var found=arm||wpn;
-      if(found) name2=found.name;
-    }
-    var labels={armadura:'Armadura',escudo:'Escudo',arma:'Arma'};
-    return'<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border)">'
-      +'<span style="font-family:Cinzel,serif;font-size:.6rem;color:var(--text3)">'+labels[slot]+'</span>'
-      +'<span style="font-size:.75rem;color:var(--text2)">'+name2+'</span>'
-      +'</div>';
-  }).join('');
+  // Perícias
+  var skillHtml=(typeof SKILLS_DATA!=='undefined'?SKILLS_DATA:[]).map(function(sk){
+    var prof=skillProficiencies[sk.name];
+    var pb=charLevel<5?2:charLevel<9?3:charLevel<13?4:charLevel<17?5:6;
+    var bonus=modNum(ATTRS[sk.attr]||10)+(prof?pb:0);
+    var bs=(bonus>=0?'+':'')+bonus;
+    return prof?'<div style="display:flex;align-items:center;gap:.3rem;padding:1px 0">'
+      +'<span style="font-size:.5rem;color:var(--gold2)">●</span>'
+      +'<span style="font-family:Cinzel,serif;font-size:.58rem;color:var(--text2);flex:1">'+sk.name+'</span>'
+      +'<span style="font-family:Cinzel,serif;font-size:.58rem;color:var(--gold2)">'+bs+'</span>'
+      +'</div>':'';
+  }).filter(Boolean).join('');
 
-  // Achievements
-  var achHtml=CONQUISTAS.length
-    ?CONQUISTAS.map(function(c){return'<div class="ach">'+c+'</div>';}).join('')
-    :'<div style="font-size:.72rem;color:var(--text3);font-style:italic">Nenhuma conquista ainda</div>';
+  // Foto e info principal
+  var photoHtml=window.CHAR_PHOTO
+    ?'<img src="'+window.CHAR_PHOTO+'" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid rgba(200,168,74,.5);flex-shrink:0"/>'
+    :'<div style="width:80px;height:80px;border-radius:50%;background:rgba(200,168,74,.08);border:2px dashed rgba(200,168,74,.2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0">'+sym.symbol+'</div>';
 
-  // Abilities
-  var abilHtml=abilities.length
-    ?abilities.map(function(a){
-      return'<div style="background:rgba(107,63,160,.06);border:1px solid rgba(107,63,160,.18);border-radius:6px;padding:5px 8px;margin-bottom:4px">'
-        +'<div style="font-family:Cinzel,serif;font-size:.67rem;color:var(--arc3)">'+a.name+(a.max?' ('+a.remaining+'/'+a.max+')':'')+'</div>'
-        +'<div style="font-size:.7rem;color:var(--text3)">'+a.desc+'</div>'
-        +'</div>';
-    }).join('')
-    :'<div style="font-size:.72rem;color:var(--text3);font-style:italic">Nenhuma habilidade</div>';
-
-  var profBonus=charLevel<5?2:charLevel<9?3:charLevel<13?4:charLevel<17?5:6;
-
-  var html='<div style="max-width:500px">'
-    // Header
-    +'<div style="display:flex;align-items:center;gap:.8rem;padding-bottom:.8rem;border-bottom:1px solid var(--border);margin-bottom:.9rem">'
-    +'<div style="width:52px;height:52px;border-radius:50%;background:radial-gradient(circle,rgba(200,168,74,.12),rgba(0,0,0,.5));border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0">'+sym.symbol+'</div>'
-    +'<div>'
-    +'<div style="font-family:Cinzel Decorative,serif;font-size:1.05rem;color:var(--gold2)">'+name+'</div>'
-    +'<div style="font-size:.8rem;color:var(--text3);margin-top:1px">'+race+' '+cls+(sub?' — '+sub:'')+'</div>'
-    +'<div style="font-size:.72rem;color:var(--text3);font-style:italic">'+region+' · Nível '+charLevel+'</div>'
+  var html='<div class="modal-title">📋 Ficha — '+name+'</div>'
+    // Seção de identidade com foto
+    +'<div style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:.8rem;padding:.7rem;background:rgba(200,168,74,.05);border:1px solid rgba(200,168,74,.15);border-radius:10px">'
+    +photoHtml
+    +'<div style="flex:1;min-width:0">'
+    +'<div style="font-family:Cinzel,serif;font-size:1rem;color:var(--gold2);margin-bottom:.15rem">'+name+'</div>'
+    +'<div style="font-family:Cormorant Garamond,serif;font-size:.85rem;color:var(--text2);margin-bottom:.1rem">'+race+' '+clsBase+(sub?' — '+sub:'')+'</div>'
+    +'<div style="font-family:Cinzel,serif;font-size:.58rem;color:var(--text3)">Nível '+charLevel+' · '+region+'</div>'
+    +'<div style="font-family:Cinzel,serif;font-size:.56rem;color:rgba(200,168,74,.5);margin-top:.2rem">⚖ '+align+'</div>'
+    +'<div style="display:flex;gap:.4rem;margin-top:.4rem;flex-wrap:wrap">'
+    +'<span style="background:rgba(155,35,53,.2);border:1px solid rgba(155,35,53,.4);border-radius:5px;font-family:Cinzel,serif;font-size:.5rem;color:var(--blood3);padding:2px 7px">❤ PV: '+hpC+'/'+HP_MAX+'</span>'
+    +'<span style="background:rgba(200,168,74,.1);border:1px solid rgba(200,168,74,.25);border-radius:5px;font-family:Cinzel,serif;font-size:.5rem;color:var(--gold);padding:2px 7px">🛡 CA: '+charCA+'</span>'
+    +'<span style="background:rgba(107,63,160,.15);border:1px solid rgba(107,63,160,.3);border-radius:5px;font-family:Cinzel,serif;font-size:.5rem;color:var(--arc3);padding:2px 7px">⭐ XP: '+charXP+'</span>'
+    +'</div></div></div>'
+    // Atributos
+    +'<div style="font-family:Cinzel,serif;font-size:.56rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem">⚔ Atributos</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:.25rem;margin-bottom:.7rem">'+attrHtml+'</div>'
+    // Testes e Perícias lado a lado
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.8rem">'
+    +'<div><div style="font-family:Cinzel,serif;font-size:.56rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem">🛡 Resistências</div>'+saveHtml+'</div>'
+    +'<div><div style="font-family:Cinzel,serif;font-size:.56rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem">📚 Perícias</div>'+(skillHtml||'<div style="font-size:.7rem;color:var(--text3);font-style:italic">Nenhuma perícia</div>')+'</div>'
     +'</div>'
-    +'<div style="margin-left:auto;text-align:right">'
-    +'<div style="font-family:Cinzel,serif;font-size:.58rem;color:var(--text3)">PV</div>'
-    +'<div style="font-family:Cinzel,serif;font-size:.9rem;color:var(--blood3)">'+hpC+'/'+HP_MAX+'</div>'
-    +'<div style="font-family:Cinzel,serif;font-size:.58rem;color:var(--text3);margin-top:2px">CA</div>'
-    +'<div style="font-family:Cinzel,serif;font-size:.9rem;color:var(--ocean2)">'+charCA+'</div>'
-    +'</div>'
-    +'</div>'
-    // Stats
-    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.9rem">'
-    +'<div>'
-    +'<div style="font-family:Cinzel,serif;font-size:.54rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Atributos</div>'
-    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.25rem">'+attrHtml+'</div>'
-    +'</div>'
-    +'<div>'
-    +'<div style="font-family:Cinzel,serif;font-size:.54rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Resistências</div>'
-    +'<div style="display:flex;flex-direction:column;gap:.2rem">'+saveHtml+'</div>'
-    +'<div style="margin-top:.4rem;font-family:Cinzel,serif;font-size:.6rem;color:var(--text3)">Proficiência: +'+profBonus+'</div>'
-    +'</div>'
-    +'</div>'
-    // Equipment
-    +'<div style="margin-bottom:.9rem">'
-    +'<div style="font-family:Cinzel,serif;font-size:.54rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Equipamento</div>'
-    +eqHtml
-    +'</div>'
-    // Abilities
-    +'<div style="margin-bottom:.9rem">'
-    +'<div style="font-family:Cinzel,serif;font-size:.54rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Habilidades</div>'
-    +abilHtml
-    +'</div>'
-    // Achievements
-    +'<div>'
-    +'<div style="font-family:Cinzel,serif;font-size:.54rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:.4rem">Conquistas & Lore</div>'
-    +'<div style="max-height:160px;overflow-y:auto">'+achHtml+'</div>'
-    +'</div>'
+    +'<div class="modal-row"><button class="mbtn secondary" onclick="closeDynModal()">Fechar</button>'
+    +'<button class="mbtn" id="cs-photo-btn">📷 Trocar Foto</button>'
     +'</div>';
-
-  openDynModal('<div class="modal-title" style="text-align:left;padding-bottom:.6rem">📋 Ficha — '+name+'</div>'+html+'<div class="modal-row" style="margin-top:.8rem"><button class="mbtn secondary" onclick="closeDynModal()">Fechar</button></div>');
+  openDynModal(html);
+  setTimeout(function(){
+    var pb=document.getElementById('cs-photo-btn');
+    if(pb) pb.addEventListener('click',function(){
+      var inp=document.getElementById('char-photo-input');
+      if(inp) inp.click();
+    });
+  },60);
 }
 
 // ─── TOASTS ───
@@ -5228,21 +5244,7 @@ function rollDie(sides){
   var rollCtx='[DADO] d'+sides+'='+result+(rawMod!==0?(rawMod>0?'+':'')+rawMod+'='+total:'')+' — '+qualifier;
   window._pendingRollCtx=(window._pendingRollCtx||'')+rollCtx+'\n';
 
-  // Enviar ao narrador com delay para o flash visual aparecer primeiro
-  setTimeout(function(){
-    var ctx=window._pendingRollCtx||'';
-    if(!ctx) return;
-    window._pendingRollCtx='';
-    if(typeof callAI!=='function') return;
-    addLoad();
-    callAI(ctx).then(function(r){
-      rmLoad();
-      addMsg('dm',r.replace(/\n/g,'<br>'));
-    }).catch(function(e){
-      rmLoad();
-      console.error('rollDie AI error:',e);
-    });
-  },500);
+  // O debounce em rollGenericDice cuidará de enviar ao narrador
 }
 var _diceFlashTimer=null;
 function showDiceFlash(sides,result,mod,total,numClass,emoji){
@@ -5776,6 +5778,26 @@ function rollGenericDice(diceStr, label, modifier){
   // Injetar no hist para narrador
   var rollCtx = '[DADO] '+( label||diceStr)+': d'+sides+'='+result+(mod!==0?(mod>0?'+':'')+mod+' → total '+total:'')+( nat20?' CRÍTICO NATURAL — sucesso automático extraordinário':nat1?' FALHA CRÍTICA — falha automática':total>=15?' — sucesso sólido':total>=10?' — sucesso':' — falha');
   window._pendingRollCtx = (window._pendingRollCtx||'') + rollCtx + '\n';
+  // Debounce: acumular dados por 800ms antes de enviar ao narrador
+  // Isso permite que múltiplos dados pedidos sejam processados juntos
+  clearTimeout(window._rollSendTimer);
+  window._rollSendTimer = setTimeout(function(){
+    var ctx = window._pendingRollCtx || '';
+    if(!ctx || typeof callAI !== 'function') return;
+    window._pendingRollCtx = '';
+    if(window._busy_rolling) return; // já está enviando
+    window._busy_rolling = true;
+    addLoad();
+    callAI(ctx).then(function(r){
+      rmLoad();
+      addMsg('dm', r.replace(/\n/g,'<br>'));
+      window._busy_rolling = false;
+    }).catch(function(e){
+      rmLoad();
+      window._busy_rolling = false;
+      console.error('Roll send error:', e);
+    });
+  }, 800);
   return total;
 }
 
@@ -5818,20 +5840,7 @@ function quickRollDice(diceStr){
   var label = document.getElementById('qr-label')?.value||diceStr;
   closeDynModal();
   var total = rollGenericDice(diceStr, label, mod);
-  // Sempre enviar ao narrador automaticamente (não esperar o jogador digitar)
-  setTimeout(function(){
-    var ctx = window._pendingRollCtx||'';
-    window._pendingRollCtx = '';
-    if(!ctx) return;
-    addLoad();
-    callAI(ctx).then(function(r){
-      rmLoad();
-      addMsg('dm',r.replace(/\n/g,'<br>'));
-    }).catch(function(e){
-      rmLoad();
-      console.error('Roll AI error:',e);
-    });
-  },400);
+  // O debounce em rollGenericDice cuidará de enviar ao narrador
 }
 
 function showRollToast(msg){const t=document.getElementById('roll-toast');t.textContent=msg;t.style.opacity='1';clearTimeout(rollToastTimer);rollToastTimer=setTimeout(()=>{t.style.opacity='0';},2500);}
@@ -6209,25 +6218,34 @@ function saveProgress(slot='auto',showToast=false){
   try{
     var saves=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');
     saves[slot]=getState();
+    // Salvar foto separadamente para não causar QuotaExceeded
+    if(window.CHAR_PHOTO){
+      try{
+        localStorage.setItem('killyn_char_photo', window.CHAR_PHOTO);
+        saves[slot].charPhoto='__localStorage__'; // placeholder
+      }catch(pq){}
+    }
     localStorage.setItem(SAVE_KEY,JSON.stringify(saves));
   }catch(err){
     if(err.name==='QuotaExceededError'||err.code===22){
-      // Tentar salvar sem a foto e sem o histórico completo
       try{
         var saves2=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');
-        var st=getState();
-        st.charPhoto=''; // remover foto
-        if(st.hist&&st.hist.length>10) st.hist=st.hist.slice(-10); // reduzir histórico
+        var st=getState(); st.charPhoto='';
+        if(st.hist&&st.hist.length>10) st.hist=st.hist.slice(-10);
         saves2[slot]=st;
         localStorage.setItem(SAVE_KEY,JSON.stringify(saves2));
         console.warn('Save comprimido — quota cheia');
-      }catch(e2){ console.error('Save falhou mesmo comprimido:', e2); }
+      }catch(e2){ console.error('Save falhou:', e2); }
     } else { console.error('Save error:', err); }
   }
-  // Salvar também na nuvem se Firebase disponível
+  // Salvar na nuvem se Firebase disponível
   if(window.saveToCloud && window.FB_USER){
-    var saves3=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');
-    window.saveToCloud(saves3).catch(function(e){ console.warn('Cloud save failed:',e); });
+    var cloudState=getState();
+    // Incluir foto no save da nuvem (suporta até 1MB no Firestore)
+    cloudState.charPhoto=window.CHAR_PHOTO||'';
+    cloudState._charPhoto=window.CHAR_PHOTO||'';
+    var cloudSaves={auto:cloudState}; cloudSaves[slot]=cloudState;
+    window.saveToCloud(cloudSaves).catch(function(e){ console.warn('Cloud save failed:',e); });
   }
   if(showToast) showSaveToast(slot==='auto'?'Salvo automaticamente':'Salvo no slot '+slot+'!');
 }
@@ -6274,7 +6292,10 @@ function loadProgress(slot='auto'){
     window.CHAR_NAME    = s.charName;
     window.CHAR_RACE    = s.charRace    || '';
     window.CHAR_CLASS   = s.charClass   || '';
-    window.CHAR_PHOTO   = s.charPhoto   || '';
+    // Restaurar foto: pode estar no slot separado
+    var _savedPhoto = s.charPhoto||'';
+    if(_savedPhoto==='__localStorage__') _savedPhoto=localStorage.getItem('killyn_char_photo')||'';
+    window.CHAR_PHOTO = _savedPhoto;
     window.CHAR_ALIGNMENT = s.charAlignment || 'Neutro';
     window.CHAR_REGION  = s.charRegion  || '';
     window.CHAR_SUBCLASS= s.charSubclass|| '';
@@ -6284,6 +6305,12 @@ function loadProgress(slot='auto'){
   // Render everything
   updHP();updCA();updXP();renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();
   renderSpells();renderMagicItems();renderDiary();renderAllCoins();
+  // Mostrar foto se existir
+  if(window.CHAR_PHOTO) setTimeout(function(){ showCharPhoto(window.CHAR_PHOTO); }, 100);
+  // Atualizar badge de alinhamento
+  if(window.CHAR_ALIGNMENT) setTimeout(function(){ updateAlignmentBadge(); }, 100);
+  // Renderizar NPCs
+  if(typeof renderNPCTracker==='function') renderNPCTracker();
   if(s.notas){const el=document.getElementById('notes-d');if(el)el.value=s.notas;}
   if(s.chat){const el=document.getElementById('chat');if(el){el.innerHTML=s.chat;el.scrollTop=99999;}}
   if(mapSrc){const img=document.getElementById('map-img');if(img)img.src=mapSrc;}
@@ -6313,17 +6340,17 @@ function delSlot(slot){if(!confirm('Apagar?'))return;const s=JSON.parse(localSto
 
 function exportSave(){
   var state=getState();
-  var json=JSON.stringify(state,null,2);
+  // Exportar como wrapper de slot para compatibilidade com importSaveFromMenu
+  var exportData={ auto: state, slot1: state, _exportedAt: new Date().toISOString(), _version: 'killyn_v3' };
+  var json=JSON.stringify(exportData,null,2);
   var blob=new Blob([json],{type:'application/json'});
   var url=URL.createObjectURL(blob);
   var a=document.createElement('a');
   var d=new Date();
   var ts=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()+'_'+d.getHours()+'h'+d.getMinutes();
-  a.href=url;
-  a.download='killyn_save_'+ts+'.json';
-  a.click();
+  a.href=url; a.download='killyn_save_'+ts+'.json'; a.click();
   URL.revokeObjectURL(url);
-  showSaveToast('Save exportado com sucesso!');
+  showSaveToast('💾 Save exportado: killyn_save_'+ts+'.json');
 }
 
 function importSave(event){
@@ -7140,7 +7167,8 @@ function buildClassGrid(){
     var hp=CLASS_LEVEL_TABLE[c]?'d'+CLASS_LEVEL_TABLE[c].hpDie:'d8';
     return'<div class="cc-card'+(c===_ccSelectedClass?' selected':'')+'" data-c="'+c+'" onclick="selectClass(this.dataset.c)"><div class="cc-card-icon">'+(icons[c]||'⚔')+'</div><div class="cc-card-name">'+c+'</div><div class="cc-card-sub">'+hp+'</div></div>';
   }).join('');
-  window._ccSkills={};renderSubclass1Area();renderClassChoices();renderSkillsChoice();updateClassDefaults();
+  // NÃO resetar _ccSkills ao mudar de classe — preservar seleções
+  renderSubclass1Area();renderClassChoices();renderSkillsChoice();updateClassDefaults();
 }
 function selectClass(c){
   _ccSelectedClass=c;_ccSelectedSubclass1='';
@@ -7547,36 +7575,55 @@ function continueFromStorage(){
 }
 
 function importSaveFromMenu(event){
-  var file=event.target.files[0];if(!file)return;
+  var file=event.target.files[0]; if(!file)return;
   var reader=new FileReader();
   reader.onload=function(e){
     try{
-      var state=JSON.parse(e.target.result);
-      if(!state||!state.hist){showSaveToast('Arquivo inválido!');return;}
-      hidStartScreen();
-      var appEl=document.getElementById('app');
-      if(appEl){appEl.style.display='';appEl.style.visibility='visible';}
-      init();
-      hpC=state.hpC||HP_MAX;
-      HP_MAX=state.HP_MAX||HP_MAX_BASE;
-      hist=state.hist||[];
-      inventory=state.inventory||[];
-      quests=state.quests||[];
-      attacks=state.attacks||[];
-      abilities=state.abilities||[];
-      equipped=state.equipped||{arma:null,armadura:null,escudo:null,acessorio:null};
-      coins=state.coins||{PP:0,PO:0,PE:0,PA:0,PC:0};
-      charLevel=state.charLevel||1;
-      charXP=state.charXP||0;
-      saveProficiencies=state.saveProficiencies||{FOR:false,CON:false,DES:false,INT:false,SAB:false,CAR:false};
-      mapSrc=state.mapSrc||null;
-      updHP();updCA();updXP();renderAttrs();renderSaves();renderEquip();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();
-      if(state.notas){var nd=document.getElementById('notes-d');if(nd)nd.value=state.notas;}
-      if(state.chat){var cd=document.getElementById('chat');if(cd){cd.innerHTML=state.chat;cd.scrollTop=99999;}}
-      saveProgress('auto');
-      showSaveToast('Save importado!');
-    }catch(err){alert('Erro ao importar: '+err.message);}
-    event.target.value='';
+      var parsed=JSON.parse(e.target.result);
+      // Aceitar dois formatos:
+      // 1. Slot container: { auto:{charName:...,hist:...}, slot1:{...} }
+      // 2. State direto:   { charName:..., hist:... }
+      var state=null;
+      if(parsed.charName||parsed.hist){
+        // Formato direto (exportSave exporta getState())
+        state=parsed;
+      } else if(parsed.auto&&(parsed.auto.charName||parsed.auto.hist)){
+        state=parsed.auto;
+      } else {
+        // Tentar encontrar qualquer slot com dados de personagem
+        var keys=Object.keys(parsed);
+        for(var k=0;k<keys.length;k++){
+          if(parsed[keys[k]]&&(parsed[keys[k]].charName||parsed[keys[k]].hist)){
+            state=parsed[keys[k]]; break;
+          }
+        }
+      }
+      if(!state){ showSaveToast('❌ Arquivo de save inválido ou incompatível.'); return; }
+      // Salvar no localStorage e carregar
+      var saves=JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');
+      saves['auto']=state;
+      saves['slot1']=state;
+      try{ localStorage.setItem(SAVE_KEY,JSON.stringify(saves)); }
+      catch(quota){
+        // Tentar sem foto
+        var s2=Object.assign({},state); s2.charPhoto='';
+        saves['auto']=s2; saves['slot1']=s2;
+        localStorage.setItem(SAVE_KEY,JSON.stringify(saves));
+      }
+      // Mostrar o app e carregar
+      showApp();
+      if(loadProgress('auto')){
+        init();
+        showSaveToast('✅ Save importado: '+(state.charName||'personagem')+'!');
+        // Salvar na nuvem também
+        if(window.saveToCloud&&window.FB_USER) window.saveToCloud(saves);
+      } else {
+        showSaveToast('❌ Erro ao carregar o save importado.');
+      }
+    }catch(err){
+      console.error('Import error:',err);
+      showSaveToast('❌ Erro ao ler arquivo: '+err.message);
+    }
   };
   reader.readAsText(file);
 }
@@ -7609,29 +7656,35 @@ function goToMainMenu(){
 }
 
 function updateHeader(name,race,cls,level,region){
+  // Nome no badge do header
   var nameEl=document.getElementById('hdr-char-name');
   var infoEl=document.getElementById('hdr-char-info');
   if(nameEl) nameEl.textContent=name||'—';
-  if(infoEl) infoEl.textContent=(race||'')+(cls?' '+cls:'')+(region?' · '+region:'');
-  // Update class icon
+  if(infoEl) infoEl.textContent=(race||'')+(cls?' · '+cls:'');
+  // Ícone da classe
   var iconEl=document.getElementById('hdr-icon');
   var clsBase=cls?cls.split(' — ')[0]:null;
-  var sym=clsBase?CLASS_SYMBOLS[clsBase]:null;
-  if(iconEl&&sym){
-    iconEl.textContent=sym.symbol;
-    iconEl.style.background='radial-gradient(circle,'+sym.bg+','+sym.color+'44)';
-    iconEl.style.boxShadow='0 0 12px '+sym.color+'55';
-    iconEl.style.borderColor=sym.color;
-  }
-  // Update sidebar char name
-  var sdName=document.getElementById('level-d');
-  if(sdName) sdName.textContent=level||charLevel;
-  var sdChar=document.getElementById('sidebar-char-name');
-  var clsBaseSide=cls?cls.split(' — ')[0]:null;
-  var symSide=clsBaseSide?CLASS_SYMBOLS[clsBaseSide]:null;
-  if(sdChar) sdChar.textContent=(symSide?symSide.symbol:'⚔')+' '+(name||'Personagem');
-  var mnChar=document.getElementById('mnav-char-lbl');
-  if(mnChar) mnChar.textContent=name||'Herói';
+  var sym=clsBase&&CLASS_SYMBOLS?CLASS_SYMBOLS[clsBase]:null;
+  if(iconEl&&sym){ iconEl.textContent=sym.symbol||'⚔'; }
+  // Badge de nível
+  var lvlEl=document.getElementById('hdr-level');
+  var lvlBadgeEl=document.getElementById('level-badge');
+  if(lvlEl) lvlEl.textContent=level||charLevel;
+  if(lvlBadgeEl) lvlBadgeEl.textContent=level||charLevel;
+  // Mostrar barra de XP
+  var hxp=document.getElementById('hdr-xp');
+  if(hxp&&name) hxp.style.display='flex';
+  // Sidebar: nome do personagem
+  var sb=document.getElementById('sidebar-char-name');
+  var nb=document.getElementById('hdr-char-name');
+  if(sb) sb.textContent=name;
+  // Foto do personagem
+  if(window.CHAR_PHOTO) showCharPhoto(window.CHAR_PHOTO);
+  // Alinhamento
+  updateAlignmentBadge();
+  // char-info-badge title
+  var badge=document.getElementById('char-info-badge');
+  if(badge) badge.title=(race||'')+' '+cls+' · Nível '+(level||charLevel);
 }
 
 function setCampaignTitle(title,sub){
@@ -8056,25 +8109,37 @@ function showApp(){
 // ── Firebase Auth Callback ──
 window.onFirebaseAuthChange = async function(user){
   if(user){
-    // Atualizar badge Firebase (além do Google GIS)
     updateFirebaseBadge(user);
-    // Tentar restaurar save da nuvem
     try{
       var cloudSaves = await window.loadFromCloud();
       if(cloudSaves){
-        // Mesclar com localStorage (nuvem tem prioridade)
-        var local = JSON.parse(localStorage.getItem(SAVE_KEY)||'{}');
+        // Foto pode estar grande — guardar separado
+        var photoKey = 'killyn_char_photo_'+user.uid;
+        var cloudPhoto = cloudSaves._charPhoto || localStorage.getItem(photoKey) || '';
+
+        // Mesclar: nuvem tem prioridade sobre local
+        var local = {};
+        try{ local = JSON.parse(localStorage.getItem(SAVE_KEY)||'{}'); }catch(e){}
         var merged = Object.assign(local, cloudSaves);
-        localStorage.setItem(SAVE_KEY, JSON.stringify(merged));
-        // Atualizar btn-continue se tiver auto-save
+        // Remover foto do merge principal para economizar espaço
+        if(merged.auto) merged.auto.charPhoto = cloudPhoto;
+        try{
+          localStorage.setItem(SAVE_KEY, JSON.stringify(merged));
+        }catch(quota){
+          // Salvar sem foto no localStorage
+          if(merged.auto) merged.auto.charPhoto = '';
+          localStorage.setItem(SAVE_KEY, JSON.stringify(merged));
+          // Manter foto em memória
+          if(cloudPhoto) window.CHAR_PHOTO = cloudPhoto;
+        }
         checkStorageSave();
-        showSaveToast('☁ Dados sincronizados da nuvem!');
+        showSaveToast('☁ Save sincronizado da nuvem!');
       }
     }catch(e){ console.warn('Cloud load error:', e); }
   } else {
     updateFirebaseBadge(null);
   }
-};
+};;
 
 function updateFirebaseBadge(user){
   var badge = document.getElementById('firebase-user-badge');
