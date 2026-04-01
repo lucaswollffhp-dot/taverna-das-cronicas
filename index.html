@@ -1578,21 +1578,101 @@ input[type=number]{-moz-appearance:textfield}
       window.firebaseSignOut = async function(){
         try{ await fbAuth.signOut(); }catch(e){ console.error(e); }
       };
+      // ── Save principal (personagem, inventário, missões etc.) ──
       window.saveToCloud = async function(state){
         if(!fbAuth.currentUser) return false;
         try{
           var uid = fbAuth.currentUser.uid;
-          await fbDb.collection('usuarios').doc(uid).set({ saves: state }, { merge: true });
+          // Separar o histório do estado principal para evitar limite 1MB
+          var mainState = Object.assign({}, state.auto || state);
+          var chatHist = mainState.hist || [];
+          delete mainState.hist;  // hist vai para subcoleção
+          delete mainState.chat;  // chat HTML não precisa na nuvem
+          var saves = state.auto ? Object.assign({}, state, {auto: mainState}) : mainState;
+          await fbDb.collection('usuarios').doc(uid).set({ saves: saves, updatedAt: Date.now() }, { merge: true });
+          // Salvar histórico na subcoleção (sem limite de tamanho)
+          if(chatHist.length > 0){
+            await window.saveHistoryToCloud(uid, chatHist);
+          }
           return true;
         }catch(e){ console.error('Firestore save error:', e); return false; }
       };
+
       window.loadFromCloud = async function(){
         if(!fbAuth.currentUser) return null;
         try{
           var uid = fbAuth.currentUser.uid;
           var snap = await fbDb.collection('usuarios').doc(uid).get();
-          return snap.exists ? snap.data().saves : null;
+          if(!snap.exists) return null;
+          var saves = snap.data().saves;
+          // Restaurar histórico da subcoleção
+          var hist = await window.loadHistoryFromCloud(uid);
+          if(hist && hist.length > 0){
+            if(saves && saves.auto) saves.auto.hist = hist;
+            else if(saves) saves.hist = hist;
+          }
+          return saves;
         }catch(e){ console.error('Firestore load error:', e); return null; }
+      };
+
+      // ── Histórico em subcoleção (escala infinita) ──
+      window.saveHistoryToCloud = async function(uid, histArray){
+        try{
+          var sessionId = window._cloudSessionId || ('s_' + Date.now());
+          window._cloudSessionId = sessionId;
+          var batch = fbDb.batch();
+          // Salvar apenas as últimas 50 mensagens para controlar tamanho
+          var recent = histArray.slice(-50);
+          var sessionRef = fbDb.collection('usuarios').doc(uid)
+            .collection('sessions').doc(sessionId);
+          batch.set(sessionRef, { 
+            charName: window.CHAR_NAME || '',
+            updatedAt: Date.now(),
+            msgCount: recent.length
+          }, { merge: true });
+          // Cada mensagem como subdocumento
+          recent.forEach(function(msg, idx){
+            var msgRef = sessionRef.collection('messages').doc('msg_' + String(idx).padStart(4,'0'));
+            batch.set(msgRef, {
+              role: msg.role || 'user',
+              content: (msg.content || '').substring(0, 5000), // max 5KB por msg
+              idx: idx
+            });
+          });
+          await batch.commit();
+        }catch(e){ console.warn('History save error:', e); }
+      };
+
+      window.loadHistoryFromCloud = async function(uid){
+        try{
+          // Buscar a sessão mais recente
+          var sessionsRef = fbDb.collection('usuarios').doc(uid).collection('sessions');
+          var sessSnap = await sessionsRef.orderBy('updatedAt','desc').limit(1).get();
+          if(sessSnap.empty) return [];
+          var sessionDoc = sessSnap.docs[0];
+          window._cloudSessionId = sessionDoc.id;
+          // Buscar mensagens
+          var msgsSnap = await sessionDoc.ref.collection('messages').orderBy('idx').get();
+          return msgsSnap.docs.map(function(d){ return d.data(); });
+        }catch(e){ console.warn('History load error:', e); return []; }
+      };
+
+      // ── Limpar sessões antigas (manter só as 3 mais recentes) ──
+      window.cleanOldSessions = async function(){
+        if(!fbAuth.currentUser) return;
+        try{
+          var uid = fbAuth.currentUser.uid;
+          var snap = await fbDb.collection('usuarios').doc(uid)
+            .collection('sessions').orderBy('updatedAt','desc').get();
+          var toDelete = snap.docs.slice(3); // manter 3 mais recentes
+          for(var d of toDelete){
+            var msgs = await d.ref.collection('messages').get();
+            var batch = fbDb.batch();
+            msgs.docs.forEach(function(m){ batch.delete(m.ref); });
+            batch.delete(d.ref);
+            await batch.commit();
+          }
+        }catch(e){}
       };
       fbAuth.onAuthStateChanged(function(user){
         window.FB_USER = user;
