@@ -6530,6 +6530,33 @@ async function callAI(userMsg){
   if(cands&&cands[0]&&cands[0].content&&cands[0].content.parts){
     txt=cands[0].content.parts.map(function(p){return p.text||'';}).join('\n').trim()||'...';
   }
+  // Detectar truncamento (MAX_TOKENS) e continuar automaticamente
+  var finishReason=cands&&cands[0]?cands[0].finishReason:'';
+  if(finishReason==='MAX_TOKENS' && txt && txt!=='...'){
+    // Narrativa foi cortada — pedir continuação silenciosamente
+    try{
+      var contHist=gemHist.concat([
+        {role:'user',parts:[{text:stripHtml(userMsg)}]},
+        {role:'model',parts:[{text:txt}]},
+        {role:'user',parts:[{text:'[SISTEMA: Continue exatamente de onde parou. Não repita o texto anterior. Continue a narrativa:]'}]}
+      ]);
+      var url2='https://generativelanguage.googleapis.com/v1beta/models/'+models[0]+':generateContent?key='+apiKey;
+      var body2=JSON.stringify({
+        system_instruction:{parts:[{text:SYSTEM}]},
+        contents:contHist,
+        generationConfig:{maxOutputTokens:1200,temperature:0.85}
+      });
+      var controller2=new AbortController();
+      setTimeout(function(){controller2.abort();},18000);
+      var r2=await fetch(url2,{method:'POST',headers:{'Content-Type':'application/json'},body:body2,signal:controller2.signal});
+      if(r2.ok){
+        var d2=await r2.json();
+        var cont=d2.candidates&&d2.candidates[0]&&d2.candidates[0].content?
+          d2.candidates[0].content.parts.map(function(p){return p.text||'';}).join('').trim():'';
+        if(cont) txt=txt+' '+cont;
+      }
+    }catch(e2){ /* Se falhar, usa o que tem */ }
+  }
   var clean=parseAndApplyUpdates(txt);
   hist.push({role:'user',content:userMsg},{role:'assistant',content:txt});
   if(hist.length>30) hist=hist.slice(-30);
@@ -6618,7 +6645,8 @@ function getState(){
     deathSaves:deathSaves,isUnconscious:isUnconscious,isDead:isDead,furyActive:furyActive,partyNPCs:partyNPCs,activeConditions:activeConditions,concentrationSpell:concentrationSpell,npcTracker:npcTracker,hasInspiration:hasInspiration,combatants:combatants,combatActive:combatActive,currentTurn:currentTurn,roundNum:roundNum,
     spells:spells,spellSlots:spellSlots,
     notas:document.getElementById('notes-d')?.value||'',
-    chat:document.getElementById('chat')?.innerHTML||'',
+    // Chat NÃO salvo no localStorage (muito grande — causa QuotaExceeded)
+    // Apenas salvo no Firebase via saveToCloud
     magicItems:magicItems,diary:diary,savedNotes:savedNotes||[],
     ts:Date.now()};
 }
@@ -6726,7 +6754,8 @@ function loadProgress(slot='auto'){
   // Renderizar NPCs
   if(typeof renderNPCTracker==='function') renderNPCTracker();
   if(s.notas){const el=document.getElementById('notes-d');if(el)el.value=s.notas;}
-  if(s.chat){const el=document.getElementById('chat');if(el){el.innerHTML=s.chat;el.scrollTop=99999;}}
+  // Chat: restaurar apenas se existir no save (retrocompatibilidade)
+  if(s.chat&&s.chat.length<200000){const el=document.getElementById('chat');if(el){el.innerHTML=s.chat;el.scrollTop=99999;}}
   if(mapSrc){const img=document.getElementById('map-img');if(img)img.src=mapSrc;}
   // Update header with correct char info
   if(window.CHAR_NAME){
@@ -7907,11 +7936,30 @@ function buildAttrBuilder(){
   var COST={8:0,9:1,10:2,11:3,12:4,13:5,14:7,15:9};
   var TOTAL_POINTS=27;
 
-  // Estado dos valores BASE (sem racial) - começa nos valores sugeridos ou 8
+  // Estado dos valores BASE — começa em 8 e distribui pontos disponíveis
+  // respeitando o limite de 27pts total
+  var COST_TABLE={8:0,9:1,10:2,11:3,12:4,13:5,14:7,15:9};
   var bases={};
-  ATTR_NAMES.forEach(function(a){
-    var sug=Math.max(8,Math.min(15,defs.attrs[a]||10));
-    bases[a]=sug;
+  ATTR_NAMES.forEach(function(a){ bases[a]=8; }); // todos começam em 8
+  // Distribuir até 27pts seguindo sugestão da classe, sem ultrapassar
+  var allocated=0;
+  // Ordenar por prioridade da classe (maior sugerido primeiro)
+  var sorted=ATTR_NAMES.slice().sort(function(a,b){
+    return (defs.attrs[b]||10)-(defs.attrs[a]||10);
+  });
+  sorted.forEach(function(a){
+    var target=Math.max(8,Math.min(15,defs.attrs[a]||10));
+    var needed=(COST_TABLE[target]||0)-(COST_TABLE[bases[a]]||0);
+    if(allocated+needed<=27){
+      bases[a]=target;
+      allocated+=needed;
+    } else {
+      // Tentar valores menores
+      for(var v=target-1;v>=8;v--){
+        var n2=(COST_TABLE[v]||0)-(COST_TABLE[bases[a]]||0);
+        if(allocated+n2<=27){ bases[a]=v; allocated+=n2; break; }
+      }
+    }
   });
 
   function calcUsed(){
@@ -8220,6 +8268,28 @@ function updateHeader(name,race,cls,level,region){
   if(badge) badge.title=(race||'')+' '+cls+' · Nível '+(level||charLevel);
 }
 
+function generateCampaignTitle(charName, cls, race){
+  var adjs=[
+    'das Sombras','do Destino','da Maldição','da Profecia','do Abismo',
+    'da Tempestade','do Crepúsculo','da Chama Eterna','das Ruínas',
+    'do Sangue Antigo','da Lâmina Perdida','do Véu Rasgado',
+    'da Ordem Oculta','das Almas Errantes','do Trono de Cinzas',
+    'do Esquecido','da Ascensão','do Julgamento Final','dos Condenados'
+  ];
+  var nouns=['Crônicas','Lendas','Ecos','Fragmentos','Cicatrizes',
+    'Segredos','Rastros','Vozes','Marca','Herança','Juramentos','Sangue'];
+  var n=nouns[Math.floor(Math.random()*nouns.length)];
+  var a=adjs[Math.floor(Math.random()*adjs.length)];
+  // Variações de formato
+  var formats=[
+    charName+': '+n+' '+a,
+    n+' de '+charName,
+    'A '+n.slice(0,-1)||n+' '+a, // plural->singular aproximado
+    charName+' — '+n+' '+a,
+  ];
+  return formats[Math.floor(Math.random()*formats.length)];
+}
+
 function setCampaignTitle(title,sub){
   var t=document.getElementById('campaign-title');
   var s=document.getElementById('campaign-sub');
@@ -8269,9 +8339,8 @@ async function startNewGame(){
   hist=[];quests=[];
   CONQUISTAS=[];
   window._processedGold=new Set();
-  // Limpar foto da campanha anterior
-  window.CHAR_PHOTO='';
-  showCharPhoto('');
+  // Preservar foto definida na CRIAÇÃO (handleCCPhoto seta antes do startNewGame)
+  var _photoFromCreation = window.CHAR_PHOTO || '';
   window.CHAR_ALIGNMENT='';
   updateAlignmentBadge();
   // Limpar chat visual ANTES de iniciar
@@ -8330,6 +8399,11 @@ async function startNewGame(){
   window.CHAR_NAME=name;
   window.CHAR_RACE=race;
   window.CHAR_CLASS=cls;
+  // Restaurar foto da criação
+  if(_photoFromCreation){
+    window.CHAR_PHOTO=_photoFromCreation;
+    setTimeout(function(){ showCharPhoto(_photoFromCreation); },300);
+  }
   window.CHAR_SUBCLASS=subclass;
   window.CHAR_REGION=region.name;
 
@@ -8500,7 +8574,8 @@ async function startNewGame(){
     var r=await callAIWithSystem(openingPrompt,dynSystem);
     rmLoad();
     // Extract campaign name from response (first bold or quoted title, else generate one)
-    var campTitle=name+' e as Crônicas de '+region.name;
+    // Título criativo sem revelar o local de início
+    var campTitle=generateCampaignTitle(name, cls, race);
     var titleMatch=r.match(/[*"«]([^*"»\n]{5,40})[*"»]/);
     if(titleMatch) campTitle=titleMatch[1];
     setCampaignTitle(campTitle, race+' '+cls+' · Nível 1 · '+region.name);
