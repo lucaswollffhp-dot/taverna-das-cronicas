@@ -2810,6 +2810,7 @@ let saveProficiencies={FOR:true,CON:true,DES:false,INT:false,SAB:false,CAR:false
 const ATTRS={FOR:16,DES:12,CON:16,INT:8,SAB:11,CAR:10};
 let inventory=[{name:'Machado de Batalha',qty:1},{name:'Escudo',qty:1},{name:'Camisão de Malha',qty:1}];
 let quests=[], attacks=[], abilities=[];
+var CONQUISTAS=[]; // Conquistas da campanha (declaração global)
 let equipped={arma:null,armadura:null,escudo:null,acessorio:null};
 let coins={PP:0,PO:10,PE:0,PA:0,PC:0};
 let spells=[], spellSlots={1:{total:2,used:0}};
@@ -2910,7 +2911,11 @@ function toggleSkillsPanel(){
 function init(){
   renderAttrs();renderSaves();renderSkills();renderEquip();renderConditions();renderConcentration();renderNPCs();renderInspiration();renderAttacks();renderAbilities();renderAllCoins();renderInv();renderQuests();renderSpells();
   if(typeof renderNPCTracker==='function') renderNPCTracker();
-  document.getElementById('achiev-d').innerHTML=CONQUISTAS.map(c=>`<div class="ach">${c}</div>`).join('');
+  // CONQUISTAS com fallback para evitar crash se não declarada ainda
+  if(typeof CONQUISTAS!=='undefined'&&Array.isArray(CONQUISTAS)){
+    var achDiv=document.getElementById('achiev-d');
+    if(achDiv) achDiv.innerHTML=CONQUISTAS.map(function(c){return'<div class="ach">'+c+'</div>';}).join('');
+  }
   setQA(['Explorar','Falar com NPC','Ver companheiros','Partir em jornada','Usar habilidade','† Iniciar combate']);
   updHP();updCA();updXP();
   // ataques pré-setados
@@ -4693,7 +4698,10 @@ function confirmLevelUp(newLvl){
   abilities.forEach(function(a){if(a.max)a.remaining=a.max;});
   renderAbilities();
   CONQUISTAS.push('★ Nível '+newLvl+' alcançado!');
-  document.getElementById('achiev-d').innerHTML=CONQUISTAS.map(function(c){return'<div class="ach">'+c+'</div>';}).join('');
+  if(typeof CONQUISTAS!=='undefined'&&Array.isArray(CONQUISTAS)){
+    var _ach=document.getElementById('achiev-d');
+    if(_ach) _ach.innerHTML=CONQUISTAS.map(function(c){return'<div class="ach">'+c+'</div>';}).join('');
+  }
   closeDynModal();
   window._hpGain=null;
   showRollToast('★ '+(window.CHAR_NAME||'Personagem')+' avançou para o Nível '+newLvl+'!');
@@ -7478,8 +7486,29 @@ function checkStorageSave(){
     if(btn) btn.textContent='Último save: '+ts+(auto.charLevel?' · Nível '+auto.charLevel:'');
     if(mainBtn) mainBtn.style.opacity='1';
   }else{
-    if(btn) btn.textContent='Nenhum save encontrado no navegador';
-    if(mainBtn) mainBtn.style.opacity='.4';
+    // Verificar se há save na nuvem (Firebase)
+    if(window.FB_USER){
+      if(btn) btn.textContent='☁ Carregando save da nuvem...';
+      if(mainBtn){ mainBtn.style.opacity='.7'; }
+      if(window.loadFromCloud){
+        window.loadFromCloud().then(function(cloudSaves){
+          if(cloudSaves){
+            var ca=cloudSaves.auto||(cloudSaves.charName?cloudSaves:null);
+            if(ca&&ca.charName){
+              if(btn) btn.textContent='☁ Save na nuvem: '+ca.charName+' · Nv.'+( ca.charLevel||1);
+              if(mainBtn) mainBtn.style.opacity='1';
+            } else {
+              if(btn) btn.textContent='Conta conectada — nenhum save encontrado';
+            }
+          } else {
+            if(btn) btn.textContent='Conta conectada — nenhum save encontrado';
+          }
+        }).catch(function(){ if(btn) btn.textContent='Erro ao verificar save na nuvem'; });
+      }
+    } else {
+      if(btn) btn.textContent='Faça login com Google para acessar saves na nuvem';
+      if(mainBtn) mainBtn.style.opacity='.5';
+    }
   }
 }
 
@@ -8143,13 +8172,49 @@ function saveKeyModal(){
   closeDynModal();showSaveToast('Chave atualizada!');
 }
 
-function continueFromStorage(){
-  var saves=JSON.parse(localStorage.getItem('killyn_v3')||'{}');
-  if(!saves['auto']){showSaveToast('Nenhum save encontrado!');return;}
+async function continueFromStorage(){
+  var KEY = typeof SAVE_KEY!=='undefined' ? SAVE_KEY : 'killyn_v3';
+  // Tentar Firebase primeiro (se usuário logado)
+  if(window.FB_USER && window.loadFromCloud){
+    try{
+      showSaveToast('☁ Carregando save da nuvem...');
+      var cloudSaves = await window.loadFromCloud();
+      if(cloudSaves){
+        var cloudAuto = cloudSaves.auto || cloudSaves;
+        if(cloudAuto && cloudAuto.charName){
+          // Mesclar com local (nuvem tem prioridade)
+          try{ localStorage.setItem(KEY, JSON.stringify(cloudSaves)); }catch(q){ /* quota ok */ }
+          hidStartScreen();
+          if(loadProgress('auto')){ init(); showApp(); return; }
+        }
+      }
+    }catch(e){ console.warn('Cloud load failed:', e); }
+  }
+  // Fallback: localStorage
+  var saves={};
+  try{ saves=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
+  var s=saves['auto']||(saves.charName?saves:null);
+  if(!s||!s.charName){
+    s=saves['slot1'];
+    if(!s||!s.charName){
+      if(window.FB_USER){
+        showSaveToast('Nenhum save encontrado na nuvem ou no navegador.');
+      } else {
+        showSaveToast('⚑ Faça login com Google para acessar seu save na nuvem, ou inicie uma nova aventura.');
+      }
+      return;
+    }
+  }
   hidStartScreen();
-  init();
-  loadProgress('auto');
-  showSaveToast('Aventura restaurada!');
+  if(!loadProgress('auto')){
+    if(!loadProgress('slot1')){
+      showSaveToast('Erro ao carregar save.');
+      return;
+    }
+  }
+  init(); // init() agora tem acesso ao estado restaurado (CONQUISTAS, ATTRS, etc.)
+  showApp();
+  showSaveToast('✦ Aventura restaurada — bem-vindo de volta!');
 }
 
 function importSaveFromMenu(event){
@@ -8212,8 +8277,16 @@ function hidStartScreen(){
 }
 
 function goToMainMenu(){
-  if(!confirm('Voltar ao menu principal? O progresso sera salvo.')) return;
-  saveProgress('auto');
+  if(!confirm('Voltar ao menu principal? O progresso será salvo automaticamente.')) return;
+  // Salvar estado ANTES de limpar qualquer coisa
+  saveProgress('auto', false);
+  // Salvar no Firebase explicitamente se logado
+  if(window.saveToCloud && window.FB_USER){
+    var saves=JSON.parse(localStorage.getItem('killyn_v3')||'{}');
+    window.saveToCloud(saves).then(function(){
+      showSaveToast('☁ Save enviado para a nuvem');
+    }).catch(function(e){ console.warn('Cloud save failed:', e); });
+  }
   var chat=document.getElementById('chat');
   if(chat) chat.innerHTML='';
   // Esconder app
@@ -8724,36 +8797,47 @@ function showApp(){
 window.onFirebaseAuthChange = async function(user){
   if(user){
     updateFirebaseBadge(user);
+    // Tentar sincronizar da nuvem
     try{
       var cloudSaves = await window.loadFromCloud();
       if(cloudSaves){
-        // Foto pode estar grande — guardar separado
-        var photoKey = 'killyn_char_photo_'+user.uid;
-        var cloudPhoto = cloudSaves._charPhoto || localStorage.getItem(photoKey) || '';
-
-        // Mesclar: nuvem tem prioridade sobre local
-        var local = {};
-        try{ local = JSON.parse(localStorage.getItem(SAVE_KEY)||'{}'); }catch(e){}
-        var merged = Object.assign(local, cloudSaves);
-        // Remover foto do merge principal para economizar espaço
-        if(merged.auto) merged.auto.charPhoto = cloudPhoto;
-        try{
-          localStorage.setItem(SAVE_KEY, JSON.stringify(merged));
-        }catch(quota){
-          // Salvar sem foto no localStorage
-          if(merged.auto) merged.auto.charPhoto = '';
-          localStorage.setItem(SAVE_KEY, JSON.stringify(merged));
-          // Manter foto em memória
-          if(cloudPhoto) window.CHAR_PHOTO = cloudPhoto;
+        var cloudAuto = cloudSaves.auto || cloudSaves;
+        var localRaw = localStorage.getItem(typeof SAVE_KEY!=='undefined'?SAVE_KEY:'killyn_v3');
+        var localSaves = JSON.parse(localRaw||'{}');
+        var localAuto = localSaves.auto;
+        // Usar o mais recente (maior timestamp)
+        var cloudTs = cloudAuto&&cloudAuto.ts ? cloudAuto.ts : 0;
+        var localTs  = localAuto&&localAuto.ts  ? localAuto.ts  : 0;
+        if(cloudTs > localTs && cloudAuto&&cloudAuto.charName){
+          // Nuvem é mais recente — usar nuvem
+          localSaves.auto = cloudAuto;
+          if(cloudSaves.slot1) localSaves.slot1 = cloudSaves.slot1;
+          try{
+            localStorage.setItem(typeof SAVE_KEY!=='undefined'?SAVE_KEY:'killyn_v3', JSON.stringify(localSaves));
+          }catch(q){
+            // Quota: salvar sem foto
+            var s2=Object.assign({},cloudAuto); s2.charPhoto='';
+            localSaves.auto=s2;
+            localStorage.setItem(typeof SAVE_KEY!=='undefined'?SAVE_KEY:'killyn_v3',JSON.stringify(localSaves));
+            if(cloudAuto.charPhoto) window._cloudPhoto=cloudAuto.charPhoto;
+          }
+          checkStorageSave();
+          showSaveToast('☁ Save da nuvem sincronizado — '+( cloudAuto.charName||'personagem')+' Nv.'+( cloudAuto.charLevel||1));
+        } else if(localTs > 0 && localTs >= cloudTs){
+          // Local mais recente ou igual — enviar para nuvem
+          window.saveToCloud(localSaves);
+          showSaveToast('☁ Conectado — save local enviado para a nuvem');
+        } else {
+          showSaveToast('☁ Conta conectada — nenhum save encontrado na nuvem');
         }
-        checkStorageSave();
-        showSaveToast('☁ Save sincronizado da nuvem!');
       }
-    }catch(e){ console.warn('Cloud load error:', e); }
+    }catch(e){ console.warn('Cloud sync error:', e); }
   } else {
     updateFirebaseBadge(null);
+    // Deslogou — atualizar botão
+    checkStorageSave();
   }
-};;
+};;;
 
 function updateFirebaseBadge(user){
   var badge = document.getElementById('firebase-user-badge');
