@@ -8716,14 +8716,28 @@ async function startNewGame(){
     +(physString?'Aparência física: '+physString+'\n':'')
     +'Idiomas: Comum'+(cls==='Ladino'?' + Jargão de Ladrões (linguagem secreta de criminosos)':cls==='Druida'?' + Druídico (linguagem secreta)':cls==='Bruxo'&&subclass.includes('Grande Ancião')?'':'')
     +'\n'
-    +'Perícias com proficiência: '+Object.keys(skillProficiencies).filter(function(k){return skillProficiencies[k]&&!k.includes('_expertise');}).join(', ')    +' | Expertise: '+Object.keys(skillProficiencies).filter(function(k){return k.includes('_expertise')&&skillProficiencies[k];}).map(function(k){return k.replace('_expertise','');}).join(', ')    +(window.CHAR_CLASS==='Ladino'?' [Ladino: proficiência dobrada nas perícias de Expertise]':'')    +(window.CHAR_CLASS==='Patrulheiro'?' [Patrulheiro: +prof em Furtividade com armadura leve/média]':'').map(function(k){
+    +(function(){
       var profBonus=charLevel<5?2:charLevel<9?3:charLevel<13?4:charLevel<17?5:6;
-      var sk=SKILLS_DATA.find(function(x){return x.name===k;});
-      var attrMod=sk?Math.floor(((ATTRS[sk.attr]||10)-10)/2):0;
-      var expertise=skillProficiencies[k+'_expertise']?profBonus:0;
-      var total=attrMod+(expertise||profBonus);
-      return k+'('+(total>=0?'+':'')+total+')';
-    }).join(', ')+'\n'
+      // Perícias com bônus calculado
+      var profSkills=Object.keys(skillProficiencies).filter(function(k){
+        return skillProficiencies[k]&&!k.includes('_expertise');
+      }).map(function(k){
+        var sk=SKILLS_DATA.find(function(x){return x.name===k;});
+        var attrMod=sk?Math.floor(((ATTRS[sk.attr]||10)-10)/2):0;
+        var isExpert=skillProficiencies[k+'_expertise']?true:false;
+        var total=attrMod+(isExpert?profBonus*2:profBonus);
+        return k+'('+(total>=0?'+':'')+total+')';
+      }).join(', ');
+      // Perícias com expertise
+      var expertSkills=Object.keys(skillProficiencies).filter(function(k){
+        return k.includes('_expertise')&&skillProficiencies[k];
+      }).map(function(k){return k.replace('_expertise','');}).join(', ');
+      var extra=(cls==='Ladino'?' [Expertise: proficiência dobrada]':
+                 cls==='Patrulheiro'?' [Favorito Natural: dupla prof em terreno escolhido]':'');
+      return 'Perícias com proficiência: '+profSkills
+        +(expertSkills?' | Expertise: '+expertSkills:'')
+        +extra+'\n';
+    })()
     +'Bônus de proficiência: +'+(charLevel<5?2:charLevel<9?3:charLevel<13?4:charLevel<17?5:6)+'\n'
     +'PV: '+HP_MAX+' | CA: '+charCA+'\n'
     +'Região de início: '+region.name+' ('+region.desc+')\n\n'
