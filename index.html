@@ -2500,30 +2500,46 @@ var googleUser = null;
 // Para testes locais funciona sem clientId (modo popup)
 var GOOGLE_CLIENT_ID = '246065935771-mb4h3s9ru3f0nfqi9st8ro1lk6seildv.apps.googleusercontent.com';
 
+var _gsiInitialized = false;
+var _gsiPromptActive = false;
 function signInWithGoogle(){
+  // Se Firebase está disponível, usar Firebase Auth (mais confiável)
+  if(window.firebaseGoogleLogin){
+    window.firebaseGoogleLogin();
+    return;
+  }
   if(typeof google === 'undefined'){
-    // GIS não carregou — fallback para chave manual
     showStep('step-api');
     return;
   }
-  google.accounts.id.initialize({
-    client_id: GOOGLE_CLIENT_ID,
-    callback: handleGoogleCredential,
-    auto_select: false,
-    cancel_on_tap_outside: true,
-  });
+  // Evitar chamadas múltiplas simultâneas (causa erro FedCM)
+  if(_gsiPromptActive){ return; }
+  _gsiPromptActive = true;
+  // Inicializar apenas uma vez
+  if(!_gsiInitialized){
+    _gsiInitialized = true;
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleGoogleCredential,
+      auto_select: false,
+      cancel_on_tap_outside: true,
+      use_fedcm_for_prompt: true,  // Migração FedCM
+    });
+  }
   google.accounts.id.prompt(function(notification){
+    _gsiPromptActive = false;
     if(notification.isNotDisplayed() || notification.isSkippedMoment()){
-      // Prompt não apareceu — usar popup
-      google.accounts.oauth2.initTokenClient({
-        client_id: GOOGLE_CLIENT_ID,
-        scope: 'email profile',
-        callback: function(response){
-          if(response.access_token){
-            fetchGoogleProfile(response.access_token);
-          }
-        }
-      }).requestAccessToken();
+      // One Tap não disponível — usar popup OAuth direto
+      try{
+        google.accounts.oauth2.initTokenClient({
+          client_id: GOOGLE_CLIENT_ID,
+          scope: 'email profile',
+          callback: function(response){
+            if(response.access_token) fetchGoogleProfile(response.access_token);
+          },
+          error_callback: function(){ _gsiPromptActive=false; }
+        }).requestAccessToken({prompt:'select_account'});
+      }catch(e){ _gsiPromptActive=false; showStep('step-api'); }
     }
   });
 }
@@ -7599,19 +7615,26 @@ var _ccSelectedClass='Guerreiro';
 var _ccSelectedSubclass1='';
 
 function ccStep(n){
+  // Garantir que o step-new está visível (pode ter sido escondido por erro)
+  var sn=document.getElementById('step-new');
+  if(sn){
+    sn.style.display='block';
+    sn.style.visibility='visible';
+    sn.style.zIndex='8000';
+    sn.style.opacity='1';
+  }
   for(var i=0;i<5;i++){
     var p=document.getElementById('cc-panel-'+i);
     if(p) p.style.display=i===n?'':'none';
     var dot=document.getElementById('ccdot-'+i);
     if(dot) dot.className='cc-step-dot'+(i===n?' active':i<n?' done':'');
   }
-  // Scroll ao topo dentro do step-new (que é position:fixed e scroll próprio)
-  var sn=document.getElementById('step-new');
   if(sn) sn.scrollTop=0;
+  // Ordem ATUAL dos painéis: 0=Raça | 1=Classe | 2=Atributos+Perícias | 3=Identidade | 4=História
   if(n===0) buildRaceGrid();
   if(n===1) buildClassGrid();
-  if(n===2) buildRegionList();
-  if(n===3){ buildAttrBuilder(); updateRacialBonusHint(); }
+  if(n===2){ buildAttrBuilder(); updateRacialBonusHint(); renderSkillsChoice(); }
+  if(n===3){ buildRegionList(); }
   if(n===4){
     buildCharSummary();
     // Atualizar resumo em tempo real quando campos mudam
@@ -7629,16 +7652,15 @@ function ccStep(n){
 }
 function ccNext(cur){
   if(cur===0){
+    // Raça → Classe
     var a=document.getElementById('cc-appearance');if(a)window._ccAppearance=a.value;
   }
   if(cur===1){
-    // Classe selecionada?
+    // Classe → Atributos+Perícias (painel 2)
     if(!_ccSelectedClass){ showRollToast('⚑ Escolha uma classe para continuar'); return; }
-    // Renderizar atributos e perícias ao entrar no painel 2
-    setTimeout(function(){ buildAttrBuilder(); renderSkillsChoice(); },80);
   }
   if(cur===2){
-    // Validar perícias no novo painel 2 (Atributos + Perícias)
+    // Atributos+Perícias → Identidade (painel 3)
     var cs=CLASS_SKILLS[_ccSelectedClass]||{choose:2,from:[]};
     var chosen=Object.keys(window._ccSkills||{}).filter(function(k){return window._ccSkills[k];}).length;
     if(chosen<cs.choose){
@@ -7646,7 +7668,11 @@ function ccNext(cur){
       return;
     }
   }
-  if(cur===3){var n=document.getElementById('new-name')?.value.trim();if(!n){alert('Digite o nome do personagem!');return;}}
+  if(cur===3){
+    // Identidade → História (painel 4) — validar nome
+    var nm=document.getElementById('new-name')?.value.trim();
+    if(!nm){showRollToast('⚑ Digite o nome do personagem!');return;}
+  }
   ccStep(cur+1);
 }
 function ccPrev(cur){ccStep(cur-1);}
@@ -8873,33 +8899,27 @@ function hideLoadingScreen(){
   if(el){ el.style.display='none'; el.style.visibility='hidden'; }
 }
 function showApp(){
-  // Esconder TODOS os elementos fixed/overlay
-  ['start-screen','ss-steps-overlay','step-new','step-generating',
-   'pause-overlay'].forEach(function(id){
-    var el=document.getElementById(id);
-    if(el){el.style.display='none';el.style.visibility='hidden';}
-  });
-  // Mostrar app com certeza
-  var app=document.getElementById('app');
-  if(app){app.style.display='flex';app.style.visibility='visible';}
-  var bar=document.getElementById('gen-bar');
-  if(bar)bar.style.width='0%';
-  var snEl2=document.getElementById('step-new');
-  if(snEl2){snEl2.style.zIndex='-1';}
-}
-function showApp_unused(){
-  if(ss){ss.style.display='none';ss.style.visibility='hidden';}
-  var overlay=document.getElementById('ss-steps-overlay');
-  if(overlay) overlay.style.display='none';
-  // Esconder steps fixed (position:fixed independentes)
-  ['step-new','step-generating'].forEach(function(id){
+  // Só esconder step-new se NÃO estamos no meio da criação de personagem
+  var inCharCreation = (function(){
+    var sn=document.getElementById('step-new');
+    return sn && sn.style.display!=='none' && sn.style.visibility!=='hidden';
+  })();
+  if(!inCharCreation){
+    var sn2=document.getElementById('step-new');
+    if(sn2){sn2.style.display='none';sn2.style.visibility='hidden';sn2.style.zIndex='-1';}
+  }
+  // Sempre esconder estes
+  ['start-screen','ss-steps-overlay','step-generating','pause-overlay'].forEach(function(id){
     var el=document.getElementById(id);
     if(el){el.style.display='none';el.style.visibility='hidden';}
   });
   // Mostrar app
   var app=document.getElementById('app');
   if(app){app.style.display='flex';app.style.visibility='visible';}
+  var bar=document.getElementById('gen-bar');
+  if(bar)bar.style.width='0%';
 }
+/* showApp_unused removida */
 
 // ── Firebase Auth Callback ──
 window.onFirebaseAuthChange = async function(user){
@@ -8942,10 +8962,13 @@ window.onFirebaseAuthChange = async function(user){
     }catch(e){ console.warn('Cloud sync error:', e); }
   } else {
     updateFirebaseBadge(null);
-    // Deslogou — atualizar botão
-    checkStorageSave();
+    // Só atualizar botão se não estamos no jogo
+    var appEl=document.getElementById('app');
+    if(!appEl || appEl.style.display==='none' || appEl.style.display===''){
+      checkStorageSave();
+    }
   }
-};;;
+}
 
 function updateFirebaseBadge(user){
   var badge = document.getElementById('firebase-user-badge');
@@ -9200,7 +9223,7 @@ if(_savedKey){
         </div>
         <div class="cc-nav-row">
           <button onclick="ccPrev(3)" class="cc-btn-sec">← Atributos</button>
-          <button onclick="ccNext(4)" class="cc-btn-pri">Próximo: História →</button>
+          <button onclick="ccNext(3)" class="cc-btn-pri">Próximo: História →</button>
         </div>
       </div>
 
@@ -9217,7 +9240,7 @@ if(_savedKey){
           <div id="char-summary-content" style="font-size:.8rem;color:var(--text2);line-height:1.6"></div>
         </div>
         <div class="cc-nav-row" style="position:sticky;bottom:0;background:rgba(6,4,8,.95);backdrop-filter:blur(8px);padding:.8rem .2rem .4rem;margin-left:-.2rem;margin-right:-.2rem;z-index:10">
-          <button onclick="ccPrev(4)" class="cc-btn-sec">← Atributos</button>
+          <button onclick="ccPrev(4)" class="cc-btn-sec">← Identidade</button>
           <button onclick="startNewGame()" class="cc-btn-start">† Iniciar Aventura</button>
         </div>
       </div>
