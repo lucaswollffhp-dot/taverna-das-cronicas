@@ -7023,37 +7023,37 @@ const RACES_DB={
     },
     attrBonus:{'FOR':1,'DES':1,'CON':1,'INT':1,'SAB':1,'CAR':1},
     physique:{skin:['clara','morena','escura','azeitonada','bronzeada'],hair:['castanho','preto','loiro','ruivo','grisalho','branco'],eyes:['castanhos','azuis','verdes','cinzas','avelã'],build:['esguio','atlético','corpulento','mediano'],height:['1,60m','1,70m','1,75m','1,80m','1,85m','1,90m']}},
-  'Elfo':      {sub:['Elfo Alto','Elfo da Floresta','Elfo Negro (Drow)'],speed:9,size:'Médio',
+  'Elfo':      {attrBonus:{'DES':2},subAttrBonus:{'Elfo Alto':{'INT':1},'Elfo da Floresta':{'SAB':1},'Elfo Negro (Drow)':{'CAR':1}},sub:['Elfo Alto','Elfo da Floresta','Elfo Negro (Drow)'],speed:9,size:'Médio',
     traits:['Visão no escuro 18m','Resistência a encantamento','Transe em vez de sono'],
     subTraits:{'Elfo Alto':['Truque arcano adicional','Proficiência em espada longa e arco longo'],
                'Elfo da Floresta':['Velocidade 10,5m','Esconder-se em terreno natural'],
                'Elfo Negro (Drow)':['Visão no escuro 36m','Luz das Fadas','Escuridão']},
     physique:{skin:['pálida prateada','bronze dourado','ébano azulado','cobre'],hair:['prateado','dourado','preto azulado','branco','vermelho-cobre'],eyes:['dourados','prateados','verdes esmeralda','violeta','âmbar'],build:['esguio e gracioso','delicado','alto e elegante'],height:['1,55m','1,65m','1,70m','1,75m']}},
-  'Meio-Elfo': {sub:[],speed:9,size:'Médio',
+  'Meio-Elfo': {attrBonus:{'CAR':2},sub:[],speed:9,size:'Médio',
     traits:['Visão no escuro 18m','Resistência a encantamento','+2 CAR, +1 em dois atributos','Duas proficiências de perícia'],
     physique:{skin:['clara','bege','morena'],hair:['castanho','preto','loiro','ruivo'],eyes:['azuis','verdes','violeta','dourados','cinzas'],build:['mediano','esguio','levemente graciosas'],height:['1,65m','1,70m','1,75m','1,80m']}},
-  'Anão':      {sub:['Anão da Colina','Anão da Montanha'],speed:7.5,size:'Médio',
+  'Anão':      {attrBonus:{'CON':2},subAttrBonus:{'Anão da Colina':{'SAB':1},'Anão da Montanha':{'FOR':2}},sub:['Anão da Colina','Anão da Montanha'],speed:7.5,size:'Médio',
     traits:['Visão no escuro 18m','Resiliência anã (vantagem contra veneno)','Velocidade não reduzida por armadura'],
     subTraits:{'Anão da Colina':['+2 CON +1 SAB','1 PV extra por nível','Vantagem contra magia de percepção'],
                'Anão da Montanha':['+2 CON +2 FOR','Proficiência com armaduras leves e médias']},
     physique:{skin:['rosada','bronzeada','marrom acinzentada','pálida'],hair:['castanho','preto','ruivo','loiro dourado','grisalho'],eyes:['castanhos','azuis','acinzentados','verdes'],build:['robusto e largo','musculoso','encorpado'],height:['1,20m','1,25m','1,30m','1,35m']}},
-  'Halfling':  {sub:['Halfling Pés-Leves','Halfling Robusto'],speed:7.5,size:'Pequeno',
+  'Halfling':  {attrBonus:{'DES':2},subAttrBonus:{'Halfling Pés-Leves':{'CAR':1},'Halfling Robusto':{'CON':1}},sub:['Halfling Pés-Leves','Halfling Robusto'],speed:7.5,size:'Pequeno',
     traits:['+2 DES','Sortudo: re-rola 1s em ataques','Corajoso: vantagem contra medo'],
     subTraits:{'Halfling Pés-Leves':['+1 CAR','Esconder-se atrás de criaturas maiores'],
                'Halfling Robusto':['+1 CON','Vantagem contra veneno']},
     physique:{skin:['clara','bronzeada','morena'],hair:['castanho','preto','loiro'],eyes:['castanhos','azuis','verdes','avelã'],build:['rechonchudo','esguio','miúdo'],height:['88cm','90cm','95cm','1,00m']}},
-  'Gnomo':     {sub:['Gnomo da Floresta','Gnomo das Rochas'],speed:7.5,size:'Pequeno',
+  'Gnomo':     {attrBonus:{'INT':2},subAttrBonus:{'Gnomo da Floresta':{'DES':1},'Gnomo da Pedra':{'CON':1}},sub:['Gnomo da Floresta','Gnomo das Rochas'],speed:7.5,size:'Pequeno',
     traits:['+2 INT','Visão no escuro 18m','Esperteza gnômica: vantagem em INT/SAB/CAR contra magia'],
     subTraits:{'Gnomo da Floresta':['+1 DES','Ilusão menor à vontade','Falar com animais pequenos'],
                'Gnomo das Rochas':['+1 CON','Proficiência com ferramentas de artesão','Histórico Artificial']},
     physique:{skin:['clara','bege','bronzeada'],hair:['branco','creme','loiro claro','cinza'],eyes:['azuis','verdes','âmbar','prata'],build:['miúdo','ágil','compacto'],height:['90cm','95cm','1,00m','1,05m']}},
-  'Meio-Orc':  {sub:[],speed:9,size:'Médio',
+  'Meio-Orc':  {attrBonus:{'FOR':2,'CON':1},sub:[],speed:9,size:'Médio',
     traits:['+2 FOR +1 CON','Visão no escuro 18m','Ameaçador: proficiência em Intimidação','Resistência Implacável: 1/long rest ficar em 1 PV','Ataques Selvagens: +1 dado em críticos'],
     physique:{skin:['cinza-esverdeada','verde-oliva','marrom-acinzentada','esverdeada'],hair:['preto','marrom escuro','castanho'],eyes:['vermelhos','castanhos','âmbar','verdes escuros'],build:['musculoso e largo','imponente','corpulento'],height:['1,75m','1,80m','1,85m','1,90m','1,95m']}},
-  'Tiefling':  {sub:[],speed:9,size:'Médio',
+  'Tiefling':  {attrBonus:{'INT':1,'CAR':2},sub:[],speed:9,size:'Médio',
     traits:['+1 INT +2 CAR','Visão no escuro 18m','Resistência infernal (fogo)','Legado Infernal: Thaumaturgia/Chamas Infernais/Escuridão'],
     physique:{skin:['vermelha','roxa','azul escura','cinza carvão','bege com manchas'],hair:['preto','vermelho','roxo escuro','branco prateado'],eyes:['sólidos: vermelho','prata','ouro','roxo'],extras:['chifres curvos','cauda longa','presas pontudas','ausência de íris'],height:['1,60m','1,65m','1,75m','1,80m']}},
-  'Draconato': {sub:[],speed:9,size:'Médio',
+  'Draconato': {attrBonus:{'FOR':2,'CAR':1},sub:[],speed:9,size:'Médio',
     traits:['+2 FOR +1 CAR','Ancestral Dracônico: escolha o tipo de dragão','Sopro de Armas (1x/descanso curto)','Resistência ao elemento do ancestral'],
     dragonTypes:['Preto (Ácido)','Azul (Relâmpago)','Latão (Fogo)','Bronze (Relâmpago)','Cobre (Ácido)','Dourado (Fogo)','Verde (Veneno)','Vermelho (Fogo)','Prata (Frio)','Branco (Frio)'],
     physique:{skin:['escamas vermelhas','escamas douradas','escamas prateadas','escamas verdes','escamas azuis','escamas negras','escamas bronzeadas','escamas brancas'],eyes:['dourados','vermelhos','azuis','verdes'],build:['imponente e musculoso','escamoso e alto'],height:['1,85m','1,90m','1,95m','2,00m']}},
@@ -8488,10 +8488,17 @@ async function startNewGame(){
   var story=document.getElementById('new-story')?.value||'';
   var region=FR_REGIONS.find(function(r){return r.id===selectedRegion;})||FR_REGIONS[0];
 
-  // Collect attrs
+  // Collect attrs — somar bônus racial se toggle ativo
   var newAttrs={};
+  var _applyRacialInGame = document.getElementById('racial-bonus-toggle')?.checked!==false;
   ATTR_NAMES.forEach(function(a){
-    newAttrs[a]=parseInt(document.getElementById('nb-'+a)?.value)||10;
+    var base=parseInt(document.getElementById('nb-'+a)?.value)||10;
+    var raceDef2=RACES_DB[race]||{};
+    var rb2=Object.assign({},raceDef2.attrBonus||{});
+    if(_ccSelectedSubrace && raceDef2.subAttrBonus && raceDef2.subAttrBonus[_ccSelectedSubrace]){
+      Object.assign(rb2, raceDef2.subAttrBonus[_ccSelectedSubrace]);
+    }
+    newAttrs[a] = _applyRacialInGame ? (base + (rb2[a]||0)) : base;
   });
 
   var defs=CLASS_DEFAULTS[cls]||CLASS_DEFAULTS['Guerreiro'];
@@ -8866,8 +8873,21 @@ function hideLoadingScreen(){
   if(el){ el.style.display='none'; el.style.visibility='hidden'; }
 }
 function showApp(){
-  // Esconder start-screen e todos os steps fixed
-  var ss=document.getElementById('start-screen');
+  // Esconder TODOS os elementos fixed/overlay
+  ['start-screen','ss-steps-overlay','step-new','step-generating',
+   'pause-overlay'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){el.style.display='none';el.style.visibility='hidden';}
+  });
+  // Mostrar app com certeza
+  var app=document.getElementById('app');
+  if(app){app.style.display='flex';app.style.visibility='visible';}
+  var bar=document.getElementById('gen-bar');
+  if(bar)bar.style.width='0%';
+  var snEl2=document.getElementById('step-new');
+  if(snEl2){snEl2.style.zIndex='-1';}
+}
+function showApp_unused(){
   if(ss){ss.style.display='none';ss.style.visibility='hidden';}
   var overlay=document.getElementById('ss-steps-overlay');
   if(overlay) overlay.style.display='none';
