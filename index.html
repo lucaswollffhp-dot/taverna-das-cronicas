@@ -7552,20 +7552,21 @@ function ccNext(cur){
     var a=document.getElementById('cc-appearance');if(a)window._ccAppearance=a.value;
   }
   if(cur===1){
-    // Validate skill selection
+    // Classe selecionada?
+    if(!_ccSelectedClass){ showRollToast('⚑ Escolha uma classe para continuar'); return; }
+    // Renderizar atributos e perícias ao entrar no painel 2
+    setTimeout(function(){ buildAttrBuilder(); renderSkillsChoice(); },80);
+  }
+  if(cur===2){
+    // Validar perícias no novo painel 2 (Atributos + Perícias)
     var cs=CLASS_SKILLS[_ccSelectedClass]||{choose:2,from:[]};
-    var bgEl=document.getElementById('new-bg');
-    var bgSkills=BG_SKILLS[bgEl?bgEl.value:'Forasteiro']||[];
     var chosen=Object.keys(window._ccSkills||{}).filter(function(k){return window._ccSkills[k];}).length;
-    // Only count class skills (not bg duplicates)
-    var needed=cs.choose;
-    // If bg already covers some, class still needs its own
-    if(chosen<needed){
-      showRollToast('⚑ Escolha '+needed+' perícia'+(needed>1?'s':'')+' de classe ('+chosen+'/'+needed+')');
+    if(chosen<cs.choose){
+      showRollToast('⚑ Escolha '+cs.choose+' perícia'+(cs.choose>1?'s':'')+' de classe ('+chosen+'/'+cs.choose+')');
       return;
     }
   }
-  if(cur===2){var n=document.getElementById('new-name')?.value.trim();if(!n){alert('Digite o nome do personagem!');return;}}
+  if(cur===3){var n=document.getElementById('new-name')?.value.trim();if(!n){alert('Digite o nome do personagem!');return;}}
   ccStep(cur+1);
 }
 function ccPrev(cur){ccStep(cur-1);}
@@ -8002,7 +8003,8 @@ function buildAttrBuilder(){
     ATTR_NAMES.forEach(function(a){
       var base=bases[a];
       var rb=raceBonus[a]||0;
-      var total=base+rb;
+      var applyRacial=document.getElementById('racial-bonus-toggle')?.checked!==false;
+      var total=base+(applyRacial?rb:0);
       var modV=Math.floor((total-10)/2);
       var modStr=(modV>=0?'+':'')+modV;
       var mc=total>=16?'#6ecfa0':total>=14?'#e6c76a':total<=8?'#e74c3c':'rgba(237,224,188,.7)';
@@ -8041,7 +8043,13 @@ function buildAttrBuilder(){
     counter.innerHTML='Pontos de compra: <span style="color:'+col+';font-weight:700">'+used+'</span>/'+TOTAL_POINTS+' usados'
       +(remaining>0?' — restam <b>'+remaining+'</b>':remaining===0?' — <span style="color:#6ecfa0">Completo!</span>':' — <span style="color:#e74c3c">Excedeu '+(-remaining)+' pontos</span>');
     counter.style.borderColor=remaining<0?'rgba(231,76,60,.5)':remaining===0?'rgba(110,207,160,.4)':'rgba(200,168,74,.2)';
-    // Bônus racial
+    // Badge de bônus racial
+    var applyR=document.getElementById('racial-bonus-toggle')?.checked!==false;
+    var rbBadge=document.getElementById('racial-bonus-badge');
+    if(rbBadge){
+      var parts=Object.entries(raceBonus).filter(function(e){return e[1]>0;}).map(function(e){return'+'+e[1]+' '+e[0];});
+      rbBadge.textContent=parts.length?(applyR?'✅ ':'')+'Bônus: '+parts.join(', '):'Sem bônus racial';
+    }
     var rbLabel=document.getElementById('race-bonus-label');
     if(rbLabel){
       var parts=Object.entries(raceBonus).filter(function(e){return e[1]>0;}).map(function(e){return'+'+e[1]+' '+e[0];});
@@ -8595,7 +8603,7 @@ async function startNewGame(){
     +(physString?'Aparência física: '+physString+'\n':'')
     +'Idiomas: Comum'+(cls==='Ladino'?' + Jargão de Ladrões (linguagem secreta de criminosos)':cls==='Druida'?' + Druídico (linguagem secreta)':cls==='Bruxo'&&subclass.includes('Grande Ancião')?'':'')
     +'\n'
-    +'Perícias com proficiência: '+Object.keys(skillProficiencies).filter(function(k){return skillProficiencies[k];}).map(function(k){
+    +'Perícias com proficiência: '+Object.keys(skillProficiencies).filter(function(k){return skillProficiencies[k]&&!k.includes('_expertise');}).join(', ')    +' | Expertise: '+Object.keys(skillProficiencies).filter(function(k){return k.includes('_expertise')&&skillProficiencies[k];}).map(function(k){return k.replace('_expertise','');}).join(', ')    +(window.CHAR_CLASS==='Ladino'?' [Ladino: proficiência dobrada nas perícias de Expertise]':'')    +(window.CHAR_CLASS==='Patrulheiro'?' [Patrulheiro: +prof em Furtividade com armadura leve/média]':'').map(function(k){
       var profBonus=charLevel<5?2:charLevel<9?3:charLevel<13?4:charLevel<17?5:6;
       var sk=SKILLS_DATA.find(function(x){return x.name===k;});
       var attrMod=sk?Math.floor(((ATTRS[sk.attr]||10)-10)/2):0;
@@ -8922,9 +8930,9 @@ if(_savedKey){
         <div class="cc-step-line"></div>
         <div class="cc-step-dot" id="ccdot-1">Classe</div>
         <div class="cc-step-line"></div>
-        <div class="cc-step-dot" id="ccdot-2">Identidade</div>
+        <div class="cc-step-dot" id="ccdot-2">Atributos</div>
         <div class="cc-step-line"></div>
-        <div class="cc-step-dot" id="ccdot-3">Atributos</div>
+        <div class="cc-step-dot" id="ccdot-3">Identidade</div>
         <div class="cc-step-line"></div>
         <div class="cc-step-dot" id="ccdot-4">História</div>
       </div>
@@ -8966,9 +8974,7 @@ if(_savedKey){
           <button onclick="ccNext(0)" class="cc-btn-pri">Próximo: Classe →</button>
         </div>
       </div>
-
-      <!-- STEP 1: CLASSE -->
-      <div class="cc-panel" id="cc-panel-1" style="display:none">
+<div class="cc-panel" id="cc-panel-1" style="display:none">
         <div class="cc-section-title">† Escolha sua Classe</div>
         <div class="cc-lore-block">
           <div class="cc-lore-title">O que é Classe?</div>
@@ -8986,7 +8992,41 @@ if(_savedKey){
           <div id="class-choices-list"></div>
         </div>
         <!-- Skills selection -->
-        <div id="skills-choice-area" style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:10px;padding:.8rem;margin-bottom:.7rem">
+        
+        <!-- Equipment preview -->
+        <div id="equip-preview" style="background:rgba(58,144,200,.04);border:1px solid rgba(58,144,200,.18);border-radius:10px;padding:.7rem .9rem;margin-bottom:.7rem;font-size:.78rem;color:#e8dfc8"></div>
+        <div class="cc-nav-row">
+          <button onclick="ccPrev(1)" class="cc-btn-sec">← Raça</button>
+          <button onclick="ccNext(1)" class="cc-btn-pri">Próximo: Atributos →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: ATRIBUTOS + PERÍCIAS -->
+<div class="cc-panel" id="cc-panel-2" style="display:none">
+        <div class="cc-section-title">◈ Atributos</div>
+        <div class="cc-lore-block" style="margin-bottom:.6rem">
+          <div class="cc-lore-title">Como os Atributos influenciam o jogo</div>
+          <div class="cc-lore-text">Seus 6 atributos definem o que seu personagem é capaz de fazer. <strong style="color:var(--gold)">FOR</strong> rege força bruta e atletismo. <strong style="color:var(--gold)">DES</strong> controla agilidade, precisão e furtividade. <strong style="color:var(--gold)">CON</strong> determina resistência e PV máximos. <strong style="color:var(--gold)">INT</strong> governa conhecimento e magias arcanas. <strong style="color:var(--gold)">SAB</strong> representa percepção e conexão espiritual. <strong style="color:var(--gold)">CAR</strong> define poder de influência e liderança. O modificador (+N) é o que realmente importa nos testes de dados.</div>
+        </div>
+        <div style="font-size:.7rem;color:rgba(200,168,74,.4);font-style:italic;margin-bottom:.6rem">Array padrão: 15, 14, 13, 12, 10, 8 — ajuste conforme quiser</div>
+                <!-- Toggle bônus racial automático -->
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem;padding:.45rem .7rem;background:rgba(107,63,160,.06);border:1px solid rgba(107,63,160,.2);border-radius:8px">
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;flex:1">
+            <input type="checkbox" id="racial-bonus-toggle" checked style="width:14px;height:14px;accent-color:var(--arc2);cursor:pointer" onchange="buildAttrBuilder()"/>
+            <span style="font-family:Cinzel,serif;font-size:.62rem;color:var(--arc3)">Incluir bônus de raça nos atributos</span>
+          </label>
+          <span id="racial-bonus-badge" style="font-family:Cinzel,serif;font-size:.58rem;color:var(--arc2);background:rgba(107,63,160,.15);border:1px solid rgba(107,63,160,.3);border-radius:5px;padding:1px 7px"></span>
+        </div>
+<div id="attr-builder" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.7rem"></div>
+        <div class="cc-lore-block" style="margin-bottom:.5rem">
+          <div class="cc-lore-title">Sistema de Compra de Pontos (LdJ)</div>
+          <div class="cc-lore-text">Você tem <strong style="color:var(--gold2)">27 pontos</strong> para distribuir livremente entre os 6 atributos. Todos começam em 8. O custo aumenta conforme o valor: 8→9 custa 1pt, 13→14 custa 2pt, 14→15 custa 2pt. Máximo 15 antes do bônus racial. Os bônus da sua raça (✦) são adicionados automaticamente por cima e podem ultrapassar o 15.</div>
+        </div>
+        <!-- Racial bonuses reminder -->
+        <div id="racial-bonus-hint" style="font-size:.72rem;color:var(--arc3);background:rgba(107,63,160,.06);border:1px solid rgba(107,63,160,.15);border-radius:7px;padding:.5rem .7rem;margin-bottom:.7rem"></div>
+        
+        <!-- ◎ PERÍCIAS (movido da tela de Classe) -->
+<div id="skills-choice-area" style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:10px;padding:.8rem;margin-bottom:.7rem">
           <div class="cc-section-title" style="font-size:.5rem">◎ Perícias</div>
           <!-- Antecedente aqui para atualizar skills em tempo real -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.7rem">
@@ -9013,16 +9053,14 @@ if(_savedKey){
             <div id="expertise-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:.3rem"></div>
           </div>
         </div>
-        <!-- Equipment preview -->
-        <div id="equip-preview" style="background:rgba(58,144,200,.04);border:1px solid rgba(58,144,200,.18);border-radius:10px;padding:.7rem .9rem;margin-bottom:.7rem;font-size:.78rem;color:#e8dfc8"></div>
-        <div class="cc-nav-row">
-          <button onclick="ccPrev(1)" class="cc-btn-sec">← Raça</button>
-          <button onclick="ccNext(1)" class="cc-btn-pri">Próximo: Identidade →</button>
+        <div class="cc-nav-row" style="position:sticky;bottom:0;background:rgba(6,4,8,.95);backdrop-filter:blur(8px);padding:.8rem .2rem .4rem;z-index:10">
+          <button onclick="ccPrev(2)" class="cc-btn-sec">← Classe</button>
+          <button onclick="ccNext(2)" class="cc-btn-pri">Próximo: Identidade →</button>
         </div>
       </div>
 
-      <!-- STEP 2: IDENTIDADE -->
-      <div class="cc-panel" id="cc-panel-2" style="display:none">
+      <!-- STEP 3: IDENTIDADE -->
+<div class="cc-panel" id="cc-panel-3" style="display:none">
         <div class="cc-section-title">📛 Identidade</div>
         <!-- Upload de foto do personagem -->
         <div style="display:flex;align-items:center;gap:1rem;margin-bottom:.8rem;padding:.7rem;background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.15);border-radius:10px">
@@ -9061,30 +9099,13 @@ if(_savedKey){
           <div id="region-list" style="display:flex;flex-wrap:wrap;gap:.35rem"></div>
         </div>
         <div class="cc-nav-row">
-          <button onclick="ccPrev(2)" class="cc-btn-sec">← Classe</button>
-          <button onclick="ccNext(2)" class="cc-btn-pri">Próximo: Atributos →</button>
-        </div>
-      </div>
-
-      <!-- STEP 3: ATRIBUTOS -->
-      <div class="cc-panel" id="cc-panel-3" style="display:none">
-        <div class="cc-section-title">◈ Atributos</div>
-        <div style="font-size:.7rem;color:rgba(200,168,74,.4);font-style:italic;margin-bottom:.6rem">Array padrão: 15, 14, 13, 12, 10, 8 — ajuste conforme quiser</div>
-        <div id="attr-builder" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.7rem"></div>
-        <div class="cc-lore-block" style="margin-bottom:.5rem">
-          <div class="cc-lore-title">Sistema de Compra de Pontos (LdJ)</div>
-          <div class="cc-lore-text">Você tem <strong style="color:var(--gold2)">27 pontos</strong> para distribuir livremente entre os 6 atributos. Todos começam em 8. O custo aumenta conforme o valor: 8→9 custa 1pt, 13→14 custa 2pt, 14→15 custa 2pt. Máximo 15 antes do bônus racial. Os bônus da sua raça (✦) são adicionados automaticamente por cima e podem ultrapassar o 15.</div>
-        </div>
-        <!-- Racial bonuses reminder -->
-        <div id="racial-bonus-hint" style="font-size:.72rem;color:var(--arc3);background:rgba(107,63,160,.06);border:1px solid rgba(107,63,160,.15);border-radius:7px;padding:.5rem .7rem;margin-bottom:.7rem"></div>
-        <div class="cc-nav-row">
-          <button onclick="ccPrev(3)" class="cc-btn-sec">← Identidade</button>
-          <button onclick="ccNext(3)" class="cc-btn-pri">Próximo: História →</button>
+          <button onclick="ccPrev(3)" class="cc-btn-sec">← Atributos</button>
+          <button onclick="ccNext(4)" class="cc-btn-pri">Próximo: História →</button>
         </div>
       </div>
 
       <!-- STEP 4: HISTÓRIA -->
-      <div class="cc-panel" id="cc-panel-4" style="display:none">
+<div class="cc-panel" id="cc-panel-4" style="display:none">
         <div class="cc-section-title">▷ História & Motivação</div>
         <div style="margin-bottom:.6rem">
           <label class="cc-label">Motivação (opcional)</label>
