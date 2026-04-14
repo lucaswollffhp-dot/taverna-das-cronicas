@@ -5,7 +5,7 @@
 
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-<title>Crônicas de Killyn</title>
+<title>Taverna das Crônicas - IADM</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet"/>
 <style>
 /* ═══════════════════════════════════════
@@ -17,51 +17,55 @@
 *{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  /* Core palette */
-  --bg:      #080608;
-  --bg2:     #0f0c10;
-  --bg3:     #161218;
-  --bg4:     #1c1720;
-  --surface: rgba(255,255,255,.03);
-  --surface2:rgba(255,255,255,.06);
+  /* ── PALETA VERDE NOTURNA — Floresta Profunda ── */
 
-  /* Text */
-  --text:    #e8dfc8;
-  --text2:   #b8a98a;
-  --text3:   #7a6a50;
+  /* Fundos: verde-pedra muito escuro */
+  --bg:      #060a07;
+  --bg2:     #0a0f0b;
+  --bg3:     #0f1510;
+  --bg4:     #141d15;
+  --surface: rgba(40,80,45,.04);
+  --surface2:rgba(40,80,45,.08);
 
-  /* Gold — primary accent */
-  --gold:    #c8a84a;
-  --gold2:   #e2c46a;
-  --gold3:   #f5db96;
-  --gold-glow:rgba(200,168,74,.15);
+  /* Texto: pergaminho envelhecido — alto contraste */
+  --text:    #dde8d0;
+  --text2:   #a8ba98;
+  --text3:   #607858;
 
-  /* Blood red */
-  --blood:   #9b2335;
-  --blood2:  #c93048;
-  --blood3:  #e8455a;
+  /* Verde salva — accent primário (substitui gold) */
+  --gold:    #5a9e4a;
+  --gold2:   #78c060;
+  --gold3:   #a0d888;
+  --gold-glow:rgba(90,158,74,.15);
+  --parch:   #c8d8b0;
+  --parch2:  #e0ecd0;
 
-  /* Arcane purple */
-  --arc:     #6b3fa0;
-  --arc2:    #9060cc;
-  --arc3:    #b88aee;
+  /* Vermelho — ferimento/perigo (mantido, ajustado) */
+  --blood:   #8b1f2a;
+  --blood2:  #b83040;
+  --blood3:  #d84858;
 
-  /* Nature */
-  --nat:     #2d7a4a;
-  --nat2:    #45b06a;
+  /* Arcano: verde-azulado místico */
+  --arc:     #1a6b50;
+  --arc2:    #28a878;
+  --arc3:    #50d0a0;
 
-  /* Ocean */
-  --ocean:   #1e5f8a;
-  --ocean2:  #3a90c8;
+  /* Natureza: verde quente */
+  --nat:     #3a8040;
+  --nat2:    #58b858;
 
-  /* Borders */
-  --border:  rgba(200,168,74,.12);
-  --border2: rgba(200,168,74,.28);
-  --border3: rgba(200,168,74,.5);
+  /* Água: turquesa profunda */
+  --ocean:   #1a5050;
+  --ocean2:  #2a8878;
 
-  /* Glow effects */
-  --shadow:  0 4px 24px rgba(0,0,0,.6);
-  --glow-gold: 0 0 20px rgba(200,168,74,.2);
+  /* Bordas: verde sutil */
+  --border:  rgba(90,158,74,.14);
+  --border2: rgba(90,158,74,.30);
+  --border3: rgba(90,158,74,.55);
+
+  /* Sombras e brilhos */
+  --shadow:  0 4px 24px rgba(0,0,0,.65);
+  --glow-gold: 0 0 20px rgba(90,158,74,.22);
 
   --nav-h:68px;
   --sidebar-w:240px;
@@ -71,6 +75,8 @@
 html,body{
   background:var(--bg);
   color:var(--text);
+  /* Textura grain verde sutil */
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.1 0 0 0 0 0.2 0 0 0 0 0.1 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px 200px;
   font-family:'Cormorant Garamond',Georgia,serif;
   font-size:16px;
   height:100%;
@@ -100,7 +106,7 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
    HEADER
 ══════════════════════════════════════ */
 .hdr{
-  background:linear-gradient(180deg,#1a1208 0%,#120e08 100%);
+  background:linear-gradient(180deg,#0a1208 0%,#060e08 100%);
   border-bottom:1px solid rgba(200,168,74,.18);
   padding:.55rem 1.2rem;
   display:grid;
@@ -219,7 +225,7 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
 
 .sidebar{
   width:var(--sidebar-w);flex-shrink:0;
-  background:linear-gradient(180deg,#130f08 0%,#0e0a06 100%);
+  background:linear-gradient(180deg,#080f09 0%,#050a06 100%);
   border-right:1px solid rgba(200,168,74,.12);
   box-shadow:inset -1px 0 0 rgba(200,168,74,.05),4px 0 20px rgba(0,0,0,.3);
   display:flex;flex-direction:column;
@@ -673,12 +679,12 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 }
 .ainp::placeholder{color:rgba(232,223,200,.2)}
 .sbtn{
-  background:linear-gradient(135deg,var(--blood) 0%,#7a1a2a 100%);
-  border:1px solid rgba(200,168,74,.4);
+  background:linear-gradient(135deg,var(--nat) 0%,#1a5a20 100%);
+  border:1px solid rgba(90,158,74,.4);
   border-radius:10px;color:var(--gold3);
   font-family:'Cinzel',serif;font-size:.7rem;padding:.6rem 1rem;
   white-space:nowrap;transition:all .2s;letter-spacing:.5px;
-  box-shadow:0 2px 12px rgba(155,35,53,.3);
+  box-shadow:0 2px 12px rgba(30,100,50,.3);
 }
 .sbtn:hover{filter:brightness(1.18);box-shadow:0 4px 20px rgba(155,35,53,.4)}
 .sbtn:disabled{filter:grayscale(1);opacity:.45;cursor:not-allowed;box-shadow:none}
@@ -689,7 +695,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .mob-nav{
   display:none;position:fixed;bottom:0;left:0;right:0;
   height:var(--nav-h);
-  background:#0e0a06;border-top:2px solid rgba(160,110,40,.3);
+  background:#080f09;border-top:2px solid rgba(90,158,74,.3);
   border-top:1px solid rgba(200,168,74,.22);
   z-index:100;flex-shrink:0;
   box-shadow:0 -6px 28px rgba(0,0,0,.7),0 -1px 0 rgba(200,168,74,.1);
@@ -926,13 +932,13 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .cc-btn-pri{flex:2;background:rgba(200,168,74,.1);border:1px solid rgba(200,168,74,.4);border-radius:9px;color:var(--gold2);font-family:'Cinzel',serif;font-size:.7rem;padding:.65rem;cursor:pointer;transition:all .2s;letter-spacing:.5px}
 .cc-btn-pri:hover{background:rgba(200,168,74,.2);border-color:rgba(200,168,74,.65);box-shadow:0 4px 16px rgba(200,168,74,.15)}
 .cc-btn-pri:hover{background:rgba(200,168,74,.2)}
-.cc-btn-start{flex:2;background:#6b1018;border:1px solid #8B2030;border-top:1px solid #a03040;border-radius:9px;color:#f5db96;font-family:'Cinzel',serif;font-size:.72rem;padding:.7rem;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 24px rgba(155,35,53,.3);transition:all .2s;position:relative;overflow:hidden}
+.cc-btn-start{flex:2;background:#1a4a20;border:1px solid #2d7a38;border-top:1px solid #3d9a4a;border-radius:9px;color:#f5db96;font-family:'Cinzel',serif;font-size:.72rem;padding:.7rem;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 24px rgba(155,35,53,.3);transition:all .2s;position:relative;overflow:hidden}
 .cc-btn-start:hover{box-shadow:0 6px 32px rgba(155,35,53,.5);transform:translateY(-1px);filter:brightness(1.1)}
 
 /* Race/Class grid cards */
 .cc-card{background:rgba(10,7,16,.75);border:1px solid rgba(200,168,74,.18);border-radius:10px;padding:.6rem .4rem;text-align:center;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;overflow:hidden}
 .cc-card:hover{border-color:rgba(200,168,74,.45);background:rgba(20,14,30,.9);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.4)}
-.cc-card.selected{border-color:var(--gold2);background:rgba(160,110,40,.15);box-shadow:inset 0 0 0 1px rgba(160,110,40,.3),0 4px 16px rgba(0,0,0,.6)}
+.cc-card.selected{border-color:var(--gold2);background:rgba(60,130,60,.15);box-shadow:inset 0 0 0 1px rgba(60,130,60,.3),0 4px 16px rgba(0,0,0,.6)}
 .cc-card:hover{border-color:rgba(200,168,74,.4);background:rgba(200,168,74,.04)}
 .cc-card.selected{border-color:var(--gold2);background:rgba(200,168,74,.1);box-shadow:0 0 10px rgba(200,168,74,.15)}
 .cc-card-icon{font-size:1.3rem;line-height:1}
@@ -1437,8 +1443,8 @@ input[type=number]{-moz-appearance:textfield}
   display: inline-flex !important;
   align-items: center !important;
   gap: 5px !important;
-  background: rgba(200,168,74,.1) !important;
-  border: 1px solid rgba(200,168,74,.45) !important;
+  background: rgba(90,158,74,.1) !important;
+  border: 1px solid rgba(90,158,74,.45) !important;
   border-radius: 8px !important;
   padding: 6px 14px !important;
   font-family: 'Cinzel', serif !important;
@@ -1451,8 +1457,8 @@ input[type=number]{-moz-appearance:textfield}
   letter-spacing: .3px !important;
 }
 .inline-roll-btn:hover{
-  background: rgba(200,168,74,.22) !important;
-  box-shadow: 0 2px 12px rgba(200,168,74,.2) !important;
+  background: rgba(90,158,74,.22) !important;
+  box-shadow: 0 2px 12px rgba(90,158,74,.2) !important;
   transform: translateY(-1px) !important;
 }
 .inline-roll-btn:disabled{
@@ -1550,6 +1556,18 @@ input[type=number]{-moz-appearance:textfield}
   .cc-lore-text{ font-size:.82rem; }
   .cc-lore-block{ padding:.5rem .6rem; }
 }
+
+/* ── Scrollbar tema verde ── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:#080f09}
+::-webkit-scrollbar-thumb{background:rgba(90,158,74,.35);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(90,158,74,.6)}
+/* ── Seleção de texto verde ── */
+::selection{background:rgba(90,158,74,.25);color:var(--parch2)}
+/* ── Focus outline verde ── */
+:focus-visible{outline:2px solid rgba(90,158,74,.5);outline-offset:2px}
+/* ── Start screen — vinheta verde ── */
+#start-screen{background:#04080a !important}
 </style>
   <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async></script>
@@ -1694,9 +1712,9 @@ input[type=number]{-moz-appearance:textfield}
   <!-- ── BACKGROUND LAYERS ── -->
   <div style="position:absolute;inset:0;pointer-events:none;z-index:1">
     <!-- Vinheta central dourada -->
-    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(900px,100%);height:100%;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(160,100,20,.12) 0%,transparent 70%);"></div>
+    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(900px,100%);height:100%;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(40,90,30,.14) 0%,transparent 70%);"></div>
     <!-- Borda superior sangue -->
-    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(180,30,50,.8),rgba(200,140,40,.6),rgba(180,30,50,.8),transparent);"></div>
+    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(30,120,40,.7),rgba(80,180,60,.5),rgba(30,120,40,.7),transparent);"></div>
     <!-- Borda inferior -->
     <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,140,40,.4),transparent);"></div>
     <!-- Textura de ruído (canvas-based) - evita imagem externa -->
@@ -2975,10 +2993,18 @@ const DRUID_SPELL_POOL={
 function getDruidPreparedMax(){ return charLevel + Math.max(1,Math.floor((ATTRS.SAB-10)/2)); }
 
 const SPELL_SLOTS_BY_CLASS={
-  'Mago':{1:{total:2,used:0}},'Feiticeiro':{1:{total:2,used:0}},
-  'Bruxo':{1:{total:1,used:0}},'Clérigo':{1:{total:2,used:0}},
-  'Druida':{1:{total:2,used:0}},'Bardo':{1:{total:2,used:0}},
-  'Paladino':{1:{total:0,used:0}},'Patrulheiro':{1:{total:0,used:0}},
+  'Mago':     {1:{t:2},2:{t:3},3:{t:4,2:{t:2}},4:{t:4,2:{t:3}},5:{t:4,2:{t:3},3:{t:2}},
+               6:{t:4,2:{t:3},3:{t:3}},7:{t:4,2:{t:3},3:{t:3},4:{t:1}},
+               8:{t:4,2:{t:3},3:{t:3},4:{t:2}},9:{t:4,2:{t:3},3:{t:3},4:{t:3},5:{t:1}}},
+  'Feiticeiro':{1:{t:2},2:{t:3},3:{t:4,2:{t:2}},4:{t:4,2:{t:3}},5:{t:4,2:{t:3},3:{t:2}},
+               6:{t:4,2:{t:3},3:{t:3}},7:{t:4,2:{t:3},3:{t:3},4:{t:1}},
+               8:{t:4,2:{t:3},3:{t:3},4:{t:2}},9:{t:4,2:{t:3},3:{t:3},4:{t:3},5:{t:1}}},
+  'Bruxo':    {1:{t:1},2:{t:2},3:{t:2},4:{t:2},5:{t:3}},
+  'Bardo':    {1:{t:2},2:{t:3},3:{t:4,2:{t:2}},4:{t:4,2:{t:3}},5:{t:4,2:{t:3},3:{t:2}}},
+  'Clérigo':  {1:{t:2},2:{t:3},3:{t:4,2:{t:2}},4:{t:4,2:{t:3}},5:{t:4,2:{t:3},3:{t:2}}},
+  'Druida':   {1:{t:2},2:{t:3},3:{t:4,2:{t:2}},4:{t:4,2:{t:3}},5:{t:4,2:{t:3},3:{t:2}}},
+  'Paladino': {2:{t:2},3:{t:3},5:{t:4,2:{t:2}}},
+  'Patrulheiro':{2:{t:2},3:{t:3},5:{t:4,2:{t:2}}}
 };
 
 // XP de recompensa por CR (Livro do Mestre p.275) — usado para sugerir XP de encontros
@@ -7244,20 +7270,17 @@ const SUBCLASSES={
 
 // ─── TABELAS DE NÍVEL POR CLASSE (Livro do Jogador) ───
 const CLASS_LEVEL_TABLE={
-  'Guerreiro':{
-    hpDie:10,
-    asis:[4,6,8,12,14,16,19], // níveis com ASI/talento
-    subclassLevel:3,
+  'Guerreiro':{hpDie:10,asis:[4,6,8,12,14,16,19],subclassLevel:3,
     features:{
       1:['Estilo de Combate','Segunda Rajada'],
-      2:['Ação Surpreendente'],
-      3:['Arquétipo Marcial'],
+      2:['Ação Surpreendente (1 uso)'],
+      3:['Arquétipo Marcial','Conhecimento dos Estilos'],
       4:['Incremento de Atributo'],
-      5:['Ataque Extra'],
+      5:['Ataque Extra (2 ataques)'],
       6:['Incremento de Atributo'],
       7:['Característica de Arquétipo'],
       8:['Incremento de Atributo'],
-      9:['Intratável'],
+      9:['Intratável (1 uso)'],
       10:['Característica de Arquétipo'],
       11:['Ataque Extra (3 ataques)'],
       12:['Incremento de Atributo'],
@@ -7268,42 +7291,249 @@ const CLASS_LEVEL_TABLE={
       17:['Ação Surpreendente (2 usos)','Intratável (3 usos)'],
       18:['Característica de Arquétipo'],
       19:['Incremento de Atributo'],
-      20:['Campeão Extra'],
-    }
-  },
+      20:['Campeão Supremo: +1 ataque extra, crit em 18-20']}},
   'Paladino':{hpDie:10,asis:[4,8,12,16,19],subclassLevel:3,
-    features:{1:['Sentido Divino','Imposição de Mãos'],2:['Estilo de Combate','Conjuração','Destruição Divina'],3:['Saúde Divina','Juramento Sagrado'],4:['Incremento de Atributo'],5:['Ataque Extra','Expulsar os Ímpios'],6:['Aura de Proteção'],7:['Característica de Juramento'],8:['Incremento de Atributo'],9:[],10:['Aura de Coragem'],11:['Destruição Divina Aprimorada'],12:['Incremento de Atributo'],13:[],14:['Toque Purificador'],15:['Característica de Juramento'],16:['Incremento de Atributo'],17:[],18:['Aura aprimorada'],19:['Incremento de Atributo'],20:['Divino Avatar']}
-  },
+    features:{
+      1:['Sentido Divino','Imposição de Mãos'],
+      2:['Estilo de Combate','Conjuração','Smite Divino'],
+      3:['Canal Divino (1 uso)','Saúde Divina','Juramento Sagrado'],
+      4:['Incremento de Atributo'],
+      5:['Ataque Extra','Smite Divino 3d8'],
+      6:['Aura de Proteção (+CAR em TSs)'],
+      7:['Característica do Juramento'],
+      8:['Incremento de Atributo'],
+      9:['Smite Divino 4d8'],
+      10:['Aura de Coragem (imune ao assustado)'],
+      11:['Smite Divino Melhorado'],
+      12:['Incremento de Atributo'],
+      13:['Smite Divino 5d8'],
+      14:['Toque Purificador'],
+      15:['Característica do Juramento'],
+      16:['Incremento de Atributo'],
+      17:['Smite Divino 6d8'],
+      18:['Auras expandidas para 9m'],
+      19:['Incremento de Atributo'],
+      20:['Divindade Sagrada']}},
   'Bárbaro':{hpDie:12,asis:[4,8,12,16,19],subclassLevel:3,
-    features:{1:['Fúria (2x)','Defesa sem Armadura'],2:['Ataque Descuidado','Sentido de Perigo'],3:['Caminho Primitivo','Fúria (3x)'],4:['Incremento de Atributo'],5:['Ataque Extra','Movimento Rápido'],6:['Característica de Caminho','Fúria (4x)'],7:['Instinto Selvagem'],8:['Incremento de Atributo'],9:['Crítico Brutal (+1d)','Fúria +3'],10:['Característica de Caminho'],11:['Fúria Implacável'],12:['Incremento de Atributo','Fúria (5x)'],13:['Crítico Brutal (+2d)'],14:['Característica de Caminho'],15:['Fúria Persistente'],16:['Incremento de Atributo','Fúria +4'],17:['Crítico Brutal (+3d)','Fúria (6x)'],18:['Força Indomável'],19:['Incremento de Atributo'],20:['Campeão Primitivo','Fúrias Ilimitadas']}
-  },
+    features:{
+      1:['Fúria (2 usos)','Defesa sem Armadura'],
+      2:['Ataque Imprudente','Sentido do Perigo'],
+      3:['Caminho Primitivo','Memória Primordial'],
+      4:['Incremento de Atributo'],
+      5:['Ataque Extra','Movimento Rápido'],
+      6:['Característica do Caminho','Fúria (3 usos)'],
+      7:['Instinto Selvagem'],
+      8:['Incremento de Atributo'],
+      9:['Crítico Brutal (1d)'],
+      10:['Característica do Caminho','Fúria (4 usos)'],
+      11:['Fúria Implacável'],
+      12:['Incremento de Atributo','Fúria (5 usos)'],
+      13:['Crítico Brutal (2d)'],
+      14:['Característica do Caminho'],
+      15:['Fúria Persistente'],
+      16:['Incremento de Atributo','Fúria (6 usos)'],
+      17:['Crítico Brutal (3d)'],
+      18:['Poder Indomável'],
+      19:['Incremento de Atributo'],
+      20:['Campeão Primordial: +4 FOR e +4 CON']}},
   'Ladino':{hpDie:8,asis:[4,8,10,12,16,19],subclassLevel:3,
-    features:{1:['Especialização','Ataque Furtivo 1d6','Jargão dos Ladrões'],2:['Ação Ardilosa'],3:['Arquétipo de Ladino','Ataque Furtivo 2d6'],4:['Incremento de Atributo'],5:['Ataque Furtivo 3d6','Esquiva Ágil'],6:['Especialização'],7:['Evasão','Ataque Furtivo 4d6'],8:['Incremento de Atributo'],9:['Característica de Arquétipo','Ataque Furtivo 5d6'],10:['Incremento de Atributo'],11:['Talento Confiável','Ataque Furtivo 6d6'],12:['Incremento de Atributo'],13:['Ataque Furtivo 7d6'],14:['Visão às Cegas'],15:['Ataque Furtivo 8d6','Mente Escorregadia'],16:['Incremento de Atributo'],17:['Característica de Arquétipo','Ataque Furtivo 9d6'],18:['Elusivo'],19:['Incremento de Atributo','Ataque Furtivo 10d6'],20:['Golpe de Sorte']}
-  },
+    features:{
+      1:['Especialização (2 perícias)','Ataque Furtivo 1d6','Jargão de Ladrões','Ação Ardilosa'],
+      2:['Astúcia Ladina'],
+      3:['Arquétipo Ladino','Especialização (2 mais)'],
+      4:['Incremento de Atributo'],
+      5:['Ataque Furtivo 3d6','Esquiva Sobrenatural'],
+      6:['Incremento de Atributo','Ataque Furtivo 4d6'],
+      7:['Evasão','Ataque Furtivo 4d6'],
+      8:['Incremento de Atributo','Ataque Furtivo 5d6'],
+      9:['Característica de Arquétipo','Ataque Furtivo 5d6'],
+      10:['Incremento de Atributo','Ataque Furtivo 6d6'],
+      11:['Talento Confiável','Ataque Furtivo 6d6'],
+      12:['Incremento de Atributo','Ataque Furtivo 7d6'],
+      13:['Uso de Magia (se Trapaceiro Arcano)','Ataque Furtivo 7d6'],
+      14:['Visão às Cegas','Ataque Furtivo 8d6'],
+      15:['Mente Escorregadia','Ataque Furtivo 8d6'],
+      16:['Incremento de Atributo','Ataque Furtivo 9d6'],
+      17:['Característica de Arquétipo','Ataque Furtivo 10d6'],
+      18:['Elusivo','Ataque Furtivo 10d6'],
+      19:['Incremento de Atributo','Ataque Furtivo 11d6'],
+      20:['Golpe de Sorte (1 uso/turno)','Ataque Furtivo 11d6']}},
   'Mago':{hpDie:6,asis:[4,8,12,16,19],subclassLevel:2,
-    features:{1:['Recuperação Arcana','Conjuração'],2:['Tradição Arcana'],3:[],4:['Incremento de Atributo'],5:[],6:['Característica de Tradição'],7:[],8:['Incremento de Atributo'],9:[],10:['Característica de Tradição'],11:[],12:['Incremento de Atributo'],13:[],14:['Característica de Tradição'],15:[],16:['Incremento de Atributo'],17:[],18:['Maestria em Magia'],19:['Incremento de Atributo'],20:['Assinatura de Magia']}
-  },
+    features:{
+      1:['Recuperação Arcana','Livro de Magias (6 truques+magias)'],
+      2:['Tradição Arcana','Recuperação Arcana melhorada'],
+      3:['Magias de 2º nível'],
+      4:['Incremento de Atributo'],
+      5:['Magias de 3º nível'],
+      6:['Característica da Tradição'],
+      7:['Magias de 4º nível'],
+      8:['Incremento de Atributo'],
+      9:['Magias de 5º nível'],
+      10:['Característica da Tradição'],
+      11:['Magias de 6º nível'],
+      12:['Incremento de Atributo'],
+      13:['Magias de 7º nível'],
+      14:['Característica da Tradição'],
+      15:['Magias de 8º nível'],
+      16:['Incremento de Atributo'],
+      17:['Magias de 9º nível'],
+      18:['Maestria em Magias (2 truques ad.)'],
+      19:['Incremento de Atributo'],
+      20:['Assinatura Mágica (2 magias de nível ≤3 sem gasto)']}},
   'Clérigo':{hpDie:8,asis:[4,8,12,16,19],subclassLevel:1,
-    features:{1:['Conjuração','Domínio Divino'],2:['Canalizar Divindade (1x)','Característica de Domínio'],3:[],4:['Incremento de Atributo'],5:['Destruir Mortos-Vivos ND1/2'],6:['Canalizar Divindade (2x)','Característica de Domínio'],7:[],8:['Incremento de Atributo','Destruir Mortos-Vivos ND1','Característica de Domínio'],9:[],10:['Intervenção Divina'],11:['Destruir Mortos-Vivos ND2'],12:['Incremento de Atributo'],13:[],14:['Destruir Mortos-Vivos ND3'],15:[],16:['Incremento de Atributo'],17:['Destruir Mortos-Vivos ND4','Característica de Domínio'],18:['Canalizar Divindade (3x)'],19:['Incremento de Atributo'],20:['Intervenção Divina aprimorada']}
-  },
+    features:{
+      1:['Domínio Divino','Canal Divino (1 uso)','Expulsar Mortos-Vivos'],
+      2:['Canal Divino (2 usos)'],
+      3:['Magias de 2º nível'],
+      4:['Incremento de Atributo'],
+      5:['Destruir Mortos-Vivos (ND 1/2)','Magias de 3º nível'],
+      6:['Canal Divino (3 usos)','Característica do Domínio'],
+      7:['Magias de 4º nível'],
+      8:['Incremento de Atributo','Destruir Mortos-Vivos (ND 1)','Golpe Divino (1d8)'],
+      9:['Magias de 5º nível'],
+      10:['Intervenção Divina'],
+      11:['Destruir Mortos-Vivos (ND 2)','Magias de 6º nível'],
+      12:['Incremento de Atributo'],
+      13:['Magias de 7º nível'],
+      14:['Destruir Mortos-Vivos (ND 3)','Golpe Divino (2d8)'],
+      15:['Magias de 8º nível'],
+      16:['Incremento de Atributo'],
+      17:['Destruir Mortos-Vivos (ND 4)','Característica do Domínio','Magias de 9º nível'],
+      18:['Canal Divino (Usos extras)'],
+      19:['Incremento de Atributo'],
+      20:['Intervenção Divina (sempre funciona)']}},
   'Druida':{hpDie:8,asis:[4,8,12,16,19],subclassLevel:2,
-    features:{1:['Druídico','Conjuração'],2:['Círculo Druídico','Forma Selvagem'],3:[],4:['Aprimorar Forma Selvagem','Incremento de Atributo'],5:[],6:['Característica de Círculo'],7:[],8:['Aprimorar Forma Selvagem','Incremento de Atributo'],9:[],10:['Característica de Círculo'],11:[],12:['Incremento de Atributo'],13:[],14:['Característica de Círculo'],15:[],16:['Incremento de Atributo'],17:[],18:['Corpo Atemporal','Magias da Besta'],19:['Incremento de Atributo'],20:['Arquidruida']}
-  },
+    features:{
+      1:['Druídico','Magias de Druida'],
+      2:['Forma Selvagem (2 usos / ND ¼)','Círculo Druídico'],
+      3:['Magias de 2º nível'],
+      4:['Incremento de Atributo','Forma Selvagem melhorada (ND ½)'],
+      5:['Magias de 3º nível'],
+      6:['Característica do Círculo','Forma Selvagem: nadar/voar'],
+      7:['Magias de 4º nível'],
+      8:['Incremento de Atributo','Forma Selvagem (ND 2)'],
+      9:['Magias de 5º nível'],
+      10:['Característica do Círculo','Forma Selvagem (ND 3)'],
+      11:['Magias de 6º nível'],
+      12:['Incremento de Atributo'],
+      13:['Magias de 7º nível'],
+      14:['Característica do Círculo','Forma Selvagem (ND 4)'],
+      15:['Magias de 8º nível'],
+      16:['Incremento de Atributo'],
+      17:['Magias de 9º nível'],
+      18:['Forma Bestial (Ilimitada)','Alma Atemporal'],
+      19:['Incremento de Atributo'],
+      20:['Arquidruida']}},
   'Bardo':{hpDie:8,asis:[4,8,12,16,19],subclassLevel:3,
-    features:{1:['Conjuração','Inspiração de Bardo d6'],2:['Versatilidade','Canção do Descanso d6'],3:['Colégio de Bardo','Aptidão'],4:['Incremento de Atributo'],5:['Inspiração de Bardo d8','Fonte de Inspiração'],6:['Habilidade de Colégio','Canção de Proteção'],7:[],8:['Incremento de Atributo'],9:['Canção do Descanso d8'],10:['Inspiração de Bardo d10','Aptidão','Segredos Mágicos'],11:[],12:['Incremento de Atributo'],13:['Canção do Descanso d10'],14:['Habilidade de Colégio','Segredos Mágicos'],15:['Inspiração de Bardo d12'],16:['Incremento de Atributo'],17:['Canção do Descanso d12'],18:['Segredos Mágicos'],19:['Incremento de Atributo'],20:['Inspiração Superior']}
-  },
+    features:{
+      1:['Conjuração Bardística','Inspiração de Bardo (d6)'],
+      2:['Canção de Repouso (d6)','Versátil'],
+      3:['Colégio Bardístico','Especialização'],
+      4:['Incremento de Atributo'],
+      5:['Fonte de Inspiração','Inspiração de Bardo (d8)','Redução de Magias'],
+      6:['Característica do Colégio','Contracanção'],
+      7:['Magias de 4º nível'],
+      8:['Incremento de Atributo'],
+      9:['Canção de Repouso (d8)','Magias de 5º nível'],
+      10:['Segredos Mágicos (2 magias de qq lista)','Inspiração de Bardo (d10)'],
+      11:['Magias de 6º nível'],
+      12:['Incremento de Atributo'],
+      13:['Canção de Repouso (d10)','Magias de 7º nível'],
+      14:['Segredos Mágicos (2 mais)','Característica do Colégio'],
+      15:['Inspiração de Bardo (d12)','Magias de 8º nível'],
+      16:['Incremento de Atributo'],
+      17:['Canção de Repouso (d12)','Magias de 9º nível'],
+      18:['Segredos Mágicos (2 mais)'],
+      19:['Incremento de Atributo'],
+      20:['Inspiração Superior']}},
   'Monge':{hpDie:8,asis:[4,8,12,16,19],subclassLevel:3,
-    features:{1:['Defesa sem Armadura','Artes Marciais 1d4'],2:['Chi','Movimento sem Armadura +3m'],3:['Tradição Monástica','Defletir Projéteis'],4:['Incremento de Atributo','Queda Lenta'],5:['Ataque Extra','Ataque Atordoante'],6:['Golpes de Chi','Característica de Tradição','Artes Marciais 1d6'],7:['Evasão','Mente Tranquila'],8:['Incremento de Atributo'],9:['Aprimorar Movimento'],10:['Pureza Corporal'],11:['Característica de Tradição','Artes Marciais 1d8'],12:['Incremento de Atributo'],13:['Idiomas do Sol e da Lua'],14:['Alma de Diamante'],15:['Corpo Atemporal'],16:['Incremento de Atributo'],17:['Característica de Tradição','Artes Marciais 1d10'],18:['Corpo Vazio'],19:['Incremento de Atributo'],20:['Auto Aperfeiçoamento']}
-  },
+    features:{
+      1:['Artes Marciais (1d4)','Defesa sem Armadura (10+DES+SAB)'],
+      2:['Ki (2 pontos)','Passo de Vento','Rajada de Golpes','Movimento Não Armado'],
+      3:['Tradição Monástica','Desvio'],
+      4:['Incremento de Atributo','Queda Lenta'],
+      5:['Artes Marciais (1d6)','Ki (5 pts)','Ataque Extra','Atordoamento (Ki)'],
+      6:['Golpes de Ki (superam RD)','Característica da Tradição'],
+      7:['Evasão','Quietude da Mente'],
+      8:['Incremento de Atributo'],
+      9:['Artes Marciais (1d6)','Movimento Não Armado melhorado'],
+      10:['Pureza do Corpo (doença/veneno)'],
+      11:['Artes Marciais (1d8)','Característica da Tradição'],
+      12:['Incremento de Atributo'],
+      13:['Língua do Sol e da Lua'],
+      14:['Alma Diamantina (prof em TS)'],
+      15:['Artes Marciais (1d8)','Juventude Atemporal'],
+      16:['Incremento de Atributo'],
+      17:['Artes Marciais (1d10)','Característica da Tradição'],
+      18:['Alma Vazia'],
+      19:['Incremento de Atributo'],
+      20:['Ser Perfeito']}},
   'Feiticeiro':{hpDie:6,asis:[4,8,12,16,19],subclassLevel:1,
-    features:{1:['Origem de Feitiçaria','Conjuração'],2:['Feitiçaria'],3:[],4:['Incremento de Atributo'],5:[],6:['Característica de Origem'],7:[],8:['Incremento de Atributo'],9:[],10:['Metamagia'],11:[],12:['Incremento de Atributo'],13:[],14:['Característica de Origem'],15:[],16:['Incremento de Atributo'],17:['Metamagia'],18:['Característica de Origem'],19:['Incremento de Atributo'],20:['Restauração da Feitiçaria']}
-  },
+    features:{
+      1:['Origem de Feitiçaria','2 Truques','2 Magias Nível 1'],
+      2:['Pontos de Feitiçaria (2)','Metamagia (2 opções)'],
+      3:['Magias de 2º nível'],
+      4:['Incremento de Atributo'],
+      5:['Magias de 3º nível'],
+      6:['Característica da Origem'],
+      7:['Magias de 4º nível'],
+      8:['Incremento de Atributo'],
+      9:['Magias de 5º nível'],
+      10:['Metamagia (3 opções)'],
+      11:['Magias de 6º nível'],
+      12:['Incremento de Atributo'],
+      13:['Magias de 7º nível'],
+      14:['Característica da Origem'],
+      15:['Magias de 8º nível'],
+      16:['Incremento de Atributo'],
+      17:['Metamagia (4 opções)','Magias de 9º nível'],
+      18:['Característica da Origem'],
+      19:['Incremento de Atributo'],
+      20:['Restauração Feiticeira (4 pts Feitiçaria por descanso curto)']}},
   'Bruxo':{hpDie:8,asis:[4,8,12,16,19],subclassLevel:1,
-    features:{1:['Patrono Transcendental','Magia de Pacto'],2:['Invocações Místicas'],3:['Presente do Pacto'],4:['Incremento de Atributo'],5:[],6:['Característica de Patrono'],7:[],8:['Incremento de Atributo'],9:[],10:['Característica de Patrono'],11:['Arcano Místico (6°nível)'],12:['Incremento de Atributo'],13:['Arcano Místico (7°nível)'],14:['Característica de Patrono'],15:['Arcano Místico (8°nível)'],16:['Incremento de Atributo'],17:['Arcano Místico (9°nível)'],18:[],19:['Incremento de Atributo'],20:['Mestre Místico']}
-  },
+    features:{
+      1:['Patrono Sobrenatural','Magia de Pacto (1 espaço nível 1)','2 Invocações'],
+      2:['Invocações Eldritch (2)','Espaços de Magia Nível 2'],
+      3:['Benção do Pacto','Espaços Nível 2','Mais Invocações'],
+      4:['Incremento de Atributo'],
+      5:['Espaços de Nível 3','Terceiro Olho (visão no escuro)'],
+      6:['Característica do Patrono','Invocações extras'],
+      7:['Espaços de Nível 4'],
+      8:['Incremento de Atributo'],
+      9:['Espaços de Nível 5','Invocações extras'],
+      10:['Característica do Patrono'],
+      11:['Benção do Pacto: Lâmina/Corrente/Tomo melhorados'],
+      12:['Incremento de Atributo'],
+      13:['Mais Invocações'],
+      14:['Característica do Patrono'],
+      15:['Mais Invocações'],
+      16:['Incremento de Atributo'],
+      17:['Mais Invocações'],
+      18:['Alma do Senhor das Trevas'],
+      19:['Incremento de Atributo'],
+      20:['Supremo Arcano (magia de 6º-9º 1x/dia)']}},
   'Patrulheiro':{hpDie:10,asis:[4,8,12,16,19],subclassLevel:3,
-    features:{1:['Favorito Natural','Inimigo Favorito'],2:['Estilo de Combate','Conjuração'],3:['Arquétipo de Patrulheiro','Prontidão Primitiva'],4:['Incremento de Atributo'],5:['Ataque Extra'],6:['Aprimoramento de Favorito Natural'],7:['Característica de Arquétipo'],8:['Incremento de Atributo','Caminho da Floresta'],9:[],10:['Esconder no Mato','Aprimoramento de Inimigo Favorito'],11:['Característica de Arquétipo'],12:['Incremento de Atributo'],13:[],14:['Desaparecer','Aprimoramento de Favorito Natural'],15:['Característica de Arquétipo'],16:['Incremento de Atributo'],17:[],18:['Mente Selvagem','Aprimoramento de Inimigo Favorito'],19:['Incremento de Atributo'],20:['Caçador'],}
-  },
+    features:{
+      1:['Inimigo Favorito','Favorito Natural'],
+      2:['Estilo de Combate','Conjuração'],
+      3:['Arquétipo de Patrulheiro','Primitivo (terreno natural)'],
+      4:['Incremento de Atributo'],
+      5:['Ataque Extra','Magias de 2º nível'],
+      6:['Inimigo Favorito melhorado','Favorito Natural melhorado'],
+      7:['Característica do Arquétipo','Passo por Terras'],
+      8:['Incremento de Atributo','Sentido Terrestrial'],
+      9:['Magias de 3º nível'],
+      10:['Ocultação Natural','Favorito Natural x3'],
+      11:['Característica do Arquétipo'],
+      12:['Incremento de Atributo'],
+      13:['Magias de 4º nível'],
+      14:['Destruidor de Inimigos'],
+      15:['Característica do Arquétipo'],
+      16:['Incremento de Atributo'],
+      17:['Magias de 5º nível'],
+      18:['Domínio Férico','Sentido Selvagem'],
+      19:['Incremento de Atributo'],
+      20:['Caçador Supremo (vantagem vs inimigo favorito)']}}
 };
 
 // ─── TALENTOS BÁSICOS (Livro do Jogador) ───
@@ -8299,7 +8529,13 @@ async function continueFromStorage(){
           // Mesclar com local (nuvem tem prioridade)
           try{ localStorage.setItem(KEY, JSON.stringify(cloudSaves)); }catch(q){ /* quota ok */ }
           hidStartScreen();
-          if(loadProgress('auto')){ init(); showApp(); return; }
+          if(loadProgress('auto')){
+            init();
+            var _ce=document.getElementById('chat');
+            if(_ce&&window._savedChatHTML){_ce.innerHTML=window._savedChatHTML;_ce.scrollTop=_ce.scrollHeight;window._savedChatHTML=null;}
+            showApp();
+            return;
+          }
         }
       }
     }catch(e){ console.warn('Cloud load failed:', e); }
@@ -8320,13 +8556,14 @@ async function continueFromStorage(){
     }
   }
   hidStartScreen();
-  if(!loadProgress('auto')){
-    if(!loadProgress('slot1')){
-      showSaveToast('Erro ao carregar save.');
-      return;
-    }
+  var loaded = loadProgress('auto') || loadProgress('slot1');
+  if(!loaded){
+    showSaveToast('Erro ao carregar save.');
+    return;
   }
-  init(); // init() agora tem acesso ao estado restaurado (CONQUISTAS, ATTRS, etc.)
+  init();
+  var _ce2=document.getElementById('chat');
+  if(_ce2&&window._savedChatHTML){_ce2.innerHTML=window._savedChatHTML;_ce2.scrollTop=_ce2.scrollHeight;window._savedChatHTML=null;}
   showApp();
   showSaveToast('✦ Aventura restaurada — bem-vindo de volta!');
 }
@@ -8392,31 +8629,33 @@ function hidStartScreen(){
 
 function goToMainMenu(){
   if(!confirm('Voltar ao menu principal? O progresso será salvo automaticamente.')) return;
-  // Salvar estado ANTES de limpar qualquer coisa
+  // 1. Salvar chat HTML para restaurar depois (sem limpar)
+  var chatEl=document.getElementById('chat');
+  if(chatEl) window._savedChatHTML = chatEl.innerHTML;
+  // 2. Salvar estado completo incluindo hist
   saveProgress('auto', false);
-  // Salvar no Firebase explicitamente se logado
+  // 3. Sincronizar com Firebase (não bloquear UI)
   if(window.saveToCloud && window.FB_USER){
-    var saves=JSON.parse(localStorage.getItem('killyn_v3')||'{}');
-    window.saveToCloud(saves).then(function(){
-      showSaveToast('☁ Save enviado para a nuvem');
-    }).catch(function(e){ console.warn('Cloud save failed:', e); });
+    try{
+      var _s=getState(); _s.charPhoto=window.CHAR_PHOTO||'';
+      window.saveToCloud({auto:_s}).catch(function(){});
+    }catch(e){}
+    showSaveToast('☁ Aventura salva na nuvem');
   }
-  var chat=document.getElementById('chat');
-  if(chat) chat.innerHTML='';
-  // Esconder app
+  // 4. Esconder app SEM limpar conteúdo
   var app=document.getElementById('app');
   if(app){ app.style.display='none'; app.style.visibility='hidden'; }
-  // Esconder steps fixed que possam estar visíveis
   ['step-new','step-generating'].forEach(function(id){
     var el=document.getElementById(id);
     if(el){ el.style.display='none'; el.style.visibility='hidden'; }
   });
-  // Mostrar start-screen com menu
+  // 5. Voltar à tela inicial (sem redirecionar para login)
   var ss=document.getElementById('start-screen');
   if(ss){ ss.style.display='flex'; ss.style.visibility='visible'; }
   var scroller=document.getElementById('ss-scroller');
   if(scroller) scroller.scrollTo({top:0,behavior:'instant'});
-  showStep('step-menu');
+  // Mostrar hero principal, não a tela de login
+  showStartHero();
   checkStorageSave();
 }
 
