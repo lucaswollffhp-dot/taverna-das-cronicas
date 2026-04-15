@@ -2023,7 +2023,7 @@ input[type=number]{-moz-appearance:textfield}
 
     <!-- Voltar (só se já tiver chave) -->
     <div id="api-back-btn" style="text-align:center;display:none">
-      <button onclick="showStep('step-menu')" style="background:none;border:none;font-family:'Cinzel',serif;font-size:.52rem;color:rgba(90,158,74,.3);cursor:pointer;letter-spacing:.5px;transition:color .2s"
+      <button onclick="showScreen('menu')" style="background:none;border:none;font-family:'Cinzel',serif;font-size:.52rem;color:rgba(90,158,74,.3);cursor:pointer;letter-spacing:.5px;transition:color .2s"
         onmouseover="this.style.color='rgba(90,158,74,.6)'" onmouseout="this.style.color='rgba(90,158,74,.3)'">
         ← Voltar ao menu
       </button>
@@ -2574,7 +2574,9 @@ input[type=number]{-moz-appearance:textfield}
       <div class="input-area">
         <div class="quick-acts" id="qas"></div>
         <div class="dice-bar">
-          <span class="dice-mod-lbl">Mod</span>
+          <span class="dice-mod-lbl">Qtd</span>
+          <input type="number" id="dice-qty" class="dice-mod-inp" value="1" min="1" max="20" style="width:38px" title="Quantidade de dados (ex: 2 para 2d6)"/>
+          <span class="dice-mod-lbl" style="margin-left:2px">Mod</span>
           <input type="number" id="dice-mod" class="dice-mod-inp" value="0" title="Modificador"/>
           <div style="width:1px;height:18px;background:rgba(90,158,74,.15);margin:0 1px"></div>
           <button class="dice-btn" id="dbtn-4" onclick="rollDie(4)" title="d4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,3 22,20 2,20"/><line x1="12" y1="3" x2="12" y2="20"/><line x1="7" y1="13.5" x2="17" y2="13.5"/></svg><span class="dice-lbl">d4</span></button><button class="dice-btn" id="dbtn-6" onclick="rollDie(6)" title="d6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.2" fill="currentColor"/><circle cx="16" cy="16" r="1.2" fill="currentColor"/><circle cx="8" cy="16" r="1.2" fill="currentColor"/><circle cx="16" cy="8" r="1.2" fill="currentColor"/></svg><span class="dice-lbl">d6</span></button><button class="dice-btn" id="dbtn-8" onclick="rollDie(8)" title="d8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 22,9 18,21 6,21 2,9"/><line x1="12" y1="2" x2="12" y2="21"/><line x1="2" y1="9" x2="22" y2="9"/></svg><span class="dice-lbl">d8</span></button><button class="dice-btn" id="dbtn-10" onclick="rollDie(10)" title="d10"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 21,8 18,19 6,19 3,8"/><line x1="12" y1="2" x2="12" y2="19"/></svg><span class="dice-lbl">d10</span></button><button class="dice-btn" id="dbtn-12" onclick="rollDie(12)" title="d12"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 20,6 22,14 16,21 8,21 2,14 4,6"/><line x1="12" y1="2" x2="12" y2="21"/></svg><span class="dice-lbl">d12</span></button><button class="dice-btn" id="dbtn-20" onclick="rollDie(20)" title="d20"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 22,8 22,16 12,22 2,16 2,8"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/><line x1="12" y1="2" x2="2" y2="8"/><line x1="12" y1="2" x2="22" y2="8"/><line x1="12" y1="22" x2="2" y2="16"/><line x1="12" y1="22" x2="22" y2="16"/></svg><span class="dice-lbl">d20</span></button><button class="dice-btn" id="dbtn-100" onclick="rollDie(100)" title="d100"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><text x="12" y="15.5" font-size="8" text-anchor="middle" fill="currentColor" stroke="none" font-family="serif">%</text></svg><span class="dice-lbl">d100</span></button>
@@ -2647,6 +2649,27 @@ var googleUser = null;
 var _driveUser = null;
 var _driveToken = null;
 var _driveFileId = null; // ID do arquivo de save no Drive
+
+// Re-autenticar silenciosamente (sem popup) para restaurar token Drive cross-device
+function _tryRefreshDriveToken(){
+  if(window._driveToken) return; // já tem token
+  if(typeof google === 'undefined') return;
+  try{
+    var client = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: 'https://www.googleapis.com/auth/drive.appdata email profile',
+      prompt: '', // sem popup — silencioso
+      callback: async function(resp){
+        if(resp.error) return; // silencioso, não mostrar erro
+        window._driveToken = resp.access_token;
+        _driveToken = resp.access_token;
+        checkStorageSave(); // re-verificar save na nuvem
+        showSaveToast('☁ Sincronizado com a nuvem');
+      }
+    });
+    client.requestAccessToken(); // sem prompt, usa sessão existente
+  }catch(e){ /* silencioso */ }
+}
 
 window._driveLogin = async function(){
   // Usa OAuth2 com scope Drive.appdata
@@ -3150,13 +3173,17 @@ function showScreen(which){
     if(app){app.style.display='none';app.style.visibility='hidden';}
     var scroller2=document.getElementById('ss-scroller');
     if(scroller2){scroller2.style.display='flex';scroller2.scrollTo({top:0,behavior:'instant'});}
+    // Se usuário salvo mas sem token, obter token Drive silenciosamente para cross-device
+    if(!window._driveToken && localStorage.getItem('killyn_google_authed')){
+      _tryRefreshDriveToken();
+    }
     // Atualizar botões para usuário autenticado
     _updateHeroButtons();
     checkStorageSave();
     updateMenuApiStatus();
     _initMagicCanvas();
   } else if(which==='game'){
-    // Tela 3: Jogo — mostrar app
+    // Tela 3: Jogo — mostrar app; esconder step-menu
     if(ss){ss.style.display='none';ss.style.visibility='hidden';}
     if(app){app.style.display='flex';app.style.visibility='visible';}
   }
@@ -3967,13 +3994,20 @@ function rollAttack(id){
     }
   }
 
-  const msg=miss?`† ${a.name}: FALHA CRÍTICA! (d20=1) — ataque errou automaticamente`
-    :crit?`† ${a.name}: ACERTO CRÍTICO! d20=20 → Total ${total} → HIT GARANTIDO | 💥 Dano: ${dmg} ${a.type} (dados dobrados!)`
-    :`† ${a.name}: d20=${hitRoll} → Total ${total} → ${total>=15?'ACERTO provável':'pode errar dependendo da CA'} | Dano: ${dmg} ${a.type}`;
+  // Verificar CA real do inimigo no combate ativo
+  var targetCA=10, targetName='o alvo';
+  if(combatActive&&combatants.length>0){
+    var enemies=combatants.filter(function(x){return !x.isPlayer&&x.hp>0;});
+    if(enemies.length>0){targetCA=enemies[0].ca||10;targetName=enemies[0].name;}
+  }
+  var hit=crit||(total>=targetCA&&!miss);
+  const msg=miss?`† ${a.name}: FALHA CRÍTICA! (d20=1) — erra automaticamente`
+    :crit?`† ${a.name}: CRÍTICO! d20=20 → HIT contra ${targetName} (CA ${targetCA}) | 💥 ${dmg} ${a.type}`
+    :hit?`† ${a.name}: d20=${hitRoll}+${a.bonus}=${total} → ACERTOU ${targetName} (CA ${targetCA}) | 💥 ${dmg} ${a.type}`
+    :`† ${a.name}: d20=${hitRoll}+${a.bonus}=${total} → ERROU ${targetName} (CA ${targetCA})`;
   addMsg('roll',msg);
-  // Injetar no hist para que o AI veja o resultado real da rolagem
   hist.push({role:'user', content:'[ROLAGEM AUTOMÁTICA] '+msg.replace(/<[^>]+>/g,'')});
-  showRollToast(crit?'★ CRÍTICO! '+dmg+' de dano':miss?'✕ Falha Crítica!':'Acerto '+total+' | '+dmg+' de dano');
+  showRollToast(crit?'★ CRÍTICO! '+dmg+' dano':miss?'✕ Falha!':hit?'Acertou! '+dmg+' dano':'Errou ('+total+' vs CA '+targetCA+')');
   // Injetar resultado no hist para o narrador processar
   var rollCtx='[DADO] Ataque com '+a.name+': '+(miss?'FALHA CRÍTICA (d20=1) — erra automaticamente':crit?'ACERTO CRÍTICO (d20=20) — dano dobrado: '+dmg+' de dano '+a.type:('d20='+hitRoll+' + bônus='+a.bonus+' → total '+total+' | Dano '+dmg+' de dano '+a.type+(total>=10?' — acertou':' — verificar CA do inimigo')));
   window._pendingRollCtx = (window._pendingRollCtx||'') + rollCtx + '\n';
@@ -4925,13 +4959,15 @@ function updXP(){
   ['level-badge','level-d','xp-level'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=charLevel;});
   const xpCur=document.getElementById('xp-cur');if(xpCur)xpCur.textContent=charXP;
   const xpNext=document.getElementById('xp-next');if(xpNext)xpNext.textContent=next;
-  // xp-bar removed from sidebar — header only
   // Update header XP mini bar
   var hxp=document.getElementById('hdr-xp');
   if(hxp) hxp.style.display=window.CHAR_NAME?'flex':'none';
   var hl=document.getElementById('hdr-level');if(hl)hl.textContent=charLevel;
   var hc=document.getElementById('hdr-xp-cur');if(hc)hc.textContent=charXP;
   var hb=document.getElementById('hdr-xp-bar');if(hb)hb.style.width=pct+'%';
+  // Atualizar o label "atual / próximo XP" no header
+  var hxpLabel=document.getElementById('hdr-xp-cur-label');
+  if(hxpLabel) hxpLabel.textContent=charXP+' / '+next+' XP';
   var hub=document.getElementById('hdr-lvlup-btn');
   if(hub){
     var nextXP=XP_TABLE[charLevel];
@@ -5414,9 +5450,10 @@ function openCombat(){
         <input type="number" id="init-killyn" placeholder="d20+1" style="width:60px;background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:4px;padding:3px 5px;font-family:Cinzel,serif;font-size:.74rem;color:var(--parch);text-align:center;outline:none" value="${cryptoRandInt(1,20)+modNum(ATTRS.DES)}"/>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 52px 60px auto;gap:.4rem;margin-bottom:.4rem;align-items:center">
+    <div style="display:grid;grid-template-columns:1fr 52px 52px 60px auto;gap:.4rem;margin-bottom:.4rem;align-items:center">
       <input id="comb-name" placeholder="Nome do inimigo" style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;padding:4px 7px;font-family:Crimson Text,serif;font-size:.84rem;color:var(--parch);outline:none"/>
       <input id="comb-init" type="number" placeholder="Init" style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;padding:4px 5px;font-family:Cinzel,serif;font-size:.8rem;color:var(--parch);text-align:center;outline:none"/>
+      <input id="comb-ca" type="number" placeholder="CA" style="background:rgba(41,128,185,.06);border:1px solid rgba(41,128,185,.3);border-radius:6px;padding:5px;font-family:Cinzel,serif;font-size:.7rem;color:var(--parch2);width:52px" title="Classe de Armadura"/>
       <input id="comb-hp" type="number" placeholder="PV" style="background:rgba(192,57,43,.06);border:1px solid rgba(192,57,43,.25);border-radius:4px;padding:4px 5px;font-family:Cinzel,serif;font-size:.8rem;color:var(--blood2);text-align:center;outline:none"/>
       <button class="mbtn secondary" style="font-size:.68rem;padding:4px 8px" onclick="addCombatant()">+</button>
     </div>
@@ -5433,8 +5470,9 @@ function addCombatant(){
   var name=document.getElementById('comb-name')?.value.trim();
   var init=parseInt(document.getElementById('comb-init')?.value)||cryptoRandInt(1,20)+modNum(ATTRS.DES);
   var hp=parseInt(document.getElementById('comb-hp')?.value)||0;
+  var ca=parseInt(document.getElementById('comb-ca')?.value)||10;
   if(!name)return;
-  extraCombatants.push({name:name,init:init,isPlayer:false,hp:hp,maxHp:hp});
+  extraCombatants.push({name:name,init:init,isPlayer:false,hp:hp,maxHp:hp,ca:ca});
   var list=document.getElementById('comb-list');
   if(list){
     var d=document.createElement('div');
@@ -5447,6 +5485,7 @@ function addCombatant(){
   document.getElementById('comb-name').value='';
   document.getElementById('comb-init').value='';
   document.getElementById('comb-hp').value='';
+  var caEl=document.getElementById('comb-ca'); if(caEl) caEl.value='';
 }
 function startCombat(){
   var pName=window.CHAR_NAME||'Personagem';
@@ -6030,25 +6069,30 @@ function cryptoRandInt(min,max){
   return min+(x%range);
 }
 function rollDie(sides){
-  var result=cryptoRandInt(1,sides);
+  var qty=Math.max(1,Math.min(20,parseInt(document.getElementById('dice-qty')?.value)||1));
   var rawMod=parseInt(document.getElementById('dice-mod')?.value)||0;
-  var total=result+rawMod;
-  var modStr=rawMod!==0?(rawMod>0?' +'+rawMod:' '+rawMod)+' = '+total:'';
+  var results=[]; var total=0;
+  for(var qi=0;qi<qty;qi++){ var r=cryptoRandInt(1,sides); results.push(r); total+=r; }
+  total+=rawMod;
+  var result=results[0]; // para compatibilidade com flash
+  var modStr='';
+  if(qty>1) modStr='['+results.join('+')+']'+(rawMod!==0?(rawMod>0?' +'+rawMod:' '+rawMod):'')+' = '+total;
+  else modStr=rawMod!==0?(rawMod>0?' +'+rawMod:' '+rawMod)+' = '+total:'';
   var btn=document.getElementById('dbtn-'+sides);
   if(btn){btn.classList.add('rolling');setTimeout(function(){btn.classList.remove('rolling');},380);}
   var numClass='',emoji='';
-  if(sides===20){
+  if(sides===20&&qty===1){
     if(result===20){numClass='nat20';emoji='⭐ ';}
     else if(result===1){numClass='nat1';emoji='✕ ';}
     else if(result>=15)numClass='high';
     else if(result<=5)numClass='low';
   } else {
-    var pct=result/sides;
+    var pct=(total-rawMod)/(sides*qty);
     if(pct>=0.85)numClass='high';
     else if(pct<=0.15)numClass='low';
   }
   showDiceFlash(sides,result,rawMod,total,numClass,emoji);
-  var line=emoji+'d'+sides+': '+result+modStr;
+  var line=emoji+(qty>1?qty:'')+'d'+sides+(qty===1?': '+result:'')+modStr;
   if(sides===20&&result===20)line+=' — ★ CRÍTICO NATURAL!';
   if(sides===20&&result===1)line+=' — ☠ FALHA CRÍTICA!';
   addMsg('roll',line);
@@ -8899,8 +8943,8 @@ function saveKeyModal(){
 
 async function continueFromStorage(){
   var KEY = typeof SAVE_KEY!=='undefined' ? SAVE_KEY : 'killyn_v3';
-  // Tentar Firebase primeiro (se usuário logado)
-  if(window._driveUser && window.loadFromCloud){
+  // Tentar Drive (se token disponível OU re-auth silenciosa)
+  if(window._driveToken){
     try{
       showSaveToast('☁ Carregando save da nuvem...');
       var cloudSaves = await window._cloudLoad();
@@ -9370,7 +9414,17 @@ async function startNewGame(){
         +(expertSkills?' | Expertise: '+expertSkills:'')
         +extra+'\n';
     })()
-    +'Bônus de proficiência: +'+(charLevel<5?2:charLevel<9?3:charLevel<13?4:charLevel<17?5:6)+'\n'
+    +'Bônus de proficiência: +'+(charLevel<5?2:charLevel<9?3:charLevel<13?4:charLevel<17?5:6)+'\n'    +(function(){
+      var cls=(window.CHAR_CLASS||'').split(' — ')[0];
+      var extras=[];
+      if(cls==='Guerreiro'&&window._ccCombatStyle) extras.push('Estilo de Combate: '+window._ccCombatStyle);
+      if(cls==='Bárbaro'&&furyActive) extras.push('Fúria ativa: +'+( BARBARIAN_RAGE_BONUS[charLevel]||2)+' dano');
+      if(cls==='Ladino') extras.push('Ataque Furtivo: '+(SNEAK_ATTACK_DICE[charLevel]||1)+'d6 dano extra com vantagem');
+      if(cls==='Feiticeiro') extras.push('Pontos de Feitiçaria disponíveis para Metamagia');
+      if(cls==='Paladino') extras.push('Smite Divino disponível ao acertar (gasta espaço de magia)');
+      if(cls==='Bruxo') extras.push('Magias de Pacto recuperadas em descanso curto');
+      return extras.length?'Recursos de classe: '+extras.join('; ')+'\n':'';
+    })()
     +'PV: '+HP_MAX+' | CA: '+charCA+'\n'
     +'Região de início: '+region.name+' ('+region.desc+')\n\n'
     +'CONSISTÊNCIA NARRATIVA — REGRAS ABSOLUTAS:\n'    +'1. NUNCA altere raça, classe, personalidade, histórico ou fatos já estabelecidos do personagem sem evento narrativo explícito.\n'    +'2. SEMPRE consulte o histórico e dados atuais antes de responder — memória de personagens, locais, quests e eventos passados deve ser mantida.\n'    +'3. Mantenha continuidade de NPCs, localização, tom e acontecimentos — o mundo é persistente.\n'    +'4. Se o personagem cometeu uma ação, isso é permanente — não desfaça sem consequência narrativa.\n'    +'5. Adapte a dificuldade ao nível, classe e equipamentos REAIS do personagem (veja o contexto acima).\n'    +'\n'    +'CAMPANHA: Gere uma campanha ORIGINAL baseada nos Forgotten Realms. A aventura deve ser coerente com o nível 1.\n'    +'INIMIGOS — USE VARIEDADE OBRIGATÓRIA. Nunca use só organizações criminosas como Zhentarim ou Harpers como antagonistas. Rotacione entre: monstros (goblinoides, mortos-vivos, bestas, aberrações), cultos de deuses obscuros, elementos naturais (dragões jovens, gigantes), facções políticas corrompidas, criaturas únicas do Underdark, NPCs com motivações pessoais, e APENAS ocasionalmente organizações criminosas. Crie pelo menos 1 antagonista original por campanha com motivação não-criminal.\n\n'
