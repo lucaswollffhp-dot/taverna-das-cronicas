@@ -17,55 +17,55 @@
 *{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  /* ── PALETA VERDE NOTURNA — Floresta Profunda ── */
+  /* ── PALETA TAVERNA — Verde Salva Clara, Leitura Confortável ── */
 
-  /* Fundos: verde-pedra muito escuro */
-  --bg:      #060a07;
-  --bg2:     #0a0f0b;
-  --bg3:     #0f1510;
-  --bg4:     #141d15;
-  --surface: rgba(40,80,45,.04);
-  --surface2:rgba(40,80,45,.08);
+  /* Fundos: verde-pedra suave (não tão escuro) */
+  --bg:      #0d1410;
+  --bg2:     #111a13;
+  --bg3:     #162018;
+  --bg4:     #1c2a1e;
+  --surface: rgba(60,110,65,.06);
+  --surface2:rgba(60,110,65,.11);
 
-  /* Texto: pergaminho envelhecido — alto contraste */
-  --text:    #dde8d0;
-  --text2:   #a8ba98;
-  --text3:   #607858;
+  /* Texto: alto contraste, levemente creme */
+  --text:    #e8f0e0;
+  --text2:   #b8cca8;
+  --text3:   #7a9870;
 
-  /* Verde salva — accent primário (substitui gold) */
-  --gold:    #5a9e4a;
-  --gold2:   #78c060;
-  --gold3:   #a0d888;
-  --gold-glow:rgba(90,158,74,.15);
-  --parch:   #c8d8b0;
-  --parch2:  #e0ecd0;
+  /* Verde principal — mais claro e vibrante */
+  --gold:    #6ab855;
+  --gold2:   #88d070;
+  --gold3:   #aae890;
+  --gold-glow:rgba(106,184,85,.18);
+  --parch:   #d0e8b8;
+  --parch2:  #eaf6d8;
 
-  /* Vermelho — ferimento/perigo (mantido, ajustado) */
-  --blood:   #8b1f2a;
-  --blood2:  #b83040;
-  --blood3:  #d84858;
+  /* Vermelho — perigo/dano */
+  --blood:   #9b2533;
+  --blood2:  #c83848;
+  --blood3:  #e85060;
 
-  /* Arcano: verde-azulado místico */
-  --arc:     #1a6b50;
-  --arc2:    #28a878;
-  --arc3:    #50d0a0;
+  /* Arcano: verde-água */
+  --arc:     #259070;
+  --arc2:    #35c090;
+  --arc3:    #60e0b0;
 
-  /* Natureza: verde quente */
-  --nat:     #3a8040;
-  --nat2:    #58b858;
+  /* Natureza */
+  --nat:     #4a9850;
+  --nat2:    #6acc65;
 
-  /* Água: turquesa profunda */
-  --ocean:   #1a5050;
-  --ocean2:  #2a8878;
+  /* Água */
+  --ocean:   #2a6870;
+  --ocean2:  #3aa8a0;
 
-  /* Bordas: verde sutil */
-  --border:  rgba(90,158,74,.14);
-  --border2: rgba(90,158,74,.30);
-  --border3: rgba(90,158,74,.55);
+  /* Bordas */
+  --border:  rgba(106,184,85,.18);
+  --border2: rgba(106,184,85,.35);
+  --border3: rgba(106,184,85,.60);
 
-  /* Sombras e brilhos */
-  --shadow:  0 4px 24px rgba(0,0,0,.65);
-  --glow-gold: 0 0 20px rgba(90,158,74,.22);
+  /* Efeitos */
+  --shadow:  0 4px 24px rgba(0,0,0,.55);
+  --glow-gold: 0 0 20px rgba(106,184,85,.25);
 
   --nav-h:68px;
   --sidebar-w:240px;
@@ -75,7 +75,7 @@
 html,body{
   background:var(--bg);
   color:var(--text);
-  /* Textura grain verde sutil */
+  /* Textura grain verde clara */
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.1 0 0 0 0 0.2 0 0 0 0 0.1 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px 200px;
   font-family:'Cormorant Garamond',Georgia,serif;
   font-size:16px;
@@ -106,7 +106,7 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
    HEADER
 ══════════════════════════════════════ */
 .hdr{
-  background:linear-gradient(180deg,#0a1208 0%,#060e08 100%);
+  background:linear-gradient(180deg,#111c13 0%,#0d1810 100%);
   border-bottom:1px solid rgba(90,158,74,.18);
   padding:.55rem 1.2rem;
   display:grid;
@@ -256,7 +256,7 @@ button[title="Menu principal"].hbtn{
 
 .sidebar{
   width:var(--sidebar-w);flex-shrink:0;
-  background:linear-gradient(180deg,#080f09 0%,#050a06 100%);
+  background:linear-gradient(180deg,#0f1a11 0%,#0a1208 100%);
   border-right:1px solid rgba(90,158,74,.12);
   box-shadow:inset -1px 0 0 rgba(90,158,74,.05),4px 0 20px rgba(0,0,0,.3);
   display:flex;flex-direction:column;
@@ -1821,140 +1821,12 @@ input[type=number]{-moz-appearance:textfield}
 }
 </style>
 
-<!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script>
-    (function(){
-      var FB_CONFIG = {
-        apiKey: "AIzaSyBKAABmYGTjHrd99EPKIGCBQ6bEBmTO2Es",
-        authDomain: "taverna-das-cronicas.firebaseapp.com",
-        projectId: "taverna-das-cronicas",
-        appId: "1:973923505396:web:eccad5b864fc4171967aa1"
-      };
-      if(!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
-      var fbAuth = firebase.auth();
-      var fbDb   = firebase.firestore();
 
-      window.firebaseGoogleLogin = async function(){
-        try{
-          var provider = new firebase.auth.GoogleAuthProvider();
-          await fbAuth.signInWithPopup(provider);
-        }catch(e){ console.error('Firebase login error:', e); showSaveToast('Erro no login: '+e.message); }
-      };
-      window.firebaseSignOut = async function(){
-        try{ await fbAuth.signOut(); }catch(e){ console.error(e); }
-      };
-      // ── Save principal (personagem, inventário, missões etc.) ──
-      window.saveToCloud = async function(state){
-        if(!fbAuth.currentUser) return false;
-        try{
-          var uid = fbAuth.currentUser.uid;
-          // Separar o histório do estado principal para evitar limite 1MB
-          var mainState = Object.assign({}, state.auto || state);
-          var chatHist = mainState.hist || [];
-          delete mainState.hist;  // hist vai para subcoleção
-          delete mainState.chat;  // chat HTML não precisa na nuvem
-          var saves = state.auto ? Object.assign({}, state, {auto: mainState}) : mainState;
-          await fbDb.collection('usuarios').doc(uid).set({ saves: saves, updatedAt: Date.now() }, { merge: true });
-          // Salvar histórico na subcoleção (sem limite de tamanho)
-          if(chatHist.length > 0){
-            await window.saveHistoryToCloud(uid, chatHist);
-          }
-          return true;
-        }catch(e){ console.error('Firestore save error:', e); return false; }
-      };
-
-      window.loadFromCloud = async function(){
-        if(!fbAuth.currentUser) return null;
-        try{
-          var uid = fbAuth.currentUser.uid;
-          var snap = await fbDb.collection('usuarios').doc(uid).get();
-          if(!snap.exists) return null;
-          var saves = snap.data().saves;
-          // Restaurar histórico da subcoleção
-          var hist = await window.loadHistoryFromCloud(uid);
-          if(hist && hist.length > 0){
-            if(saves && saves.auto) saves.auto.hist = hist;
-            else if(saves) saves.hist = hist;
-          }
-          return saves;
-        }catch(e){ console.error('Firestore load error:', e); return null; }
-      };
-
-      // ── Histórico em subcoleção (escala infinita) ──
-      window.saveHistoryToCloud = async function(uid, histArray){
-        try{
-          var sessionId = window._cloudSessionId || ('s_' + Date.now());
-          window._cloudSessionId = sessionId;
-          var batch = fbDb.batch();
-          // Salvar apenas as últimas 50 mensagens para controlar tamanho
-          var recent = histArray.slice(-50);
-          var sessionRef = fbDb.collection('usuarios').doc(uid)
-            .collection('sessions').doc(sessionId);
-          batch.set(sessionRef, { 
-            charName: window.CHAR_NAME || '',
-            updatedAt: Date.now(),
-            msgCount: recent.length
-          }, { merge: true });
-          // Cada mensagem como subdocumento
-          recent.forEach(function(msg, idx){
-            var msgRef = sessionRef.collection('messages').doc('msg_' + String(idx).padStart(4,'0'));
-            batch.set(msgRef, {
-              role: msg.role || 'user',
-              content: (msg.content || '').substring(0, 5000), // max 5KB por msg
-              idx: idx
-            });
-          });
-          await batch.commit();
-        }catch(e){ console.warn('History save error:', e); }
-      };
-
-      window.loadHistoryFromCloud = async function(uid){
-        try{
-          // Buscar a sessão mais recente
-          var sessionsRef = fbDb.collection('usuarios').doc(uid).collection('sessions');
-          var sessSnap = await sessionsRef.orderBy('updatedAt','desc').limit(1).get();
-          if(sessSnap.empty) return [];
-          var sessionDoc = sessSnap.docs[0];
-          window._cloudSessionId = sessionDoc.id;
-          // Buscar mensagens
-          var msgsSnap = await sessionDoc.ref.collection('messages').orderBy('idx').get();
-          return msgsSnap.docs.map(function(d){ return d.data(); });
-        }catch(e){ console.warn('History load error:', e); return []; }
-      };
-
-      // ── Limpar sessões antigas (manter só as 3 mais recentes) ──
-      window.cleanOldSessions = async function(){
-        if(!fbAuth.currentUser) return;
-        try{
-          var uid = fbAuth.currentUser.uid;
-          var snap = await fbDb.collection('usuarios').doc(uid)
-            .collection('sessions').orderBy('updatedAt','desc').get();
-          var toDelete = snap.docs.slice(3); // manter 3 mais recentes
-          for(var d of toDelete){
-            var msgs = await d.ref.collection('messages').get();
-            var batch = fbDb.batch();
-            msgs.docs.forEach(function(m){ batch.delete(m.ref); });
-            batch.delete(d.ref);
-            await batch.commit();
-          }
-        }catch(e){}
-      };
-      fbAuth.onAuthStateChanged(function(user){
-        window.FB_USER = user;
-        if(typeof window.onFirebaseAuthChange === 'function'){
-          window.onFirebaseAuthChange(user);
-        }
-      });
-    })();
-  </script>
 </head>
 <body>
 
 <!-- TELA INICIAL -->
-<div id="start-screen" style="position:fixed;inset:0;z-index:600;overflow:hidden;background:#020b04;display:flex;flex-direction:column;align-items:center;">
+<div id="start-screen" style="position:fixed;inset:0;z-index:600;overflow:hidden;background:#0a1208;display:flex;flex-direction:column;align-items:center;">
 
   <!-- ── CANVAS DE PARTÍCULAS ── -->
   <canvas id="particle-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.6"></canvas>
@@ -2034,7 +1906,7 @@ input[type=number]{-moz-appearance:textfield}
         </div>
 
         <!-- Continuar como convidado / chave API -->
-        <button onclick="showStep('step-api')" style="
+        <button id="ss-api-btn" onclick="showStep('step-api')" style="
           width:100%;display:flex;align-items:center;justify-content:center;gap:.6rem;
           background:rgba(155,35,53,.08);border:1px solid rgba(155,35,53,.3);
           border-radius:10px;padding:.8rem 1.2rem;cursor:pointer;transition:all .25s;
@@ -2513,7 +2385,7 @@ input[type=number]{-moz-appearance:textfield}
     <button class="hbtn hbtn-hide-mob" onclick="exportSave()" title="Exportar">↑</button>
     <label class="hbtn hbtn-hide-mob" title="Importar" style="cursor:pointer">↓<input type="file" accept=".json" style="display:none" onchange="importSave(event)"></label>
     <button class="hbtn hbtn-hide-mob" onclick="resetKey()" title="Chave API">◉</button>
-    <button class="hbtn hbtn-hide-mob" id="scene-img-toggle-btn" onclick="window._sceneImagesEnabled=!window._sceneImagesEnabled;this.style.opacity=window._sceneImagesEnabled===false?'.4':'1';this.title=window._sceneImagesEnabled===false?'Imagens: OFF':'Imagens: ON'" title="Imagens: ON" style="font-size:.65rem">⬡</button>
+    
   </div>
 </div>
 
@@ -2767,15 +2639,132 @@ const BARBARIAN_RAGE_BONUS={1:2,2:2,3:2,4:2,5:2,6:2,7:2,8:2,9:3,10:3,11:3,12:3,1
 var googleUser = null;
 // CLIENT ID: substitua pelo seu em console.cloud.google.com
 // Para testes locais funciona sem clientId (modo popup)
+
+// ═══════════════════════════════════════════════════════════════
+// GOOGLE DRIVE SAVE SYSTEM
+// Usa o access_token do login Google para salvar em Drive/appDataFolder
+// ═══════════════════════════════════════════════════════════════
+var _driveUser = null;
+var _driveToken = null;
+var _driveFileId = null; // ID do arquivo de save no Drive
+
+window._driveLogin = async function(){
+  // Usa OAuth2 com scope Drive.appdata
+  return new Promise(function(resolve){
+    var client = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: 'https://www.googleapis.com/auth/drive.appdata email profile',
+      callback: async function(resp){
+        if(resp.error){ showSaveToast('Erro no login: '+resp.error); resolve(false); return; }
+        _driveToken = resp.access_token;
+        // Buscar perfil do usuário
+        try{
+          var pr = await fetch('https://www.googleapis.com/oauth2/v3/userinfo',
+            {headers:{Authorization:'Bearer '+_driveToken}});
+          var profile = await pr.json();
+          _driveUser = {name:profile.name||'', email:profile.email||'', picture:profile.picture||''};
+          window._driveUser = _driveUser;
+          localStorage.setItem('killyn_google_user', JSON.stringify(_driveUser));
+          localStorage.setItem('killyn_google_authed','1');
+          updateGoogleBadge();
+          showScreen('menu');
+          _updateCloudBadge(_driveUser);
+          resolve(true);
+        }catch(e){ showSaveToast('Erro ao obter perfil'); resolve(false); }
+      }
+    });
+    client.requestAccessToken({prompt:'select_account'});
+  });
+};
+
+window._driveSignOut = function(){
+  _driveUser=null; _driveToken=null; _driveFileId=null;
+  window._driveUser=null;
+  localStorage.removeItem('killyn_google_user');
+  localStorage.removeItem('killyn_google_authed');
+  if(typeof google!=='undefined') google.accounts.id.disableAutoSelect();
+  _updateCloudBadge(null);
+  showScreen('login');
+};
+
+function _updateCloudBadge(user){
+  // Atualizar badge de usuário na UI
+  var badge = document.getElementById('firebase-user-badge') || document.getElementById('google-user-badge');
+  if(!badge) return;
+  if(user){
+    badge.style.display='flex';
+    var photo=badge.querySelector('#firebase-user-photo, #google-avatar');
+    var name=badge.querySelector('#firebase-user-name, #google-name');
+    if(photo&&user.picture){ photo.src=user.picture; photo.style.display='block'; }
+    if(name) name.textContent=user.name||user.email||'';
+  } else {
+    badge.style.display='none';
+  }
+}
+
+// ── Drive: salvar arquivo na pasta appdata ──
+window._cloudSave = async function(state){
+  if(!_driveToken) return false;
+  try{
+    var payload = JSON.stringify(state);
+    var boundary = '-------Taverna314159';
+    var meta = JSON.stringify({name:'taverna_save.json', parents:['appDataFolder']});
+    // Criar ou atualizar arquivo
+    var method='POST', url='https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';
+    if(_driveFileId){
+      method='PATCH';
+      url='https://www.googleapis.com/upload/drive/v3/files/'+_driveFileId+'?uploadType=multipart';
+    }
+    var body = '--'+boundary+'\r\nContent-Type: application/json\r\n\r\n'+meta
+      +'\r\n--'+boundary+'\r\nContent-Type: application/json\r\n\r\n'+payload
+      +'\r\n--'+boundary+'--';
+    var resp = await fetch(url,{
+      method:method,
+      headers:{Authorization:'Bearer '+_driveToken, 'Content-Type':'multipart/related; boundary="'+boundary+'"'},
+      body:body
+    });
+    if(resp.ok){
+      var data=await resp.json();
+      _driveFileId=data.id;
+      return true;
+    }
+    return false;
+  }catch(e){ console.warn('Drive save error:',e); return false; }
+};
+
+// ── Drive: carregar arquivo de save ──
+window._cloudLoad = async function(){
+  if(!_driveToken) return null;
+  try{
+    // Listar arquivos na pasta appdata
+    if(!_driveFileId){
+      var listResp=await fetch(
+        'https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name%3D%27taverna_save.json%27&fields=files(id)',
+        {headers:{Authorization:'Bearer '+_driveToken}});
+      if(!listResp.ok) return null;
+      var list=await listResp.json();
+      if(!list.files||!list.files.length) return null;
+      _driveFileId=list.files[0].id;
+    }
+    var fileResp=await fetch('https://www.googleapis.com/drive/v3/files/'+_driveFileId+'?alt=media',
+      {headers:{Authorization:'Bearer '+_driveToken}});
+    if(!fileResp.ok) return null;
+    return await fileResp.json();
+  }catch(e){ console.warn('Drive load error:',e); return null; }
+};
+
 var GOOGLE_CLIENT_ID = '246065935771-mb4h3s9ru3f0nfqi9st8ro1lk6seildv.apps.googleusercontent.com';
 
 var _gsiInitialized = false;
 var _gsiPromptActive = false;
 function signInWithGoogle(){
-  // Se Firebase está disponível, usar Firebase Auth (mais confiável)
-  if(window.firebaseGoogleLogin){
-    window.firebaseGoogleLogin();
+  // Usar Google Drive login (com scope Drive)
+  if(typeof google !== 'undefined' && window._driveLogin){
+    window._driveLogin();
     return;
+  }
+  if(typeof google === 'undefined'){
+    showStep('step-api'); return;
   }
   if(typeof google === 'undefined'){
     showStep('step-api');
@@ -2841,9 +2830,8 @@ function onGoogleSignedIn(){
   localStorage.setItem('killyn_google_user', JSON.stringify(googleUser));
   localStorage.setItem('killyn_google_authed', '1');
   updateGoogleBadge();
-  // Ir para hero screen (Nova Aventura / Continuar), não tela de login
-  showStartHero();
-  checkStorageSave();
+  // Pós-login: ir para MENU (Tela 2)
+  showScreen('menu');
   var badge = document.getElementById('google-user-badge');
   if(badge) badge.style.display = 'flex';
 }
@@ -2862,6 +2850,7 @@ function updateGoogleBadge(){
 
 function signOut(){
   googleUser = null;
+  _driveUser = null; _driveToken = null;
   localStorage.removeItem('killyn_google_user');
   localStorage.removeItem('killyn_google_authed');
   if(typeof google !== 'undefined'){
@@ -2869,7 +2858,7 @@ function signOut(){
   }
   var badge = document.getElementById('google-user-badge');
   if(badge) badge.style.display = 'none';
-  showStartHero();
+  showScreen('login');
 }
 
 // Restaurar sessão Google se já logou antes
@@ -3123,6 +3112,56 @@ function initParticleCanvas(){
 // ═══════════════════════════════════════════
 // step-api-hidden = estado "não visível" (volta para hero)
 // ═══════════════════════════════════════════
+// ═══════════════════════════════════════════════════
+// showScreen: controlador central das 3 telas
+// ═══════════════════════════════════════════════════
+function showScreen(which){
+  // Esconder tudo
+  var app=document.getElementById('app');
+  var ss=document.getElementById('start-screen');
+  var sn=document.getElementById('step-new');
+  var sg=document.getElementById('step-generating');
+  ['step-api','step-menu','step-patchnotes'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){el.style.display='none';el.style.visibility='hidden';}
+  });
+  if(sn){sn.style.display='none';sn.style.visibility='hidden';}
+  if(sg){sg.style.display='none';sg.style.visibility='hidden';}
+  var overlay=document.getElementById('ss-steps-overlay');
+  if(overlay) overlay.style.display='none';
+
+  if(which==='login'){
+    // Tela 1: Login — mostrar hero com botão Google + API
+    if(ss){ss.style.display='flex';ss.style.visibility='visible';}
+    if(app){app.style.display='none';app.style.visibility='hidden';}
+    var scroller=document.getElementById('ss-scroller');
+    if(scroller){scroller.style.display='flex';scroller.scrollTo({top:0,behavior:'instant'});}
+    // Garantir que botão Google está visível e game-area escondida
+    var gBtn=document.getElementById('btn-google-signin');
+    var gArea=document.getElementById('ss-game-area');
+    var apiBtn=document.getElementById('ss-api-btn');
+    if(gBtn) gBtn.style.display='flex';
+    if(gArea) gArea.style.display='none';
+    if(apiBtn) apiBtn.style.display='flex';
+    _initMagicCanvas();
+  } else if(which==='menu'){
+    // Tela 2: Menu — mostrar hero com botões Nova Aventura / Continuar
+    if(ss){ss.style.display='flex';ss.style.visibility='visible';}
+    if(app){app.style.display='none';app.style.visibility='hidden';}
+    var scroller2=document.getElementById('ss-scroller');
+    if(scroller2){scroller2.style.display='flex';scroller2.scrollTo({top:0,behavior:'instant'});}
+    // Atualizar botões para usuário autenticado
+    _updateHeroButtons();
+    checkStorageSave();
+    updateMenuApiStatus();
+    _initMagicCanvas();
+  } else if(which==='game'){
+    // Tela 3: Jogo — mostrar app
+    if(ss){ss.style.display='none';ss.style.visibility='hidden';}
+    if(app){app.style.display='flex';app.style.visibility='visible';}
+  }
+}
+
 function showStartHero(){
   ['step-new','step-generating','step-api','step-menu','step-patchnotes'].forEach(function(id){
     var el=document.getElementById(id);
@@ -3144,7 +3183,7 @@ function showStartHero(){
 
 function _updateHeroButtons(){
   var authArea=document.getElementById('ss-auth-area');
-  var isAuthed=!!(window.FB_USER || localStorage.getItem('killyn_google_authed'));
+  var isAuthed=!!(window._driveUser || localStorage.getItem('killyn_google_authed'));
   if(!authArea) return;
   if(isAuthed){
     // Já autenticado: esconder botão de login, mostrar área de jogo
@@ -6658,39 +6697,9 @@ function showSaveToast(msg){const t=document.getElementById('save-toast');t.text
 // ─── MENSAGENS ───
 
 // Gerar termos de busca para a cena a partir do contexto
-function sceneQueryFromContext(txt){
-  // Detectar elementos visuais na narração
-  var lower=txt.toLowerCase().replace(/<[^>]+>/g,' ');
-  var terms=['medieval','fantasy','dungeon','forest','castle','tavern',
-    'dragon','magic','city','ruins','cave','mountain','ocean','night','dawn'];
-  var found=terms.filter(function(t){return lower.includes(t);});
-  // Palavras-chave da raça/classe do personagem
-  var race=(window.CHAR_RACE||'').toLowerCase();
-  var raceTerm=race.includes('elfo')?'elf':race.includes('anão')?'dwarf':
-    race.includes('orc')?'warrior':race.includes('tiefling')?'demon':'adventurer';
-  var base=found.length>0?found.slice(0,3).join(','):('fantasy,'+raceTerm);
-  return encodeURIComponent(base);
-}
+// sceneQueryFromContext removida
 
-function showSceneImage(query, caption, targetEl){
-  // Unsplash Source — gratuito, sem auth, imagem aleatória por query
-  var img=new Image();
-  var url='https://source.unsplash.com/600x280/?'+query;
-  var card=document.createElement('div');
-  card.className='scene-img-card';
-  var closeBtn=document.createElement('button');
-  closeBtn.className='scene-img-toggle';
-  closeBtn.title='Fechar';
-  closeBtn.textContent='✕';
-  closeBtn.onclick=function(){card.style.display='none';};
-  var imgEl=document.createElement('img');
-  imgEl.src=url; imgEl.alt=caption; imgEl.loading='lazy';
-  imgEl.onerror=function(){card.style.display='none';};
-  var capEl=document.createElement('div');
-  capEl.className='scene-img-caption'; capEl.textContent=caption;
-  card.appendChild(closeBtn); card.appendChild(imgEl); card.appendChild(capEl);
-  targetEl.appendChild(card);
-}
+// showSceneImage removida
 
 function addMsg(tipo,txt){
   const box=document.getElementById('chat');
@@ -6760,24 +6769,7 @@ function addMsg(tipo,txt){
     hist.push({role:role,content:clean});
     if(hist.length>30)hist=hist.slice(-30);
   }
-  // Mostrar imagem de cena em mensagens longas do narrador (abertura/transição)
-  if(tipo==='dm' && window._sceneImagesEnabled!==false){
-    var plainLen=txt.replace(/<[^>]+>/g,'').length;
-    // Só para mensagens longas (abertura de cena, > 400 chars) ou com [CENA]
-    var hasCenaTag=/\[CENA:/i.test(txt);
-    var isLongScene=plainLen>400 && hist.length<=4; // primeiras mensagens = abertura
-    if(hasCenaTag||isLongScene){
-      var msgEl=d; // o div da mensagem recém-adicionado
-      var bbl=msgEl.querySelector('.bbl');
-      if(bbl){
-        var cenaMatch=txt.match(/\[CENA:\s*([^\]]+)\]/i);
-        var caption=cenaMatch?cenaMatch[1]:'Cena da aventura';
-        var query=sceneQueryFromContext(txt);
-        setTimeout(function(){showSceneImage(query,caption,bbl);},300);
-      }
-    }
-  }
-}
+}  // (imagens de cena removidas)
 function addLoad(){const box=document.getElementById('chat');const d=document.createElement('div');d.id='ldmsg';d.className='msg msg-dm';d.innerHTML='<span class="mlbl">◈ Narrador</span><div class="loading-bbl"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';box.appendChild(d);box.scrollTop=box.scrollHeight;}
 function rmLoad(){const e=document.getElementById('ldmsg');if(e)e.remove();}
 
@@ -6796,7 +6788,12 @@ function parseAndApplyUpdates(raw){
   cleaned=cleaned.replace(/```/g,'').trim();
   const m=cleaned.match(/\{"UPDATES":\s*\{[\s\S]*?\}\s*\}/);
   if(!m)return cleaned;
-  const clean=cleaned.replace(m[0],'').trim();
+  var clean=cleaned.replace(m[0],'').trim();
+  // Remover qualquer bloco JSON residual que possa ter ficado
+  clean=clean.replace(/\{\s*["\'"]?UPDATES["\'"]?\s*:\s*\{[\s\S]*?\}\s*\}/gi,'').trim();
+  // Remover marcadores técnicos que não devem aparecer ao jogador
+  clean=clean.replace(/\[CENA:[^\]]*\]/gi,'').trim();
+  clean=clean.replace(/\[SISTEMA:[^\]]*\]/gi,'').trim();
   try{
     const u=JSON.parse(m[0]).UPDATES;
     const msgs=[];
@@ -7125,7 +7122,7 @@ function getState(){
     spells:spells,spellSlots:spellSlots,
     notas:document.getElementById('notes-d')?.value||'',
     // Chat NÃO salvo no localStorage (muito grande — causa QuotaExceeded)
-    // Apenas salvo no Firebase via saveToCloud
+    // Salvo na nuvem via Google Drive
     magicItems:magicItems,diary:diary,savedNotes:savedNotes||[],
     ts:Date.now()};
 }
@@ -7158,14 +7155,14 @@ function saveProgress(slot='auto',showToast=false){
       }catch(e2){ console.error('Save falhou:', e2); }
     } else { console.error('Save error:', err); }
   }
-  // Salvar na nuvem se Firebase disponível
-  if(window.saveToCloud && window.FB_USER){
+  // Salvar na nuvem se disponível
+  if(window.saveToCloud && window._driveUser){
     var cloudState=getState();
     // Incluir foto no save da nuvem (suporta até 1MB no Firestore)
     cloudState.charPhoto=window.CHAR_PHOTO||'';
     cloudState._charPhoto=window.CHAR_PHOTO||'';
     var cloudSaves={auto:cloudState}; cloudSaves[slot]=cloudState;
-    window.saveToCloud(cloudSaves).catch(function(e){ console.warn('Cloud save failed:',e); });
+    window._cloudSave(cloudSaves).catch(function(e){ console.warn('Cloud save failed:',e); });
   }
   if(showToast) showSaveToast(slot==='auto'?'Salvo automaticamente':'Salvo no slot '+slot+'!');
 }
@@ -7262,17 +7259,42 @@ function delSlot(slot){if(!confirm('Apagar?'))return;const s=JSON.parse(localSto
 
 function exportSave(){
   var state=getState();
-  // Exportar como wrapper de slot para compatibilidade com importSaveFromMenu
-  var exportData={ auto: state, slot1: state, _exportedAt: new Date().toISOString(), _version: 'killyn_v3' };
+  // Gerar resumo narrativo do hist para o export
+  var histSummary = (hist||[]).slice(-20).map(function(m){
+    return (m.role==='assistant'?'[Narrador] ':'[Jogador] ') + (m.content||'').substring(0,200);
+  }).join('\n');
+  // Contexto para restauração precisa
+  var ctx = {
+    charName: window.CHAR_NAME||'',
+    charRace: window.CHAR_RACE||'',
+    charClass: window.CHAR_CLASS||'',
+    charSubclass: window.CHAR_SUBCLASS||'',
+    charRegion: window.CHAR_REGION||'',
+    charLevel: state.charLevel||1,
+    campaignTitle: window.CAMPAIGN_TITLE||'',
+    resumoAventura: diary&&diary.length?diary.slice(-5).join(' | '):'Aventura em andamento.',
+    ultimasCenas: histSummary
+  };
+  var exportData={
+    auto: state,
+    slot1: state,
+    _context: ctx,
+    _histSummary: histSummary,
+    _exportedAt: new Date().toISOString(),
+    _version: 'killyn_v4'
+  };
   var json=JSON.stringify(exportData,null,2);
   var blob=new Blob([json],{type:'application/json'});
   var url=URL.createObjectURL(blob);
   var a=document.createElement('a');
   var d=new Date();
   var ts=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()+'_'+d.getHours()+'h'+d.getMinutes();
-  a.href=url; a.download='killyn_save_'+ts+'.json'; a.click();
+  var charSlug=(window.CHAR_NAME||'save').toLowerCase().replace(/[^a-z0-9]/g,'_');
+  a.href=url; a.download='taverna_'+charSlug+'_'+ts+'.json'; a.click();
   URL.revokeObjectURL(url);
-  showSaveToast('◧ Save exportado: killyn_save_'+ts+'.json');
+  showSaveToast('◧ Save exportado com histórico completo');
+  // Também salvar no Drive se disponível
+  if(_driveToken) window._cloudSave(exportData).catch(function(){});
 }
 
 function importSave(event){
@@ -7281,8 +7303,18 @@ function importSave(event){
   var reader=new FileReader();
   reader.onload=function(e){
     try{
-      var state=JSON.parse(e.target.result);
-      if(!state||!state.hist){showSaveToast('Arquivo inválido!');return;}
+      var raw=JSON.parse(e.target.result);
+      // Suporte a v3 (auto wrapper) e v4 (com _context)
+      var state = (raw.auto && raw.auto.charName) ? raw.auto : (raw.charName ? raw : null);
+      if(!state||(!state.hist&&!state.charName)){showSaveToast('Arquivo inválido!');return;}
+      // Restaurar contexto narrativo se disponível
+      if(raw._context){
+        window.CHAR_NAME=raw._context.charName||state.charName||'';
+        window.CHAR_RACE=raw._context.charRace||state.charRace||'';
+        window.CHAR_CLASS=raw._context.charClass||state.charClass||'';
+        window.CAMPAIGN_TITLE=raw._context.campaignTitle||'';
+        if(raw._context.resumoAventura) state._resumo=raw._context.resumoAventura;
+      }
       if(!confirm('Importar save de '+new Date(state.ts).toLocaleString('pt-BR')+'? O progresso atual será substituído.')) return;
       hpC=state.hpC||HP_MAX;
       HP_MAX=state.HP_MAX||HP_MAX_BASE;
@@ -8162,11 +8194,11 @@ function checkStorageSave(){
     if(mainBtn) mainBtn.style.opacity='1';
   }else{
     // Verificar se há save na nuvem (Firebase)
-    if(window.FB_USER){
+    if(window._driveUser){
       if(btn) btn.textContent='☁ Carregando save da nuvem...';
       if(mainBtn){ mainBtn.style.opacity='.7'; }
       if(window.loadFromCloud){
-        window.loadFromCloud().then(function(cloudSaves){
+        window._cloudLoad().then(function(cloudSaves){
           if(cloudSaves){
             var ca=cloudSaves.auto||(cloudSaves.charName?cloudSaves:null);
             if(ca&&ca.charName){
@@ -8868,10 +8900,10 @@ function saveKeyModal(){
 async function continueFromStorage(){
   var KEY = typeof SAVE_KEY!=='undefined' ? SAVE_KEY : 'killyn_v3';
   // Tentar Firebase primeiro (se usuário logado)
-  if(window.FB_USER && window.loadFromCloud){
+  if(window._driveUser && window.loadFromCloud){
     try{
       showSaveToast('☁ Carregando save da nuvem...');
-      var cloudSaves = await window.loadFromCloud();
+      var cloudSaves = await window._cloudLoad();
       if(cloudSaves){
         var cloudAuto = cloudSaves.auto || cloudSaves;
         if(cloudAuto && cloudAuto.charName){
@@ -8908,7 +8940,7 @@ async function continueFromStorage(){
   if(!s||!s.charName){
     s=saves['slot1'];
     if(!s||!s.charName){
-      if(window.FB_USER){
+      if(window._driveUser){
         showSaveToast('Nenhum save encontrado na nuvem ou no navegador.');
       } else {
         showSaveToast('⚑ Faça login com Google para acessar seu save na nuvem, ou inicie uma nova aventura.');
@@ -8980,7 +9012,7 @@ function importSaveFromMenu(event){
         init();
         showSaveToast('✅ Save importado: '+(state.charName||'personagem')+'!');
         // Salvar na nuvem também
-        if(window.saveToCloud&&window.FB_USER) window.saveToCloud(saves);
+        if(window.saveToCloud&&window._driveUser) window._cloudSave(saves);
       } else {
         showSaveToast('✕ Erro ao carregar o save importado.');
       }
@@ -9005,8 +9037,8 @@ function goToMainMenu(){
   // 2. Salvar estado
   saveProgress('auto', false);
   // 3. Sync Firebase sem bloquear
-  if(window.saveToCloud && window.FB_USER){
-    try{ var _s=getState(); _s.charPhoto=window.CHAR_PHOTO||''; window.saveToCloud({auto:_s}).catch(function(){}); }catch(e){}
+  if(window.saveToCloud && window._driveUser){
+    try{ var _s=getState(); _s.charPhoto=window.CHAR_PHOTO||''; window._cloudSave({auto:_s}).catch(function(){}); }catch(e){}
     showSaveToast('☁ Aventura salva na nuvem');
   }
   // 4. Esconder app
@@ -9017,8 +9049,7 @@ function goToMainMenu(){
     if(el){ el.style.display='none'; el.style.visibility='hidden'; }
   });
   // 5. Mostrar hero (menu principal) — sem seletor de conta
-  showStartHero();
-  checkStorageSave();
+  showScreen('menu');
 }
 
 function updateHeader(name,race,cls,level,region){
@@ -9342,7 +9373,7 @@ async function startNewGame(){
     +'Bônus de proficiência: +'+(charLevel<5?2:charLevel<9?3:charLevel<13?4:charLevel<17?5:6)+'\n'
     +'PV: '+HP_MAX+' | CA: '+charCA+'\n'
     +'Região de início: '+region.name+' ('+region.desc+')\n\n'
-    +'CAMPANHA: Gere uma campanha ORIGINAL baseada nos Forgotten Realms. A aventura deve ser coerente com o nível 1.\n'    +'INIMIGOS — USE VARIEDADE OBRIGATÓRIA. Nunca use só organizações criminosas como Zhentarim ou Harpers como antagonistas. Rotacione entre: monstros (goblinoides, mortos-vivos, bestas, aberrações), cultos de deuses obscuros, elementos naturais (dragões jovens, gigantes), facções políticas corrompidas, criaturas únicas do Underdark, NPCs com motivações pessoais, e APENAS ocasionalmente organizações criminosas. Crie pelo menos 1 antagonista original por campanha com motivação não-criminal.\n\n'
+    +'CONSISTÊNCIA NARRATIVA — REGRAS ABSOLUTAS:\n'    +'1. NUNCA altere raça, classe, personalidade, histórico ou fatos já estabelecidos do personagem sem evento narrativo explícito.\n'    +'2. SEMPRE consulte o histórico e dados atuais antes de responder — memória de personagens, locais, quests e eventos passados deve ser mantida.\n'    +'3. Mantenha continuidade de NPCs, localização, tom e acontecimentos — o mundo é persistente.\n'    +'4. Se o personagem cometeu uma ação, isso é permanente — não desfaça sem consequência narrativa.\n'    +'5. Adapte a dificuldade ao nível, classe e equipamentos REAIS do personagem (veja o contexto acima).\n'    +'\n'    +'CAMPANHA: Gere uma campanha ORIGINAL baseada nos Forgotten Realms. A aventura deve ser coerente com o nível 1.\n'    +'INIMIGOS — USE VARIEDADE OBRIGATÓRIA. Nunca use só organizações criminosas como Zhentarim ou Harpers como antagonistas. Rotacione entre: monstros (goblinoides, mortos-vivos, bestas, aberrações), cultos de deuses obscuros, elementos naturais (dragões jovens, gigantes), facções políticas corrompidas, criaturas únicas do Underdark, NPCs com motivações pessoais, e APENAS ocasionalmente organizações criminosas. Crie pelo menos 1 antagonista original por campanha com motivação não-criminal.\n\n'
     +'DIRETRIZES GERAIS:\n'    +'- Narre em português claro e direto, como um bom Mestre. Sem palavras rebuscadas desnecessárias.\n'    +'- Máximo 3 parágrafos por resposta. Seja direto e envolvente.\n'    +'- Para testes: "Role d20+X de Habilidade". NUNCA só "role d20".\n'    +'- NUNCA resolva combates sem rolls do jogador.\n'    +'- AO FINAL: pergunte somente "O que você faz?" — jamais sugira opções.\n'    +'\nNOMES DE NPCs:\n'    +'- NPCs SEMPRE com nomes únicos, variados e culturalmente coerentes com Faerûn. PROIBIDO: Elara, Borin, Gareth, Mira, Lyra, Aria, Nyx, Torin, Aldric, Theron, Kira, Seraphina (nomes clichê genéricos de fantasia).\n'    +'- Use nomes por cultura: Waterdeep/Cormyr (Vashti, Corren, Maelys, Baerovus, Sindra) | Sembia (Dramun, Chelva, Torst) | Anão (Brikka, Durval, Thorgis) | Elfo (Ilyriel, Caelwen, Sorvian) | Halfling (Perro, Gwendy, Callum) | Calimshan (Rashan, Zafira, Khalid) | Thay (Szass, Ilvara, Nevron).\n'    +'- Registre NPCs com npc_add e mantenha consistência de nome entre cenas.\n'    +'\nFALAS DO JOGADOR:\n'    +'- NUNCA repita ou parafraseie o que o jogador acabou de escrever. A fala JÁ aconteceu — narre SOMENTE a reação do mundo.\n'    +'- ERRADO: "Você diz: Preciso de trabalho. O taberneiro te responde..." | CERTO: "O taberneiro ergue os olhos e te avalia de cima a baixo..."\n'    +'\nNOMES E IDENTIDADE:\n'    +'- NPCs desconhecem o nome do personagem até ele se apresentar explicitamente.\n'    +'- O personagem desconhece o nome de NPCs até ser apresentado, ouvir alguém chamar, ou perguntar.\n'    +'- NPCs não revelados: use descrições físicas ("o guarda baixo", "a mulher de cabelos brancos").\n'    +'- O que foi revelado persiste. O que não foi, permanece desconhecido.\n'    +'\nCONSISTÊNCIA DE MUNDO:\n'    +'- O mundo existe independente do jogador. NPCs têm rotinas, objetivos e memória.\n'    +'- O personagem NÃO tem acesso a informações que não foram reveladas a ele (sem onisciência).\n'    +'- Clima, hora do dia, localizações e estado de NPCs devem ser consistentes entre cenas.\n'    +'\nINIMIGOS E AMEAÇAS:\n'    +'- PROIBIDO usar exclusivamente organizações criminosas (Zhentarim, Mão Negra, etc.) como vilões principais. Usá-las como elemento secundário ou de cor é permitido.\n'    +'- VARIE as ameaças: criaturas selvagens com motivação (lobo defendendo território, harpia colecionadora), facções regionais (culto de deus obscuro, família nobre corrompida, deserotores), fenômenos mágicos (ruína que drena magia, espírito territorial), monstros canônicos FR com personalidade.\n'    +'- Antagonistas têm nomes únicos e motivações próprias — não são obstáculos genéricos.\n'    +'\\nROLAGENS DE DADOS:\\n'+'- Ao solicitar teste: especifique a perícia E o modificador do personagem. Ex: \'Role d20+3 de Furtividade (DC15)\'.\\n'+'- DCs LdJ: Fácil=DC10, Médio=DC15, Difícil=DC20, Muito Difícil=DC25.\\n'+'- [DADO]: resultado real do sistema. Total>=DC=sucesso. Narre consequência imediatamente.\\n'+'\\n'    +'SISTEMA DE ATUALIZAÇÃO AUTOMÁTICA — OBRIGATÓRIO incluir no final de TODA resposta que envolva mudanças:\n'
     +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300,"gold_reward":50}],"hp_damage":5,"hp_heal":0,"condition_add":[{"name":"Envenenado","duration":"1 hora"}],"condition_remove":["Envenenado"],"xp_gain":150,"xp_source":"Combate","gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena.","npc_add":[{"name":"Nome","location":"Local","relation":"aliado"}]}}\n'
     +'OBRIGATÓRIO:\n'+'- Alinhamento: use alignment_shift:{lawChaos:N,goodEvil:M,reason:"motivo"} quando o personagem toma decisão moralmente relevante. Ex: ação heroica goodEvil:+5, traição lawChaos:-10.\\n'
@@ -9578,7 +9609,6 @@ function hideLoadingScreen(){
   if(el){ el.style.display='none'; el.style.visibility='hidden'; }
 }
 function showApp(){
-  // Só esconder step-new se NÃO estamos no meio da criação de personagem
   var inCharCreation = (function(){
     var sn=document.getElementById('step-new');
     return sn && sn.style.display!=='none' && sn.style.visibility!=='hidden';
@@ -9587,12 +9617,10 @@ function showApp(){
     var sn2=document.getElementById('step-new');
     if(sn2){sn2.style.display='none';sn2.style.visibility='hidden';sn2.style.zIndex='-1';}
   }
-  // Sempre esconder estes
   ['start-screen','ss-steps-overlay','step-generating','pause-overlay'].forEach(function(id){
     var el=document.getElementById(id);
     if(el){el.style.display='none';el.style.visibility='hidden';}
   });
-  // Mostrar app
   var app=document.getElementById('app');
   if(app){app.style.display='flex';app.style.visibility='visible';}
   var bar=document.getElementById('gen-bar');
@@ -9601,94 +9629,17 @@ function showApp(){
 /* showApp_unused removida */
 
 // ── Firebase Auth Callback ──
-window.onFirebaseAuthChange = async function(user){
-  if(user){
-    updateFirebaseBadge(user);
-    // Se estamos na tela inicial (não no jogo), navegar para o menu hero
-    var appEl=document.getElementById('app');
-    var isInGame = appEl && (appEl.style.display==='flex' || appEl.style.display==='block');
-    if(!isInGame){
-      showStartHero();
-      checkStorageSave();
-    }
-    // Tentar sincronizar da nuvem
-    try{
-      var cloudSaves = await window.loadFromCloud();
-      if(cloudSaves){
-        var cloudAuto = cloudSaves.auto || cloudSaves;
-        var localRaw = localStorage.getItem(typeof SAVE_KEY!=='undefined'?SAVE_KEY:'killyn_v3');
-        var localSaves = JSON.parse(localRaw||'{}');
-        var localAuto = localSaves.auto;
-        // Usar o mais recente (maior timestamp)
-        var cloudTs = cloudAuto&&cloudAuto.ts ? cloudAuto.ts : 0;
-        var localTs  = localAuto&&localAuto.ts  ? localAuto.ts  : 0;
-        if(cloudTs > localTs && cloudAuto&&cloudAuto.charName){
-          // Nuvem é mais recente — usar nuvem
-          localSaves.auto = cloudAuto;
-          if(cloudSaves.slot1) localSaves.slot1 = cloudSaves.slot1;
-          try{
-            localStorage.setItem(typeof SAVE_KEY!=='undefined'?SAVE_KEY:'killyn_v3', JSON.stringify(localSaves));
-          }catch(q){
-            // Quota: salvar sem foto
-            var s2=Object.assign({},cloudAuto); s2.charPhoto='';
-            localSaves.auto=s2;
-            localStorage.setItem(typeof SAVE_KEY!=='undefined'?SAVE_KEY:'killyn_v3',JSON.stringify(localSaves));
-            if(cloudAuto.charPhoto) window._cloudPhoto=cloudAuto.charPhoto;
-          }
-          checkStorageSave();
-          showSaveToast('☁ Save da nuvem sincronizado — '+( cloudAuto.charName||'personagem')+' Nv.'+( cloudAuto.charLevel||1));
-        } else if(localTs > 0 && localTs >= cloudTs){
-          // Local mais recente ou igual — enviar para nuvem
-          window.saveToCloud(localSaves);
-          showSaveToast('☁ Conectado — save local enviado para a nuvem');
-        } else {
-          showSaveToast('☁ Conta conectada — nenhum save encontrado na nuvem');
-        }
-      }
-    }catch(e){ console.warn('Cloud sync error:', e); }
-  } else {
-    updateFirebaseBadge(null);
-    // Só atualizar botão se não estamos no jogo
-    var appEl=document.getElementById('app');
-    if(!appEl || appEl.style.display==='none' || appEl.style.display===''){
-      checkStorageSave();
-    }
-  }
-}
-
-function updateFirebaseBadge(user){
-  var badge = document.getElementById('firebase-user-badge');
-  var photo = document.getElementById('firebase-user-photo');
-  var name  = document.getElementById('firebase-user-name');
-  var syncEl= document.getElementById('cloud-sync-status');
-  if(!badge) return;
-  if(user){
-    badge.style.display = 'flex';
-    if(photo){ photo.src=user.photoURL||''; photo.style.display=user.photoURL?'block':'none'; }
-    if(name) name.textContent = user.displayName||user.email||'';
-    if(syncEl){ syncEl.textContent='☁ Nuvem ativa'; syncEl.style.color='rgba(70,180,70,.8)'; }
-  } else {
-    badge.style.display = 'none';
-    if(syncEl){ syncEl.textContent=''; }
-  }
-}
 
 // ── Firebase Login via botão ──
 function firebaseLogin(){
-  if(window.firebaseGoogleLogin){
-    window.firebaseGoogleLogin().catch(function(e){
+  if(window._driveLogin){
+    window._driveLogin().catch(function(e){
       showSaveToast('Erro no login Firebase: '+e.message);
     });
   }
 }
 function firebaseLogout(){
-  if(window.firebaseSignOut){
-    window.firebaseSignOut();
-    localStorage.removeItem('killyn_google_user');
-    localStorage.removeItem('killyn_google_authed');
-    googleUser = null;
-    showStartHero();
-  }
+  if(window._driveSignOut) window._driveSignOut();
 }
 
 // ─── START ───
@@ -9711,16 +9662,29 @@ restoreGoogleSession();
   grain.style.backgroundSize='200px 200px';
 })();
 
+// ═══════════════════════════════════════════════════
+// FLUXO: Tela1=Login → Tela2=Menu → Tela3=Jogo
+// ═══════════════════════════════════════════════════
 var _savedKey = localStorage.getItem('killyn_gemini_key');
-if(_savedKey){
-  apiKey = _savedKey;
-  // Sempre mostrar hero screen primeiro (não o overlay de menu)
-  showStartHero();
-  checkStorageSave();
-  updateMenuApiStatus();
+if(_savedKey) apiKey = _savedKey;
+
+var _savedUser = localStorage.getItem('killyn_google_authed');
+if(_savedUser){
+  // Usuário já autenticado: mostrar MENU (Tela 2)
+  restoreGoogleSession();
+  showScreen('menu');
 } else {
-  // Sem chave: mostrar step-api
-  showStep('step-api');
+  // Não autenticado: mostrar LOGIN (Tela 1)
+  showScreen('login');
+}
+
+// Restaurar token Drive se disponível
+if(_savedUser && _driveToken === null){
+  // Token expirado mas user está logado — re-autenticar silenciosamente
+  window.addEventListener('click', function _reauth(){
+    window.removeEventListener('click', _reauth);
+    // Não re-autenticar automaticamente, deixar usuario clicar quando quiser
+  }, {once:true});
 }
 </script>
 <div id="step-generating" style="display:none;position:fixed;inset:0;z-index:9999;background:#060408;flex-direction:column;align-items:center;justify-content:center;visibility:hidden">
