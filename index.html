@@ -51,8 +51,8 @@
   --arc3:    #b88aee;
 
   /* Natureza */
-  --nat:     #2d7a4a;
-  --nat2:    #45b06a;
+  --nat:     #8b6020;
+  --nat2:    #b89040;
 
   /* Água */
   --ocean:   #1e5f8a;
@@ -99,7 +99,7 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:var(--bg2)}
-::-webkit-scrollbar-thumb{background:rgba(90,158,74,.3);border-radius:2px}
+::-webkit-scrollbar-thumb{background:rgba(200,168,74,.3);border-radius:2px}
 ::-webkit-scrollbar-thumb:hover{background:var(--gold)}
 
 /* ══════════════════════════════════════
@@ -114,7 +114,7 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
   align-items:center;
   gap:1.2rem;
   flex-shrink:0;
-  box-shadow:0 1px 0 rgba(90,158,74,.08),0 4px 20px rgba(0,0,0,.5);
+  box-shadow:0 1px 0 rgba(200,168,74,.08),0 4px 20px rgba(0,0,0,.5);
   position:relative;z-index:10;
   box-sizing:border-box;
   min-height:62px;
@@ -130,14 +130,14 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
   display:flex;align-items:center;justify-content:center;font-size:1rem;
   border:1px solid var(--border2);
   background:radial-gradient(circle at 35% 35%,var(--bg4),var(--bg));
-  box-shadow:0 0 12px var(--gold-glow),inset 0 1px 0 rgba(90,158,74,.2);
+  box-shadow:0 0 12px var(--gold-glow),inset 0 1px 0 rgba(200,168,74,.2);
   transition:box-shadow .3s;
 }
-.hdr-icon:hover{box-shadow:0 0 20px rgba(90,158,74,.3)}
+.hdr-icon:hover{box-shadow:0 0 20px rgba(200,168,74,.3)}
 .hdr-title{
   font-family:'Cinzel Decorative',serif;font-size:.82rem;
   color:var(--gold2);letter-spacing:.8px;white-space:nowrap;
-  text-shadow:0 0 20px rgba(90,158,74,.4);
+  text-shadow:0 0 20px rgba(200,168,74,.4);
 }
 .hdr-sub{font-size:.6rem;color:var(--text3);font-style:italic;letter-spacing:.3px}
 .hdr-right{display:flex;align-items:center;gap:.35rem;flex-shrink:0}
@@ -251,14 +251,14 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
 .sidebar{
   width:var(--sidebar-w);flex-shrink:0;
   background:linear-gradient(180deg,#130f08 0%,#0e0a06 100%);
-  border-right:1px solid rgba(90,158,74,.12);
-  box-shadow:inset -1px 0 0 rgba(90,158,74,.05),4px 0 20px rgba(0,0,0,.3);
+  border-right:1px solid rgba(200,168,74,.12);
+  box-shadow:inset -1px 0 0 rgba(200,168,74,.05),4px 0 20px rgba(0,0,0,.3);
   display:flex;flex-direction:column;
   overflow-y:auto;padding:.85rem .7rem;gap:.6rem;
   -webkit-overflow-scrolling:touch;
 }
 .sidebar::-webkit-scrollbar{width:2px}
-.sidebar::-webkit-scrollbar-thumb{background:rgba(90,158,74,.2);border-radius:2px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(200,168,74,.2);border-radius:2px}
 /* Sidebar typography */
 .sidebar-section-title{font-family:'Cinzel',serif;font-size:.6rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.5rem;padding-bottom:.3rem;border-bottom:1px solid var(--border)}
 .attr-val{font-size:1.3rem;font-family:'Cinzel',serif;color:var(--gold2);line-height:1}
@@ -284,17 +284,17 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .attrs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.3rem}
 .attr-box{
   background:rgba(0,0,0,.3);
-  border:1px solid rgba(90,158,74,.15);
+  border:1px solid rgba(200,168,74,.15);
   border-radius:8px;
   padding:.45rem .25rem;
   text-align:center;
   transition:border .2s, background .2s;
   cursor:default;
 }
-.attr-box:hover{border-color:rgba(90,158,74,.35);background:rgba(90,158,74,.05);}
+.attr-box:hover{border-color:rgba(200,168,74,.35);background:rgba(200,168,74,.05);}
 .attr-box::before{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(circle at 50% 0%,rgba(90,158,74,.06),transparent 70%);
+  background:radial-gradient(circle at 50% 0%,rgba(200,168,74,.06),transparent 70%);
   pointer-events:none;
 }
 .attr-box:hover{border-color:var(--border2);background:var(--surface2)}
@@ -311,7 +311,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   color:var(--text3);cursor:pointer;
 }
 .attr-adj-btn{
-  background:rgba(90,158,74,.08);border:1px solid var(--border);
+  background:rgba(200,168,74,.08);border:1px solid var(--border);
   border-radius:2px;color:var(--text3);
   font-size:.52rem;padding:0 4px;line-height:1.6;cursor:pointer;
   transition:all .15s;
@@ -347,13 +347,13 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .saves-grid{display:grid;grid-template-columns:1fr 1fr;gap:.25rem}
 .save-box{display:flex;align-items:center;gap:4px;padding:3px 5px;background:var(--surface);border:1px solid var(--border);border-radius:5px;cursor:pointer;transition:border .15s}
 .save-box:hover{border-color:var(--border2)}
-.save-prof{width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(90,158,74,.3);flex-shrink:0;transition:all .15s}
+.save-prof{width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(200,168,74,.3);flex-shrink:0;transition:all .15s}
 .save-prof.on{background:var(--gold2);border-color:var(--gold2)}
 .save-lbl{font-family:Cinzel,serif;font-size:.48rem;color:var(--text3);text-transform:uppercase;flex:1}
 .save-val{font-family:Cinzel,serif;font-size:.82rem;color:var(--gold2)}
 .skill-box{display:flex;align-items:center;gap:4px;padding:3px 5px;border-radius:4px;transition:background .12s}
-.skill-box:hover{background:rgba(90,158,74,.05)}
-.skill-prof{width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(90,158,74,.25);flex-shrink:0;transition:all .15s}
+.skill-box:hover{background:rgba(200,168,74,.05)}
+.skill-prof{width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(200,168,74,.25);flex-shrink:0;transition:all .15s}
 .skill-prof.on{background:var(--gold2);border-color:var(--gold2)}
 .skill-prof.exp{background:var(--arc2);border-color:var(--arc2);box-shadow:0 0 4px var(--arc2)}
 /* Condition badges pulse on critical conditions */
@@ -366,7 +366,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 @keyframes concPulse{0%,100%{box-shadow:0 0 4px rgba(165,105,189,.3)}50%{box-shadow:0 0 10px rgba(165,105,189,.6)}}
 @keyframes inspPulse{0%,100%{box-shadow:0 0 4px rgba(241,196,15,.3)}50%{box-shadow:0 0 12px rgba(241,196,15,.7)}}
 .skill-lbl{font-family:Cinzel,serif;font-size:.46rem;color:var(--text3);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.skill-attr{font-family:Cinzel,serif;font-size:.42rem;color:rgba(90,158,74,.3);width:24px;text-align:right;flex-shrink:0}
+.skill-attr{font-family:Cinzel,serif;font-size:.42rem;color:rgba(200,168,74,.3);width:24px;text-align:right;flex-shrink:0}
 .skill-val{font-family:Cinzel,serif;font-size:.68rem;color:var(--gold2);width:24px;text-align:right;flex-shrink:0}
 .save-box{
   display:flex;align-items:center;gap:5px;
@@ -379,7 +379,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   border:1.5px solid var(--text3);flex-shrink:0;
   cursor:pointer;transition:all .2s;
 }
-.save-prof.on{background:var(--gold2);border-color:var(--gold2);box-shadow:0 0 6px rgba(90,158,74,.4)}
+.save-prof.on{background:var(--gold2);border-color:var(--gold2);box-shadow:0 0 6px rgba(200,168,74,.4)}
 .save-lbl{font-family:'Cinzel',serif;font-size:.48rem;color:var(--text3);text-transform:uppercase;flex:1;letter-spacing:.5px}
 .save-val{font-family:'Cinzel',serif;font-size:.72rem;color:var(--gold2);font-weight:600}
 
@@ -421,7 +421,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 }
 .inv-inp:focus{border-color:var(--gold)}
 .inv-abtn{
-  background:rgba(90,158,74,.08);border:1px solid var(--border2);
+  background:rgba(200,168,74,.08);border:1px solid var(--border2);
   border-radius:5px;color:var(--gold2);font-size:.75rem;padding:4px 9px;
   font-family:'Cinzel',serif;transition:all .15s;
 }
@@ -532,8 +532,8 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   font-family:'Cinzel',serif;transition:all .15s;
 }
 .qbtn:hover{border-color:var(--border2);color:var(--gold)}
-.qbtn.ok{border-color:rgba(45,122,74,.35);color:var(--nat2)}
-.qbtn.ok:hover{background:rgba(45,122,74,.1)}
+.qbtn.ok{border-color:rgba(180,140,55,.35);color:var(--nat2)}
+.qbtn.ok:hover{background:rgba(180,140,55,.1)}
 .qbtn.fail{border-color:rgba(155,35,53,.3);color:var(--blood2)}
 .qbtn.fail:hover{background:rgba(155,35,53,.1)}
 .qbtn.del{color:rgba(155,35,53,.4)}
@@ -573,7 +573,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   padding:3px 10px;border-radius:7px;border:1px solid transparent;
   cursor:pointer;min-width:52px;transition:all .2s;flex-shrink:0;
 }
-.turn-token.active-turn{border-color:var(--gold);background:rgba(90,158,74,.1);box-shadow:0 0 8px var(--gold-glow)}
+.turn-token.active-turn{border-color:var(--gold);background:rgba(200,168,74,.1);box-shadow:0 0 8px var(--gold-glow)}
 .turn-token.dead-turn{opacity:.4;filter:grayscale(.8)}
 .turn-token.my-turn{border-color:var(--blood3);background:rgba(155,35,53,.12);box-shadow:0 0 8px rgba(155,35,53,.2)}
 .tt-name{font-family:'Cinzel',serif;font-size:.52rem;text-transform:uppercase;color:var(--text2)}
@@ -581,8 +581,8 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .combat-btns{display:flex;gap:.3rem;flex-shrink:0}
 .cbtn{font-family:'Cinzel',serif;font-size:.58rem;border-radius:6px;padding:4px 10px;border:1px solid;transition:all .2s;letter-spacing:.3px}
 .cbtn.start{background:rgba(155,35,53,.15);border-color:var(--blood3);color:var(--blood3)}
-.cbtn.next{background:rgba(90,158,74,.08);border-color:var(--gold2);color:var(--gold2)}
-.cbtn.end{background:rgba(45,122,74,.1);border-color:var(--nat2);color:var(--nat2)}
+.cbtn.next{background:rgba(200,168,74,.08);border-color:var(--gold2);color:var(--gold2)}
+.cbtn.end{background:rgba(180,140,55,.1);border-color:var(--nat2);color:var(--nat2)}
 
 /* ══════════════════════════════════════
    MAP
@@ -605,7 +605,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   flex:1;overflow-y:auto;padding:1rem 1.1rem;
   display:flex;flex-direction:column;gap:.9rem;
   scroll-behavior:smooth;-webkit-overflow-scrolling:touch;
-  background:radial-gradient(ellipse at 50% 0%,rgba(90,158,74,.03) 0%,transparent 60%);
+  background:radial-gradient(ellipse at 50% 0%,rgba(200,168,74,.03) 0%,transparent 60%);
 }
 .msg{display:flex;flex-direction:column;gap:3px;animation:fadeUp .25s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -620,7 +620,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 }
 /* Atualização */
 .msg-update .bbl{
-  background:rgba(45,122,74,.05);border:1px solid rgba(45,122,74,.2);
+  background:rgba(180,140,55,.05);border:1px solid rgba(180,140,55,.2);
   border-left:2px solid var(--nat2);border-radius:0 7px 7px 7px;
   padding:.4rem .85rem;font-size:.8rem;color:var(--nat2);max-width:90%;
 }
@@ -632,13 +632,13 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   font-family:'Cinzel',serif;letter-spacing:.3px;
 }
 .mlbl{font-family:'Cinzel',serif;font-size:.52rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:0 4px}
-.msg-pl .mlbl{text-align:right;color:rgba(90,158,74,.35)}
+.msg-pl .mlbl{text-align:right;color:rgba(200,168,74,.35)}
 .msg-update .mlbl{color:var(--nat)}
 .msg-roll .mlbl{color:var(--blood)}
 
 /* Loading */
 .loading-bbl{
-  background:rgba(90,158,74,.04);border:1px solid var(--border);
+  background:rgba(200,168,74,.04);border:1px solid var(--border);
   border-left:2px solid var(--gold);border-radius:0 10px 10px 10px;
   padding:.7rem 1rem;display:flex;align-items:center;gap:10px;
 }
@@ -648,33 +648,33 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 
 /* ── INPUT AREA ── */
 .input-area{
-  border-top:1px solid rgba(90,158,74,.15);
+  border-top:1px solid rgba(200,168,74,.15);
   background:linear-gradient(0deg,rgba(8,5,14,.98),rgba(10,7,16,.95));
   padding:.6rem .9rem;flex-shrink:0;
   box-shadow:0 -4px 20px rgba(0,0,0,.35);
 }
 .quick-acts{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.5rem}
 .dice-bar{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-bottom:.4rem;flex-wrap:wrap}
-.dice-btn{background:rgba(90,158,74,.07);border:1px solid rgba(90,158,74,.22);border-radius:7px;color:rgba(90,158,74,.7);font-family:Cinzel,serif;font-size:.6rem;padding:4px 7px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:36px;user-select:none}
-.dice-btn:hover{background:rgba(90,158,74,.18);border-color:rgba(90,158,74,.5);color:var(--gold2);transform:translateY(-1px);box-shadow:0 3px 8px rgba(90,158,74,.15)}
+.dice-btn{background:rgba(200,168,74,.07);border:1px solid rgba(200,168,74,.22);border-radius:7px;color:rgba(200,168,74,.7);font-family:Cinzel,serif;font-size:.6rem;padding:4px 7px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:36px;user-select:none}
+.dice-btn:hover{background:rgba(200,168,74,.18);border-color:rgba(200,168,74,.5);color:var(--gold2);transform:translateY(-1px);box-shadow:0 3px 8px rgba(200,168,74,.15)}
 .dice-btn:active{transform:scale(.93) translateY(0)}
 .dice-btn.rolling{animation:diceRoll .35s ease-out;border-color:var(--gold2);color:var(--gold2)}
 .dice-btn svg{width:22px;height:22px;flex-shrink:0}
 .dice-btn .dice-lbl{font-size:.46rem;opacity:.7}
-.dice-mod-inp{width:44px;background:rgba(90,158,74,.06);border:1px solid rgba(90,158,74,.2);border-radius:6px;color:var(--gold2);font-family:Cinzel,serif;font-size:.7rem;text-align:center;padding:3px 4px;outline:none}
-.dice-mod-inp:focus{border-color:rgba(90,158,74,.5)}
-.dice-mod-lbl{font-family:Cinzel,serif;font-size:.52rem;color:rgba(90,158,74,.5);white-space:nowrap}
+.dice-mod-inp{width:44px;background:rgba(200,168,74,.06);border:1px solid rgba(200,168,74,.2);border-radius:6px;color:var(--gold2);font-family:Cinzel,serif;font-size:.7rem;text-align:center;padding:3px 4px;outline:none}
+.dice-mod-inp:focus{border-color:rgba(200,168,74,.5)}
+.dice-mod-lbl{font-family:Cinzel,serif;font-size:.52rem;color:rgba(200,168,74,.5);white-space:nowrap}
 @keyframes fadeInDeath{0%{opacity:0}100%{opacity:1}}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 
-.dice-result-flash{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,rgba(13,9,6,.97),rgba(22,16,9,.97));border:2px solid rgba(90,158,74,.6);border-radius:16px;padding:1.2rem 2rem;text-align:center;z-index:3000;box-shadow:0 8px 40px rgba(0,0,0,.8),0 0 20px rgba(90,158,74,.2);pointer-events:none;animation:diceFlash .15s ease-out}
-.dice-result-die{font-family:Cinzel,serif;font-size:.62rem;color:rgba(90,158,74,.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:.3rem}
+.dice-result-flash{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,rgba(13,9,6,.97),rgba(22,16,9,.97));border:2px solid rgba(200,168,74,.6);border-radius:16px;padding:1.2rem 2rem;text-align:center;z-index:3000;box-shadow:0 8px 40px rgba(0,0,0,.8),0 0 20px rgba(200,168,74,.2);pointer-events:none;animation:diceFlash .15s ease-out}
+.dice-result-die{font-family:Cinzel,serif;font-size:.62rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:.3rem}
 .dice-result-num{font-family:Cinzel Decorative,serif;font-size:3.5rem;line-height:1;font-weight:700;margin-bottom:.2rem;color:var(--gold2)}
-.dice-result-num.nat20{color:#6ecfa0;text-shadow:0 0 20px rgba(110,207,160,.5)}
+.dice-result-num.nat20{color:#e2c46a;text-shadow:0 0 20px rgba(220,185,80,.5)}
 .dice-result-num.nat1{color:#e74c3c;text-shadow:0 0 20px rgba(231,76,60,.4)}
 .dice-result-num.high{color:var(--gold2)}
-.dice-result-num.low{color:rgba(90,158,74,.35)}
-.dice-result-mod{font-family:Cinzel,serif;font-size:.82rem;color:rgba(90,158,74,.6);margin-top:.2rem}
+.dice-result-num.low{color:rgba(200,168,74,.35)}
+.dice-result-mod{font-family:Cinzel,serif;font-size:.82rem;color:rgba(200,168,74,.6);margin-top:.2rem}
 @keyframes diceRoll{0%{transform:rotate(0) scale(1)}25%{transform:rotate(-12deg) scale(1.08)}50%{transform:rotate(8deg) scale(1.05)}75%{transform:rotate(-5deg) scale(1.02)}100%{transform:rotate(0) scale(1)}}
 @keyframes diceFlash{0%{transform:translate(-50%,-50%) scale(.7);opacity:0}60%{transform:translate(-50%,-50%) scale(1.05);opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
 .qa{
@@ -700,16 +700,16 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 }
 .ainp:focus{
   border-color:var(--gold);
-  box-shadow:0 0 0 3px rgba(90,158,74,.08);
+  box-shadow:0 0 0 3px rgba(200,168,74,.08);
 }
 .ainp::placeholder{color:rgba(232,223,200,.2)}
 .sbtn{
   background:linear-gradient(135deg,var(--blood) 0%,#7a1a2a 100%);
-  border:1px solid rgba(90,158,74,.4);
+  border:1px solid rgba(200,168,74,.4);
   border-radius:10px;color:var(--gold3);
   font-family:'Cinzel',serif;font-size:.7rem;padding:.6rem 1rem;
   white-space:nowrap;transition:all .2s;letter-spacing:.5px;
-  box-shadow:0 2px 12px rgba(30,100,50,.3);
+  box-shadow:0 2px 12px rgba(160,120,40,.3);
 }
 .sbtn:hover{filter:brightness(1.18);box-shadow:0 4px 20px rgba(155,35,53,.4)}
 .sbtn:disabled{filter:grayscale(1);opacity:.45;cursor:not-allowed;box-shadow:none}
@@ -720,10 +720,10 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .mob-nav{
   display:none;position:fixed;bottom:0;left:0;right:0;
   height:var(--nav-h);
-  background:#080f09;border-top:2px solid rgba(90,158,74,.3);
-  border-top:1px solid rgba(90,158,74,.22);
+  background:#080608;border-top:2px solid rgba(200,168,74,.3);
+  border-top:1px solid rgba(200,168,74,.22);
   z-index:100;flex-shrink:0;
-  box-shadow:0 -6px 28px rgba(0,0,0,.7),0 -1px 0 rgba(90,158,74,.1);
+  box-shadow:0 -6px 28px rgba(0,0,0,.7),0 -1px 0 rgba(200,168,74,.1);
   padding:5px 4px 4px;
   box-sizing:border-box;
   backdrop-filter:blur(12px);
@@ -739,10 +739,10 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .mnav-btn{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:3px;
-  background:rgba(90,158,74,.06);
-  border:1px solid rgba(90,158,74,.18);
+  background:rgba(200,168,74,.06);
+  border:1px solid rgba(200,168,74,.18);
   border-radius:9px;
-  color:rgba(90,158,74,.5);
+  color:rgba(200,168,74,.5);
   font-family:Cinzel,serif;font-size:.5rem;text-transform:uppercase;letter-spacing:.5px;
   padding:4px 0;
   flex:1 1 0;width:0;min-width:0;
@@ -764,13 +764,13 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   color:inherit;
 }
 .mnav-btn.active{
-  background:linear-gradient(180deg,rgba(90,158,74,.22) 0%,rgba(90,158,74,.10) 100%);
-  border-color:rgba(90,158,74,.6);
+  background:linear-gradient(180deg,rgba(200,168,74,.22) 0%,rgba(200,168,74,.10) 100%);
+  border-color:rgba(200,168,74,.6);
   color:var(--gold2);
-  box-shadow:0 0 10px rgba(90,158,74,.18),inset 0 0 8px rgba(90,158,74,.06);
+  box-shadow:0 0 10px rgba(200,168,74,.18),inset 0 0 8px rgba(200,168,74,.06);
 }
 .mnav-btn.active .icon{
-  filter:drop-shadow(0 0 5px rgba(90,158,74,.7));
+  filter:drop-shadow(0 0 5px rgba(200,168,74,.7));
 }
 .mnav-btn:active{transform:scale(.93)}
 .mnav-btn .badge{
@@ -810,7 +810,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   background:var(--bg3);
   border:1px solid var(--border2);border-radius:14px;
   padding:1.5rem;width:92%;max-width:448px;max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 0 1px rgba(90,158,74,.05);
+  box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 0 1px rgba(200,168,74,.05);
   animation:modalIn .22s cubic-bezier(.4,0,.2,1);
 }
 @keyframes modalIn{from{opacity:0;transform:scale(.97) translateY(4px)}to{opacity:1;transform:scale(1) translateY(0)}}
@@ -827,7 +827,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   font-family:'Cormorant Garamond',serif;font-size:.94rem;
   color:var(--text);outline:none;transition:border .2s;
 }
-.mfield input:focus,.mfield select:focus,.mfield textarea:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(90,158,74,.1)}
+.mfield input:focus,.mfield select:focus,.mfield textarea:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(200,168,74,.1)}
 .mfield textarea{resize:vertical;min-height:54px;line-height:1.5}
 .mbtn{
   font-family:'Cinzel',serif;font-size:.76rem;border-radius:7px;
@@ -835,7 +835,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 }
 .mbtn.primary{
   background:linear-gradient(135deg,var(--blood),#7a1a2a);
-  border-color:rgba(90,158,74,.4);color:var(--gold3);
+  border-color:rgba(200,168,74,.4);color:var(--gold3);
   box-shadow:0 2px 12px rgba(155,35,53,.3);
 }
 .mbtn.primary:hover{filter:brightness(1.15)}
@@ -884,7 +884,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   background:var(--bg3);border:1px solid var(--gold2);border-radius:11px;
   padding:10px 14px;display:none;
   animation:slideIn .28s ease;
-  box-shadow:0 8px 30px rgba(0,0,0,.5),0 0 0 1px rgba(90,158,74,.1);
+  box-shadow:0 8px 30px rgba(0,0,0,.5),0 0 0 1px rgba(200,168,74,.1);
 }
 @keyframes slideIn{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
 .qn-tag{font-family:'Cinzel',serif;font-size:.54rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
@@ -895,19 +895,19 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
    CHARACTER CREATION (start screen)
 ══════════════════════════════════════ */
 .attr-build-box{
-  background:var(--surface);border:1px solid rgba(90,158,74,.22);
+  background:var(--surface);border:1px solid rgba(200,168,74,.22);
   border-radius:8px;text-align:center;padding:.6rem .4rem;
   display:flex;flex-direction:column;align-items:center;gap:4px;
   transition:border-color .2s;
 }
-.attr-build-box:hover{border-color:rgba(90,158,74,.5)}
+.attr-build-box:hover{border-color:rgba(200,168,74,.5)}
 .attr-step-btn{
-  background:rgba(90,158,74,.08);border:1px solid rgba(90,158,74,.2);
+  background:rgba(200,168,74,.08);border:1px solid rgba(200,168,74,.2);
   border-radius:5px;color:rgba(237,224,188,.6);
   width:28px;height:28px;font-size:.9rem;cursor:pointer;
   font-family:Cinzel,serif;line-height:1;transition:all .15s;flex-shrink:0;
 }
-.attr-step-btn:hover{background:rgba(90,158,74,.2);color:#e6c76a;border-color:rgba(90,158,74,.5)}
+.attr-step-btn:hover{background:rgba(200,168,74,.2);color:#e6c76a;border-color:rgba(200,168,74,.5)}
 .attr-step-btn:active{transform:scale(.92)}
 .attr-build-mod{font-family:'Cinzel',serif;font-size:.58rem;color:var(--text3);margin-top:1px}
 .region-btn{
@@ -927,53 +927,53 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 /* ── Patch Notes ── */
 .pnscroll::-webkit-scrollbar{width:4px}
 .pnscroll::-webkit-scrollbar-track{background:transparent}
-.pnscroll::-webkit-scrollbar-thumb{background:rgba(90,158,74,.2);border-radius:2px}
-.pn-version{background:rgba(90,158,74,.03);border:1px solid rgba(90,158,74,.1);border-radius:12px;padding:1rem;margin-bottom:.8rem}
+.pnscroll::-webkit-scrollbar-thumb{background:rgba(200,168,74,.2);border-radius:2px}
+.pn-version{background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.1);border-radius:12px;padding:1rem;margin-bottom:.8rem}
 .pn-version-first{border-color:rgba(107,63,160,.2);background:rgba(107,63,160,.03)}
 .pn-ver-badge{font-family:Cinzel Decorative,serif;font-size:.75rem;color:var(--arc2);margin-bottom:.3rem}
-.pn-date{font-family:Cinzel,serif;font-size:.55rem;color:rgba(90,158,74,.4);margin-left:.5rem;font-weight:normal}
+.pn-date{font-family:Cinzel,serif;font-size:.55rem;color:rgba(200,168,74,.4);margin-left:.5rem;font-weight:normal}
 .pn-ver-title{font-family:Cinzel,serif;font-size:1rem;color:var(--gold2);margin-bottom:.15rem}
-.pn-ver-sub{font-family:Cormorant Garamond,serif;font-size:.88rem;color:rgba(90,158,74,.45);font-style:italic;margin-bottom:.7rem;padding-bottom:.5rem;border-bottom:1px solid rgba(90,158,74,.1)}
+.pn-ver-sub{font-family:Cormorant Garamond,serif;font-size:.88rem;color:rgba(200,168,74,.45);font-style:italic;margin-bottom:.7rem;padding-bottom:.5rem;border-bottom:1px solid rgba(200,168,74,.1)}
 .pn-category{font-family:Cinzel,serif;font-size:.72rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin:.6rem 0 .3rem}
 .pn-list{margin:0;padding-left:1.1rem;list-style:none}
 .pn-list li{font-family:Cormorant Garamond,serif;font-size:.9rem;color:rgba(232,223,200,.75);margin-bottom:.35rem;line-height:1.5;position:relative}
-.pn-list li::before{content:"◆";color:rgba(90,158,74,.3);font-size:.5rem;position:absolute;left:-1rem;top:.35rem}
+.pn-list li::before{content:"◆";color:rgba(200,168,74,.3);font-size:.5rem;position:absolute;left:-1rem;top:.35rem}
 .pn-list li strong{color:var(--gold2);font-weight:600}
-.pn-list li code{font-family:monospace;font-size:.8rem;background:rgba(90,158,74,.08);border:1px solid rgba(90,158,74,.15);border-radius:3px;padding:0 3px;color:var(--arc2)}
+.pn-list li code{font-family:monospace;font-size:.8rem;background:rgba(200,168,74,.08);border:1px solid rgba(200,168,74,.15);border-radius:3px;padding:0 3px;color:var(--arc2)}
 
 /* ── Character Creation Steps ── */
-.cc-panel{width:100%;background:rgba(255,255,255,.025);border:1px solid rgba(90,158,74,.15);border-radius:14px;padding:1.1rem;margin-bottom:.6rem;backdrop-filter:blur(4px)}
-.cc-section-title{font-family:'Cinzel',serif;font-size:.6rem;color:var(--gold2);text-transform:uppercase;letter-spacing:2px;margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:1px solid rgba(90,158,74,.2);display:flex;align-items:center;gap:.4rem}
+.cc-panel{width:100%;background:rgba(255,255,255,.025);border:1px solid rgba(200,168,74,.15);border-radius:14px;padding:1.1rem;margin-bottom:.6rem;backdrop-filter:blur(4px)}
+.cc-section-title{font-family:'Cinzel',serif;font-size:.6rem;color:var(--gold2);text-transform:uppercase;letter-spacing:2px;margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:1px solid rgba(200,168,74,.2);display:flex;align-items:center;gap:.4rem}
 .cc-label{font-family:'Cinzel',serif;font-size:.56rem;color:var(--gold);text-transform:uppercase;letter-spacing:1.2px;display:block;margin-bottom:4px;opacity:.9}
-.cc-input{width:100%;background:rgba(4,2,10,.85);border:1px solid rgba(90,158,74,.25);border-radius:8px;padding:.6rem .9rem;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#e8dfc8;outline:none;transition:border .2s,box-shadow .2s;box-sizing:border-box}
-.cc-input:focus{border-color:rgba(90,158,74,.55);box-shadow:0 0 0 3px rgba(90,158,74,.08)}
+.cc-input{width:100%;background:rgba(4,2,10,.85);border:1px solid rgba(200,168,74,.25);border-radius:8px;padding:.6rem .9rem;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#e8dfc8;outline:none;transition:border .2s,box-shadow .2s;box-sizing:border-box}
+.cc-input:focus{border-color:rgba(200,168,74,.55);box-shadow:0 0 0 3px rgba(200,168,74,.08)}
 .cc-input-lg{font-size:1.05rem}
-.cc-input:focus{border-color:rgba(90,158,74,.6)}
-.cc-select{width:100%;background:rgba(4,2,10,.9);border:1px solid rgba(90,158,74,.25);border-radius:8px;padding:.55rem .8rem;font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#e8dfc8;outline:none;box-sizing:border-box;cursor:pointer;transition:border .2s;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(200%2C168%2C74%2C.5)'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .8rem center;padding-right:2.2rem}
-.cc-select:focus{border-color:rgba(90,158,74,.5)}
-.cc-nav-row{display:flex;gap:.6rem;margin-top:.8rem;padding-top:.7rem;border-top:1px solid rgba(90,158,74,.1)}
-.cc-btn-sec{flex:1;background:rgba(90,158,74,.06);border:1px solid rgba(90,158,74,.25);border-radius:9px;color:rgba(90,158,74,.7);font-family:Cinzel,serif;font-size:.7rem;padding:.6rem;cursor:pointer;transition:all .2s}
-.cc-btn-sec:hover{border-color:rgba(90,158,74,.5)}
-.cc-btn-pri{flex:2;background:rgba(90,158,74,.1);border:1px solid rgba(90,158,74,.4);border-radius:9px;color:var(--gold2);font-family:'Cinzel',serif;font-size:.7rem;padding:.65rem;cursor:pointer;transition:all .2s;letter-spacing:.5px}
-.cc-btn-pri:hover{background:rgba(90,158,74,.2);border-color:rgba(90,158,74,.65);box-shadow:0 4px 16px rgba(90,158,74,.15)}
-.cc-btn-pri:hover{background:rgba(90,158,74,.2)}
-.cc-btn-start{flex:2;background:#1a4a20;border:1px solid #2d7a38;border-top:1px solid #3d9a4a;border-radius:9px;color:#f5db96;font-family:'Cinzel',serif;font-size:.72rem;padding:.7rem;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 24px rgba(155,35,53,.3);transition:all .2s;position:relative;overflow:hidden}
+.cc-input:focus{border-color:rgba(200,168,74,.6)}
+.cc-select{width:100%;background:rgba(4,2,10,.9);border:1px solid rgba(200,168,74,.25);border-radius:8px;padding:.55rem .8rem;font-family:'Cormorant Garamond',serif;font-size:.95rem;color:#e8dfc8;outline:none;box-sizing:border-box;cursor:pointer;transition:border .2s;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(200%2C168%2C74%2C.5)'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .8rem center;padding-right:2.2rem}
+.cc-select:focus{border-color:rgba(200,168,74,.5)}
+.cc-nav-row{display:flex;gap:.6rem;margin-top:.8rem;padding-top:.7rem;border-top:1px solid rgba(200,168,74,.1)}
+.cc-btn-sec{flex:1;background:rgba(200,168,74,.06);border:1px solid rgba(200,168,74,.25);border-radius:9px;color:rgba(200,168,74,.7);font-family:Cinzel,serif;font-size:.7rem;padding:.6rem;cursor:pointer;transition:all .2s}
+.cc-btn-sec:hover{border-color:rgba(200,168,74,.5)}
+.cc-btn-pri{flex:2;background:rgba(200,168,74,.1);border:1px solid rgba(200,168,74,.4);border-radius:9px;color:var(--gold2);font-family:'Cinzel',serif;font-size:.7rem;padding:.65rem;cursor:pointer;transition:all .2s;letter-spacing:.5px}
+.cc-btn-pri:hover{background:rgba(200,168,74,.2);border-color:rgba(200,168,74,.65);box-shadow:0 4px 16px rgba(200,168,74,.15)}
+.cc-btn-pri:hover{background:rgba(200,168,74,.2)}
+.cc-btn-start{flex:2;background:#5a3010;border:1px solid #8b6020;border-top:1px solid #b89040;border-radius:9px;color:#f5db96;font-family:'Cinzel',serif;font-size:.72rem;padding:.7rem;cursor:pointer;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 24px rgba(155,35,53,.3);transition:all .2s;position:relative;overflow:hidden}
 .cc-btn-start:hover{box-shadow:0 6px 32px rgba(155,35,53,.5);transform:translateY(-1px);filter:brightness(1.1)}
 
 /* Race/Class grid cards */
-.cc-card{background:rgba(10,7,16,.75);border:1px solid rgba(90,158,74,.18);border-radius:10px;padding:.6rem .4rem;text-align:center;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;overflow:hidden}
-.cc-card:hover{border-color:rgba(90,158,74,.45);background:rgba(20,14,30,.9);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.4)}
-.cc-card.selected{border-color:var(--gold2);background:rgba(60,130,60,.15);box-shadow:inset 0 0 0 1px rgba(60,130,60,.3),0 4px 16px rgba(0,0,0,.6)}
-.cc-card:hover{border-color:rgba(90,158,74,.4);background:rgba(90,158,74,.04)}
-.cc-card.selected{border-color:var(--gold2);background:rgba(90,158,74,.1);box-shadow:0 0 10px rgba(90,158,74,.15)}
+.cc-card{background:rgba(10,7,16,.75);border:1px solid rgba(200,168,74,.18);border-radius:10px;padding:.6rem .4rem;text-align:center;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;overflow:hidden}
+.cc-card:hover{border-color:rgba(200,168,74,.45);background:rgba(20,14,30,.9);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.cc-card.selected{border-color:var(--gold2);background:rgba(180,140,55,.15);box-shadow:inset 0 0 0 1px rgba(180,140,55,.3),0 4px 16px rgba(0,0,0,.6)}
+.cc-card:hover{border-color:rgba(200,168,74,.4);background:rgba(200,168,74,.04)}
+.cc-card.selected{border-color:var(--gold2);background:rgba(200,168,74,.1);box-shadow:0 0 10px rgba(200,168,74,.15)}
 .cc-card-icon{font-size:1.3rem;line-height:1}
 .cc-card-name{font-family:Cinzel,serif;font-size:.52rem;color:var(--gold);text-transform:uppercase;letter-spacing:.8px}
 .cc-card-sub{font-size:.62rem;color:var(--text3);font-style:italic}
 /* Step dots */
-.cc-step-dot{font-family:'Cinzel',serif;font-size:.43rem;color:rgba(90,158,74,.35);text-transform:uppercase;letter-spacing:.4px;padding:4px 9px;border-radius:10px;border:1px solid rgba(90,158,74,.12);transition:all .25s;white-space:nowrap;cursor:default}
-.cc-step-dot.active{color:#f5db96;border-color:rgba(90,158,74,.55);background:rgba(90,158,74,.12);box-shadow:0 0 12px rgba(90,158,74,.15)}
-.cc-step-dot.done{color:rgba(90,158,74,.55);border-color:rgba(90,158,74,.22);background:rgba(90,158,74,.05)}
-.cc-step-line{flex:1;height:1px;background:rgba(90,158,74,.15);align-self:center}
+.cc-step-dot{font-family:'Cinzel',serif;font-size:.43rem;color:rgba(200,168,74,.35);text-transform:uppercase;letter-spacing:.4px;padding:4px 9px;border-radius:10px;border:1px solid rgba(200,168,74,.12);transition:all .25s;white-space:nowrap;cursor:default}
+.cc-step-dot.active{color:#f5db96;border-color:rgba(200,168,74,.55);background:rgba(200,168,74,.12);box-shadow:0 0 12px rgba(200,168,74,.15)}
+.cc-step-dot.done{color:rgba(200,168,74,.55);border-color:rgba(200,168,74,.22);background:rgba(200,168,74,.05)}
+.cc-step-line{flex:1;height:1px;background:rgba(200,168,74,.15);align-self:center}
 
 
 @media(max-width:740px){
@@ -1098,19 +1098,19 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 
 
 /* ── Sub-painéis dentro do cc-panel ── */
-.cc-sub-panel{background:rgba(0,0,0,.3);border:1px solid rgba(90,158,74,.1);border-radius:10px;padding:.7rem .9rem;margin-bottom:.6rem}
+.cc-sub-panel{background:rgba(0,0,0,.3);border:1px solid rgba(200,168,74,.1);border-radius:10px;padding:.7rem .9rem;margin-bottom:.6rem}
 /* ── Attr box ── */
-.attr-box{background:rgba(4,2,10,.8);border:1px solid rgba(90,158,74,.2);border-radius:10px;padding:.7rem .5rem;text-align:center;transition:border .2s}
-.attr-box:focus-within{border-color:rgba(90,158,74,.5)}
+.attr-box{background:rgba(4,2,10,.8);border:1px solid rgba(200,168,74,.2);border-radius:10px;padding:.7rem .5rem;text-align:center;transition:border .2s}
+.attr-box:focus-within{border-color:rgba(200,168,74,.5)}
 /* ── Bolhas de chat melhoradas ── */
-.msg-dm .bbl{background:linear-gradient(135deg,rgba(18,12,26,.92),rgba(12,8,20,.95));border:1px solid rgba(90,158,74,.2);border-left:2px solid rgba(90,158,74,.5);border-radius:0 12px 12px 12px;box-shadow:0 2px 12px rgba(0,0,0,.4);word-break:break-word;overflow-wrap:anywhere;font-size:1rem;line-height:1.75;padding:.75rem 1rem}
+.msg-dm .bbl{background:linear-gradient(135deg,rgba(18,12,26,.92),rgba(12,8,20,.95));border:1px solid rgba(200,168,74,.2);border-left:2px solid rgba(200,168,74,.5);border-radius:0 12px 12px 12px;box-shadow:0 2px 12px rgba(0,0,0,.4);word-break:break-word;overflow-wrap:anywhere;font-size:1rem;line-height:1.75;padding:.75rem 1rem}
 .msg-pl .bbl{background:linear-gradient(135deg,rgba(155,35,53,.12),rgba(120,20,40,.08));border:1px solid rgba(180,40,60,.25);border-right:2px solid rgba(180,40,60,.5);border-radius:12px 0 12px 12px;box-shadow:0 2px 12px rgba(0,0,0,.4);word-break:break-word;overflow-wrap:anywhere;font-size:1rem;line-height:1.7;padding:.7rem 1rem}
 /* ── Chat area scrollbar ── */
 .chat-area::-webkit-scrollbar{width:3px}
-.chat-area::-webkit-scrollbar-thumb{background:rgba(90,158,74,.2);border-radius:2px}
+.chat-area::-webkit-scrollbar-thumb{background:rgba(200,168,74,.2);border-radius:2px}
 /* ── Input field ── */
-#inp{background:rgba(4,2,10,.8);border:1px solid rgba(90,158,74,.2);border-radius:9px;color:#e8dfc8;font-family:'Cormorant Garamond',serif;font-size:1rem;padding:.65rem .9rem;flex:1;outline:none;transition:border .2s,box-shadow .2s}
-#inp:focus{border-color:rgba(90,158,74,.5);box-shadow:0 0 0 3px rgba(90,158,74,.07)}
+#inp{background:rgba(4,2,10,.8);border:1px solid rgba(200,168,74,.2);border-radius:9px;color:#e8dfc8;font-family:'Cormorant Garamond',serif;font-size:1rem;padding:.65rem .9rem;flex:1;outline:none;transition:border .2s,box-shadow .2s}
+#inp:focus{border-color:rgba(200,168,74,.5);box-shadow:0 0 0 3px rgba(200,168,74,.07)}
 /* ── Mobile grids ── */
 @media(max-width:740px){
   #race-grid,#class-grid{grid-template-columns:repeat(3,1fr)!important;gap:.3rem!important}
@@ -1124,8 +1124,8 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 
 /* ══ UX: Hierarquia visual no sidebar ══ */
 .sb-vital-group{
-  background:rgba(90,158,74,.05);
-  border:1px solid rgba(90,158,74,.15);
+  background:rgba(200,168,74,.05);
+  border:1px solid rgba(200,168,74,.15);
   border-radius:10px;
   padding:.6rem .7rem;
   margin-bottom:.5rem;
@@ -1136,7 +1136,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .sb-section-hdr{
   font-family:'Cinzel',serif;
   font-size:.56rem;
-  color:rgba(90,158,74,.5);
+  color:rgba(200,168,74,.5);
   text-transform:uppercase;
   letter-spacing:1.5px;
   margin-bottom:.35rem;
@@ -1146,7 +1146,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   cursor:pointer;
   user-select:none;
 }
-.sb-section-hdr:hover{color:rgba(90,158,74,.8);}
+.sb-section-hdr:hover{color:rgba(200,168,74,.8);}
 
 /* ── HP display maior ── */
 .hp-mini{
@@ -1181,7 +1181,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 }
 .attr-cell{
   background:rgba(0,0,0,.3);
-  border:1px solid rgba(90,158,74,.12);
+  border:1px solid rgba(200,168,74,.12);
   border-radius:7px;
   padding:.35rem .2rem;
   text-align:center;
@@ -1189,7 +1189,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 .attr-name{
   font-family:'Cinzel',serif;
   font-size:.48rem;
-  color:rgba(90,158,74,.6);
+  color:rgba(200,168,74,.6);
   text-transform:uppercase;
   letter-spacing:.5px;
 }
@@ -1219,14 +1219,14 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
   font-size:.55rem;
   color:var(--text2);
   background:rgba(255,255,255,.04);
-  border:1px solid rgba(90,158,74,.2);
+  border:1px solid rgba(200,168,74,.2);
   border-radius:6px;
   padding:4px 8px;
   cursor:pointer;
   transition:all .15s;
   white-space:nowrap;
 }
-.qa-btn:hover{background:rgba(90,158,74,.12);color:var(--gold2);}
+.qa-btn:hover{background:rgba(200,168,74,.12);color:var(--gold2);}
 
 /* ── Chat bubbles maior ── */
 .bbl{
@@ -1287,8 +1287,8 @@ input[type=number]{-moz-appearance:textfield}
   display:inline-flex !important;
   align-items:center;
   gap:4px;
-  background:rgba(90,158,74,.14) !important;
-  border:1px solid rgba(90,158,74,.45) !important;
+  background:rgba(200,168,74,.14) !important;
+  border:1px solid rgba(200,168,74,.45) !important;
   border-radius:7px;
   padding:3px 10px !important;
   font-family:'Cinzel',serif !important;
@@ -1301,8 +1301,8 @@ input[type=number]{-moz-appearance:textfield}
   text-decoration:none;
 }
 .inline-roll-btn:hover{
-  background:rgba(90,158,74,.25) !important;
-  box-shadow:0 0 8px rgba(90,158,74,.2);
+  background:rgba(200,168,74,.25) !important;
+  box-shadow:0 0 8px rgba(200,168,74,.2);
 }
 .inline-roll-btn:disabled{opacity:.4;cursor:default}
 
@@ -1378,8 +1378,8 @@ input[type=number]{-moz-appearance:textfield}
   height: 28px !important;
   font-size: 1.1rem !important;
   border-radius: 6px !important;
-  background: rgba(90,158,74,.12) !important;
-  border: 1px solid rgba(90,158,74,.3) !important;
+  background: rgba(200,168,74,.12) !important;
+  border: 1px solid rgba(200,168,74,.3) !important;
   color: var(--gold2) !important;
   cursor: pointer !important;
   display: inline-flex !important;
@@ -1388,7 +1388,7 @@ input[type=number]{-moz-appearance:textfield}
   transition: background .15s !important;
   -webkit-user-select: none !important;
 }
-.attr-step-btn:hover { background: rgba(90,158,74,.25) !important; }
+.attr-step-btn:hover { background: rgba(200,168,74,.25) !important; }
 .attr-step-inp {
   text-align: center !important;
   font-family: 'Cinzel', serif !important;
@@ -1459,8 +1459,8 @@ input[type=number]{-moz-appearance:textfield}
 
 /* ── Mensagem de teste solicitado ── */
 .msg-roll-request .bbl{
-  background: rgba(90,158,74,.06) !important;
-  border: 1px solid rgba(90,158,74,.25) !important;
+  background: rgba(200,168,74,.06) !important;
+  border: 1px solid rgba(200,168,74,.25) !important;
   border-left: 3px solid var(--gold2) !important;
   padding: .6rem .9rem !important;
 }
@@ -1468,8 +1468,8 @@ input[type=number]{-moz-appearance:textfield}
   display: inline-flex !important;
   align-items: center !important;
   gap: 5px !important;
-  background: rgba(90,158,74,.1) !important;
-  border: 1px solid rgba(90,158,74,.45) !important;
+  background: rgba(200,168,74,.1) !important;
+  border: 1px solid rgba(200,168,74,.45) !important;
   border-radius: 8px !important;
   padding: 6px 14px !important;
   font-family: 'Cinzel', serif !important;
@@ -1482,8 +1482,8 @@ input[type=number]{-moz-appearance:textfield}
   letter-spacing: .3px !important;
 }
 .inline-roll-btn:hover{
-  background: rgba(90,158,74,.22) !important;
-  box-shadow: 0 2px 12px rgba(90,158,74,.2) !important;
+  background: rgba(200,168,74,.22) !important;
+  box-shadow: 0 2px 12px rgba(200,168,74,.2) !important;
   transform: translateY(-1px) !important;
 }
 .inline-roll-btn:disabled{
@@ -1494,7 +1494,7 @@ input[type=number]{-moz-appearance:textfield}
 
 /* ── Mini atributos na sidebar ── */
 #sidebar-attrs-mini div{transition:background .2s}
-#sidebar-attrs-mini div:hover{background:rgba(90,158,74,.08) !important}
+#sidebar-attrs-mini div:hover{background:rgba(200,168,74,.08) !important}
 /* ── Header responsivo ── */
 @media(max-width:900px){
   
@@ -1527,7 +1527,7 @@ input[type=number]{-moz-appearance:textfield}
 }
 @media(max-width:900px){
   .hdr{grid-template-columns:1fr 1fr;}
-  .hdr-campaign-block{grid-column:1/-1;border-top:1px solid rgba(90,158,74,.08);padding-top:.3rem;}
+  .hdr-campaign-block{grid-column:1/-1;border-top:1px solid rgba(200,168,74,.08);padding-top:.3rem;}
 }
 @media(max-width:640px){
   .hdr{
@@ -1555,9 +1555,9 @@ input[type=number]{-moz-appearance:textfield}
 
 /* ══ Blocos de lore nos painéis de criação ══ */
 .cc-lore-block{
-  background: rgba(90,158,74,.04);
-  border: 1px solid rgba(90,158,74,.12);
-  border-left: 3px solid rgba(90,158,74,.3);
+  background: rgba(200,168,74,.04);
+  border: 1px solid rgba(200,168,74,.12);
+  border-left: 3px solid rgba(200,168,74,.3);
   border-radius: 8px;
   padding: .6rem .8rem;
   margin-bottom: .7rem;
@@ -1584,13 +1584,13 @@ input[type=number]{-moz-appearance:textfield}
 
 /* ── Scrollbar tema verde ── */
 ::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-track{background:#080f09}
+::-webkit-scrollbar-track{background:#080608}
 ::-webkit-scrollbar-thumb{background:rgba(200,168,74,.3);border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:rgba(200,168,74,.55)}
 /* ── Seleção de texto verde ── */
-::selection{background:rgba(90,158,74,.25);color:var(--parch2)}
+::selection{background:rgba(200,168,74,.25);color:var(--parch2)}
 /* ── Focus outline verde ── */
-:focus-visible{outline:2px solid rgba(90,158,74,.5);outline-offset:2px}
+:focus-visible{outline:2px solid rgba(200,168,74,.5);outline-offset:2px}
 /* ── Start screen — vinheta verde ── */
 #start-screen{background:#04080a !important}
 
@@ -1599,7 +1599,7 @@ input[type=number]{-moz-appearance:textfield}
   margin:.6rem 0;
   border-radius:10px;
   overflow:hidden;
-  border:1px solid rgba(90,158,74,.25);
+  border:1px solid rgba(200,168,74,.25);
   background:rgba(6,10,7,.8);
   position:relative;
   max-width:520px;
@@ -1662,26 +1662,26 @@ input[type=number]{-moz-appearance:textfield}
   transform:translateY(-1px);
 }
 .ss-btn-cont{
-  background:linear-gradient(135deg,rgba(26,74,32,.25),rgba(20,60,25,.2));
-  border:1px solid rgba(90,158,74,.4)!important;
+  background:linear-gradient(135deg,rgba(160,120,40,.25),rgba(20,60,25,.2));
+  border:1px solid rgba(200,168,74,.4)!important;
   color:var(--gold2);
 }
 .ss-btn-cont:hover{
-  background:linear-gradient(135deg,rgba(45,128,64,.3),rgba(26,74,32,.25));
-  border-color:rgba(90,158,74,.65)!important;
-  box-shadow:0 4px 20px rgba(26,74,32,.3),0 0 0 1px rgba(90,158,74,.2);
+  background:linear-gradient(135deg,rgba(180,140,55,.3),rgba(160,120,40,.25));
+  border-color:rgba(200,168,74,.65)!important;
+  box-shadow:0 4px 20px rgba(160,120,40,.3),0 0 0 1px rgba(200,168,74,.2);
   transform:translateY(-1px);
 }
 .ss-btn-import{
   background:rgba(20,30,22,.4);
-  border:1px solid rgba(90,158,74,.18)!important;
-  color:rgba(160,220,140,.6);
+  border:1px solid rgba(200,168,74,.18)!important;
+  color:rgba(230,200,100,.6);
   cursor:pointer;
 }
 .ss-btn-import:hover{
   background:rgba(26,50,30,.5);
-  border-color:rgba(90,158,74,.35)!important;
-  color:rgba(160,220,140,.85);
+  border-color:rgba(200,168,74,.35)!important;
+  color:rgba(230,200,100,.85);
 }
 
 /* ══ Efeitos mágicos nas telas iniciais ══ */
@@ -1691,9 +1691,9 @@ input[type=number]{-moz-appearance:textfield}
   position:absolute;
   inset:0;
   background:
-    radial-gradient(ellipse 60% 50% at 30% 40%, rgba(26,74,32,.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 30% 40%, rgba(160,120,40,.12) 0%, transparent 60%),
     radial-gradient(ellipse 50% 60% at 70% 60%, rgba(139,31,42,.08) 0%, transparent 55%),
-    radial-gradient(ellipse 30% 30% at 50% 20%, rgba(90,158,74,.06) 0%, transparent 50%);
+    radial-gradient(ellipse 30% 30% at 50% 20%, rgba(200,168,74,.07) 0%, transparent 50%);
   pointer-events:none;
   animation:magicGlow 8s ease-in-out infinite alternate;
   z-index:0;
@@ -1708,7 +1708,7 @@ input[type=number]{-moz-appearance:textfield}
 #ss-steps-overlay::before{
   content:'';
   position:absolute;inset:0;
-  background:radial-gradient(ellipse 80% 60% at 50% 50%, rgba(26,74,32,.08) 0%, transparent 70%);
+  background:radial-gradient(ellipse 80% 60% at 50% 50%, rgba(160,120,40,.08) 0%, transparent 70%);
   pointer-events:none;
   animation:magicGlow 6s ease-in-out infinite alternate;
 }
@@ -1718,7 +1718,7 @@ input[type=number]{-moz-appearance:textfield}
   content:'';
   position:absolute;
   top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,rgba(90,158,74,.5),rgba(139,31,42,.4),rgba(90,158,74,.5),transparent);
+  background:linear-gradient(90deg,transparent,rgba(200,168,74,.5),rgba(139,31,42,.4),rgba(200,168,74,.5),transparent);
   pointer-events:none;
 }
 
@@ -1727,7 +1727,7 @@ input[type=number]{-moz-appearance:textfield}
   content:'';
   position:absolute;
   top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(90,158,74,.4),transparent);
+  background:linear-gradient(90deg,transparent,rgba(200,168,74,.4),transparent);
   pointer-events:none;
 }
 
@@ -1743,8 +1743,8 @@ input[type=number]{-moz-appearance:textfield}
   animation:titlePulse 4s ease-in-out infinite alternate;
 }
 @keyframes titlePulse{
-  0%{text-shadow:0 0 30px rgba(90,158,74,.2),0 0 60px rgba(90,158,74,.05)}
-  100%{text-shadow:0 0 50px rgba(90,158,74,.35),0 0 100px rgba(90,158,74,.1)}
+  0%{text-shadow:0 0 30px rgba(200,168,74,.25),0 0 60px rgba(200,168,74,.08)}
+  100%{text-shadow:0 0 50px rgba(200,168,74,.35),0 0 100px rgba(200,168,74,.1)}
 }
 
 /* Scroll indicator animation */
@@ -1755,9 +1755,9 @@ input[type=number]{-moz-appearance:textfield}
 
 /* Botão Google signin — hover mágico */
 #btn-google-signin:hover{
-  background:rgba(90,158,74,.1)!important;
-  border-color:rgba(90,158,74,.4)!important;
-  box-shadow:0 0 20px rgba(90,158,74,.15),0 4px 16px rgba(0,0,0,.3);
+  background:rgba(200,168,74,.1)!important;
+  border-color:rgba(200,168,74,.4)!important;
+  box-shadow:0 0 20px rgba(200,168,74,.15),0 4px 16px rgba(0,0,0,.3);
   transform:translateY(-1px);
 }
 
@@ -1769,7 +1769,7 @@ input[type=number]{-moz-appearance:textfield}
   content:'';
   position:absolute;
   inset:0;border-radius:16px;
-  background:radial-gradient(ellipse 80% 60% at 50% 0%, rgba(90,158,74,.06) 0%, transparent 60%);
+  background:radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,168,74,.06) 0%, transparent 60%);
   pointer-events:none;
 }
 
@@ -1778,7 +1778,7 @@ input[type=number]{-moz-appearance:textfield}
   margin:.6rem 0;
   border-radius:10px;
   overflow:hidden;
-  border:1px solid rgba(90,158,74,.25);
+  border:1px solid rgba(200,168,74,.25);
   background:rgba(6,10,7,.8);
   position:relative;
   max-width:520px;
@@ -1828,9 +1828,9 @@ input[type=number]{-moz-appearance:textfield}
   <!-- ── BACKGROUND LAYERS ── -->
   <div style="position:absolute;inset:0;pointer-events:none;z-index:1">
     <!-- Vinheta central dourada -->
-    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(900px,100%);height:100%;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(40,90,30,.14) 0%,transparent 70%);"></div>
+    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(900px,100%);height:100%;background:radial-gradient(ellipse 70% 60% at 50% 40%,rgba(160,120,40,.14) 0%,transparent 70%);"></div>
     <!-- Borda superior sangue -->
-    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(30,120,40,.7),rgba(80,180,60,.5),rgba(30,120,40,.7),transparent);"></div>
+    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(160,120,40,.7),rgba(200,168,74,.5),rgba(160,120,40,.7),transparent);"></div>
     <!-- Borda inferior -->
     <div style="position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,140,40,.4),transparent);"></div>
     <!-- Textura de ruído (canvas-based) - evita imagem externa -->
@@ -1860,7 +1860,7 @@ input[type=number]{-moz-appearance:textfield}
         <!-- Palavra outline grande (atrás) -->
         <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(3.5rem,14vw,9rem);font-weight:700;color:transparent;-webkit-text-stroke:1px rgba(200,140,40,.22);letter-spacing:-.02em;line-height:.9;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;white-space:nowrap;transform:scale(1.06)">TAVERNA</div>
         <!-- Palavra principal (frente) -->
-        <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(3.5rem,14vw,9rem);font-weight:700;color:#78c060;letter-spacing:-.02em;line-height:.9;text-shadow:0 0 80px rgba(200,140,40,.35),0 2px 4px rgba(0,0,0,.9);position:relative;white-space:nowrap">TAVERNA</div>
+        <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(3.5rem,14vw,9rem);font-weight:700;color:#c8a84a;letter-spacing:-.02em;line-height:.9;text-shadow:0 0 80px rgba(200,140,40,.35),0 2px 4px rgba(0,0,0,.9);position:relative;white-space:nowrap">TAVERNA</div>
         <!-- Sub-título em vermelho sólido bold -->
         <div style="font-family:'Cinzel',serif;font-size:clamp(1.5rem,6vw,3.8rem);font-weight:700;color:#c0304a;letter-spacing:.14em;line-height:1;margin-top:.2rem;text-shadow:0 0 30px rgba(180,30,50,.45),0 2px 4px rgba(0,0,0,.9)">DAS CRÔNICAS</div>
         <!-- Terceira linha outline -->
@@ -1885,7 +1885,7 @@ input[type=number]{-moz-appearance:textfield}
           <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.06),transparent);pointer-events:none"></div>
           <svg width="18" height="18" viewBox="0 0 24 24" style="flex-shrink:0">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#c8a84a"/>
             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
           </svg>
@@ -1935,35 +1935,35 @@ input[type=number]{-moz-appearance:textfield}
              onmouseover="this.style.borderColor='rgba(200,140,40,.3)';this.style.background='rgba(200,140,40,.05)'"
              onmouseout="this.style.borderColor='rgba(200,140,40,.1)';this.style.background='rgba(255,255,255,.02)'">
           <div style="font-size:1.3rem;margin-bottom:.5rem">†</div>
-          <div style="font-family:'Cinzel',serif;font-size:.62rem;color:#78c060;margin-bottom:.3rem">12 Classes</div>
+          <div style="font-family:'Cinzel',serif;font-size:.62rem;color:#c8a84a;margin-bottom:.3rem">12 Classes</div>
           <div style="font-family:'Cormorant Garamond',serif;font-size:.78rem;color:rgba(200,180,150,.5);line-height:1.4">Todas as classes do LdJ com mecânicas reais</div>
         </div>
         <div style="background:rgba(255,255,255,.02);border:1px solid rgba(200,140,40,.1);border-radius:12px;padding:1rem;transition:all .3s"
              onmouseover="this.style.borderColor='rgba(200,140,40,.3)';this.style.background='rgba(200,140,40,.05)'"
              onmouseout="this.style.borderColor='rgba(200,140,40,.1)';this.style.background='rgba(255,255,255,.02)'">
           <div style="font-size:1.3rem;margin-bottom:.5rem">▣</div>
-          <div style="font-family:'Cinzel',serif;font-size:.62rem;color:#78c060;margin-bottom:.3rem">34 Regiões</div>
+          <div style="font-family:'Cinzel',serif;font-size:.62rem;color:#c8a84a;margin-bottom:.3rem">34 Regiões</div>
           <div style="font-family:'Cormorant Garamond',serif;font-size:.78rem;color:rgba(200,180,150,.5);line-height:1.4">Forgotten Realms canônico como cenário</div>
         </div>
         <div style="background:rgba(255,255,255,.02);border:1px solid rgba(200,140,40,.1);border-radius:12px;padding:1rem;transition:all .3s"
              onmouseover="this.style.borderColor='rgba(200,140,40,.3)';this.style.background='rgba(200,140,40,.05)'"
              onmouseout="this.style.borderColor='rgba(200,140,40,.1)';this.style.background='rgba(255,255,255,.02)'">
           <div style="font-size:1.3rem;margin-bottom:.5rem">⬡</div>
-          <div style="font-family:'Cinzel',serif;font-size:.62rem;color:#78c060;margin-bottom:.3rem">Dados Criptográficos</div>
+          <div style="font-family:'Cinzel',serif;font-size:.62rem;color:#c8a84a;margin-bottom:.3rem">Dados Criptográficos</div>
           <div style="font-family:'Cormorant Garamond',serif;font-size:.78rem;color:rgba(200,180,150,.5);line-height:1.4">Aleatoriedade real via crypto API</div>
         </div>
         <div style="background:rgba(255,255,255,.02);border:1px solid rgba(200,140,40,.1);border-radius:12px;padding:1rem;transition:all .3s"
              onmouseover="this.style.borderColor='rgba(200,140,40,.3)';this.style.background='rgba(200,140,40,.05)'"
              onmouseout="this.style.borderColor='rgba(200,140,40,.1)';this.style.background='rgba(255,255,255,.02)'">
           <div style="font-size:1.3rem;margin-bottom:.5rem">✕</div>
-          <div style="font-family:'Cinzel',serif;font-size:.62rem;color:#78c060;margin-bottom:.3rem">Death Saves + TPK</div>
+          <div style="font-family:'Cinzel',serif;font-size:.62rem;color:#c8a84a;margin-bottom:.3rem">Death Saves + TPK</div>
           <div style="font-family:'Cormorant Garamond',serif;font-size:.78rem;color:rgba(200,180,150,.5);line-height:1.4">Mecânicas de morte oficiais do D&D 5e</div>
         </div>
       </div>
 
       <!-- CTA final -->
       <div style="text-align:center">
-        <button onclick="document.getElementById('ss-hero').scrollIntoView({behavior:'smooth'})" style="background:linear-gradient(135deg,rgba(180,100,20,.2),rgba(180,30,50,.15));border:1px solid rgba(200,140,40,.4);border-radius:10px;padding:.8rem 2rem;font-family:'Cinzel',serif;font-size:.68rem;color:#78c060;cursor:pointer;letter-spacing:1px;transition:all .3s"
+        <button onclick="document.getElementById('ss-hero').scrollIntoView({behavior:'smooth'})" style="background:linear-gradient(135deg,rgba(180,100,20,.2),rgba(180,30,50,.15));border:1px solid rgba(200,140,40,.4);border-radius:10px;padding:.8rem 2rem;font-family:'Cinzel',serif;font-size:.68rem;color:#c8a84a;cursor:pointer;letter-spacing:1px;transition:all .3s"
           onmouseover="this.style.background='linear-gradient(135deg,rgba(180,100,20,.35),rgba(180,30,50,.25))';this.style.borderColor='rgba(200,140,40,.7)'"
           onmouseout="this.style.background='linear-gradient(135deg,rgba(180,100,20,.2),rgba(180,30,50,.15))';this.style.borderColor='rgba(200,140,40,.4)'">
           ↑ Começar sua aventura
@@ -1973,52 +1973,52 @@ input[type=number]{-moz-appearance:textfield}
 
     <!-- ════ STEP-API (chave Gemini) ════ -->
     <div id="step-api" style="display:none;width:100%;max-width:420px;padding:2rem 1rem;margin:0 auto;flex-shrink:0">
-  <div style="background:rgba(8,5,16,.92);border:1px solid rgba(90,158,74,.22);border-radius:16px;padding:1.8rem 1.6rem;backdrop-filter:blur(20px)">
+  <div style="background:rgba(8,5,16,.92);border:1px solid rgba(200,168,74,.22);border-radius:16px;padding:1.8rem 1.6rem;backdrop-filter:blur(20px)">
 
     <!-- Título -->
     <div style="text-align:center;margin-bottom:1.4rem">
       <div style="font-size:2rem;margin-bottom:.5rem">◈</div>
-      <div style="font-family:'Cinzel Decorative',serif;font-size:1rem;color:#78c060;letter-spacing:1px;margin-bottom:.3rem">Taverna das Crônicas</div>
-      <div style="font-family:'Cinzel',serif;font-size:.58rem;color:rgba(90,158,74,.55);text-transform:uppercase;letter-spacing:2px">Configuração do Narrador IA</div>
+      <div style="font-family:'Cinzel Decorative',serif;font-size:1rem;color:#c8a84a;letter-spacing:1px;margin-bottom:.3rem">Taverna das Crônicas</div>
+      <div style="font-family:'Cinzel',serif;font-size:.58rem;color:rgba(200,168,74,.55);text-transform:uppercase;letter-spacing:2px">Configuração do Narrador IA</div>
     </div>
 
     <!-- Explicação -->
-    <div style="background:rgba(90,158,74,.05);border:1px solid rgba(90,158,74,.15);border-radius:10px;padding:.8rem 1rem;margin-bottom:1.2rem">
+    <div style="background:rgba(200,168,74,.05);border:1px solid rgba(200,168,74,.15);border-radius:10px;padding:.8rem 1rem;margin-bottom:1.2rem">
       <p style="font-family:'Cormorant Garamond',serif;font-size:.9rem;color:rgba(232,210,170,.7);line-height:1.6;margin:0">
-        Para jogar, você precisa de uma <strong style="color:#78c060">chave da API Gemini</strong> (Google AI Studio). É gratuita e leva menos de 1 minuto para obter.
+        Para jogar, você precisa de uma <strong style="color:#c8a84a">chave da API Gemini</strong> (Google AI Studio). É gratuita e leva menos de 1 minuto para obter.
       </p>
     </div>
 
     <!-- Input da chave -->
     <div style="margin-bottom:.8rem">
-      <label style="font-family:'Cinzel',serif;font-size:.55rem;color:rgba(90,158,74,.6);text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:.4rem">Chave da API Gemini</label>
+      <label style="font-family:'Cinzel',serif;font-size:.55rem;color:rgba(200,168,74,.6);text-transform:uppercase;letter-spacing:1.5px;display:block;margin-bottom:.4rem">Chave da API Gemini</label>
       <div style="position:relative">
-        <input id="api-inp" type="password" placeholder="AIza..." style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(90,158,74,.25);border-radius:8px;padding:.65rem .9rem;font-family:'Cinzel',serif;font-size:.78rem;color:#e8dfc8;outline:none;transition:border .2s,box-shadow .2s;box-sizing:border-box"
-          onfocus="this.style.borderColor='rgba(90,158,74,.55)';this.style.boxShadow='0 0 0 3px rgba(90,158,74,.08)'"
-          onblur="this.style.borderColor='rgba(90,158,74,.25)';this.style.boxShadow='none'"
+        <input id="api-inp" type="password" placeholder="AIza..." style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(200,168,74,.25);border-radius:8px;padding:.65rem .9rem;font-family:'Cinzel',serif;font-size:.78rem;color:#e8dfc8;outline:none;transition:border .2s,box-shadow .2s;box-sizing:border-box"
+          onfocus="this.style.borderColor='rgba(200,168,74,.55)';this.style.boxShadow='0 0 0 3px rgba(200,168,74,.08)'"
+          onblur="this.style.borderColor='rgba(200,168,74,.25)';this.style.boxShadow='none'"
           onkeydown="if(event.key==='Enter')confirmApiKey()"/>
       </div>
     </div>
 
     <!-- Botão confirmar -->
-    <button onclick="confirmApiKey()" style="width:100%;background:linear-gradient(135deg,rgba(180,100,20,.3),rgba(120,20,40,.3));border:1px solid rgba(90,158,74,.45);border-radius:9px;padding:.8rem;font-family:'Cinzel',serif;font-size:.72rem;color:#78c060;cursor:pointer;letter-spacing:1px;transition:all .2s;margin-bottom:.8rem"
-      onmouseover="this.style.background='linear-gradient(135deg,rgba(180,100,20,.5),rgba(120,20,40,.5))';this.style.borderColor='rgba(90,158,74,.7)'"
-      onmouseout="this.style.background='linear-gradient(135deg,rgba(180,100,20,.3),rgba(120,20,40,.3))';this.style.borderColor='rgba(90,158,74,.45)'">
+    <button onclick="confirmApiKey()" style="width:100%;background:linear-gradient(135deg,rgba(180,100,20,.3),rgba(120,20,40,.3));border:1px solid rgba(200,168,74,.45);border-radius:9px;padding:.8rem;font-family:'Cinzel',serif;font-size:.72rem;color:#c8a84a;cursor:pointer;letter-spacing:1px;transition:all .2s;margin-bottom:.8rem"
+      onmouseover="this.style.background='linear-gradient(135deg,rgba(180,100,20,.5),rgba(120,20,40,.5))';this.style.borderColor='rgba(200,168,74,.7)'"
+      onmouseout="this.style.background='linear-gradient(135deg,rgba(180,100,20,.3),rgba(120,20,40,.3))';this.style.borderColor='rgba(200,168,74,.45)'">
       ✓ Confirmar Chave e Continuar
     </button>
 
     <!-- Link para obter chave -->
     <div style="text-align:center;margin-bottom:.6rem">
-      <a href="https://aistudio.google.com/apikey" target="_blank" style="font-family:'Cinzel',serif;font-size:.56rem;color:rgba(90,158,74,.5);text-decoration:none;letter-spacing:.5px;border-bottom:1px solid rgba(90,158,74,.2);padding-bottom:1px"
-        onmouseover="this.style.color='rgba(90,158,74,.8)'" onmouseout="this.style.color='rgba(90,158,74,.5)'">
+      <a href="https://aistudio.google.com/apikey" target="_blank" style="font-family:'Cinzel',serif;font-size:.56rem;color:rgba(200,168,74,.5);text-decoration:none;letter-spacing:.5px;border-bottom:1px solid rgba(200,168,74,.2);padding-bottom:1px"
+        onmouseover="this.style.color='rgba(200,168,74,.8)'" onmouseout="this.style.color='rgba(200,168,74,.5)'">
         🔗 Obter chave gratuita no Google AI Studio →
       </a>
     </div>
 
     <!-- Voltar (só se já tiver chave) -->
     <div id="api-back-btn" style="text-align:center;display:none">
-      <button onclick="showScreen('menu')" style="background:none;border:none;font-family:'Cinzel',serif;font-size:.52rem;color:rgba(90,158,74,.3);cursor:pointer;letter-spacing:.5px;transition:color .2s"
-        onmouseover="this.style.color='rgba(90,158,74,.6)'" onmouseout="this.style.color='rgba(90,158,74,.3)'">
+      <button onclick="showScreen('menu')" style="background:none;border:none;font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.3);cursor:pointer;letter-spacing:.5px;transition:color .2s"
+        onmouseover="this.style.color='rgba(200,168,74,.6)'" onmouseout="this.style.color='rgba(200,168,74,.3)'">
         ← Voltar ao menu
       </button>
     </div>
@@ -2033,18 +2033,18 @@ input[type=number]{-moz-appearance:textfield}
   <div style="text-align:center;margin-bottom:1.6rem;position:relative">
     <!-- Ornamento topo -->
     <div style="display:flex;align-items:center;gap:.6rem;justify-content:center;margin-bottom:.8rem">
-      <div style="height:1px;flex:1;max-width:60px;background:linear-gradient(90deg,transparent,rgba(90,158,74,.4))"></div>
-      <span style="font-size:.55rem;color:rgba(90,158,74,.35);letter-spacing:3px;font-family:'Cinzel',serif">D&amp;D 5e · FORGOTTEN REALMS</span>
-      <div style="height:1px;flex:1;max-width:60px;background:linear-gradient(90deg,rgba(90,158,74,.4),transparent)"></div>
+      <div style="height:1px;flex:1;max-width:60px;background:linear-gradient(90deg,transparent,rgba(200,168,74,.4))"></div>
+      <span style="font-size:.55rem;color:rgba(200,168,74,.35);letter-spacing:3px;font-family:'Cinzel',serif">D&amp;D 5e · FORGOTTEN REALMS</span>
+      <div style="height:1px;flex:1;max-width:60px;background:linear-gradient(90deg,rgba(200,168,74,.4),transparent)"></div>
     </div>
-    <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(1.6rem,5.5vw,2.2rem);color:#78c060;letter-spacing:2px;line-height:1.1;text-shadow:0 0 40px rgba(90,158,74,.3),0 2px 4px rgba(0,0,0,.8)">Taverna das</div>
+    <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(1.6rem,5.5vw,2.2rem);color:#c8a84a;letter-spacing:2px;line-height:1.1;text-shadow:0 0 40px rgba(200,168,74,.3),0 2px 4px rgba(0,0,0,.8)">Taverna das</div>
     <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(1.6rem,5.5vw,2.2rem);color:#c0304a;letter-spacing:2px;line-height:1.1;text-shadow:0 0 40px rgba(180,30,50,.4),0 2px 4px rgba(0,0,0,.8)">Crônicas</div>
-    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.88rem;color:rgba(90,158,74,.4);margin-top:.5rem">Narrador IA · D&amp;D 5e · Forgotten Realms</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.88rem;color:rgba(200,168,74,.4);margin-top:.5rem">Narrador IA · D&amp;D 5e · Forgotten Realms</div>
     <!-- Linha decorativa -->
     <div style="display:flex;align-items:center;gap:.5rem;justify-content:center;margin-top:.8rem">
-      <div style="height:1px;width:30px;background:linear-gradient(90deg,transparent,rgba(90,158,74,.3))"></div>
-      <div style="font-size:.5rem;color:rgba(90,158,74,.25)">✦ ✦ ✦</div>
-      <div style="height:1px;width:30px;background:linear-gradient(90deg,rgba(90,158,74,.3),transparent)"></div>
+      <div style="height:1px;width:30px;background:linear-gradient(90deg,transparent,rgba(200,168,74,.3))"></div>
+      <div style="font-size:.5rem;color:rgba(200,168,74,.25)">✦ ✦ ✦</div>
+      <div style="height:1px;width:30px;background:linear-gradient(90deg,rgba(200,168,74,.3),transparent)"></div>
     </div>
   </div>
 
@@ -2052,10 +2052,10 @@ input[type=number]{-moz-appearance:textfield}
   <div id="menu-status-bar" style="margin-bottom:1.2rem;display:flex;flex-direction:column;gap:.4rem">
 
     <!-- Status da chave Gemini -->
-    <div id="menu-api-status" style="display:flex;align-items:center;gap:.5rem;background:rgba(0,0,0,.35);border:1px solid rgba(90,158,74,.12);border-radius:8px;padding:.45rem .75rem">
-      <div id="menu-api-dot" style="width:7px;height:7px;border-radius:50%;background:rgba(90,158,74,.3);flex-shrink:0"></div>
-      <span id="menu-api-label" style="font-family:'Cinzel',serif;font-size:.52rem;color:rgba(90,158,74,.45);letter-spacing:.5px;flex:1">API Gemini: não configurada</span>
-      <button onclick="showStep('step-api')" id="menu-api-btn" style="background:rgba(90,158,74,.1);border:1px solid rgba(90,158,74,.25);border-radius:5px;padding:2px 8px;font-family:'Cinzel',serif;font-size:.48rem;color:var(--gold);cursor:pointer;letter-spacing:.5px">Configurar</button>
+    <div id="menu-api-status" style="display:flex;align-items:center;gap:.5rem;background:rgba(0,0,0,.35);border:1px solid rgba(200,168,74,.12);border-radius:8px;padding:.45rem .75rem">
+      <div id="menu-api-dot" style="width:7px;height:7px;border-radius:50%;background:rgba(200,168,74,.3);flex-shrink:0"></div>
+      <span id="menu-api-label" style="font-family:'Cinzel',serif;font-size:.52rem;color:rgba(200,168,74,.45);letter-spacing:.5px;flex:1">API Gemini: não configurada</span>
+      <button onclick="showStep('step-api')" id="menu-api-btn" style="background:rgba(200,168,74,.1);border:1px solid rgba(200,168,74,.25);border-radius:5px;padding:2px 8px;font-family:'Cinzel',serif;font-size:.48rem;color:var(--gold);cursor:pointer;letter-spacing:.5px">Configurar</button>
     </div>
 
     <!-- Status do usuário Google -->
@@ -2063,14 +2063,14 @@ input[type=number]{-moz-appearance:textfield}
       <img id="google-avatar" src="" width="22" height="22" style="border-radius:50%;display:none;flex-shrink:0"/>
       <div style="flex:1;min-width:0">
         <div id="google-name" style="font-family:'Cinzel',serif;font-size:.58rem;color:#e8dfc8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
-        <div id="google-email" style="font-family:'Cinzel',serif;font-size:.48rem;color:rgba(90,158,74,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+        <div id="google-email" style="font-family:'Cinzel',serif;font-size:.48rem;color:rgba(200,168,74,.45);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
       </div>
-      <button onclick="signOut()" style="background:none;border:none;font-family:'Cinzel',serif;font-size:.48rem;color:rgba(90,158,74,.3);cursor:pointer;white-space:nowrap;padding:2px 4px">Sair</button>
+      <button onclick="signOut()" style="background:none;border:none;font-family:'Cinzel',serif;font-size:.48rem;color:rgba(200,168,74,.3);cursor:pointer;white-space:nowrap;padding:2px 4px">Sair</button>
     </div>
   </div>
 
   <!-- ── FRASE FLAVOR ── -->
-  <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(90,158,74,.55);text-align:center;margin-bottom:1.2rem;line-height:1.6;padding:0 .5rem">
+  <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(200,168,74,.55);text-align:center;margin-bottom:1.2rem;line-height:1.6;padding:0 .5rem">
     "As portas da taverna se abrem. O que traz você até aqui?"
   </p>
 
@@ -2093,30 +2093,30 @@ input[type=number]{-moz-appearance:textfield}
     </button>
 
     <!-- Continuar -->
-    <button onclick="continueFromStorage()" id="btn-continue" style="background:linear-gradient(135deg,rgba(90,158,74,.07),rgba(160,120,30,.05));border:1px solid rgba(90,158,74,.28);border-radius:12px;padding:1rem 1.2rem;text-align:left;cursor:pointer;transition:all .25s;display:block;width:100%"
-      onmouseover="this.style.borderColor='rgba(90,158,74,.6)';this.style.background='linear-gradient(135deg,rgba(90,158,74,.15),rgba(160,120,30,.12))'"
-      onmouseout="this.style.borderColor='rgba(90,158,74,.28)';this.style.background='linear-gradient(135deg,rgba(90,158,74,.07),rgba(160,120,30,.05))'">
+    <button onclick="continueFromStorage()" id="btn-continue" style="background:linear-gradient(135deg,rgba(200,168,74,.07),rgba(160,120,30,.05));border:1px solid rgba(200,168,74,.28);border-radius:12px;padding:1rem 1.2rem;text-align:left;cursor:pointer;transition:all .25s;display:block;width:100%"
+      onmouseover="this.style.borderColor='rgba(200,168,74,.6)';this.style.background='linear-gradient(135deg,rgba(200,168,74,.15),rgba(160,120,30,.12))'"
+      onmouseout="this.style.borderColor='rgba(200,168,74,.28)';this.style.background='linear-gradient(135deg,rgba(200,168,74,.07),rgba(160,120,30,.05))'">
       <div style="display:flex;align-items:center;gap:.8rem">
-        <div style="width:40px;height:40px;border-radius:10px;background:rgba(90,158,74,.1);border:1px solid rgba(90,158,74,.3);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">▷</div>
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(200,168,74,.1);border:1px solid rgba(200,168,74,.3);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">▷</div>
         <div>
           <div style="font-family:'Cinzel',serif;font-size:.85rem;color:#e8c860;margin-bottom:.25rem;letter-spacing:.5px">Continuar Aventura</div>
           <div id="continue-info" style="font-family:'Cormorant Garamond',serif;font-size:.82rem;color:rgba(232,210,170,.5);font-style:italic">Retomar save anterior</div>
         </div>
-        <div style="margin-left:auto;font-size:.8rem;color:rgba(90,158,74,.3)">›</div>
+        <div style="margin-left:auto;font-size:.8rem;color:rgba(200,168,74,.3)">›</div>
       </div>
     </button>
 
     <!-- Importar Save -->
-    <label style="background:linear-gradient(135deg,rgba(45,122,74,.07),rgba(30,80,50,.05));border:1px solid rgba(45,122,74,.28);border-radius:12px;padding:1rem 1.2rem;text-align:left;cursor:pointer;display:block;transition:all .25s"
-      onmouseover="this.style.borderColor='rgba(45,122,74,.6)';this.style.background='linear-gradient(135deg,rgba(45,122,74,.15),rgba(30,80,50,.12))'"
-      onmouseout="this.style.borderColor='rgba(45,122,74,.28)';this.style.background='linear-gradient(135deg,rgba(45,122,74,.07),rgba(30,80,50,.05))'">
+    <label style="background:linear-gradient(135deg,rgba(180,140,55,.07),rgba(140,100,30,.05));border:1px solid rgba(180,140,55,.28);border-radius:12px;padding:1rem 1.2rem;text-align:left;cursor:pointer;display:block;transition:all .25s"
+      onmouseover="this.style.borderColor='rgba(180,140,55,.6)';this.style.background='linear-gradient(135deg,rgba(180,140,55,.15),rgba(140,100,30,.12))'"
+      onmouseout="this.style.borderColor='rgba(180,140,55,.28)';this.style.background='linear-gradient(135deg,rgba(180,140,55,.07),rgba(140,100,30,.05))'">
       <div style="display:flex;align-items:center;gap:.8rem">
-        <div style="width:40px;height:40px;border-radius:10px;background:rgba(45,122,74,.12);border:1px solid rgba(45,122,74,.3);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">↓</div>
+        <div style="width:40px;height:40px;border-radius:10px;background:rgba(180,140,55,.12);border:1px solid rgba(180,140,55,.3);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">↓</div>
         <div>
-          <div style="font-family:'Cinzel',serif;font-size:.85rem;color:#6dbf6d;margin-bottom:.25rem;letter-spacing:.5px">Importar Save</div>
+          <div style="font-family:'Cinzel',serif;font-size:.85rem;color:#c8a84a;margin-bottom:.25rem;letter-spacing:.5px">Importar Save</div>
           <div style="font-family:'Cormorant Garamond',serif;font-size:.82rem;color:rgba(232,210,170,.5);font-style:italic">Carregar arquivo .json</div>
         </div>
-        <div style="margin-left:auto;font-size:.8rem;color:rgba(45,122,74,.4)">›</div>
+        <div style="margin-left:auto;font-size:.8rem;color:rgba(180,140,55,.4)">›</div>
       </div>
       <input type="file" accept=".json" style="display:none" onchange="importSaveFromMenu(event)"/>
     </label>
@@ -2124,13 +2124,13 @@ input[type=number]{-moz-appearance:textfield}
   </div>
 
   <!-- ── LINKS SECUNDÁRIOS ── -->
-  <div style="display:flex;flex-direction:column;align-items:center;gap:.45rem;padding-top:.6rem;border-top:1px solid rgba(90,158,74,.1)">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:.45rem;padding-top:.6rem;border-top:1px solid rgba(200,168,74,.1)">
     <button onclick="showStep('step-patchnotes')" style="background:rgba(107,63,160,.08);border:1px solid rgba(107,63,160,.25);border-radius:7px;padding:.38rem 1rem;color:var(--arc2);font-family:'Cinzel',serif;font-size:.56rem;letter-spacing:1px;cursor:pointer;transition:all .2s;text-transform:uppercase"
       onmouseover="this.style.borderColor='rgba(165,105,189,.5)'" onmouseout="this.style.borderColor='rgba(107,63,160,.25)'">
       § Notas da Versão
     </button>
-    <button onclick="showStep('step-api')" style="background:none;border:none;color:rgba(90,158,74,.3);font-family:'Cinzel',serif;font-size:.54rem;letter-spacing:1px;cursor:pointer;transition:color .2s;text-transform:uppercase"
-      onmouseover="this.style.color='rgba(90,158,74,.65)'" onmouseout="this.style.color='rgba(90,158,74,.3)'">
+    <button onclick="showStep('step-api')" style="background:none;border:none;color:rgba(200,168,74,.3);font-family:'Cinzel',serif;font-size:.54rem;letter-spacing:1px;cursor:pointer;transition:color .2s;text-transform:uppercase"
+      onmouseover="this.style.color='rgba(200,168,74,.65)'" onmouseout="this.style.color='rgba(200,168,74,.3)'">
       ◉ Trocar Chave de API
     </button>
   </div>
@@ -2167,7 +2167,7 @@ input[type=number]{-moz-appearance:textfield}
           <span style="color:var(--arc2)">§</span>
           <span style="font-family:Cinzel,serif;font-size:.78rem;color:var(--arc2);letter-spacing:1px">Notas da Taverna</span>
         </div>
-        <div style="font-family:Cormorant Garamond,serif;font-size:.88rem;color:rgba(90,158,74,.5);font-style:italic;margin-top:.4rem">Cartas do Mestre para seus aventureiros</div>
+        <div style="font-family:Cormorant Garamond,serif;font-size:.88rem;color:rgba(200,168,74,.5);font-style:italic;margin-top:.4rem">Cartas do Mestre para seus aventureiros</div>
       </div>
 
       <div style="max-height:72vh;overflow-y:auto;padding-right:.2rem" class="pnscroll">
@@ -2291,8 +2291,8 @@ input[type=number]{-moz-appearance:textfield}
       </div>
 
       <div style="text-align:center;margin-top:1rem">
-        <button onclick="showStep('step-menu')" style="background:rgba(90,158,74,.08);border:1px solid rgba(90,158,74,.25);border-radius:8px;padding:.5rem 1.4rem;color:rgba(90,158,74,.7);font-family:Cinzel,serif;font-size:.68rem;letter-spacing:1px;cursor:pointer;transition:all .2s"
-          onmouseover="this.style.borderColor='rgba(90,158,74,.5)'" onmouseout="this.style.borderColor='rgba(90,158,74,.25)'">
+        <button onclick="showStep('step-menu')" style="background:rgba(200,168,74,.08);border:1px solid rgba(200,168,74,.25);border-radius:8px;padding:.5rem 1.4rem;color:rgba(200,168,74,.7);font-family:Cinzel,serif;font-size:.68rem;letter-spacing:1px;cursor:pointer;transition:all .2s"
+          onmouseover="this.style.borderColor='rgba(200,168,74,.5)'" onmouseout="this.style.borderColor='rgba(200,168,74,.25)'">
           ← Voltar à Taverna
         </button>
       </div>
@@ -2307,9 +2307,9 @@ input[type=number]{-moz-appearance:textfield}
 
 <!-- OVERLAY DE PAUSA -->
 <div id="pause-overlay" style="display:none;position:fixed;inset:0;z-index:8500;background:rgba(4,2,10,.92);backdrop-filter:blur(12px);align-items:center;justify-content:center;flex-direction:column;gap:1rem">
-  <div style="font-family:'Cinzel Decorative',serif;font-size:1.8rem;color:#78c060;text-shadow:0 0 30px rgba(90,158,74,.4)">⏸ Jogo Pausado</div>
-  <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:rgba(90,158,74,.5)">Sua aventura aguarda seu retorno</div>
-  <button onclick="togglePause()" style="margin-top:.5rem;background:linear-gradient(135deg,rgba(45,122,74,.3),rgba(30,80,50,.2));border:1px solid rgba(45,122,74,.6);border-radius:12px;padding:.8rem 2rem;font-family:'Cinzel',serif;font-size:.85rem;color:#6dbf6d;cursor:pointer;letter-spacing:1px;transition:all .2s">▶ Continuar Aventura</button>
+  <div style="font-family:'Cinzel Decorative',serif;font-size:1.8rem;color:#c8a84a;text-shadow:0 0 30px rgba(200,168,74,.4)">⏸ Jogo Pausado</div>
+  <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:rgba(200,168,74,.5)">Sua aventura aguarda seu retorno</div>
+  <button onclick="togglePause()" style="margin-top:.5rem;background:linear-gradient(135deg,rgba(180,140,55,.3),rgba(140,100,30,.2));border:1px solid rgba(180,140,55,.6);border-radius:12px;padding:.8rem 2rem;font-family:'Cinzel',serif;font-size:.85rem;color:#c8a84a;cursor:pointer;letter-spacing:1px;transition:all .2s">▶ Continuar Aventura</button>
 </div>
 
 <!-- MODAIS DINÂMICOS -->
@@ -2324,8 +2324,8 @@ input[type=number]{-moz-appearance:textfield}
   <div class="hdr-char-block">
     <div id="hdr-avatar-wrap" onclick="openCharSheet()" title="Ver ficha — clique para abrir ficha" style="cursor:pointer;flex-shrink:0;position:relative">
       <!-- Foto do personagem (se houver) ou sigla da classe -->
-      <img id="hdr-photo-img" src="" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(90,158,74,.4);display:none;"/>
-      <div id="hdr-class-sig" style="font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:1.5px;color:var(--gold2);width:44px;height:44px;border-radius:50%;border:2px solid rgba(90,158,74,.35);display:flex;align-items:center;justify-content:center;background:rgba(90,158,74,.06);flex-shrink:0;font-weight:600">GUE</div>
+      <img id="hdr-photo-img" src="" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid rgba(200,168,74,.4);display:none;"/>
+      <div id="hdr-class-sig" style="font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:1.5px;color:var(--gold2);width:44px;height:44px;border-radius:50%;border:2px solid rgba(200,168,74,.35);display:flex;align-items:center;justify-content:center;background:rgba(200,168,74,.06);flex-shrink:0;font-weight:600">GUE</div>
     </div>
     <div class="hdr-char-info-col" onclick="openCharSheet()" style="cursor:pointer">
       <div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap">
@@ -2348,16 +2348,16 @@ input[type=number]{-moz-appearance:textfield}
 
   <!-- CENTRO: Nome da campanha + XP bar -->
   <div class="hdr-campaign-block">
-    <div id="campaign-title" style="font-family:'Cinzel Decorative',serif;font-size:1.18rem;color:var(--gold2);letter-spacing:2px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 0 24px rgba(90,158,74,.3)">Taverna das Crônicas</div>
+    <div id="campaign-title" style="font-family:'Cinzel Decorative',serif;font-size:1.18rem;color:var(--gold2);letter-spacing:2px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 0 24px rgba(200,168,74,.3)">Taverna das Crônicas</div>
     <div id="campaign-sub" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.78rem;color:var(--text3);text-align:center">Narrador IA · D&D 5e · Forgotten Realms</div>
     <!-- XP Bar grande e visível -->
     <div id="hdr-xp" style="display:none;flex-direction:column;gap:2px;margin-top:3px;width:100%">
       <div style="display:flex;align-items:center;justify-content:space-between">
         <span style="font-family:Cinzel,serif;font-size:.65rem;color:var(--gold2)">Nv.<span id="hdr-level">1</span></span>
         <span id="hdr-xp-cur-label" style="font-family:Cinzel,serif;font-size:.65rem;color:var(--text2)">0 / 300 XP</span>
-        <button onclick="openLevelUp()" id="hdr-lvlup-btn" style="display:none;background:rgba(110,207,160,.12);border:1px solid rgba(110,207,160,.4);border-radius:5px;font-family:Cinzel,serif;font-size:.5rem;color:#6ecfa0;cursor:pointer;padding:1px 7px;letter-spacing:.3px">▲ Upar!</button>
+        <button onclick="openLevelUp()" id="hdr-lvlup-btn" style="display:none;background:rgba(220,185,80,.12);border:1px solid rgba(220,185,80,.4);border-radius:5px;font-family:Cinzel,serif;font-size:.5rem;color:#e2c46a;cursor:pointer;padding:1px 7px;letter-spacing:.3px">▲ Upar!</button>
       </div>
-      <div style="background:rgba(90,158,74,.1);border-radius:4px;height:8px;overflow:hidden;width:100%;margin-top:2px">
+      <div style="background:rgba(200,168,74,.1);border-radius:4px;height:8px;overflow:hidden;width:100%;margin-top:2px">
         <div id="hdr-xp-bar" style="height:100%;background:linear-gradient(90deg,var(--blood2),var(--gold2));border-radius:4px;width:0%;transition:width .6s ease"></div>
       </div>
     </div>
@@ -2371,7 +2371,7 @@ input[type=number]{-moz-appearance:textfield}
       <span id="conc-name-hdr" style="font-family:Cinzel,serif;font-size:.5rem;color:var(--arc2);max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
       <span style="font-size:.5rem;color:rgba(165,105,189,.5)">✕</span>
     </div>
-    <button id="insp-hdr" onclick="toggleInspiration()" style="background:rgba(90,158,74,.05);border:1px solid rgba(90,158,74,.2);border-radius:7px;padding:2px 8px;cursor:pointer;color:rgba(90,158,74,.4);font-family:Cinzel,serif;font-size:.6rem;transition:all .2s" title="Inspiração"><span id="insp-icon">☆</span></button>
+    <button id="insp-hdr" onclick="toggleInspiration()" style="background:rgba(200,168,74,.05);border:1px solid rgba(200,168,74,.2);border-radius:7px;padding:2px 8px;cursor:pointer;color:rgba(200,168,74,.4);font-family:Cinzel,serif;font-size:.6rem;transition:all .2s" title="Inspiração"><span id="insp-icon">☆</span></button>
     <button class="hbtn" onclick="openCombat()" id="combat-toggle-btn" title="Combate">†</button>
     <button class="hbtn" id="pause-btn" onclick="togglePause()" title="Pausar">⏸</button>
     <button class="hbtn" onclick="openSaveModal()" title="Salvar">◧</button>
@@ -2402,12 +2402,12 @@ input[type=number]{-moz-appearance:textfield}
   <!-- Foto do personagem -->
   <div id="char-photo-section" style="display:flex;flex-direction:column;align-items:center;gap:.4rem;margin-bottom:.3rem">
     <div style="position:relative;width:72px;height:72px;flex-shrink:0">
-      <img id="char-photo-img" src="" alt="" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(90,158,74,.4);display:none;cursor:pointer" onclick="document.getElementById('char-photo-input').click()" title="Clique para trocar foto"/>
-      <div id="char-photo-placeholder" onclick="document.getElementById('char-photo-input').click()" style="width:72px;height:72px;border-radius:50%;border:2px dashed rgba(90,158,74,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(0,0,0,.3);transition:all .2s;font-size:1.4rem" title="Adicionar foto do personagem" onmouseover="this.style.borderColor='rgba(90,158,74,.6)'" onmouseout="this.style.borderColor='rgba(90,158,74,.25)'">◈</div>
+      <img id="char-photo-img" src="" alt="" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid rgba(200,168,74,.4);display:none;cursor:pointer" onclick="document.getElementById('char-photo-input').click()" title="Clique para trocar foto"/>
+      <div id="char-photo-placeholder" onclick="document.getElementById('char-photo-input').click()" style="width:72px;height:72px;border-radius:50%;border:2px dashed rgba(200,168,74,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(0,0,0,.3);transition:all .2s;font-size:1.4rem" title="Adicionar foto do personagem" onmouseover="this.style.borderColor='rgba(200,168,74,.6)'" onmouseout="this.style.borderColor='rgba(200,168,74,.25)'">◈</div>
       <input type="file" id="char-photo-input" accept="image/*" style="display:none" onchange="handleCharPhoto(event)"/>
     </div>
     <div id="sidebar-char-name" style="font-family:'Cinzel',serif;font-size:.68rem;color:var(--gold2);text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
-    <div id="char-alignment-badge" style="display:none;font-family:'Cinzel',serif;font-size:.44rem;color:rgba(90,158,74,.5);text-align:center;border:1px solid rgba(90,158,74,.15);border-radius:8px;padding:2px 7px"></div>
+    <div id="char-alignment-badge" style="display:none;font-family:'Cinzel',serif;font-size:.44rem;color:rgba(200,168,74,.5);text-align:center;border:1px solid rgba(200,168,74,.15);border-radius:8px;padding:2px 7px"></div>
   </div>
   <hr class="sdiv">
       <!-- PERSONAGEM: só a grade de attrs, sem label duplicado -->
@@ -2437,7 +2437,7 @@ input[type=number]{-moz-appearance:textfield}
       <hr class="sdiv">
       <div>
         <div class="slbl">⚡ Condições
-          <span id="cond-toggle" onclick="toggleConditionPanel()" style="background:rgba(90,158,74,.08);border:1px solid rgba(90,158,74,.2);border-radius:4px;color:rgba(90,158,74,.5);font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;cursor:pointer;margin-left:4px" title="Expandir/recolher">▼</span>
+          <span id="cond-toggle" onclick="toggleConditionPanel()" style="background:rgba(200,168,74,.08);border:1px solid rgba(200,168,74,.2);border-radius:4px;color:rgba(200,168,74,.5);font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;cursor:pointer;margin-left:4px" title="Expandir/recolher">▼</span>
           <button onclick="openConditionPicker()" style="background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.3);border-radius:4px;color:#e74c3c;font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:2px;cursor:pointer" title="Gerenciar condições">⚡ +</button>
         </div>
         <div id="conditions-list-d" style="display:none"></div>
@@ -2445,9 +2445,9 @@ input[type=number]{-moz-appearance:textfield}
       <hr class="sdiv">
       <div>
         <div class="slbl">◎ Perícias
-          <span id="skills-toggle" onclick="toggleSkillsPanel()" style="background:rgba(90,158,74,.08);border:1px solid rgba(90,158,74,.2);border-radius:4px;color:rgba(90,158,74,.5);font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;cursor:pointer;margin-left:4px" title="Expandir/recolher">▼</span>
+          <span id="skills-toggle" onclick="toggleSkillsPanel()" style="background:rgba(200,168,74,.08);border:1px solid rgba(200,168,74,.2);border-radius:4px;color:rgba(200,168,74,.5);font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;cursor:pointer;margin-left:4px" title="Expandir/recolher">▼</span>
         </div>
-        <div id="skills-d" style="display:none"><div style="font-family:Cinzel,serif;font-size:.58rem;color:rgba(90,158,74,.35);font-style:italic;padding:3px 2px;margin-bottom:4px">Fixadas na criacao</div></div>
+        <div id="skills-d" style="display:none"><div style="font-family:Cinzel,serif;font-size:.58rem;color:rgba(200,168,74,.35);font-style:italic;padding:3px 2px;margin-bottom:4px">Fixadas na criacao</div></div>
       </div>
       <hr class="sdiv">
       <div>
@@ -2503,14 +2503,14 @@ input[type=number]{-moz-appearance:textfield}
       <hr class="sdiv">
       <div>
         <div class="slbl">◌ NPCs
-          <button onclick="openNPCTracker()" style="background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.3);border-radius:4px;color:#6ecfa0;font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:4px;cursor:pointer">+ Ver</button>
+          <button onclick="openNPCTracker()" style="background:rgba(200,168,74,.1);border:1px solid rgba(200,168,74,.3);border-radius:4px;color:#e2c46a;font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:4px;cursor:pointer">+ Ver</button>
         </div>
         <div id="npc-tracker-list" style="max-height:280px;overflow-y:auto"></div>
       </div>
       <hr class="sdiv">
       <div>
         <div class="slbl">✎ Anotações
-          <button style="background:rgba(90,158,74,.1);border:1px solid var(--border2);border-radius:4px;color:var(--gold);font-size:.52rem;padding:1px 6px;font-family:Cinzel,serif;margin-left:4px;cursor:pointer" onclick="saveNote()">◧</button>
+          <button style="background:rgba(200,168,74,.1);border:1px solid var(--border2);border-radius:4px;color:var(--gold);font-size:.52rem;padding:1px 6px;font-family:Cinzel,serif;margin-left:4px;cursor:pointer" onclick="saveNote()">◧</button>
           <button style="background:rgba(41,128,185,.08);border:1px solid rgba(93,173,226,.2);border-radius:4px;color:var(--ocean2);font-size:.52rem;padding:1px 6px;font-family:Cinzel,serif;margin-left:2px;cursor:pointer" onclick="openNotesHistory()">📋 Ver</button>
         </div>
         <textarea class="notes-area" id="notes-d" placeholder="Pistas, NPCs, locais, itens importantes..."></textarea>
@@ -2572,7 +2572,7 @@ input[type=number]{-moz-appearance:textfield}
           <input type="number" id="dice-qty" class="dice-mod-inp" value="1" min="1" max="20" style="width:38px" title="Quantidade de dados (ex: 2 para 2d6)"/>
           <span class="dice-mod-lbl" style="margin-left:2px">Mod</span>
           <input type="number" id="dice-mod" class="dice-mod-inp" value="0" title="Modificador"/>
-          <div style="width:1px;height:18px;background:rgba(90,158,74,.15);margin:0 1px"></div>
+          <div style="width:1px;height:18px;background:rgba(200,168,74,.15);margin:0 1px"></div>
           <button class="dice-btn" id="dbtn-4" onclick="rollDie(4)" title="d4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,3 22,20 2,20"/><line x1="12" y1="3" x2="12" y2="20"/><line x1="7" y1="13.5" x2="17" y2="13.5"/></svg><span class="dice-lbl">d4</span></button><button class="dice-btn" id="dbtn-6" onclick="rollDie(6)" title="d6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.2" fill="currentColor"/><circle cx="16" cy="16" r="1.2" fill="currentColor"/><circle cx="8" cy="16" r="1.2" fill="currentColor"/><circle cx="16" cy="8" r="1.2" fill="currentColor"/></svg><span class="dice-lbl">d6</span></button><button class="dice-btn" id="dbtn-8" onclick="rollDie(8)" title="d8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 22,9 18,21 6,21 2,9"/><line x1="12" y1="2" x2="12" y2="21"/><line x1="2" y1="9" x2="22" y2="9"/></svg><span class="dice-lbl">d8</span></button><button class="dice-btn" id="dbtn-10" onclick="rollDie(10)" title="d10"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 21,8 18,19 6,19 3,8"/><line x1="12" y1="2" x2="12" y2="19"/></svg><span class="dice-lbl">d10</span></button><button class="dice-btn" id="dbtn-12" onclick="rollDie(12)" title="d12"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 20,6 22,14 16,21 8,21 2,14 4,6"/><line x1="12" y1="2" x2="12" y2="21"/></svg><span class="dice-lbl">d12</span></button><button class="dice-btn" id="dbtn-20" onclick="rollDie(20)" title="d20"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 22,8 22,16 12,22 2,16 2,8"/><line x1="2" y1="8" x2="22" y2="8"/><line x1="2" y1="16" x2="22" y2="16"/><line x1="12" y1="2" x2="2" y2="8"/><line x1="12" y1="2" x2="22" y2="8"/><line x1="12" y1="22" x2="2" y2="16"/><line x1="12" y1="22" x2="22" y2="16"/></svg><span class="dice-lbl">d20</span></button><button class="dice-btn" id="dbtn-100" onclick="rollDie(100)" title="d100"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><text x="12" y="15.5" font-size="8" text-anchor="middle" fill="currentColor" stroke="none" font-family="serif">%</text></svg><span class="dice-lbl">d100</span></button>
         </div>
         <div class="inp-row">
@@ -2891,8 +2891,8 @@ function updateSidebarMiniAttrs(){
     var a=e[0], v=e[1];
     var m=Math.floor((v-10)/2);
     var ms=(m>=0?'+':'')+m;
-    var col=v>=16?'#6ecfa0':v>=14?'#e6c76a':v<=8?'#e74c3c':'rgba(90,158,74,.7)';
-    return '<div style="text-align:center;background:rgba(0,0,0,.3);border:1px solid rgba(90,158,74,.1);border-radius:5px;padding:2px 1px">'
+    var col=v>=16?'#e2c46a':v>=14?'#e6c76a':v<=8?'#e74c3c':'rgba(200,168,74,.7)';
+    return '<div style="text-align:center;background:rgba(0,0,0,.3);border:1px solid rgba(200,168,74,.1);border-radius:5px;padding:2px 1px">'
       +'<div style="font-family:Cinzel,serif;font-size:.38rem;color:var(--text3);letter-spacing:.5px">'+a+'</div>'
       +'<div style="font-family:Cinzel,serif;font-size:.72rem;font-weight:700;color:'+col+';line-height:1.2">'+ms+'</div>'
       +'</div>';
@@ -2992,15 +2992,15 @@ function updateApiStatus(){
   var txt=document.getElementById('api-status-text');
   if(!dot||!txt) return;
   if(apiKey){
-    dot.style.background='#4aba4a';
-    dot.style.boxShadow='0 0 6px rgba(70,180,70,.5)';
+    dot.style.background='#c8a84a';
+    dot.style.boxShadow='0 0 6px rgba(200,168,74,.5)';
     txt.textContent='API GEMINI ATIVA';
-    txt.style.color='rgba(120,200,120,.7)';
+    txt.style.color='rgba(200,168,74,.7)';
   } else {
-    dot.style.background='rgba(90,158,74,.4)';
+    dot.style.background='rgba(200,168,74,.4)';
     dot.style.boxShadow='none';
     txt.textContent='API NÃO CONFIGURADA';
-    txt.style.color='rgba(90,158,74,.45)';
+    txt.style.color='rgba(200,168,74,.45)';
   }
 }
 
@@ -3019,16 +3019,16 @@ function updateMenuApiStatus(){
   var btn=document.getElementById('menu-api-btn');
   if(!dot||!lbl) return;
   if(apiKey && apiKey.startsWith('AIza')){
-    dot.style.background='#45b06a';
-    dot.style.boxShadow='0 0 6px rgba(69,176,106,.5)';
+    dot.style.background='#b89040';
+    dot.style.boxShadow='0 0 6px rgba(200,168,74,.5)';
     lbl.textContent='API Gemini: ativa ✓';
-    lbl.style.color='rgba(69,176,106,.8)';
+    lbl.style.color='rgba(200,168,74,.8)';
     if(btn) btn.textContent='Trocar';
   } else {
-    dot.style.background='rgba(90,158,74,.3)';
+    dot.style.background='rgba(200,168,74,.3)';
     dot.style.boxShadow='none';
     lbl.textContent='API Gemini: não configurada';
-    lbl.style.color='rgba(90,158,74,.45)';
+    lbl.style.color='rgba(200,168,74,.45)';
     if(btn) btn.textContent='Configurar';
   }
 }
@@ -3077,7 +3077,7 @@ function initParticleCanvas(){
   window.addEventListener('resize', resize);
 
   // Criar partículas mágicas
-  var colors = ['rgba(90,158,74,', 'rgba(45,128,64,', 'rgba(120,200,90,', 'rgba(184,48,64,', 'rgba(255,255,255,'];
+  var colors = ['rgba(200,168,74,', 'rgba(180,140,55,', 'rgba(200,168,74,', 'rgba(184,48,64,', 'rgba(255,255,255,'];
   for(var i = 0; i < 60; i++){
     particles.push({
       x: Math.random() * window.innerWidth,
@@ -3418,8 +3418,8 @@ function renderAttrs(){
   el.innerHTML=Object.entries(ATTRS).map(function(e){
     var a=e[0],v=e[1];
     var modVal=mod(v);
-    var modColor=v>=16?'#6ecfa0':v>=14?'#e6c76a':v<=8?'#e74c3c':'var(--text2)';
-    var valColor=v>=16?'rgba(110,207,160,.8)':v>=14?'rgba(230,199,106,.8)':v<=8?'rgba(231,76,60,.7)':'var(--gold2)';
+    var modColor=v>=16?'#e2c46a':v>=14?'#e6c76a':v<=8?'#e74c3c':'var(--text2)';
+    var valColor=v>=16?'rgba(220,185,80,.8)':v>=14?'rgba(230,199,106,.8)':v<=8?'rgba(231,76,60,.7)':'var(--gold2)';
     var adjBtns = locked ? '' :
       '<div style="display:flex;justify-content:center;gap:2px;margin-top:2px">'
       +'<button class="attr-adj-btn" data-a="'+a+'" data-d="-1">−</button>'
@@ -4123,7 +4123,7 @@ function renderMagicItems(){
 function openMagicItemsPanel(){
   var rows=MAGIC_ITEMS_DB.map(function(m){
     var has=magicItems.find(function(x){return x.id===m.id;});
-    var rarityColor={'comum':'var(--parch2)','incomum':'#2ecc71','raro':'#3498db','muito raro':'#9b59b6','lendário':'#f1c40f'}[m.rarity]||'var(--parch2)';
+    var rarityColor={'comum':'var(--parch2)','incomum':'#e2c46a','raro':'#3498db','muito raro':'#9b59b6','lendário':'#f1c40f'}[m.rarity]||'var(--parch2)';
     return'<div style="display:flex;align-items:flex-start;gap:6px;padding:5px 0;border-bottom:1px solid var(--border)">'
       +'<input type="checkbox" id="mi_'+m.id+'" '+(has?'checked':'')+'  style="margin-top:3px;accent-color:var(--purple2);flex-shrink:0">'
       +'<label for="mi_'+m.id+'" style="cursor:pointer;flex:1">'
@@ -4415,7 +4415,7 @@ function openSpellManager(){
       var atLimit=!sp.selected&&L<99&&sel>=L;
       var canClick=!locked&&(!atLimit||sp.selected);
       var bg=sp.selected?'var(--arc2)':'transparent';
-      var bc=sp.selected?'var(--arc2)':canClick?'rgba(165,105,189,.6)':'rgba(90,158,74,.15)';
+      var bc=sp.selected?'var(--arc2)':canClick?'rgba(165,105,189,.6)':'rgba(200,168,74,.15)';
       var tc=sp.selected?'var(--arc3)':canClick?'var(--text2)':'var(--text3)';
       var glow=sp.selected?'0 0 8px rgba(144,96,204,.6)':'none';
       var inner=sp.selected?'<div style="width:9px;height:9px;border-radius:50%;background:#fff;margin:auto"></div>':'';
@@ -4706,7 +4706,7 @@ function saveAbility(){
 
 // ─── MAGIAS ───
 // ─── MOEDAS ───
-const COIN_DATA=[{k:'PP',lbl:'Platina',val:10,color:'#dde4f0',bg:'rgba(210,220,240,.12)',border:'rgba(210,220,240,.4)'},{k:'PO',lbl:'Ouro',val:1,color:'#f0c040',bg:'rgba(240,192,64,.12)',border:'rgba(240,192,64,.45)'},{k:'PE',lbl:'Eletr.',val:.5,color:'#6ecfa0',bg:'rgba(110,207,160,.1)',border:'rgba(110,207,160,.4)'},{k:'PA',lbl:'Prata',val:.1,color:'#b8c8d8',bg:'rgba(180,200,220,.1)',border:'rgba(180,200,220,.4)'},{k:'PC',lbl:'Cobre',val:.01,color:'#d08850',bg:'rgba(200,136,80,.1)',border:'rgba(200,136,80,.4)'}];
+const COIN_DATA=[{k:'PP',lbl:'Platina',val:10,color:'#dde4f0',bg:'rgba(210,220,240,.12)',border:'rgba(210,220,240,.4)'},{k:'PO',lbl:'Ouro',val:1,color:'#f0c040',bg:'rgba(240,192,64,.12)',border:'rgba(240,192,64,.45)'},{k:'PE',lbl:'Eletr.',val:.5,color:'#e2c46a',bg:'rgba(220,185,80,.1)',border:'rgba(220,185,80,.4)'},{k:'PA',lbl:'Prata',val:.1,color:'#b8c8d8',bg:'rgba(180,200,220,.1)',border:'rgba(180,200,220,.4)'},{k:'PC',lbl:'Cobre',val:.01,color:'#d08850',bg:'rgba(200,136,80,.1)',border:'rgba(200,136,80,.4)'}];
 function autoConvertCoins(){
   // Não converter automaticamente — manter valores nominais para fidelidade
 }
@@ -4827,9 +4827,9 @@ function renderInv(){
     return'<div class="inv-item">'
       +'<span class="inv-name">'+item.name+'</span>'
       +'<div style="display:flex;align-items:center;gap:3px;flex-shrink:0">'
-      +'<button style="background:rgba(90,158,74,.08);border:1px solid var(--border);border-radius:3px;color:var(--text3);width:18px;height:18px;font-size:.7rem;line-height:1;cursor:pointer" onclick="adjInvQty('+i+',-1)">−</button>'
+      +'<button style="background:rgba(200,168,74,.08);border:1px solid var(--border);border-radius:3px;color:var(--text3);width:18px;height:18px;font-size:.7rem;line-height:1;cursor:pointer" onclick="adjInvQty('+i+',-1)">−</button>'
       +'<span style="font-family:Cinzel,serif;font-size:.68rem;color:var(--gold);min-width:22px;text-align:center">'+item.qty+'</span>'
-      +'<button style="background:rgba(90,158,74,.08);border:1px solid var(--border);border-radius:3px;color:var(--text3);width:18px;height:18px;font-size:.7rem;line-height:1;cursor:pointer" onclick="adjInvQty('+i+',1)">+</button>'
+      +'<button style="background:rgba(200,168,74,.08);border:1px solid var(--border);border-radius:3px;color:var(--text3);width:18px;height:18px;font-size:.7rem;line-height:1;cursor:pointer" onclick="adjInvQty('+i+',1)">+</button>'
       +'<button class="inv-del" onclick="removeInv('+i+')">✕</button>'
       +'</div></div>';
   }).join('');
@@ -4976,7 +4976,7 @@ function updXP(){
   // Show level up notification in sidebar too
   var lvlupBtn=document.querySelector('[onclick="openLevelUp()"]');
   if(lvlupBtn&&XP_TABLE[charLevel]&&charXP>=XP_TABLE[charLevel]){
-    lvlupBtn.style.background='rgba(90,158,74,.25)';
+    lvlupBtn.style.background='rgba(200,168,74,.25)';
     lvlupBtn.style.color='var(--gold3)';
     lvlupBtn.textContent='▲ Upar!';
   }
@@ -5037,19 +5037,19 @@ function showXPToast(gained, prevPct, newPct, source){
     t.id='xp-toast';
     t.style.cssText='position:fixed;bottom:calc(var(--nav-h,68px)+12px);left:50%;transform:translateX(-50%);'
       +'background:linear-gradient(135deg,rgba(22,16,9,.97),rgba(35,26,12,.97));'
-      +'border:1px solid rgba(90,158,74,.5);border-radius:12px;padding:.6rem 1rem;'
+      +'border:1px solid rgba(200,168,74,.5);border-radius:12px;padding:.6rem 1rem;'
       +'z-index:2000;min-width:200px;max-width:280px;text-align:center;'
-      +'box-shadow:0 4px 20px rgba(0,0,0,.6),0 0 12px rgba(90,158,74,.2);'
+      +'box-shadow:0 4px 20px rgba(0,0,0,.6),0 0 12px rgba(200,168,74,.2);'
       +'opacity:0;transition:opacity .3s;pointer-events:none;';
     document.body.appendChild(t);
   }
-  t.innerHTML='<div style="font-family:Cinzel,serif;font-size:.54rem;color:rgba(90,158,74,.7);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Experiência'+(source||'')+'</div>'
+  t.innerHTML='<div style="font-family:Cinzel,serif;font-size:.54rem;color:rgba(200,168,74,.7);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">Experiência'+(source||'')+'</div>'
     +'<div style="font-family:Cinzel Decorative,serif;font-size:1.1rem;color:var(--gold2);margin-bottom:.4rem">+'+gained+' XP</div>'
-    +'<div style="background:rgba(90,158,74,.1);border:1px solid rgba(90,158,74,.2);border-radius:6px;height:8px;overflow:hidden;position:relative">'
-    +'<div id="xp-toast-bar-prev" style="position:absolute;top:0;left:0;height:100%;background:rgba(90,158,74,.25);border-radius:6px;width:'+prevPct+'%;transition:none"></div>'
-    +'<div id="xp-toast-bar" style="position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,var(--blood),var(--gold2));border-radius:6px;width:'+prevPct+'%;transition:width .8s cubic-bezier(.4,0,.2,1);box-shadow:0 0 6px rgba(90,158,74,.4)"></div>'
+    +'<div style="background:rgba(200,168,74,.1);border:1px solid rgba(200,168,74,.2);border-radius:6px;height:8px;overflow:hidden;position:relative">'
+    +'<div id="xp-toast-bar-prev" style="position:absolute;top:0;left:0;height:100%;background:rgba(200,168,74,.25);border-radius:6px;width:'+prevPct+'%;transition:none"></div>'
+    +'<div id="xp-toast-bar" style="position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,var(--blood),var(--gold2));border-radius:6px;width:'+prevPct+'%;transition:width .8s cubic-bezier(.4,0,.2,1);box-shadow:0 0 6px rgba(200,168,74,.4)"></div>'
     +'</div>'
-    +'<div style="font-family:Cinzel,serif;font-size:.52rem;color:rgba(90,158,74,.5);margin-top:3px">'+prevPct+'% → '+newPct+'%</div>';
+    +'<div style="font-family:Cinzel,serif;font-size:.52rem;color:rgba(200,168,74,.5);margin-top:3px">'+prevPct+'% → '+newPct+'%</div>';
   t.style.opacity='1';
   // Animate bar after paint
   setTimeout(function(){var b=document.getElementById('xp-toast-bar');if(b)b.style.width=newPct+'%';},50);
@@ -5337,8 +5337,8 @@ function openLevelUpSpellNotice(cls, lvl, features){
     var prepMax=getDruidPreparedMax();
     var newPools=DRUID_SPELL_POOL[lvl]||[];
     var circleInfo=DRUID_CIRCLE_SPELLS[lvl]||[];
-    clsNote='<div style="background:rgba(45,122,74,.08);border:1px solid rgba(45,122,74,.3);border-radius:8px;padding:.7rem;margin-bottom:.6rem">'
-      +'<div style="font-family:Cinzel,serif;font-size:.6rem;color:#6dbf6d;margin-bottom:.4rem">◌ Druida — Círculos de Magia</div>'
+    clsNote='<div style="background:rgba(180,140,55,.08);border:1px solid rgba(180,140,55,.3);border-radius:8px;padding:.7rem;margin-bottom:.6rem">'
+      +'<div style="font-family:Cinzel,serif;font-size:.6rem;color:#c8a84a;margin-bottom:.4rem">◌ Druida — Círculos de Magia</div>'
       +'<div style="font-size:.78rem;color:var(--text2);line-height:1.6">'
       +'<b>Magias preparadas máximo:</b> '+prepMax+' (nível '+lvl+' + mod SAB)<br>'
       +'<b>Círculos disponíveis:</b> '+circleInfo.join(', ')+'<br>'
@@ -5355,7 +5355,7 @@ function openLevelUpSpellNotice(cls, lvl, features){
       +'<div style="font-family:Cinzel,serif;font-size:.6rem;color:var(--arc3);margin-bottom:.3rem">◉ Bruxo — Magia de Pacto</div>'
       +'<div style="font-size:.78rem;color:var(--text2);line-height:1.5">Espaços de nível <b>'+wLv+'</b> — recuperados em <b>descanso curto</b>. Magias sempre conjuradas no nível máximo disponível.</div></div>';
   } else if(cls==='Clérigo'||cls==='Paladino'){
-    clsNote='<div style="background:rgba(90,158,74,.06);border:1px solid rgba(90,158,74,.2);border-radius:8px;padding:.7rem;margin-bottom:.6rem">'
+    clsNote='<div style="background:rgba(200,168,74,.06);border:1px solid rgba(200,168,74,.2);border-radius:8px;padding:.7rem;margin-bottom:.6rem">'
       +'<div style="font-family:Cinzel,serif;font-size:.6rem;color:var(--gold);margin-bottom:.3rem">☩ '+cls+' — Magias Preparadas</div>'
       +'<div style="font-size:.78rem;color:var(--text2);line-height:1.5">Prepare '+(cls==='Clérigo'?'SAB mod + nível':'CAR mod + metade do nível')+' magias. Troque diariamente após descanso longo.</div></div>';
   }
@@ -5363,7 +5363,7 @@ function openLevelUpSpellNotice(cls, lvl, features){
   var html='<div class="modal-title">◈ Magia — Nível '+lvl+'</div>'
     +featHtml
     +clsNote
-    +'<div style="background:rgba(90,158,74,.05);border:1px solid rgba(90,158,74,.15);border-radius:8px;padding:.6rem;margin-bottom:.8rem">'
+    +'<div style="background:rgba(200,168,74,.05);border:1px solid rgba(200,168,74,.15);border-radius:8px;padding:.6rem;margin-bottom:.8rem">'
     +'<div style="font-family:Cinzel,serif;font-size:.6rem;color:var(--gold);margin-bottom:.3rem">⭐ Espaços de Magia Atuais</div>'
     +'<div style="font-size:.78rem;color:var(--text2)">'+slotSummary+'</div>'
     +'</div>'
@@ -5382,7 +5382,7 @@ function openCampaignInfo(){
   var title=window.CAMPAIGN_TITLE||'Taverna das Crônicas';
   var sub=document.getElementById('campaign-sub')?.textContent||'';
   var clsBase=cls.split(' — ')[0];
-  var sym=CLASS_SYMBOLS[clsBase]||{symbol:'†',color:'var(--gold)',bg:'rgba(90,158,74,.15)'};
+  var sym=CLASS_SYMBOLS[clsBase]||{symbol:'†',color:'var(--gold)',bg:'rgba(200,168,74,.15)'};
 
   // XP info
   var xpCur=charXP;
@@ -5403,7 +5403,7 @@ function openCampaignInfo(){
     :'<div style="font-size:.74rem;color:var(--text3);font-style:italic">Nenhuma missão ativa</div>';
 
   var html='<div style="text-align:center;margin-bottom:.9rem">'
-    +'<div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,'+sym.bg+',rgba(0,0,0,.6));border:1px solid rgba(90,158,74,.3);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto .6rem">'+sym.symbol+'</div>'
+    +'<div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,'+sym.bg+',rgba(0,0,0,.6));border:1px solid rgba(200,168,74,.3);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto .6rem">'+sym.symbol+'</div>'
     +'<div style="font-family:Cinzel Decorative,serif;font-size:.95rem;color:var(--gold2);margin-bottom:.2rem">'+title+'</div>'
     +'<div style="font-size:.72rem;color:var(--text3);font-style:italic">'+sub+'</div>'
     +'</div>'
@@ -5423,7 +5423,7 @@ function openCampaignInfo(){
     +'<div style="display:flex;justify-content:space-between;font-family:Cinzel,serif;font-size:.54rem;color:var(--text3);margin-bottom:3px">'
     +'<span>XP: '+xpCur+'</span><span>Próximo: '+(xpNext!=='—'?xpNext:'Máx')+'</span>'
     +'</div>'
-    +'<div style="background:rgba(90,158,74,.12);border-radius:4px;height:6px;overflow:hidden">'
+    +'<div style="background:rgba(200,168,74,.12);border-radius:4px;height:6px;overflow:hidden">'
     +'<div style="background:linear-gradient(90deg,var(--blood),var(--gold2));height:100%;border-radius:4px;width:'+xpPct+'%;transition:width .5s"></div>'
     +'</div>'
     +'</div>'
@@ -5456,7 +5456,7 @@ function openCombat(){
       <input id="comb-hp" type="number" placeholder="PV" style="background:rgba(192,57,43,.06);border:1px solid rgba(192,57,43,.25);border-radius:4px;padding:4px 5px;font-family:Cinzel,serif;font-size:.8rem;color:var(--blood2);text-align:center;outline:none"/>
       <button class="mbtn secondary" style="font-size:.68rem;padding:4px 8px" onclick="addCombatant()">+</button>
     </div>
-    <div style="font-family:Cinzel,serif;font-size:.48rem;color:rgba(90,158,74,.3);margin-bottom:.5rem">Nome · Iniciativa · PV (opcional)</div>
+    <div style="font-family:Cinzel,serif;font-size:.48rem;color:rgba(200,168,74,.3);margin-bottom:.5rem">Nome · Iniciativa · PV (opcional)</div>
     <div class="modal-row">
       <button class="mbtn secondary" onclick="closeDynModal()">Cancelar</button>
       <button class="mbtn primary" onclick="startCombat()">⚡ Iniciar!</button>
@@ -5512,7 +5512,7 @@ function renderTurnOrder(){
     var hpBar='';
     if(c.maxHp>0&&!c.isPlayer){
       var pct=Math.max(0,Math.round((c.hp/c.maxHp)*100));
-      var barColor=pct>60?'#6ecfa0':pct>30?'#f39c12':'#e74c3c';
+      var barColor=pct>60?'#e2c46a':pct>30?'#f39c12':'#e74c3c';
       hpBar='<div style="height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:2px;overflow:hidden">'
         +'<div style="height:100%;width:'+pct+'%;background:'+barColor+';transition:width .3s;border-radius:2px"></div>'
         +'</div>';
@@ -5612,7 +5612,7 @@ function buildMobChar(){
   var charName=window.CHAR_NAME||'Personagem';
   var charCls=(window.CHAR_CLASS||'').split(' — ')[0];
   var charSub=window.CHAR_SUBCLASS||'';
-  var sym=CLASS_SYMBOLS[charCls]||{symbol:'†',color:'var(--gold)',bg:'rgba(90,158,74,.15)'};
+  var sym=CLASS_SYMBOLS[charCls]||{symbol:'†',color:'var(--gold)',bg:'rgba(200,168,74,.15)'};
 
   // Header card
   var hdr='<div style="display:flex;align-items:center;gap:.8rem;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:.9rem;margin-bottom:.8rem">'
@@ -5663,8 +5663,8 @@ function buildMobChar(){
         +'<div style="font-family:Cinzel,serif;font-size:1rem;color:var(--gold2);font-weight:600">'+ms+'</div>'
         +'<div style="font-family:Cinzel,serif;font-size:.55rem;color:var(--text3)">'+v+'</div>'
         +'<div style="display:flex;justify-content:center;gap:2px;margin-top:2px">'
-        +'<button style="background:rgba(90,158,74,.08);border:1px solid var(--border);border-radius:2px;color:var(--text3);width:18px;height:16px;font-size:.6rem;cursor:pointer" onclick="adjAttr(\''+a+'\',-1);mobTab(\'char\')">−</button>'
-        +'<button style="background:rgba(90,158,74,.08);border:1px solid var(--border);border-radius:2px;color:var(--text3);width:18px;height:16px;font-size:.6rem;cursor:pointer" onclick="adjAttr(\''+a+'\',1);mobTab(\'char\')">+</button>'
+        +'<button style="background:rgba(200,168,74,.08);border:1px solid var(--border);border-radius:2px;color:var(--text3);width:18px;height:16px;font-size:.6rem;cursor:pointer" onclick="adjAttr(\''+a+'\',-1);mobTab(\'char\')">−</button>'
+        +'<button style="background:rgba(200,168,74,.08);border:1px solid var(--border);border-radius:2px;color:var(--text3);width:18px;height:16px;font-size:.6rem;cursor:pointer" onclick="adjAttr(\''+a+'\',1);mobTab(\'char\')">+</button>'
         +'</div></div>';
     }).join('')
     +'</div></div>';
@@ -5675,7 +5675,7 @@ function buildMobChar(){
   var skillsHtml='<div style="margin-bottom:.8rem">'
     +'<div class="slbl">◎ Perícias com Proficiência</div>'
     +'<div style="display:flex;flex-wrap:wrap;gap:.25rem">'
-    +profSkills.map(function(sk){var b=modNum(ATTRS[sk.attr]||10)+profBsk;return'<div style="background:rgba(90,158,74,.07);border:1px solid rgba(90,158,74,.2);border-radius:5px;padding:2px 7px;font-family:Cinzel,serif;font-size:.5rem;color:var(--gold2)">'+sk.name+' '+(b>=0?'+':'')+b+'</div>';}).join('')
+    +profSkills.map(function(sk){var b=modNum(ATTRS[sk.attr]||10)+profBsk;return'<div style="background:rgba(200,168,74,.07);border:1px solid rgba(200,168,74,.2);border-radius:5px;padding:2px 7px;font-family:Cinzel,serif;font-size:.5rem;color:var(--gold2)">'+sk.name+' '+(b>=0?'+':'')+b+'</div>';}).join('')
     +(profSkills.length===0?'<div style="font-size:.7rem;color:var(--text3);font-style:italic">Nenhuma selecionada</div>':'')
     +'</div></div>';
   // Saves
@@ -5703,7 +5703,7 @@ function buildMobChar(){
   // Equipment
   var equipHtml='<div style="margin-bottom:.8rem">'
     +'<div class="slbl">† Equipamentos <button onclick="openEquipSlotModal()" style="background:rgba(58,144,200,.08);border:1px solid rgba(58,144,200,.2);border-radius:4px;color:var(--ocean2);font-size:.52rem;padding:1px 6px;font-family:Cinzel,serif;cursor:pointer;margin-left:4px">Equipar</button>'
-    +'<button onclick="openNewItemModal()" style="background:rgba(90,158,74,.08);border:1px solid var(--border2);border-radius:4px;color:var(--gold);font-size:.52rem;padding:1px 6px;font-family:Cinzel,serif;cursor:pointer;margin-left:2px">+</button>'
+    +'<button onclick="openNewItemModal()" style="background:rgba(200,168,74,.08);border:1px solid var(--border2);border-radius:4px;color:var(--gold);font-size:.52rem;padding:1px 6px;font-family:Cinzel,serif;cursor:pointer;margin-left:2px">+</button>'
     +'</div>'
     +'<div class="equip-slots">'
     +[{key:'armadura',lbl:'Armadura'},{key:'escudo',lbl:'Escudo'},{key:'arma',lbl:'Arma'},{key:'acessorio',lbl:'◆ Mágicos'}].map(function(s){
@@ -5724,14 +5724,14 @@ function buildMobChar(){
   // Level up
   var xpNext=XP_TABLE[charLevel]||999999;
   var xpPct=Math.min(100,Math.round(((charXP-(XP_TABLE[charLevel-1]||0))/(xpNext-(XP_TABLE[charLevel-1]||0)))*100));
-  var lvlHtml='<div style="background:rgba(90,158,74,.05);border:1px solid var(--border);border-radius:10px;padding:.7rem;margin-bottom:.8rem">'
+  var lvlHtml='<div style="background:rgba(200,168,74,.05);border:1px solid var(--border);border-radius:10px;padding:.7rem;margin-bottom:.8rem">'
     +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem">'
     +'<span style="font-family:Cinzel,serif;font-size:.6rem;color:var(--gold)">Nível '+charLevel+'</span>'
     +'<span style="font-family:Cinzel,serif;font-size:.58rem;color:var(--text3)">'+charXP+' / '+xpNext+' XP</span>'
     +'</div>'
-    +'<div style="background:rgba(90,158,74,.12);border-radius:3px;height:6px;overflow:hidden;margin-bottom:.4rem">'
+    +'<div style="background:rgba(200,168,74,.12);border-radius:3px;height:6px;overflow:hidden;margin-bottom:.4rem">'
     +'<div style="background:linear-gradient(90deg,var(--blood),var(--gold2));height:100%;border-radius:3px;width:'+xpPct+'%;transition:width .5s"></div></div>'
-    +'<button onclick="openLevelUp()" style="width:100%;background:rgba(90,158,74,.1);border:1px solid var(--border2);border-radius:7px;color:var(--gold2);font-family:Cinzel,serif;font-size:.7rem;padding:6px;cursor:pointer">▲ Upar Personagem</button>'
+    +'<button onclick="openLevelUp()" style="width:100%;background:rgba(200,168,74,.1);border:1px solid var(--border2);border-radius:7px;color:var(--gold2);font-family:Cinzel,serif;font-size:.7rem;padding:6px;cursor:pointer">▲ Upar Personagem</button>'
     +'</div>';
 
   // Conquistas
@@ -5768,9 +5768,9 @@ function buildMobBag(){
       return'<div class="inv-item">'
         +'<span class="inv-name">'+nm+'</span>'
         +'<div style="display:flex;align-items:center;gap:4px;flex-shrink:0">'
-        +'<button onclick="adjInvQty('+i+',-1);mobTab(\'bag\')" style="background:rgba(90,158,74,.08);border:1px solid var(--border);border-radius:3px;color:var(--text3);width:20px;height:20px;font-size:.72rem;cursor:pointer">−</button>'
+        +'<button onclick="adjInvQty('+i+',-1);mobTab(\'bag\')" style="background:rgba(200,168,74,.08);border:1px solid var(--border);border-radius:3px;color:var(--text3);width:20px;height:20px;font-size:.72rem;cursor:pointer">−</button>'
         +'<span style="font-family:Cinzel,serif;font-size:.68rem;color:var(--gold);min-width:20px;text-align:center">'+qty+'</span>'
-        +'<button onclick="adjInvQty('+i+',1);mobTab(\'bag\')" style="background:rgba(90,158,74,.08);border:1px solid var(--border);border-radius:3px;color:var(--text3);width:20px;height:20px;font-size:.72rem;cursor:pointer">+</button>'
+        +'<button onclick="adjInvQty('+i+',1);mobTab(\'bag\')" style="background:rgba(200,168,74,.08);border:1px solid var(--border);border-radius:3px;color:var(--text3);width:20px;height:20px;font-size:.72rem;cursor:pointer">+</button>'
         +'<button onclick="removeInv('+i+');mobTab(\'bag\')" class="inv-del">✕</button>'
         +'</div></div>';
     }).join('')
@@ -5782,7 +5782,7 @@ function buildMobBag(){
     +'<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.3rem;margin-bottom:.3rem">'+coinHtml+'</div>'
     +'<div style="text-align:right;font-size:.62rem;color:var(--text3);font-style:italic;margin-bottom:.8rem">Total: ~'+total.toFixed(1)+' PO</div>'
     +'<div class="slbl">▦ Inventário'
-    +'<button onclick="openInvModal()" style="background:rgba(90,158,74,.08);border:1px solid var(--border2);border-radius:3px;color:var(--gold2);font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:4px;cursor:pointer">+</button>'
+    +'<button onclick="openInvModal()" style="background:rgba(200,168,74,.08);border:1px solid var(--border2);border-radius:3px;color:var(--gold2);font-size:.52rem;padding:1px 5px;font-family:Cinzel,serif;margin-left:4px;cursor:pointer">+</button>'
     +'</div>'
     +invHtml
     +'<div class="inv-add" style="margin-top:.5rem">'
@@ -5908,8 +5908,8 @@ function buildMobDiary(){
   var entries=diary.slice().reverse().map(function(e){
     var d=new Date(e.ts);
     var ts=d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-    return'<div style="margin-bottom:.7rem;padding:.6rem .7rem;background:rgba(90,158,74,.04);border-left:2px solid rgba(90,158,74,.25);border-radius:0 8px 8px 0">'
-      +'<div style="font-family:Cinzel,serif;font-size:.5rem;color:rgba(90,158,74,.5);margin-bottom:3px">Nv.'+e.level+' · '+ts+'</div>'
+    return'<div style="margin-bottom:.7rem;padding:.6rem .7rem;background:rgba(200,168,74,.04);border-left:2px solid rgba(200,168,74,.25);border-radius:0 8px 8px 0">'
+      +'<div style="font-family:Cinzel,serif;font-size:.5rem;color:rgba(200,168,74,.5);margin-bottom:3px">Nv.'+e.level+' · '+ts+'</div>'
       +'<div style="font-family:Cormorant Garamond,serif;font-size:.9rem;color:var(--text2);line-height:1.55">'+e.text+'</div>'
       +'</div>';
   }).join('');
@@ -5931,7 +5931,7 @@ function buildMobDiary(){
     +notesHtml
     +'<div style="margin-bottom:.8rem">'
     +'<textarea id="notes-mob" placeholder="Pistas, NPCs, locais..." style="width:100%;min-height:60px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:8px;font-family:Cormorant Garamond,serif;font-size:.9rem;color:var(--text2);outline:none;resize:none;margin-top:.4rem">'+((document.getElementById('notes-d')&&document.getElementById('notes-d').value)||'')+'</textarea>'
-    +'<button onclick="var nd=document.getElementById(\'notes-d\');var nm=document.getElementById(\'notes-mob\');if(nd&&nm)nd.value=nm.value;saveNote();mobTab(\'diary\')" style="width:100%;background:rgba(90,158,74,.08);border:1px solid var(--border2);border-radius:7px;color:var(--gold);font-family:Cinzel,serif;font-size:.68rem;padding:6px;margin-top:.3rem;cursor:pointer">◧ Salvar Anotação</button>'
+    +'<button onclick="var nd=document.getElementById(\'notes-d\');var nm=document.getElementById(\'notes-mob\');if(nd&&nm)nd.value=nm.value;saveNote();mobTab(\'diary\')" style="width:100%;background:rgba(200,168,74,.08);border:1px solid var(--border2);border-radius:7px;color:var(--gold);font-family:Cinzel,serif;font-size:.68rem;padding:6px;margin-top:.3rem;cursor:pointer">◧ Salvar Anotação</button>'
     +'</div>'
     +'<div class="slbl">▷ Diário'
     +'<button onclick="generateDiarySummary()" style="background:rgba(41,128,185,.08);border:1px solid rgba(41,128,185,.2);border-radius:4px;color:var(--ocean2);font-size:.52rem;padding:1px 6px;font-family:Cinzel,serif;cursor:pointer;margin-left:4px">Gerar</button>'
@@ -5982,7 +5982,7 @@ function openCharSheet(){
   var attrHtml=Object.entries(ATTRS).map(function(e){
     var a=e[0],v=e[1];
     var m=modNum(v); var ms=(m>=0?'+':'')+m;
-    var col=v>=16?'#6ecfa0':v>=14?'#e6c76a':v<=8?'#e74c3c':'var(--gold2)';
+    var col=v>=16?'#e2c46a':v>=14?'#e6c76a':v<=8?'#e74c3c':'var(--gold2)';
     return'<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;text-align:center;padding:.5rem .3rem">'
       +'<div style="font-family:Cinzel,serif;font-size:.48rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px">'+a+'</div>'
       +'<div style="font-family:Cinzel,serif;font-size:1.1rem;color:'+col+';font-weight:600">'+ms+'</div>'
@@ -6019,21 +6019,21 @@ function openCharSheet(){
 
   // Foto e info principal
   var photoHtml=window.CHAR_PHOTO
-    ?'<img src="'+window.CHAR_PHOTO+'" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid rgba(90,158,74,.5);flex-shrink:0"/>'
-    :'<div style="width:80px;height:80px;border-radius:50%;background:rgba(90,158,74,.08);border:2px dashed rgba(90,158,74,.2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0">'+sym.symbol+'</div>';
+    ?'<img src="'+window.CHAR_PHOTO+'" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid rgba(200,168,74,.5);flex-shrink:0"/>'
+    :'<div style="width:80px;height:80px;border-radius:50%;background:rgba(200,168,74,.08);border:2px dashed rgba(200,168,74,.2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0">'+sym.symbol+'</div>';
 
   var html='<div class="modal-title">▣ Ficha — '+name+'</div>'
     // Seção de identidade com foto
-    +'<div style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:.8rem;padding:.7rem;background:rgba(90,158,74,.05);border:1px solid rgba(90,158,74,.15);border-radius:10px">'
+    +'<div style="display:flex;gap:1rem;align-items:flex-start;margin-bottom:.8rem;padding:.7rem;background:rgba(200,168,74,.05);border:1px solid rgba(200,168,74,.15);border-radius:10px">'
     +photoHtml
     +'<div style="flex:1;min-width:0">'
     +'<div style="font-family:Cinzel,serif;font-size:1rem;color:var(--gold2);margin-bottom:.15rem">'+name+'</div>'
     +'<div style="font-family:Cormorant Garamond,serif;font-size:.85rem;color:var(--text2);margin-bottom:.1rem">'+race+' '+clsBase+(sub?' — '+sub:'')+'</div>'
     +'<div style="font-family:Cinzel,serif;font-size:.58rem;color:var(--text3)">Nível '+charLevel+' · '+region+'</div>'
-    +'<div style="font-family:Cinzel,serif;font-size:.56rem;color:rgba(90,158,74,.5);margin-top:.2rem">⚖ '+align+'</div>'
+    +'<div style="font-family:Cinzel,serif;font-size:.56rem;color:rgba(200,168,74,.5);margin-top:.2rem">⚖ '+align+'</div>'
     +'<div style="display:flex;gap:.4rem;margin-top:.4rem;flex-wrap:wrap">'
     +'<span style="background:rgba(155,35,53,.2);border:1px solid rgba(155,35,53,.4);border-radius:5px;font-family:Cinzel,serif;font-size:.5rem;color:var(--blood3);padding:2px 7px">♥ PV: '+hpC+'/'+HP_MAX+'</span>'
-    +'<span style="background:rgba(90,158,74,.1);border:1px solid rgba(90,158,74,.25);border-radius:5px;font-family:Cinzel,serif;font-size:.5rem;color:var(--gold);padding:2px 7px">▣ CA: '+charCA+'</span>'
+    +'<span style="background:rgba(200,168,74,.1);border:1px solid rgba(200,168,74,.25);border-radius:5px;font-family:Cinzel,serif;font-size:.5rem;color:var(--gold);padding:2px 7px">▣ CA: '+charCA+'</span>'
     +'<span style="background:rgba(107,63,160,.15);border:1px solid rgba(107,63,160,.3);border-radius:5px;font-family:Cinzel,serif;font-size:.5rem;color:var(--arc3);padding:2px 7px">⭐ XP: '+charXP+'</span>'
     +'</div></div></div>'
     // Atributos
@@ -6128,7 +6128,7 @@ function showDiceFlash(sides,result,mod,total,numClass,emoji){
   el.innerHTML='<div class="dice-result-die">d'+sides+'</div>'
     +'<div class="dice-result-num '+numClass+'">'+emoji+result+'</div>'
     +modLine
-    +'<div style="font-family:Cinzel,serif;font-size:.44rem;color:rgba(90,158,74,.3);margin-top:.4rem">toque para fechar</div>';
+    +'<div style="font-family:Cinzel,serif;font-size:.44rem;color:rgba(200,168,74,.3);margin-top:.4rem">toque para fechar</div>';
   el.style.display='block';el.style.opacity='1';
   clearTimeout(_diceFlashTimer);
   _diceFlashTimer=setTimeout(function(){el.style.opacity='0';setTimeout(function(){el.style.display='none';},300);},3000);
@@ -6176,8 +6176,8 @@ function updateDeathModal(){
     '</div>'+
     '<div style="display:flex;justify-content:space-between;margin-bottom:.8rem">'+
       '<div>'+
-        '<div style="font-family:Cinzel,serif;font-size:.5rem;color:#6ecfa0;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Sucessos</div>'+
-        '<div style="display:flex;gap:5px">'+dots(3,s,'#6ecfa0','rgba(110,207,160,.2)')+'</div>'+
+        '<div style="font-family:Cinzel,serif;font-size:.5rem;color:#e2c46a;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Sucessos</div>'+
+        '<div style="display:flex;gap:5px">'+dots(3,s,'#e2c46a','rgba(220,185,80,.2)')+'</div>'+
       '</div>'+
       '<div>'+
         '<div style="font-family:Cinzel,serif;font-size:.5rem;color:#e74c3c;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Falhas</div>'+
@@ -6186,7 +6186,7 @@ function updateDeathModal(){
     '</div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem">'+
       '<button onclick="rollDeathSave()" style="background:linear-gradient(135deg,rgba(192,57,43,.3),rgba(120,20,20,.4));border:1px solid rgba(192,57,43,.5);border-radius:8px;color:#f5a0a0;font-family:Cinzel,serif;font-size:.66rem;padding:.5rem;cursor:pointer;letter-spacing:.5px">⬡ Rolar d20</button>'+
-      '<button onclick="adjHP(1)" style="background:linear-gradient(135deg,rgba(46,125,50,.25),rgba(30,80,30,.3));border:1px solid rgba(100,200,100,.3);border-radius:8px;color:#6ecfa0;font-family:Cinzel,serif;font-size:.66rem;padding:.5rem;cursor:pointer;letter-spacing:.5px">💚 Receber Cura</button>'+
+      '<button onclick="adjHP(1)" style="background:linear-gradient(135deg,rgba(180,140,55,.25),rgba(140,100,30,.3));border:1px solid rgba(200,168,74,.3);border-radius:8px;color:#e2c46a;font-family:Cinzel,serif;font-size:.66rem;padding:.5rem;cursor:pointer;letter-spacing:.5px">💚 Receber Cura</button>'+
     '</div>'+
     '<div style="text-align:center;margin-top:.5rem;font-family:Cinzel,serif;font-size:.46rem;color:rgba(255,100,100,.4)">20 nat = acorda · 1 nat = 2 falhas · 3 falhas = morte</div>';
 }
@@ -6205,10 +6205,10 @@ function showDeathScreen(){
   el.innerHTML=
     '<div style="font-size:5rem;margin-bottom:1rem;animation:pulse 2s infinite">✕</div>'+
     '<div style="font-family:Cinzel Decorative,serif;font-size:1.4rem;color:#8b1a2a;letter-spacing:3px;margin-bottom:.5rem">VOCÊ CAIU</div>'+
-    '<div style="font-family:Cormorant Garamond,serif;font-size:1.1rem;color:rgba(90,158,74,.6);font-style:italic;margin-bottom:.3rem">'+name+' sucumbiu ao destino</div>'+
-    '<div style="font-family:Cinzel,serif;font-size:.6rem;color:rgba(90,158,74,.3);letter-spacing:2px;margin-bottom:2rem">3 FALHAS NOS TESTES DE MORTE</div>'+
+    '<div style="font-family:Cormorant Garamond,serif;font-size:1.1rem;color:rgba(200,168,74,.6);font-style:italic;margin-bottom:.3rem">'+name+' sucumbiu ao destino</div>'+
+    '<div style="font-family:Cinzel,serif;font-size:.6rem;color:rgba(200,168,74,.3);letter-spacing:2px;margin-bottom:2rem">3 FALHAS NOS TESTES DE MORTE</div>'+
     '<div style="display:flex;gap:.8rem">'+
-      '<button onclick="continueAfterDeath()" style="background:rgba(90,158,74,.1);border:1px solid rgba(90,158,74,.3);border-radius:10px;color:var(--gold2);font-family:Cinzel,serif;font-size:.7rem;padding:.7rem 1.2rem;cursor:pointer">▷ Continuar Narrativa</button>'+
+      '<button onclick="continueAfterDeath()" style="background:rgba(200,168,74,.1);border:1px solid rgba(200,168,74,.3);border-radius:10px;color:var(--gold2);font-family:Cinzel,serif;font-size:.7rem;padding:.7rem 1.2rem;cursor:pointer">▷ Continuar Narrativa</button>'+
       '<button onclick="restartGame()" style="background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.4);border-radius:10px;color:#e74c3c;font-family:Cinzel,serif;font-size:.7rem;padding:.7rem 1.2rem;cursor:pointer">† Novo Personagem</button>'+
     '</div>';
   el.style.display='flex';
@@ -6220,8 +6220,8 @@ function showTPKScreen(){
   el.innerHTML=
     '<div style="font-size:4rem;margin-bottom:1rem">†✕†</div>'+
     '<div style="font-family:Cinzel Decorative,serif;font-size:1.6rem;color:#6b0000;letter-spacing:4px;margin-bottom:.5rem">TPK</div>'+
-    '<div style="font-family:Cinzel,serif;font-size:.8rem;color:rgba(90,158,74,.5);letter-spacing:3px;margin-bottom:.5rem">TOTAL PARTY KILL</div>'+
-    '<div style="font-family:Cormorant Garamond,serif;font-size:1rem;color:rgba(90,158,74,.4);font-style:italic;margin-bottom:2rem;text-align:center;max-width:320px">Todos os heróis tombaram.<br>A escuridão venceu.</div>'+
+    '<div style="font-family:Cinzel,serif;font-size:.8rem;color:rgba(200,168,74,.5);letter-spacing:3px;margin-bottom:.5rem">TOTAL PARTY KILL</div>'+
+    '<div style="font-family:Cormorant Garamond,serif;font-size:1rem;color:rgba(200,168,74,.4);font-style:italic;margin-bottom:2rem;text-align:center;max-width:320px">Todos os heróis tombaram.<br>A escuridão venceu.</div>'+
     '<button onclick="restartGame()" style="background:rgba(192,57,43,.2);border:1px solid rgba(192,57,43,.5);border-radius:10px;color:#e74c3c;font-family:Cinzel,serif;font-size:.75rem;padding:.8rem 1.5rem;cursor:pointer;letter-spacing:1px">† Nova Campanha</button>';
   el.style.display='flex';
 }
@@ -6291,7 +6291,7 @@ function openConditionPicker(){
       +'<div style="font-family:Cinzel,serif;font-size:.56rem;color:'+(isActive?cond.color:'var(--text2)')+';white-space:nowrap">'+name+'</div>'
       +(cond.hasLevels&&isActive?'<div style="font-size:.58rem;color:var(--text3)">Nível '+( activeConditions[name]?.level||1)+'</div>':'')
       +'</div>'
-      +'<div style="width:10px;height:10px;border-radius:50%;background:'+(isActive?cond.color:'transparent')+';border:1.5px solid '+(isActive?cond.color:'rgba(90,158,74,.2)')+'"></div>'
+      +'<div style="width:10px;height:10px;border-radius:50%;background:'+(isActive?cond.color:'transparent')+';border:1.5px solid '+(isActive?cond.color:'rgba(200,168,74,.2)')+'"></div>'
       +'</div>';
   });
   html+='</div>';
@@ -6349,11 +6349,11 @@ function renderConditions(){
       +'<div style="flex:1;min-width:0">'
       +'<div style="display:flex;align-items:center;justify-content:space-between">'
       +'<span style="font-family:Cinzel,serif;font-size:.6rem;color:'+cond.color+'">'+name+'</span>'
-      +'<button data-cn="'+name+'" onclick="removeCondition(this.dataset.cn)" style="background:rgba(90,158,74,.08);border:1px solid var(--border);border-radius:3px;color:var(--text3);font-size:.6rem;padding:0 4px;cursor:pointer;line-height:1.4">✕</button>'
+      +'<button data-cn="'+name+'" onclick="removeCondition(this.dataset.cn)" style="background:rgba(200,168,74,.08);border:1px solid var(--border);border-radius:3px;color:var(--text3);font-size:.6rem;padding:0 4px;cursor:pointer;line-height:1.4">✕</button>'
       +'</div>'
       +(data.duration?'<div style="font-size:.58rem;color:var(--text3);margin-top:1px">⏱ '+data.duration+'</div>':'')
       +'<div style="font-size:.65rem;color:var(--text3);margin-top:2px;line-height:1.3">'+cond.desc.slice(0,80)+(cond.desc.length>80?'...':'')+'</div>'
-      +(cond.saveStat?'<div style="font-size:.56rem;color:rgba(90,158,74,.4);margin-top:1px">TR '+cond.saveStat+' para resistir</div>':'')
+      +(cond.saveStat?'<div style="font-size:.56rem;color:rgba(200,168,74,.4);margin-top:1px">TR '+cond.saveStat+' para resistir</div>':'')
       +'</div></div>';
   }).join('');
 
@@ -6483,7 +6483,7 @@ function renderNPCsInModal(){
     el.innerHTML='<div style="font-size:.74rem;color:var(--text3);font-style:italic;text-align:center;padding:.5rem">Nenhum NPC registrado ainda.</div>';
     return;
   }
-  var relColors={aliado:'#6ecfa0',neutro:'rgba(90,158,74,.6)',inimigo:'#e74c3c'};
+  var relColors={aliado:'#e2c46a',neutro:'rgba(200,168,74,.6)',inimigo:'#e74c3c'};
   var relIcons={aliado:'🤝',neutro:'◎',inimigo:'†'};
   el.innerHTML=npcTracker.map(function(n){
     var col=relColors[n.relation]||relColors.neutro;
@@ -6493,12 +6493,12 @@ function renderNPCsInModal(){
       +'<div style="font-family:Cinzel,serif;font-size:.62rem;color:'+col+'">'+n.name+'</div>'
       +(n.location?'<div style="font-size:.62rem;color:var(--text3)">◉ '+n.location+'</div>':'')
       +'</div>'
-      +'<select data-nid="'+n.id+'" onchange="updateNPCRelation(this.dataset.nid,this.value)" style="background:#0d0a10;border:1px solid rgba(90,158,74,.2);border-radius:5px;font-size:.58rem;color:'+col+';padding:2px 4px">'
+      +'<select data-nid="'+n.id+'" onchange="updateNPCRelation(this.dataset.nid,this.value)" style="background:#0d0a10;border:1px solid rgba(200,168,74,.2);border-radius:5px;font-size:.58rem;color:'+col+';padding:2px 4px">'
       +'<option value="aliado"'+(n.relation==='aliado'?' selected':'')+'>Aliado</option>'
       +'<option value="neutro"'+(n.relation==='neutro'?' selected':'')+'>Neutro</option>'
       +'<option value="inimigo"'+(n.relation==='inimigo'?' selected':'')+'>Inimigo</option>'
       +'</select>'
-      +'<button data-nid="'+n.id+'" onclick="removeNPC(this.dataset.nid);renderNPCsInModal()" style="background:rgba(90,158,74,.06);border:1px solid var(--border);border-radius:4px;color:var(--text3);font-size:.6rem;padding:1px 5px;cursor:pointer">✕</button>'
+      +'<button data-nid="'+n.id+'" onclick="removeNPC(this.dataset.nid);renderNPCsInModal()" style="background:rgba(200,168,74,.06);border:1px solid var(--border);border-radius:4px;color:var(--text3);font-size:.6rem;padding:1px 5px;cursor:pointer">✕</button>'
       +'</div>';
   }).join('');
 }
@@ -6510,7 +6510,7 @@ function renderNPCTracker(){
     el.innerHTML='<div style="font-family:Cormorant Garamond,serif;font-style:italic;font-size:.8rem;color:var(--text3);text-align:center;padding:.5rem">Nenhum NPC encontrado ainda</div>';
     return;
   }
-  var relColors = {aliado:'rgba(45,122,74,.3)',neutro:'rgba(90,158,74,.2)',inimigo:'rgba(155,35,53,.3)'};
+  var relColors = {aliado:'rgba(180,140,55,.3)',neutro:'rgba(200,168,74,.2)',inimigo:'rgba(155,35,53,.3)'};
   var relIcons  = {aliado:'🟢',neutro:'◉',inimigo:'🔴'};
   el.innerHTML = npcTracker.map(function(n,idx){
     var rc = relColors[n.relation]||relColors.neutro;
@@ -6529,10 +6529,10 @@ function renderNPCTracker(){
     card.addEventListener('click', function(){
       openNPCCard(npcTracker[parseInt(this.dataset.npcIdx)].id);
     });
-    card.addEventListener('mouseover', function(){ this.style.borderColor='rgba(90,158,74,.4)'; });
+    card.addEventListener('mouseover', function(){ this.style.borderColor='rgba(200,168,74,.4)'; });
     card.addEventListener('mouseout',  function(){
       var n = npcTracker[parseInt(this.dataset.npcIdx)];
-      var rc = {aliado:'rgba(45,122,74,.3)',neutro:'rgba(90,158,74,.2)',inimigo:'rgba(155,35,53,.3)'};
+      var rc = {aliado:'rgba(180,140,55,.3)',neutro:'rgba(200,168,74,.2)',inimigo:'rgba(155,35,53,.3)'};
       this.style.borderColor = rc[n.relation]||rc.neutro;
     });
   });
@@ -6541,11 +6541,11 @@ function renderNPCTracker(){
 function openNPCCard(npcId){
   var n = npcTracker.find(function(x){ return x.id===npcId; });
   if(!n) return;
-  var relColors = {aliado:'#6dbf6d',neutro:'#e8c860',inimigo:'#e06060'};
+  var relColors = {aliado:'#c8a84a',neutro:'#e8c860',inimigo:'#e06060'};
   window._editingNpcId = npcId;
   var html = '<div class="modal-title">'+n.name+'</div>'
     +'<div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem">'
-    +'<select id="npc-rel-sel" style="background:#0d0a10;border:1px solid rgba(90,158,74,.3);border-radius:6px;color:'+(relColors[n.relation]||'#e8c860')+';font-family:Cinzel,serif;font-size:.65rem;padding:.3rem .5rem">'
+    +'<select id="npc-rel-sel" style="background:#0d0a10;border:1px solid rgba(200,168,74,.3);border-radius:6px;color:'+(relColors[n.relation]||'#e8c860')+';font-family:Cinzel,serif;font-size:.65rem;padding:.3rem .5rem">'
     +'<option value="aliado"'+(n.relation==='aliado'?' selected':'')+'>🟢 Aliado</option>'
     +'<option value="neutro"'+(n.relation==='neutro'?' selected':'')+'>◉ Neutro</option>'
     +'<option value="inimigo"'+(n.relation==='inimigo'?' selected':'')+'>🔴 Inimigo</option>'
@@ -6553,9 +6553,9 @@ function openNPCCard(npcId){
     +(n.location?'<span style="font-family:Cinzel,serif;font-size:.55rem;color:var(--text3)">◉ '+n.location+'</span>':'')
     +'</div>'
     +'<label style="font-family:Cinzel,serif;font-size:.55rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px">Descrição / Aparência</label>'
-    +'<textarea id="npc-desc-inp" style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(90,158,74,.2);border-radius:6px;color:#e8dfc8;font-family:Cormorant Garamond,serif;font-size:.88rem;padding:.5rem;margin:.3rem 0 .6rem;resize:vertical;min-height:60px;box-sizing:border-box"></textarea>'
+    +'<textarea id="npc-desc-inp" style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(200,168,74,.2);border-radius:6px;color:#e8dfc8;font-family:Cormorant Garamond,serif;font-size:.88rem;padding:.5rem;margin:.3rem 0 .6rem;resize:vertical;min-height:60px;box-sizing:border-box"></textarea>'
     +'<label style="font-family:Cinzel,serif;font-size:.55rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px">Notas / Informações Conhecidas</label>'
-    +'<textarea id="npc-notes-inp" style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(90,158,74,.2);border-radius:6px;color:#e8dfc8;font-family:Cormorant Garamond,serif;font-size:.88rem;padding:.5rem;margin:.3rem 0 .6rem;resize:vertical;min-height:60px;box-sizing:border-box"></textarea>'
+    +'<textarea id="npc-notes-inp" style="width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(200,168,74,.2);border-radius:6px;color:#e8dfc8;font-family:Cormorant Garamond,serif;font-size:.88rem;padding:.5rem;margin:.3rem 0 .6rem;resize:vertical;min-height:60px;box-sizing:border-box"></textarea>'
     +'<div class="modal-row">'
     +'<button class="mbtn secondary" onclick="closeDynModal()">Fechar</button>'
     +'<button class="mbtn" id="npc-save-btn">◧ Salvar</button>'
@@ -6591,7 +6591,7 @@ function renderNPCs(){
     el.innerHTML='<div style="font-size:.7rem;color:var(--text3);font-style:italic;text-align:center;padding:.3rem 0">Nenhum NPC registrado</div>';
     return;
   }
-  var relColors={aliado:'#6ecfa0',neutro:'rgba(90,158,74,.5)',inimigo:'#e74c3c'};
+  var relColors={aliado:'#e2c46a',neutro:'rgba(200,168,74,.5)',inimigo:'#e74c3c'};
   var relIcons={aliado:'🤝',neutro:'◎',inimigo:'†'};
   el.innerHTML=npcTracker.slice(-8).map(function(n){  // show last 8
     var col=relColors[n.relation]||relColors.neutro;
@@ -6621,9 +6621,9 @@ function toggleInspiration(){
 function renderInspiration(){
   var el=document.getElementById('insp-hdr');
   if(!el)return;
-  el.style.background=hasInspiration?'rgba(241,196,15,.15)':'rgba(90,158,74,.05)';
-  el.style.borderColor=hasInspiration?'rgba(241,196,15,.7)':'rgba(90,158,74,.2)';
-  el.style.color=hasInspiration?'#f1c40f':'rgba(90,158,74,.4)';
+  el.style.background=hasInspiration?'rgba(241,196,15,.15)':'rgba(200,168,74,.05)';
+  el.style.borderColor=hasInspiration?'rgba(241,196,15,.7)':'rgba(200,168,74,.2)';
+  el.style.color=hasInspiration?'#f1c40f':'rgba(200,168,74,.4)';
   el.title=hasInspiration?'Inspiração ativa — clique para usar':'Sem inspiração — clique para receber';
   var icon=document.getElementById('insp-icon');
   if(icon)icon.textContent=hasInspiration?'◈':'☆';
@@ -6784,7 +6784,7 @@ function addMsg(tipo,txt){
         var reqDiv=document.createElement('div');
         reqDiv.className='msg msg-roll-request';
         reqDiv.innerHTML='<span class="mlbl" style="color:var(--gold2);font-size:.65rem">⬡ Teste Solicitado</span>'
-          +'<div class="bbl" style="background:rgba(90,158,74,.06);border:1px solid rgba(90,158,74,.25);border-left:3px solid var(--gold2)">'
+          +'<div class="bbl" style="background:rgba(200,168,74,.06);border:1px solid rgba(200,168,74,.25);border-left:3px solid var(--gold2)">'
           +rollNote+btnHtml+'</div>';
         box.appendChild(reqDiv);
         box.scrollTop=box.scrollHeight;
@@ -6797,7 +6797,7 @@ function addMsg(tipo,txt){
             if(this.disabled)return;
             this.disabled=true;
             this.style.opacity='.45';
-            this.style.background='rgba(90,158,74,.03)';
+            this.style.background='rgba(200,168,74,.03)';
             quickRollInline(this.dataset.dice,parseInt(this.dataset.mod)||0,this.dataset.skill);
           });
         });
@@ -6986,7 +6986,7 @@ function parseAndApplyUpdates(raw){
       // Destacar botões de descanso
       ['btn-short-rest','btn-long-rest'].forEach(function(id){
         var btn=document.getElementById(id);
-        if(btn){btn.style.borderColor='rgba(45,122,74,.7)';btn.style.background='rgba(45,122,74,.2)';}
+        if(btn){btn.style.borderColor='rgba(180,140,55,.7)';btn.style.background='rgba(180,140,55,.2)';}
       });
     }
     if(msgs.length) setTimeout(()=>addMsg('update',msgs.join(' · ')),300);
@@ -7096,7 +7096,7 @@ function togglePause(){
   var btn = document.getElementById('pause-btn');
   var overlay = document.getElementById('pause-overlay');
   if(gamePaused){
-    if(btn){ btn.textContent='▶ Continuar'; btn.style.background='rgba(45,122,74,.2)'; btn.style.borderColor='rgba(45,122,74,.5)'; }
+    if(btn){ btn.textContent='▶ Continuar'; btn.style.background='rgba(180,140,55,.2)'; btn.style.borderColor='rgba(180,140,55,.5)'; }
     if(overlay) overlay.style.display='flex';
     saveProgress('auto');
     // Injetar pausa no hist para o narrador saber
@@ -7136,7 +7136,7 @@ async function send(){
     else if(errMsg.includes('429')||errMsg.includes('quota')) msg='⏳ Muitas requisições. Aguarde alguns segundos e tente novamente.';
     else if(errMsg.includes('key')||errMsg.includes('API_KEY')||errMsg.includes('403')) msg='◉ Chave de API inválida. Clique em ◉ para verificar sua chave.';
     else msg='🌫 O Narrador tropecou: '+errMsg+'. Tente novamente.';
-    addMsg('sys',msg+'<br><button onclick="retryLast()" style="margin-top:5px;background:rgba(90,158,74,.15);border:1px solid var(--border2);border-radius:5px;color:var(--gold);font-family:Cinzel,serif;font-size:.65rem;padding:3px 10px;cursor:pointer">↺ Tentar novamente</button>');
+    addMsg('sys',msg+'<br><button onclick="retryLast()" style="margin-top:5px;background:rgba(200,168,74,.15);border:1px solid var(--border2);border-radius:5px;color:var(--gold);font-family:Cinzel,serif;font-size:.65rem;padding:3px 10px;cursor:pointer">↺ Tentar novamente</button>');
     window._lastMsg=txt;
   }
   busy=false;document.getElementById('sbtn').disabled=false;inp.focus();
@@ -7465,8 +7465,8 @@ const CONDITIONS_DB={
   'Caído':       {icon:'⬇',color:'#7f8c8d',desc:'Desvantagem em ataques. Ataques corpo-a-corpo contra têm vantagem; à distância têm desvantagem. Custo extra de movimento para levantar.',saveStat:null},
   'Cego':        {icon:'🙈',color:'#2c3e50',desc:'Falha em testes que dependem de visão. Desvantagem em ataques. Ataques contra têm vantagem.',saveStat:'CON'},
   'Encantado':   {icon:'💜',color:'#e91e8c',desc:'Não pode atacar o encantador. O encantador tem vantagem em interações sociais com o personagem.',saveStat:'SAB'},
-  'Enfeitiçado': {icon:'◈',color:'#1abc9c',desc:'Considerado amigo do feiticeiro. Desvantagem para resistir a magias do feiticeiro.',saveStat:'CAR'},
-  'Envenenado':  {icon:'☠',color:'#27ae60',desc:'Desvantagem em testes de ataque e habilidade.',saveStat:'CON'},
+  'Enfeitiçado': {icon:'◈',color:'#c8a84a',desc:'Considerado amigo do feiticeiro. Desvantagem para resistir a magias do feiticeiro.',saveStat:'CAR'},
+  'Envenenado':  {icon:'☠',color:'#c8a84a',desc:'Desvantagem em testes de ataque e habilidade.',saveStat:'CON'},
   'Exausto':     {icon:'◎‍◌',color:'#e74c3c',desc:'Nível 1-6. Acumula: -10 velocidade/nível, desvantagem em testes, -penalidade a ataques.',saveStat:'CON',hasLevels:true,level:1},
   'Incapacitado':{icon:'🚫',color:'#c0392b',desc:'Não pode realizar ações nem reações.',saveStat:null},
   'Inconsciente':{icon:'◌',color:'#34495e',desc:'Incapacitado, não pode se mover ou falar. Cai no chão. Falha em FOR e DES. Ataques têm vantagem. Crítico em corpo-a-corpo.',saveStat:null},
@@ -8564,15 +8564,15 @@ function renderSkillsChoice(){
     return'<div onclick="toggleSkillChoice(this.dataset.skill,'+cs.choose+')" data-skill="'+sname+'" style="'
       +'display:flex;align-items:center;gap:6px;padding:5px 7px;'
       +'border-radius:7px;cursor:pointer;transition:all .15s;'
-      +'background:'+(sel?'rgba(90,158,74,.12)':'var(--surface)')+';'
-      +'border:1px solid '+(sel?'rgba(90,158,74,.45)':'var(--border)')+';">'
+      +'background:'+(sel?'rgba(200,168,74,.12)':'var(--surface)')+';'
+      +'border:1px solid '+(sel?'rgba(200,168,74,.45)':'var(--border)')+';">'
       +'<div style="width:14px;height:14px;border-radius:50%;flex-shrink:0;'
-      +'border:1.5px solid '+(sel?'var(--gold2)':'rgba(90,158,74,.25)')+';'
+      +'border:1.5px solid '+(sel?'var(--gold2)':'rgba(200,168,74,.25)')+';'
       +'background:'+(sel?'var(--gold2)':'transparent')+';">'
       +(sel?'<div style="width:6px;height:6px;border-radius:50%;background:#1a1208;margin:3px auto"></div>':'')
       +'</div>'
       +'<span style="flex:1;font-family:Cormorant Garamond,serif;font-size:.82rem;color:'+(sel?'var(--gold2)':'var(--text2)')+'">'+sname+'</span>'
-      +'<span style="font-family:Cinzel,serif;font-size:.46rem;color:rgba(90,158,74,.4)">'+attrLabel+'</span>'
+      +'<span style="font-family:Cinzel,serif;font-size:.46rem;color:rgba(200,168,74,.4)">'+attrLabel+'</span>'
       +'</div>';
   }).join('');
 
@@ -8706,7 +8706,7 @@ function buildCharSummary(){
   var goldMin=goldDef.dice*goldDef.mult;
   var goldMax=goldDef.dice*goldDef.sides*goldDef.mult;
   el.innerHTML=
-    '<div style="margin-bottom:.5rem">'    +'<span style="color:var(--gold2);font-weight:700;font-size:1rem">'+name+'</span>'    +' <span style="color:var(--text2)">— '+race+sub+' '+cls+sub1+'</span>'    +'</div>'    +'<div style="color:var(--text3);margin-bottom:.3rem;font-size:.82rem">'    +'Alinhamento: '+align+' · Antecedente: '+bg+'</div>'    +'<div style="color:var(--text3);margin-bottom:.3rem;font-size:.82rem">'    +'Região: '+region.name+'</div>'    +'<div style="margin-bottom:.5rem;padding:.4rem .6rem;background:rgba(90,158,74,.06);border-radius:6px;font-size:.75rem;font-family:Cinzel,serif;color:var(--text2)">'    +'♥ PV iniciais: '+hp+' · ▣ CA base: 10+DES · ◈ Ouro: '+goldMin+'–'+goldMax+' PO'    +'</div>'    +(physParts.length?'<div style="color:var(--text3);margin-bottom:.3rem;font-size:.8rem">Aparência: '+physParts.join(', ')+'</div>':'')    +(allSkills.length?'<div style="color:rgba(90,200,130,.7);margin-bottom:.3rem;font-size:.78rem">▷ Perícias: '+allSkills.join(', ')+'</div>':'')    +'<div style="color:rgba(58,144,200,.7);font-size:.75rem;font-style:italic">✅ Equipamento inicial carregado automaticamente.</div>';
+    '<div style="margin-bottom:.5rem">'    +'<span style="color:var(--gold2);font-weight:700;font-size:1rem">'+name+'</span>'    +' <span style="color:var(--text2)">— '+race+sub+' '+cls+sub1+'</span>'    +'</div>'    +'<div style="color:var(--text3);margin-bottom:.3rem;font-size:.82rem">'    +'Alinhamento: '+align+' · Antecedente: '+bg+'</div>'    +'<div style="color:var(--text3);margin-bottom:.3rem;font-size:.82rem">'    +'Região: '+region.name+'</div>'    +'<div style="margin-bottom:.5rem;padding:.4rem .6rem;background:rgba(200,168,74,.06);border-radius:6px;font-size:.75rem;font-family:Cinzel,serif;color:var(--text2)">'    +'♥ PV iniciais: '+hp+' · ▣ CA base: 10+DES · ◈ Ouro: '+goldMin+'–'+goldMax+' PO'    +'</div>'    +(physParts.length?'<div style="color:var(--text3);margin-bottom:.3rem;font-size:.8rem">Aparência: '+physParts.join(', ')+'</div>':'')    +(allSkills.length?'<div style="color:rgba(90,200,130,.7);margin-bottom:.3rem;font-size:.78rem">▷ Perícias: '+allSkills.join(', ')+'</div>':'')    +'<div style="color:rgba(58,144,200,.7);font-size:.75rem;font-style:italic">✅ Equipamento inicial carregado automaticamente.</div>';
   // Mostrar o div do resumo
   var charSum=document.getElementById('char-summary');
   if(charSum) charSum.style.display='block';
@@ -8767,7 +8767,7 @@ function buildAttrBuilder(){
       var total=base+(applyRacial?rb:0);
       var modV=Math.floor((total-10)/2);
       var modStr=(modV>=0?'+':'')+modV;
-      var mc=total>=16?'#6ecfa0':total>=14?'#e6c76a':total<=8?'#e74c3c':'rgba(237,224,188,.7)';
+      var mc=total>=16?'#e2c46a':total>=14?'#e6c76a':total<=8?'#e74c3c':'rgba(237,224,188,.7)';
       var used=calcUsed();
       var canInc = base<15 && (used + (COST[base+1]||0) - COST[base]) <= TOTAL_POINTS;
       var canDec = base>8;
@@ -8775,7 +8775,7 @@ function buildAttrBuilder(){
       var box=document.createElement('div');
       box.className='attr-build-box';
       box.innerHTML=
-        '<div style="font-family:Cinzel,serif;font-size:.6rem;color:rgba(90,158,74,.85);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">'+a+'</div>'
+        '<div style="font-family:Cinzel,serif;font-size:.6rem;color:rgba(200,168,74,.85);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">'+a+'</div>'
         +'<div style="display:flex;align-items:center;justify-content:center;gap:6px;margin:2px 0">'
         +'<button type="button" class="attr-step-btn" data-a="'+a+'" data-d="-1" '+(canDec?'':'disabled style="opacity:.3;cursor:default"')+'>−</button>'
         +'<div style="display:flex;flex-direction:column;align-items:center;min-width:36px">'
@@ -8796,13 +8796,13 @@ function buildAttrBuilder(){
     if(!counter){
       counter=document.createElement('div');
       counter.id='pb-counter';
-      counter.style.cssText='grid-column:1/-1;margin-top:.4rem;padding:.5rem .8rem;background:rgba(0,0,0,.3);border:1px solid rgba(90,158,74,.2);border-radius:8px;font-family:Cinzel,serif;font-size:.62rem;text-align:center;color:var(--gold)';
+      counter.style.cssText='grid-column:1/-1;margin-top:.4rem;padding:.5rem .8rem;background:rgba(0,0,0,.3);border:1px solid rgba(200,168,74,.2);border-radius:8px;font-family:Cinzel,serif;font-size:.62rem;text-align:center;color:var(--gold)';
       el.appendChild(counter);
     }
-    var col=remaining===0?'#6ecfa0':remaining<0?'#e74c3c':'var(--gold)';
+    var col=remaining===0?'#e2c46a':remaining<0?'#e74c3c':'var(--gold)';
     counter.innerHTML='Pontos de compra: <span style="color:'+col+';font-weight:700">'+used+'</span>/'+TOTAL_POINTS+' usados'
-      +(remaining>0?' — restam <b>'+remaining+'</b>':remaining===0?' — <span style="color:#6ecfa0">Completo!</span>':' — <span style="color:#e74c3c">Excedeu '+(-remaining)+' pontos</span>');
-    counter.style.borderColor=remaining<0?'rgba(231,76,60,.5)':remaining===0?'rgba(110,207,160,.4)':'rgba(90,158,74,.2)';
+      +(remaining>0?' — restam <b>'+remaining+'</b>':remaining===0?' — <span style="color:#e2c46a">Completo!</span>':' — <span style="color:#e74c3c">Excedeu '+(-remaining)+' pontos</span>');
+    counter.style.borderColor=remaining<0?'rgba(231,76,60,.5)':remaining===0?'rgba(220,185,80,.4)':'rgba(200,168,74,.2)';
     // Badge de bônus racial
     var applyR=document.getElementById('racial-bonus-toggle')?.checked!==false;
     var rbBadge=document.getElementById('racial-bonus-badge');
@@ -8852,7 +8852,7 @@ function updAttrMod(a,v){
   var el=document.getElementById('nbm-'+a);
   if(!el)return;
   el.textContent=ms;
-  el.style.color=n>=16?'#6ecfa0':n>=14?'#e6c76a':n<=8?'#e74c3c':'rgba(237,224,188,.7)';
+  el.style.color=n>=16?'#e2c46a':n>=14?'#e6c76a':n<=8?'#e74c3c':'rgba(237,224,188,.7)';
 }
 
 function updateClassDefaults(){
@@ -8890,7 +8890,7 @@ function buildRegionList(){
   });
   var catOrder=['Metrópole','Cidade','Vila','Lendário','Selvagem'];
   var catIcons={'Metrópole':'▣','Cidade':'⌂','Vila':'⌂','Lendário':'⚡','Selvagem':'◌'};
-  var catColors={'Metrópole':'rgba(90,158,74,.7)','Cidade':'rgba(93,173,226,.7)','Vila':'rgba(46,204,113,.6)','Lendário':'rgba(165,105,189,.7)','Selvagem':'rgba(231,76,60,.6)'};
+  var catColors={'Metrópole':'rgba(200,168,74,.7)','Cidade':'rgba(93,173,226,.7)','Vila':'rgba(200,168,74,.6)','Lendário':'rgba(165,105,189,.7)','Selvagem':'rgba(231,76,60,.6)'};
   var html='';
   catOrder.forEach(function(cat){
     if(!cats[cat])return;
@@ -9602,7 +9602,7 @@ function _initMagicCanvas_full(){
   window.addEventListener('resize', resize);
   // Criar partículas
   var particles = [];
-  var COLORS = ['rgba(90,158,74,', 'rgba(45,128,64,', 'rgba(120,200,90,', 'rgba(184,48,64,', 'rgba(139,31,42,'];
+  var COLORS = ['rgba(200,168,74,', 'rgba(180,140,55,', 'rgba(200,168,74,', 'rgba(184,48,64,', 'rgba(139,31,42,'];
   for(var i=0;i<55;i++){
     particles.push({
       x: Math.random()*canvas.width,
@@ -9714,7 +9714,7 @@ restoreGoogleSession();
   var img=ctx2.createImageData(200,200);
   for(var i=0;i<img.data.length;i+=4){
     var v=Math.floor(Math.random()*40+10);
-    img.data[i]=10; img.data[i+1]=v; img.data[i+2]=15; img.data[i+3]=Math.floor(Math.random()*12+3);
+    img.data[i]=Math.floor(Math.random()*20+15); img.data[i+1]=Math.floor(Math.random()*12+8); img.data[i+2]=3; img.data[i+3]=Math.floor(Math.random()*10+3);
   }
   ctx2.putImageData(img,0,0);
   grain.style.backgroundImage='url('+c2.toDataURL()+')';
@@ -9748,32 +9748,32 @@ if(_savedUser && _driveToken === null){
 </script>
 <div id="step-generating" style="display:none;position:fixed;inset:0;z-index:9999;background:#060408;flex-direction:column;align-items:center;justify-content:center;visibility:hidden">
       <div style="margin-bottom:1.5rem">
-        <div style="width:72px;height:72px;border-radius:50%;border:2px solid rgba(90,158,74,.3);border-top-color:var(--gold2);display:inline-flex;align-items:center;justify-content:center;animation:spin 1.5s linear infinite">
+        <div style="width:72px;height:72px;border-radius:50%;border:2px solid rgba(200,168,74,.3);border-top-color:var(--gold2);display:inline-flex;align-items:center;justify-content:center;animation:spin 1.5s linear infinite">
           <span style="font-size:1.8rem">⬡</span>
         </div>
       </div>
       <div style="font-family:'Cinzel Decorative',serif;font-size:1rem;color:var(--gold2);margin-bottom:.5rem;letter-spacing:1px">Tecendo o Destino</div>
-      <div id="gen-status" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(90,158,74,.55);margin-bottom:1.4rem">O Mestre consulta os tomos antigos...</div>
-      <div style="width:220px;height:3px;background:rgba(90,158,74,.1);border-radius:2px;margin:0 auto;overflow:hidden">
-        <div id="gen-bar" style="height:100%;background:linear-gradient(90deg,var(--blood),var(--gold2));border-radius:2px;width:0%;transition:width 1.5s ease;box-shadow:0 0 8px rgba(90,158,74,.4)"></div>
+      <div id="gen-status" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;color:rgba(200,168,74,.55);margin-bottom:1.4rem">O Mestre consulta os tomos antigos...</div>
+      <div style="width:220px;height:3px;background:rgba(200,168,74,.1);border-radius:2px;margin:0 auto;overflow:hidden">
+        <div id="gen-bar" style="height:100%;background:linear-gradient(90deg,var(--blood),var(--gold2));border-radius:2px;width:0%;transition:width 1.5s ease;box-shadow:0 0 8px rgba(200,168,74,.4)"></div>
       </div>
     </div>
 <div id="step-new" style="display:none;position:fixed;inset:0;z-index:8000;background:#060408;overflow-y:auto;-webkit-overflow-scrolling:touch;visibility:hidden;padding:1rem 1rem 5rem;">
 <div style="max-width:480px;margin:0 auto;width:100%;">
 
       <!-- Header do step-new -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;padding-bottom:.6rem;border-bottom:1px solid rgba(90,158,74,.12)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;padding-bottom:.6rem;border-bottom:1px solid rgba(200,168,74,.12)">
         <div>
-          <div style="font-family:'Cinzel Decorative',serif;font-size:.85rem;color:#78c060;letter-spacing:1px">Nova Aventura</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.75rem;color:rgba(90,158,74,.45);margin-top:2px">Forje seu destino nos Forgotten Realms</div>
+          <div style="font-family:'Cinzel Decorative',serif;font-size:.85rem;color:#c8a84a;letter-spacing:1px">Nova Aventura</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.75rem;color:rgba(200,168,74,.45);margin-top:2px">Forje seu destino nos Forgotten Realms</div>
         </div>
-        <button onclick="showStep('step-api-hidden')" style="background:rgba(255,255,255,.04);border:1px solid rgba(90,158,74,.15);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(90,158,74,.5);font-size:.9rem;transition:all .2s;flex-shrink:0"
-          onmouseover="this.style.borderColor='rgba(90,158,74,.4)';this.style.color='rgba(90,158,74,.8)'"
-          onmouseout="this.style.borderColor='rgba(90,158,74,.15)';this.style.color='rgba(90,158,74,.5)'">✕</button>
+        <button onclick="showStep('step-api-hidden')" style="background:rgba(255,255,255,.04);border:1px solid rgba(200,168,74,.15);border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(200,168,74,.5);font-size:.9rem;transition:all .2s;flex-shrink:0"
+          onmouseover="this.style.borderColor='rgba(200,168,74,.4)';this.style.color='rgba(200,168,74,.8)'"
+          onmouseout="this.style.borderColor='rgba(200,168,74,.15)';this.style.color='rgba(200,168,74,.5)'">✕</button>
       </div>
 
       <!-- Progress steps indicator -->
-      <div id="cc-steps-bar" style="display:flex;align-items:center;justify-content:center;gap:.3rem;margin-bottom:1.2rem;padding:.55rem .8rem;background:rgba(0,0,0,.4);border:1px solid rgba(90,158,74,.1);border-radius:12px;flex-wrap:wrap;">
+      <div id="cc-steps-bar" style="display:flex;align-items:center;justify-content:center;gap:.3rem;margin-bottom:1.2rem;padding:.55rem .8rem;background:rgba(0,0,0,.4);border:1px solid rgba(200,168,74,.1);border-radius:12px;flex-wrap:wrap;">
         <div class="cc-step-dot active" id="ccdot-0">Raça</div>
         <div class="cc-step-line"></div>
         <div class="cc-step-dot" id="ccdot-1">Classe</div>
@@ -9799,8 +9799,8 @@ if(_savedUser && _driveToken === null){
           <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.35rem" id="subrace-grid"></div>
         </div>
         <!-- Traços da raça -->
-        <div id="race-traits-area" style="display:none;background:rgba(90,158,74,.04);border:1px solid rgba(90,158,74,.12);border-radius:8px;padding:.7rem;margin-bottom:.7rem">
-          <div style="font-family:Cinzel,serif;font-size:.52rem;color:rgba(90,158,74,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.4rem">Traços Raciais</div>
+        <div id="race-traits-area" style="display:none;background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.12);border-radius:8px;padding:.7rem;margin-bottom:.7rem">
+          <div style="font-family:Cinzel,serif;font-size:.52rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.4rem">Traços Raciais</div>
           <div id="race-traits-list" style="font-size:.78rem;color:var(--text2);line-height:1.6"></div>
         </div>
         <!-- Draconato dragon type -->
@@ -9809,7 +9809,7 @@ if(_savedUser && _driveToken === null){
           <select id="dragon-type" class="cc-select"><option>Vermelho (Fogo)</option></select>
         </div>
         <!-- Características físicas -->
-        <div style="background:rgba(90,158,74,.03);border:1px solid rgba(90,158,74,.12);border-radius:10px;padding:.8rem;margin-bottom:.7rem">
+        <div style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:10px;padding:.8rem;margin-bottom:.7rem">
           <div class="cc-section-title" style="font-size:.5rem">◈ Aparência Física</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem" id="physique-grid"></div>
           <div style="margin-top:.5rem">
@@ -9835,7 +9835,7 @@ if(_savedUser && _driveToken === null){
           <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.35rem" id="subclass1-grid"></div>
         </div>
         <!-- Escolhas de classe nível 1 -->
-        <div id="class-choices-area" style="display:none;background:rgba(90,158,74,.04);border:1px solid rgba(90,158,74,.12);border-radius:8px;padding:.7rem;margin-bottom:.7rem">
+        <div id="class-choices-area" style="display:none;background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.12);border-radius:8px;padding:.7rem;margin-bottom:.7rem">
           <div class="cc-section-title" style="font-size:.5rem">Escolhas de Nível 1</div>
           <div id="class-choices-list"></div>
         </div>
@@ -9856,7 +9856,7 @@ if(_savedUser && _driveToken === null){
           <div class="cc-lore-title">Como os Atributos influenciam o jogo</div>
           <div class="cc-lore-text">Seus 6 atributos definem o que seu personagem é capaz de fazer. <strong style="color:var(--gold)">FOR</strong> rege força bruta e atletismo. <strong style="color:var(--gold)">DES</strong> controla agilidade, precisão e furtividade. <strong style="color:var(--gold)">CON</strong> determina resistência e PV máximos. <strong style="color:var(--gold)">INT</strong> governa conhecimento e magias arcanas. <strong style="color:var(--gold)">SAB</strong> representa percepção e conexão espiritual. <strong style="color:var(--gold)">CAR</strong> define poder de influência e liderança. O modificador (+N) é o que realmente importa nos testes de dados.</div>
         </div>
-        <div style="font-size:.7rem;color:rgba(90,158,74,.4);font-style:italic;margin-bottom:.6rem">Array padrão: 15, 14, 13, 12, 10, 8 — ajuste conforme quiser</div>
+        <div style="font-size:.7rem;color:rgba(200,168,74,.4);font-style:italic;margin-bottom:.6rem">Array padrão: 15, 14, 13, 12, 10, 8 — ajuste conforme quiser</div>
                 <!-- Toggle bônus racial automático -->
         <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem;padding:.45rem .7rem;background:rgba(107,63,160,.06);border:1px solid rgba(107,63,160,.2);border-radius:8px">
           <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;flex:1">
@@ -9874,7 +9874,7 @@ if(_savedUser && _driveToken === null){
         <div id="racial-bonus-hint" style="font-size:.72rem;color:var(--arc3);background:rgba(107,63,160,.06);border:1px solid rgba(107,63,160,.15);border-radius:7px;padding:.5rem .7rem;margin-bottom:.7rem"></div>
         
         <!-- ◎ PERÍCIAS (movido da tela de Classe) -->
-<div id="skills-choice-area" style="background:rgba(90,158,74,.03);border:1px solid rgba(90,158,74,.12);border-radius:10px;padding:.8rem;margin-bottom:.7rem">
+<div id="skills-choice-area" style="background:rgba(200,168,74,.03);border:1px solid rgba(200,168,74,.12);border-radius:10px;padding:.8rem;margin-bottom:.7rem">
           <div class="cc-section-title" style="font-size:.5rem">◎ Perícias</div>
           <!-- Antecedente aqui para atualizar skills em tempo real -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.7rem">
@@ -9893,7 +9893,7 @@ if(_savedUser && _driveToken === null){
             </div>
           </div>
           <!-- Classe skill choices -->
-          <div id="skills-choice-hint" style="font-size:.7rem;color:rgba(90,158,74,.5);font-style:italic;margin-bottom:.4rem"></div>
+          <div id="skills-choice-hint" style="font-size:.7rem;color:rgba(200,168,74,.5);font-style:italic;margin-bottom:.4rem"></div>
           <div id="skills-choice-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:.3rem"></div>
           <!-- Ladino expertise -->
           <div id="expertise-area" style="display:none;margin-top:.6rem">
@@ -9911,16 +9911,16 @@ if(_savedUser && _driveToken === null){
 <div class="cc-panel" id="cc-panel-3" style="display:none">
         <div class="cc-section-title">📛 Identidade</div>
         <!-- Upload de foto do personagem -->
-        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:.8rem;padding:.7rem;background:rgba(90,158,74,.04);border:1px solid rgba(90,158,74,.15);border-radius:10px">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:.8rem;padding:.7rem;background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.15);border-radius:10px">
           <div style="position:relative;flex-shrink:0">
-            <div id="cc-photo-preview" onclick="document.getElementById('cc-photo-input').click()" style="width:64px;height:64px;border-radius:50%;border:2px dashed rgba(90,158,74,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(0,0,0,.3);font-size:1.4rem;transition:all .2s;color:rgba(90,158,74,.4)" title="Adicionar foto" onmouseover="this.style.borderColor='rgba(90,158,74,.6)'" onmouseout="this.style.borderColor='rgba(90,158,74,.3)'">◈</div>
-            <img id="cc-photo-img" src="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(90,158,74,.4);display:none;cursor:pointer" onclick="document.getElementById('cc-photo-input').click()" title="Trocar foto"/>
+            <div id="cc-photo-preview" onclick="document.getElementById('cc-photo-input').click()" style="width:64px;height:64px;border-radius:50%;border:2px dashed rgba(200,168,74,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(0,0,0,.3);font-size:1.4rem;transition:all .2s;color:rgba(200,168,74,.4)" title="Adicionar foto" onmouseover="this.style.borderColor='rgba(200,168,74,.6)'" onmouseout="this.style.borderColor='rgba(200,168,74,.3)'">◈</div>
+            <img id="cc-photo-img" src="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(200,168,74,.4);display:none;cursor:pointer" onclick="document.getElementById('cc-photo-input').click()" title="Trocar foto"/>
             <input type="file" id="cc-photo-input" accept="image/*" style="display:none" onchange="handleCCPhoto(event)"/>
           </div>
           <div style="flex:1;min-width:0">
             <div style="font-family:Cinzel,serif;font-size:.62rem;color:var(--gold);margin-bottom:.3rem;letter-spacing:.5px">FOTO DO PERSONAGEM</div>
             <div style="font-family:Cormorant Garamond,serif;font-size:.78rem;color:var(--text3);line-height:1.4">Opcional. Aparece na sidebar e no header durante o jogo. Funciona em celular e desktop.</div>
-            <button type="button" onclick="document.getElementById('cc-photo-input').click()" style="margin-top:.4rem;background:rgba(90,158,74,.1);border:1px solid rgba(90,158,74,.3);border-radius:6px;font-family:Cinzel,serif;font-size:.58rem;color:var(--gold2);padding:3px 10px;cursor:pointer">↑ Escolher foto</button>
+            <button type="button" onclick="document.getElementById('cc-photo-input').click()" style="margin-top:.4rem;background:rgba(200,168,74,.1);border:1px solid rgba(200,168,74,.3);border-radius:6px;font-family:Cinzel,serif;font-size:.58rem;color:var(--gold2);padding:3px 10px;cursor:pointer">↑ Escolher foto</button>
           </div>
         </div>
         <div style="margin-bottom:.6rem">
@@ -9939,7 +9939,7 @@ if(_savedUser && _driveToken === null){
           </div>
           <div>
             <label class="cc-label">Antecedente</label>
-            <div id="bg-display-step2" style="padding:.5rem .7rem;background:rgba(90,158,74,.05);border:1px solid rgba(90,158,74,.2);border-radius:7px;font-family:Cormorant Garamond,serif;font-size:.9rem;color:var(--gold2)">— definido na etapa anterior —</div>
+            <div id="bg-display-step2" style="padding:.5rem .7rem;background:rgba(200,168,74,.05);border:1px solid rgba(200,168,74,.2);border-radius:7px;font-family:Cormorant Garamond,serif;font-size:.9rem;color:var(--gold2)">— definido na etapa anterior —</div>
           </div>
         </div>
         <div style="margin-bottom:.6rem">
@@ -9960,8 +9960,8 @@ if(_savedUser && _driveToken === null){
           <textarea id="new-story" placeholder="De onde vem? O que busca? Qual seu maior medo? Quem é sua família?" class="cc-input" style="min-height:80px;resize:none;line-height:1.5"></textarea>
         </div>
         <!-- Summary card -->
-        <div id="char-summary" style="background:rgba(90,158,74,.04);border:1px solid rgba(90,158,74,.2);border-radius:10px;padding:.8rem;margin-bottom:.8rem">
-          <div style="font-family:Cinzel,serif;font-size:.54rem;color:rgba(90,158,74,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.5rem">Resumo do Personagem</div>
+        <div id="char-summary" style="background:rgba(200,168,74,.04);border:1px solid rgba(200,168,74,.2);border-radius:10px;padding:.8rem;margin-bottom:.8rem">
+          <div style="font-family:Cinzel,serif;font-size:.54rem;color:rgba(200,168,74,.5);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:.5rem">Resumo do Personagem</div>
           <div id="char-summary-content" style="font-size:.8rem;color:var(--text2);line-height:1.6"></div>
         </div>
         <div class="cc-nav-row" style="position:sticky;bottom:0;background:rgba(6,4,8,.95);backdrop-filter:blur(8px);padding:.8rem .2rem .4rem;margin-left:-.2rem;margin-right:-.2rem;z-index:10">
