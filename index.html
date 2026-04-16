@@ -17,55 +17,55 @@
 *{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  /* ── PALETA TAVERNA — Verde Salva Clara, Leitura Confortável ── */
+  /* ══ PALETA TAVERNA — Dourada Original + Legibilidade ══ */
 
-  /* Fundos: verde-pedra suave (não tão escuro) */
-  --bg:      #0d1410;
-  --bg2:     #111a13;
-  --bg3:     #162018;
-  --bg4:     #1c2a1e;
-  --surface: rgba(60,110,65,.06);
-  --surface2:rgba(60,110,65,.11);
+  /* Fundos escuros medievais */
+  --bg:      #080608;
+  --bg2:     #0f0c10;
+  --bg3:     #161218;
+  --bg4:     #1c1720;
+  --surface: rgba(255,255,255,.03);
+  --surface2:rgba(255,255,255,.06);
 
-  /* Texto: alto contraste, levemente creme */
-  --text:    #e8f0e0;
-  --text2:   #b8cca8;
-  --text3:   #7a9870;
+  /* Texto — creme envelhecido, alto contraste */
+  --text:    #ede5d0;
+  --text2:   #c0aa85;
+  --text3:   #806855;
 
-  /* Verde principal — mais claro e vibrante */
-  --gold:    #6ab855;
-  --gold2:   #88d070;
-  --gold3:   #aae890;
-  --gold-glow:rgba(106,184,85,.18);
-  --parch:   #d0e8b8;
-  --parch2:  #eaf6d8;
+  /* Dourado — accent principal */
+  --gold:    #c8a84a;
+  --gold2:   #e2c46a;
+  --gold3:   #f5db96;
+  --gold-glow:rgba(200,168,74,.15);
+  --parch:   #d4bb88;
+  --parch2:  #ede5d0;
 
-  /* Vermelho — perigo/dano */
-  --blood:   #9b2533;
-  --blood2:  #c83848;
-  --blood3:  #e85060;
+  /* Vermelho sangue */
+  --blood:   #9b2335;
+  --blood2:  #c93048;
+  --blood3:  #e8455a;
 
-  /* Arcano: verde-água */
-  --arc:     #259070;
-  --arc2:    #35c090;
-  --arc3:    #60e0b0;
+  /* Arcano — roxo */
+  --arc:     #6b3fa0;
+  --arc2:    #9060cc;
+  --arc3:    #b88aee;
 
   /* Natureza */
-  --nat:     #4a9850;
-  --nat2:    #6acc65;
+  --nat:     #2d7a4a;
+  --nat2:    #45b06a;
 
   /* Água */
-  --ocean:   #2a6870;
-  --ocean2:  #3aa8a0;
+  --ocean:   #1e5f8a;
+  --ocean2:  #3a90c8;
 
-  /* Bordas */
-  --border:  rgba(106,184,85,.18);
-  --border2: rgba(106,184,85,.35);
-  --border3: rgba(106,184,85,.60);
+  /* Bordas douradas */
+  --border:  rgba(200,168,74,.12);
+  --border2: rgba(200,168,74,.28);
+  --border3: rgba(200,168,74,.50);
 
   /* Efeitos */
-  --shadow:  0 4px 24px rgba(0,0,0,.55);
-  --glow-gold: 0 0 20px rgba(106,184,85,.25);
+  --shadow:  0 4px 24px rgba(0,0,0,.65);
+  --glow-gold: 0 0 20px rgba(200,168,74,.2);
 
   --nav-h:68px;
   --sidebar-w:240px;
@@ -106,8 +106,8 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
    HEADER
 ══════════════════════════════════════ */
 .hdr{
-  background:linear-gradient(180deg,#111c13 0%,#0d1810 100%);
-  border-bottom:1px solid rgba(90,158,74,.18);
+  background:linear-gradient(180deg,#1a1208 0%,#120e08 100%);
+  border-bottom:1px solid rgba(200,168,74,.12);
   padding:.55rem 1.2rem;
   display:grid;
   grid-template-columns: minmax(0,2fr) minmax(0,2.5fr) minmax(0,1.8fr);
@@ -169,8 +169,8 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
 
 /* Header buttons */
 .hbtn{
-  background:rgba(40,80,45,.18);
-  border:1.5px solid rgba(90,158,74,.35);
+  background:rgba(200,168,74,.06);
+  border:1.5px solid rgba(200,168,74,.22);
   border-radius:7px;
   color:var(--gold2);
   font-size:.72rem;
@@ -185,37 +185,31 @@ input,textarea,select{-webkit-appearance:none;appearance:none}
   gap:4px;
 }
 .hbtn:hover{
-  background:rgba(90,158,74,.28);
-  border-color:rgba(90,158,74,.65);
+  background:rgba(200,168,74,.18);
+  border-color:rgba(200,168,74,.55);
   color:var(--gold3);
-  box-shadow:0 0 10px rgba(90,158,74,.2);
+  box-shadow:0 0 10px rgba(200,168,74,.18);
   transform:translateY(-1px);
 }
 .hbtn:active{ transform:translateY(0); }
 .hbtn.gold{
-  background:rgba(90,158,74,.22);
-  border-color:rgba(90,158,74,.55);
+  background:rgba(200,168,74,.14);
+  border-color:rgba(200,168,74,.45);
   color:var(--gold2);
 }
 .hbtn.gold:hover{
-  background:rgba(90,158,74,.35);
+  background:rgba(200,168,74,.25);
   color:var(--gold3);
 }
-/* Botão de combate — vermelho destacado */
+/* Botão de combate — vermelho */
 #combat-toggle-btn{
-  border-color:rgba(184,48,64,.5)!important;
-  background:rgba(139,31,42,.2)!important;
+  border-color:rgba(201,48,72,.45)!important;
+  background:rgba(155,35,53,.15)!important;
   color:var(--blood3)!important;
 }
 #combat-toggle-btn:hover{
-  background:rgba(184,48,64,.3)!important;
+  background:rgba(201,48,72,.25)!important;
   color:#ff8888!important;
-}
-/* Botão ⌂ menu — destaque especial */
-button[title="Menu principal"].hbtn{
-  border-color:rgba(90,158,74,.5)!important;
-  color:var(--gold2)!important;
-  font-size:.9rem!important;
 }
 
 /* ══════════════════════════════════════
@@ -256,7 +250,7 @@ button[title="Menu principal"].hbtn{
 
 .sidebar{
   width:var(--sidebar-w);flex-shrink:0;
-  background:linear-gradient(180deg,#0f1a11 0%,#0a1208 100%);
+  background:linear-gradient(180deg,#130f08 0%,#0e0a06 100%);
   border-right:1px solid rgba(90,158,74,.12);
   box-shadow:inset -1px 0 0 rgba(90,158,74,.05),4px 0 20px rgba(0,0,0,.3);
   display:flex;flex-direction:column;
@@ -710,7 +704,7 @@ hr.sdiv{border:none;border-top:1px solid var(--border);margin:.1rem 0}
 }
 .ainp::placeholder{color:rgba(232,223,200,.2)}
 .sbtn{
-  background:linear-gradient(135deg,var(--nat) 0%,#1a5a20 100%);
+  background:linear-gradient(135deg,var(--blood) 0%,#7a1a2a 100%);
   border:1px solid rgba(90,158,74,.4);
   border-radius:10px;color:var(--gold3);
   font-family:'Cinzel',serif;font-size:.7rem;padding:.6rem 1rem;
@@ -1591,8 +1585,8 @@ input[type=number]{-moz-appearance:textfield}
 /* ── Scrollbar tema verde ── */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:#080f09}
-::-webkit-scrollbar-thumb{background:rgba(90,158,74,.35);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:rgba(90,158,74,.6)}
+::-webkit-scrollbar-thumb{background:rgba(200,168,74,.3);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(200,168,74,.55)}
 /* ── Seleção de texto verde ── */
 ::selection{background:rgba(90,158,74,.25);color:var(--parch2)}
 /* ── Focus outline verde ── */
@@ -1826,7 +1820,7 @@ input[type=number]{-moz-appearance:textfield}
 <body>
 
 <!-- TELA INICIAL -->
-<div id="start-screen" style="position:fixed;inset:0;z-index:600;overflow:hidden;background:#0a1208;display:flex;flex-direction:column;align-items:center;">
+<div id="start-screen" style="position:fixed;inset:0;z-index:600;overflow:hidden;background:#04020a;display:flex;flex-direction:column;align-items:center;">
 
   <!-- ── CANVAS DE PARTÍCULAS ── -->
   <canvas id="particle-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.6"></canvas>
@@ -1868,7 +1862,7 @@ input[type=number]{-moz-appearance:textfield}
         <!-- Palavra principal (frente) -->
         <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(3.5rem,14vw,9rem);font-weight:700;color:#78c060;letter-spacing:-.02em;line-height:.9;text-shadow:0 0 80px rgba(200,140,40,.35),0 2px 4px rgba(0,0,0,.9);position:relative;white-space:nowrap">TAVERNA</div>
         <!-- Sub-título em vermelho sólido bold -->
-        <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(1.8rem,7vw,4.5rem);font-weight:700;color:#c0304a;letter-spacing:.06em;line-height:1;margin-top:.1rem;text-shadow:0 0 40px rgba(180,30,50,.5),0 2px 4px rgba(0,0,0,.9)">DAS CRÔNICAS</div>
+        <div style="font-family:'Cinzel',serif;font-size:clamp(1.5rem,6vw,3.8rem);font-weight:700;color:#c0304a;letter-spacing:.14em;line-height:1;margin-top:.2rem;text-shadow:0 0 30px rgba(180,30,50,.45),0 2px 4px rgba(0,0,0,.9)">DAS CRÔNICAS</div>
         <!-- Terceira linha outline -->
         <div style="font-family:'Cinzel',serif;font-size:clamp(.8rem,3vw,1.6rem);font-weight:600;color:transparent;-webkit-text-stroke:1px rgba(200,140,40,.5);letter-spacing:.2em;margin-top:.4rem">NARRADOR IA</div>
       </div>
@@ -2787,10 +2781,7 @@ function signInWithGoogle(){
     return;
   }
   if(typeof google === 'undefined'){
-    showStep('step-api'); return;
-  }
-  if(typeof google === 'undefined'){
-    showStep('step-api');
+    showSaveToast('Google não disponível. Use a chave de API.');
     return;
   }
   // Evitar chamadas múltiplas simultâneas (causa erro FedCM)
@@ -4465,12 +4456,12 @@ function smToggle(idx){
   if(!sp) return;
   var cls=(window.CHAR_CLASS||'').split(' — ')[0];
   var LIMITS_T={
-    'Mago':{t:[3,3,3,4,4,4,4,4,4,5],n1:99,n2:99,n3:99},
-    'Feiticeiro':{t:[4,4,4,5,5,6,6,7,7,8],n1:[2,3,4,5,6,7,8,9,10,11],n2:99,n3:99},
-    'Bruxo':{t:[2,2,2,3,3,3,3,3,3,4],n1:[2,3,4,5,6,7,8,9,10,10],n2:99,n3:99},
-    'Clérigo':{t:[3,3,3,4,4,4,4,4,4,5],n1:99,n2:99,n3:99},
-    'Druida':{t:[2,2,2,3,3,3,3,3,3,4],n1:99,n2:99,n3:99},
-    'Bardo':{t:[2,2,2,3,3,3,3,3,3,4],n1:[4,5,6,7,8,9,10,11,12,14],n2:99,n3:99},
+    'Mago':{t:[3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5],n1:99,n2:99,n3:99},
+    'Feiticeiro':{t:[4,4,4,5,5,6,6,7,7,8,8,8,9,9,9,9,9,9,9,9],n1:[2,3,4,5,6,7,8,9,10,11,12,12,13,13,14,14,15,15,15,15],n2:99,n3:99},
+    'Bruxo':{t:[2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4],n1:[2,3,4,5,6,7,8,9,10,10,11,11,12,12,13,13,14,14,14,15],n2:99,n3:99},
+    'Clérigo':{t:[3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5],n1:99,n2:99,n3:99},
+    'Druida':{t:[2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4],n1:99,n2:99,n3:99},
+    'Bardo':{t:[2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4],n1:[4,5,6,7,8,9,10,11,12,14,15,15,16,18,19,19,20,22,22,22],n2:99,n3:99},
     'Paladino':{t:[],n1:99,n2:99,n3:99},
     'Patrulheiro':{t:[],n1:99,n2:99,n3:99},
   };
@@ -4482,25 +4473,31 @@ function smToggle(idx){
     return v[charLevel-1]||0;
   }
   var L=getL(sp.level);
-  if(L===0) return; // level-locked (e.g. Paladino nv1)
-  // Allow deselect always; for select, check limit
-  if(!sp.selected){
+  if(L===0) return; // nível bloqueado por classe/nível
+  // DESMARCAR: sempre permitido
+  if(sp.selected){
+    sp.selected=false;
+  } else {
+    // MARCAR: verificar limite
     var sel=window._smSpells.filter(function(s){return s.level===sp.level&&s.selected;}).length;
     if(L<99&&sel>=L){
-      // Don't block — just show a warning and allow swap
-      showRollToast('⚑ Limite atingido ('+L+'). Desmarque outro para trocar.');
-      // Still allow — player may want to deselect something else first
-      // For truques (level 0) especially, allow freely editing
+      // Limite atingido — BLOQUEADO até desmarcar outra
+      showRollToast('⚑ Limite de '+L+' magia'+(L>1?'s':'')+' Nv.'+sp.level+'. Desmarque uma para trocar.');
+      return; // não seleciona
     }
+    sp.selected=true;
   }
-  sp.selected=!sp.selected;
-  // Rebuild the modal content
+  // Atualizar contador
   var sel=window._smSpells.filter(function(s){return s.level===sp.level&&s.selected;}).length;
   var L2=getL(sp.level);
-  var limitTxt=L2===99?'ilimitado':sel+'/'+L2+' selecionadas';
+  var atLimitNow=L2<99&&sel>=L2;
+  var limitTxt=L2===99?'ilimitado':sel+'/'+L2;
   var limEl=document.getElementById('sm-lim-'+sp.level);
-  if(limEl){limEl.textContent=limitTxt;limEl.style.color=sel>=L2&&L2<99?'var(--gold2)':'var(--text3)';}
-  // Update just this circle
+  if(limEl){
+    limEl.textContent=limitTxt;
+    limEl.style.color=atLimitNow?'var(--blood2)':sel>0?'var(--gold2)':'var(--text3)';
+  }
+  // Atualizar círculo desta magia
   var circleEl=document.getElementById('sm-circle-'+idx);
   if(circleEl){
     circleEl.style.background=sp.selected?'var(--arc2)':'transparent';
@@ -4514,8 +4511,10 @@ function smToggle(idx){
   window._smSpells.forEach(function(s2,i2){
     if(s2.level!==sp.level||s2.selected) return;
     var row=document.querySelector('[data-idx="'+i2+'"]');
-    // Soft dim (not disabled) when at limit — still clickable
-    if(row) row.style.opacity=atLimitNow?'.6':'1';
+    // Hard dim + cursor not-allowed ao atingir limite
+    if(row){row.style.opacity=atLimitNow?'.4':'1';row.style.cursor=atLimitNow?'not-allowed':'pointer';row.style.pointerEvents=atLimitNow?'none':'auto';}
+    // Mas manter clicáveis as SELECIONADAS (para desmarcar)
+    if(s2.selected&&row){row.style.opacity='1';row.style.cursor='pointer';row.style.pointerEvents='auto';}
     var c2=document.getElementById('sm-circle-'+i2);
     if(c2&&!s2.selected) c2.style.borderColor=atLimitNow?'rgba(165,105,189,.3)':'rgba(165,105,189,.6)';
   });
@@ -8920,17 +8919,23 @@ function confirmApiKey(){
   }
   apiKey=k;
   localStorage.setItem('killyn_gemini_key',k);
-  var ss=document.getElementById('start-screen');
-  if(ss){ss.style.display='flex';ss.style.visibility='visible';}
-  // Se estava tentando iniciar jogo, voltar ao último painel do step-new
   if(window._pendingNewGame){
+    // Retornar ao painel de criação onde estava
     window._pendingNewGame=false;
-    // Mostrar step-new diretamente no painel 4 (Resumo)
     var snEl=document.getElementById('step-new');
     if(snEl){snEl.style.display='block';snEl.style.visibility='visible';}
-    ccStep(4); // ir direto para o painel de resumo/história
+    ccStep(4);
+    return;
+  }
+  // Após configurar key: ir para menu (login Google ainda disponível)
+  // Se já autenticado → menu completo; se não → login com Google disponível
+  var isAuthed=!!(window._driveToken||window._driveUser||localStorage.getItem('killyn_google_authed'));
+  if(isAuthed){
+    showScreen('menu');
   } else {
-    showStep('step-menu');
+    // Voltar para tela de login — Google continua disponível + key já configurada
+    showScreen('login');
+    showSaveToast('✓ Chave configurada. Faça login com Google para salvar na nuvem.');
   }
 }
 
