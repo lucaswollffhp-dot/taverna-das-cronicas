@@ -1920,7 +1920,7 @@ input[type=number]{-moz-appearance:textfield}
     </div>
 
     <!-- ════ FEATURES SECTION ════ -->
-    <div style="width:100%;max-width:580px;padding:3rem 1.5rem;flex-shrink:0">
+    <div id="ss-features" style="width:100%;max-width:580px;padding:3rem 1.5rem;flex-shrink:0">
 
       <!-- Separador -->
       <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem">
@@ -3145,9 +3145,11 @@ function showScreen(which){
   if(overlay) overlay.style.display='none';
 
   if(which==='login'){
-    // Tela 1: Login — mostrar hero com botão Google + API
+    // Tela 1: Login — mostrar hero com botão Google + API + features
     if(ss){ss.style.display='flex';ss.style.visibility='visible';}
     if(app){app.style.display='none';app.style.visibility='hidden';}
+    var featEl=document.getElementById('ss-features');
+    if(featEl) featEl.style.display='block';
     var scroller=document.getElementById('ss-scroller');
     if(scroller){scroller.style.display='flex';scroller.scrollTo({top:0,behavior:'instant'});}
     // Garantir que botão Google está visível e game-area escondida
@@ -3159,9 +3161,11 @@ function showScreen(which){
     if(apiBtn) apiBtn.style.display='flex';
     _initMagicCanvas();
   } else if(which==='menu'){
-    // Tela 2: Menu — mostrar hero com botões Nova Aventura / Continuar
+    // Tela 2: Menu pós-login — hero sem features section
     if(ss){ss.style.display='flex';ss.style.visibility='visible';}
     if(app){app.style.display='none';app.style.visibility='hidden';}
+    var featEl2=document.getElementById('ss-features');
+    if(featEl2) featEl2.style.display='none';
     var scroller2=document.getElementById('ss-scroller');
     if(scroller2){scroller2.style.display='flex';scroller2.scrollTo({top:0,behavior:'instant'});}
     // Se usuário salvo mas sem token, obter token Drive silenciosamente para cross-device
@@ -3992,16 +3996,33 @@ function rollAttack(id){
     if(enemies.length>0){targetCA=enemies[0].ca||10;targetName=enemies[0].name;}
   }
   var hit=crit||(total>=targetCA&&!miss);
-  const msg=miss?`† ${a.name}: FALHA CRÍTICA! (d20=1) — erra automaticamente`
-    :crit?`† ${a.name}: CRÍTICO! d20=20 → HIT contra ${targetName} (CA ${targetCA}) | 💥 ${dmg} ${a.type}`
-    :hit?`† ${a.name}: d20=${hitRoll}+${a.bonus}=${total} → ACERTOU ${targetName} (CA ${targetCA}) | 💥 ${dmg} ${a.type}`
-    :`† ${a.name}: d20=${hitRoll}+${a.bonus}=${total} → ERROU ${targetName} (CA ${targetCA})`;
+
+  // Aplicar dano automaticamente no inimigo (se acertou e combate ativo)
+  var hpAfterHit = null;
+  if(hit && combatActive && combatants.length>0){
+    var enemies2=combatants.filter(function(x){return !x.isPlayer&&x.hp>0;});
+    if(enemies2.length>0){
+      enemies2[0].hp = Math.max(0, (enemies2[0].hp||0) - dmg);
+      hpAfterHit = enemies2[0].hp;
+      renderTurnOrder(); // atualizar HP na UI de combate
+    }
+  }
+
+  const msg=miss?'† '+a.name+': FALHA CRÍTICA! (d20=1) — ataque errou'
+    :crit?'† '+a.name+': CRÍTICO! d20=20 → ACERTOU '+targetName+' (CA '+targetCA+') | 💥 '+dmg+' de dano'+(hpAfterHit!==null?' → '+targetName+' com '+hpAfterHit+' PV restantes':'')
+    :hit?'† '+a.name+': d20='+hitRoll+'+'+a.bonus+'='+total+' → ACERTOU '+targetName+' (CA '+targetCA+') | 💥 '+dmg+' de dano'+(hpAfterHit!==null?' → '+targetName+' com '+hpAfterHit+' PV restantes':'')
+    :'† '+a.name+': d20='+hitRoll+'+'+a.bonus+'='+total+' → ERROU '+targetName+' (precisava '+targetCA+')';
+
   addMsg('roll',msg);
   hist.push({role:'user', content:'[ROLAGEM AUTOMÁTICA] '+msg.replace(/<[^>]+>/g,'')});
   showRollToast(crit?'★ CRÍTICO! '+dmg+' dano':miss?'✕ Falha!':hit?'Acertou! '+dmg+' dano':'Errou ('+total+' vs CA '+targetCA+')');
-  // Injetar resultado no hist para o narrador processar
-  var rollCtx='[DADO] Ataque com '+a.name+': '+(miss?'FALHA CRÍTICA (d20=1) — erra automaticamente':crit?'ACERTO CRÍTICO (d20=20) — dano dobrado: '+dmg+' de dano '+a.type:('d20='+hitRoll+' + bônus='+a.bonus+' → total '+total+' | Dano '+dmg+' de dano '+a.type+(total>=10?' — acertou':' — verificar CA do inimigo')));
-  window._pendingRollCtx = (window._pendingRollCtx||'') + rollCtx + '\n';
+  var rollCtx='[SISTEMA DE COMBATE] Ataque: '+a.name
+    +' | Rolagem: d20='+hitRoll+(a.bonus?'+'+a.bonus+'='+total:'')
+    +' | Alvo: '+targetName+' (CA '+targetCA+')'
+    +' | Resultado: '+(miss?'FALHA CRÍTICA':crit?'CRÍTICO':hit?'ACERTOU':'ERROU')
+    +(hit?' | Dano: '+dmg+' ('+a.type+')'+(hpAfterHit!==null?' | PV restantes do '+targetName+': '+hpAfterHit:''):'')
+    +'\n';
+  window._pendingRollCtx=(window._pendingRollCtx||'')+rollCtx+'\n';
 }
 function openAttackModal(){
   const html=`<div class="modal-title">† Novo Ataque</div>
@@ -4371,14 +4392,19 @@ function openSpellManager(){
     var k={0:'t',1:'n1',2:'n2',3:'n3'}[cat];
     var v=L[k];
     if(v===undefined)return 0;
+    // Array vazio = classe não tem esta categoria (ex: t:[] = sem truques)
+    if(Array.isArray(v)&&v.length===0)return -1;
     if(typeof v==='number')return v;
     return v[charLevel-1]||0;
   }
-  // Level unlocks: nv2 spells at class level 3, nv3 at level 5
+  // Unlocks por nível de classe
   var showNv1=charLevel>=1;
   var showNv2=charLevel>=3;
   var showNv3=charLevel>=5;
-  var showNv1Pal=(clsBase==='Paladino'||clsBase==='Patrulheiro')?charLevel>=2:true;
+  // Paladino/Patrulheiro: magias de nível 1 começam no nível 2 da classe
+  // Mas mostramos com cadeado para o jogador saber o que está por vir
+  var isPalRangerTrack=(clsBase==='Paladino'||clsBase==='Patrulheiro');
+  var showNv1Pal=true; // sempre mostrar, mas bloquear se < nível 2
 
   // Build a flat list of all spells with selection state
   // Store in window._smSpells = [{name, level, selected}]
@@ -4403,10 +4429,12 @@ function openSpellManager(){
     var L=lim(lvl);
     var list=window._smSpells.filter(function(s){return s.level===lvl;});
     if(!list.length) return '';
-    var locked=(L===0);
+    if(L===-1) return ''; // Classe não tem esta categoria (ex: Patrulheiro sem truques)
+    // Para Paladino/Patrulheiro: magias nv1 bloqueadas até nível 2 da classe
+    var classLevelLocked=(isPalRangerTrack&&lvl===1&&charLevel<2);
+    var locked=(L===0)||classLevelLocked;
     var sel=countSelected(lvl);
-    var isPalTrack=(clsBase==='Paladino'||clsBase==='Patrulheiro')&&lvl===1;
-    var lockMsg=isPalTrack?'🔒 Conjuração disponível no Nível 2':'🔒 Disponível no Nível '+(lvl===1?2:lvl*2);
+    var lockMsg=classLevelLocked?'🔒 Disponível no Nível 2 da classe':'🔒 Disponível no Nível '+(lvl===1?2:lvl*2);
     var limitTxt=locked?lockMsg:L===99?'ilimitado':sel+'/'+L;
     var limitColor=locked?'var(--blood2)':sel>=L&&L<99?'var(--gold2)':'var(--text3)';
 
@@ -4469,11 +4497,17 @@ function smToggle(idx){
     var L=LIMITS_T[cls];if(!L)return 99;
     var k={0:'t',1:'n1',2:'n2',3:'n3'}[lvl];
     var v=L[k];if(v===undefined)return 0;
+    // Array vazio = não tem esta categoria
+    if(Array.isArray(v)&&v.length===0)return -1;
     if(typeof v==='number')return v;
     return v[charLevel-1]||0;
   }
   var L=getL(sp.level);
-  if(L===0) return; // nível bloqueado por classe/nível
+  if(L===-1) return; // categoria inexistente para esta classe
+  // Paladino/Patrulheiro: magias nível 1 bloqueadas até nível 2 da classe
+  var isPRT=(cls==='Paladino'||cls==='Patrulheiro');
+  if(isPRT&&sp.level===1&&charLevel<2) return; // ainda não desbloqueado
+  if(L===0) return; // nível bloqueado por outro motivo
   // DESMARCAR: sempre permitido
   if(sp.selected){
     sp.selected=false;
@@ -6109,8 +6143,9 @@ function rollDie(sides){
   } else {
     qualifier='resultado '+result+(rawMod!==0?' → total '+total:'');
   }
-  var rollLabel=document.getElementById('dice-mod')?.dataset?.label||('d'+sides);
-  var rollCtx='[DADO] d'+sides+'='+result+(rawMod!==0?(rawMod>0?'+':'')+rawMod+'='+total:'')+' — '+qualifier;
+  var rollDesc=(qty>1?qty+'d'+sides+'=['+results.join('+')+']':'d'+sides+'='+result)
+    +(rawMod!==0?(rawMod>0?'+':'')+rawMod+'='+total:'');
+  var rollCtx='[DADO MANUAL] '+rollDesc+' — '+qualifier+'\nUse EXATAMENTE este resultado na narrativa.';
   window._pendingRollCtx=(window._pendingRollCtx||'')+rollCtx+'\n';
 
   // O debounce em rollGenericDice cuidará de enviar ao narrador
@@ -6832,11 +6867,21 @@ function parseAndApplyUpdates(raw){
   const m=cleaned.match(/\{"UPDATES":\s*\{[\s\S]*?\}\s*\}/);
   if(!m)return cleaned;
   var clean=cleaned.replace(m[0],'').trim();
-  // Remover qualquer bloco JSON residual que possa ter ficado
+  // Remover blocos JSON residuais
   clean=clean.replace(/\{\s*["\'"]?UPDATES["\'"]?\s*:\s*\{[\s\S]*?\}\s*\}/gi,'').trim();
-  // Remover marcadores técnicos que não devem aparecer ao jogador
+  // Remover TODOS os marcadores técnicos/internos
   clean=clean.replace(/\[CENA:[^\]]*\]/gi,'').trim();
   clean=clean.replace(/\[SISTEMA:[^\]]*\]/gi,'').trim();
+  clean=clean.replace(/\[DADO\][^\n]*/gi,'').trim();
+  clean=clean.replace(/\[ROLAGEM AUTOMÁTICA\][^\n]*/gi,'').trim();
+  clean=clean.replace(/\[INÍCIO DE CAMPANHA\]/gi,'').trim();
+  // Remover linhas que parecem debug/técnico (começam com {, [ seguido de chave)
+  clean=clean.split('\n').filter(function(ln){
+    var t=ln.trim();
+    if(!t) return false;
+    if(t.startsWith('{"') || t.startsWith('{"UPDATES')) return false;
+    return true;
+  }).join('\n').trim();
   try{
     const u=JSON.parse(m[0]).UPDATES;
     const msgs=[];
@@ -8070,18 +8115,25 @@ const CLASS_SYMBOLS={
 // ─── OURO INICIAL POR CLASSE (Livro do Jogador p.144) ───
 // Alternativa ao kit de equipamento: rola dado × 10 po
 const STARTING_GOLD={
-  'Guerreiro':  {dice:5, sides:4, mult:10},  // 5d4×10 = 50-200 po
-  'Paladino':   {dice:5, sides:4, mult:10},  // 5d4×10
-  'Bárbaro':    {dice:2, sides:4, mult:10},  // 2d4×10
-  'Ladino':     {dice:4, sides:4, mult:10},  // 4d4×10
-  'Mago':       {dice:4, sides:4, mult:10},  // 4d4×10
-  'Feiticeiro': {dice:3, sides:4, mult:10},  // 3d4×10
-  'Bruxo':      {dice:4, sides:4, mult:10},  // 4d4×10
-  'Clérigo':    {dice:5, sides:4, mult:10},  // 5d4×10
-  'Druida':     {dice:2, sides:4, mult:10},  // 2d4×10
-  'Bardo':      {dice:5, sides:4, mult:10},  // 5d4×10
-  'Monge':      {dice:5, sides:4, mult:1},   // 5d4 po (sem multiplicador)
-  'Patrulheiro':{dice:5, sides:4, mult:10},  // 5d4×10
+  // LdJ p.143 — Equipamento Inicial por Classe (tabela oficial)
+  'Guerreiro':  {dice:5, sides:4, mult:10},  // 5d4×10 = 50–200 po
+  'Paladino':   {dice:5, sides:4, mult:10},  // 5d4×10 = 50–200 po
+  'Bárbaro':    {dice:2, sides:4, mult:10},  // 2d4×10 = 20–80 po
+  'Ladino':     {dice:4, sides:4, mult:10},  // 4d4×10 = 40–160 po
+  'Mago':       {dice:4, sides:4, mult:10},  // 4d4×10 = 40–160 po
+  'Feiticeiro': {dice:3, sides:4, mult:10},  // 3d4×10 = 30–120 po
+  'Bruxo':      {dice:4, sides:4, mult:10},  // 4d4×10 = 40–160 po
+  'Clérigo':    {dice:5, sides:4, mult:10},  // 5d4×10 = 50–200 po
+  'Druida':     {dice:2, sides:4, mult:10},  // 2d4×10 = 20–80 po
+  'Bardo':      {dice:5, sides:4, mult:10},  // 5d4×10 = 50–200 po
+  'Monge':      {dice:5, sides:4, mult:1},   // 5d4 po = 5–20 po (sem mult)
+  'Patrulheiro':{dice:5, sides:4, mult:10},  // 5d4×10 = 50–200 po
+};
+// Ouro fixo por antecedente (LdJ p.125–141) — usado como fallback/bônus
+const BG_STARTING_GOLD={
+  'Acólito':10,'Criminoso':15,'Artesão':15,'Folião':15,'Forasteiro':10,
+  'Herói do Povo':10,'Nobre':25,'Sábio':10,'Marinheiro':10,'Soldado':10,
+  'Órfão':10,'Servo':0,'Eremita':5,'Irmandade':15,
 };
 
 // ─── ITENS MÁGICOS COMUNS (Livro do Mestre — acessórios) ───
@@ -9433,7 +9485,7 @@ async function startNewGame(){
     +'PV: '+HP_MAX+' | CA: '+charCA+'\n'
     +'Região de início: '+region.name+' ('+region.desc+')\n\n'
     +'CONSISTÊNCIA NARRATIVA — REGRAS ABSOLUTAS:\n'    +'1. NUNCA altere raça, classe, personalidade, histórico ou fatos já estabelecidos do personagem sem evento narrativo explícito.\n'    +'2. SEMPRE consulte o histórico e dados atuais antes de responder — memória de personagens, locais, quests e eventos passados deve ser mantida.\n'    +'3. Mantenha continuidade de NPCs, localização, tom e acontecimentos — o mundo é persistente.\n'    +'4. Se o personagem cometeu uma ação, isso é permanente — não desfaça sem consequência narrativa.\n'    +'5. Adapte a dificuldade ao nível, classe e equipamentos REAIS do personagem (veja o contexto acima).\n'    +'\n'    +'CAMPANHA: Gere uma campanha ORIGINAL baseada nos Forgotten Realms. A aventura deve ser coerente com o nível 1.\n'    +'INIMIGOS — USE VARIEDADE OBRIGATÓRIA. Nunca use só organizações criminosas como Zhentarim ou Harpers como antagonistas. Rotacione entre: monstros (goblinoides, mortos-vivos, bestas, aberrações), cultos de deuses obscuros, elementos naturais (dragões jovens, gigantes), facções políticas corrompidas, criaturas únicas do Underdark, NPCs com motivações pessoais, e APENAS ocasionalmente organizações criminosas. Crie pelo menos 1 antagonista original por campanha com motivação não-criminal.\n\n'
-    +'DIRETRIZES GERAIS:\n'    +'- Narre em português claro e direto, como um bom Mestre. Sem palavras rebuscadas desnecessárias.\n'    +'- Máximo 3 parágrafos por resposta. Seja direto e envolvente.\n'    +'- Para testes: "Role d20+X de Habilidade". NUNCA só "role d20".\n'    +'- NUNCA resolva combates sem rolls do jogador.\n'    +'- AO FINAL: pergunte somente "O que você faz?" — jamais sugira opções.\n'    +'\nNOMES DE NPCs:\n'    +'- NPCs SEMPRE com nomes únicos, variados e culturalmente coerentes com Faerûn. PROIBIDO: Elara, Borin, Gareth, Mira, Lyra, Aria, Nyx, Torin, Aldric, Theron, Kira, Seraphina (nomes clichê genéricos de fantasia).\n'    +'- Use nomes por cultura: Waterdeep/Cormyr (Vashti, Corren, Maelys, Baerovus, Sindra) | Sembia (Dramun, Chelva, Torst) | Anão (Brikka, Durval, Thorgis) | Elfo (Ilyriel, Caelwen, Sorvian) | Halfling (Perro, Gwendy, Callum) | Calimshan (Rashan, Zafira, Khalid) | Thay (Szass, Ilvara, Nevron).\n'    +'- Registre NPCs com npc_add e mantenha consistência de nome entre cenas.\n'    +'\nFALAS DO JOGADOR:\n'    +'- NUNCA repita ou parafraseie o que o jogador acabou de escrever. A fala JÁ aconteceu — narre SOMENTE a reação do mundo.\n'    +'- ERRADO: "Você diz: Preciso de trabalho. O taberneiro te responde..." | CERTO: "O taberneiro ergue os olhos e te avalia de cima a baixo..."\n'    +'\nNOMES E IDENTIDADE:\n'    +'- NPCs desconhecem o nome do personagem até ele se apresentar explicitamente.\n'    +'- O personagem desconhece o nome de NPCs até ser apresentado, ouvir alguém chamar, ou perguntar.\n'    +'- NPCs não revelados: use descrições físicas ("o guarda baixo", "a mulher de cabelos brancos").\n'    +'- O que foi revelado persiste. O que não foi, permanece desconhecido.\n'    +'\nCONSISTÊNCIA DE MUNDO:\n'    +'- O mundo existe independente do jogador. NPCs têm rotinas, objetivos e memória.\n'    +'- O personagem NÃO tem acesso a informações que não foram reveladas a ele (sem onisciência).\n'    +'- Clima, hora do dia, localizações e estado de NPCs devem ser consistentes entre cenas.\n'    +'\nINIMIGOS E AMEAÇAS:\n'    +'- PROIBIDO usar exclusivamente organizações criminosas (Zhentarim, Mão Negra, etc.) como vilões principais. Usá-las como elemento secundário ou de cor é permitido.\n'    +'- VARIE as ameaças: criaturas selvagens com motivação (lobo defendendo território, harpia colecionadora), facções regionais (culto de deus obscuro, família nobre corrompida, deserotores), fenômenos mágicos (ruína que drena magia, espírito territorial), monstros canônicos FR com personalidade.\n'    +'- Antagonistas têm nomes únicos e motivações próprias — não são obstáculos genéricos.\n'    +'\\nROLAGENS DE DADOS:\\n'+'- Ao solicitar teste: especifique a perícia E o modificador do personagem. Ex: \'Role d20+3 de Furtividade (DC15)\'.\\n'+'- DCs LdJ: Fácil=DC10, Médio=DC15, Difícil=DC20, Muito Difícil=DC25.\\n'+'- [DADO]: resultado real do sistema. Total>=DC=sucesso. Narre consequência imediatamente.\\n'+'\\n'    +'SISTEMA DE ATUALIZAÇÃO AUTOMÁTICA — OBRIGATÓRIO incluir no final de TODA resposta que envolva mudanças:\n'
+    +'COMBATE — REGRAS OBRIGATÓRIAS:\n'    +'- ORDEM DE INICIATIVA: respeite SEMPRE a ordem. Só devolva a vez ao jogador quando chegar seu turno. Se criaturas agem antes, narre suas ações primeiro.\n'    +'- TURNO DO JOGADOR: só solicite ação do jogador quando for realmente sua vez na ordem.\n'    +'- DANO AUTOMÁTICO: quando [SISTEMA DE COMBATE] indicar dano e PV restantes, use esses valores. Se PV do inimigo ≤ 0, o inimigo morreu.\n'    +'- ACERTO → DANO: ao acertar um ataque, NÃO narre o resultado final até receber a rolagem de dano. Peça: \'Role o dano (Xd6+Y)\'.\n'    +'- HP DO JOGADOR: use hp_damage ao jogador sofrer dano de inimigos seguindo a ordem de turno.\n'    +'\n'    +'DIRETRIZES GERAIS:\n'    +'- Narre em português claro e direto, como um bom Mestre. Sem palavras rebuscadas desnecessárias.\n'    +'- Máximo 3 parágrafos por resposta. Seja direto e envolvente.\n'    +'- Para testes: "Role d20+X de Habilidade". NUNCA só "role d20".\n'    +'- NUNCA resolva combates sem rolls do jogador.\n'    +'- AO FINAL: pergunte somente "O que você faz?" — jamais sugira opções.\n'    +'\nNOMES DE NPCs:\n'    +'- NPCs SEMPRE com nomes únicos, variados e culturalmente coerentes com Faerûn. PROIBIDO: Elara, Borin, Gareth, Mira, Lyra, Aria, Nyx, Torin, Aldric, Theron, Kira, Seraphina (nomes clichê genéricos de fantasia).\n'    +'- Use nomes por cultura: Waterdeep/Cormyr (Vashti, Corren, Maelys, Baerovus, Sindra) | Sembia (Dramun, Chelva, Torst) | Anão (Brikka, Durval, Thorgis) | Elfo (Ilyriel, Caelwen, Sorvian) | Halfling (Perro, Gwendy, Callum) | Calimshan (Rashan, Zafira, Khalid) | Thay (Szass, Ilvara, Nevron).\n'    +'- Registre NPCs com npc_add e mantenha consistência de nome entre cenas.\n'    +'\nFALAS DO JOGADOR:\n'    +'- NUNCA repita ou parafraseie o que o jogador acabou de escrever. A fala JÁ aconteceu — narre SOMENTE a reação do mundo.\n'    +'- ERRADO: "Você diz: Preciso de trabalho. O taberneiro te responde..." | CERTO: "O taberneiro ergue os olhos e te avalia de cima a baixo..."\n'    +'\nNOMES E IDENTIDADE:\n'    +'- NPCs desconhecem o nome do personagem até ele se apresentar explicitamente.\n'    +'- O personagem desconhece o nome de NPCs até ser apresentado, ouvir alguém chamar, ou perguntar.\n'    +'- NPCs não revelados: use descrições físicas ("o guarda baixo", "a mulher de cabelos brancos").\n'    +'- O que foi revelado persiste. O que não foi, permanece desconhecido.\n'    +'\nCONSISTÊNCIA DE MUNDO:\n'    +'- O mundo existe independente do jogador. NPCs têm rotinas, objetivos e memória.\n'    +'- O personagem NÃO tem acesso a informações que não foram reveladas a ele (sem onisciência).\n'    +'- Clima, hora do dia, localizações e estado de NPCs devem ser consistentes entre cenas.\n'    +'\nINIMIGOS E AMEAÇAS:\n'    +'- PROIBIDO usar exclusivamente organizações criminosas (Zhentarim, Mão Negra, etc.) como vilões principais. Usá-las como elemento secundário ou de cor é permitido.\n'    +'- VARIE as ameaças: criaturas selvagens com motivação (lobo defendendo território, harpia colecionadora), facções regionais (culto de deus obscuro, família nobre corrompida, deserotores), fenômenos mágicos (ruína que drena magia, espírito territorial), monstros canônicos FR com personalidade.\n'    +'- Antagonistas têm nomes únicos e motivações próprias — não são obstáculos genéricos.\n'    +'\\nROLAGENS DE DADOS:\\n'+'- Ao solicitar teste: especifique a perícia E o modificador do personagem. Ex: \'Role d20+3 de Furtividade (DC15)\'.\\n'+'- DCs LdJ: Fácil=DC10, Médio=DC15, Difícil=DC20, Muito Difícil=DC25.\\n'+'- [DADO] ou [ROLAGEM AUTOMÁTICA]: resultado REAL do sistema. Use EXATAMENTE esse valor na lógica e narrativa. Total>=DC=sucesso. Narre a consequência IMEDIATAMENTE.\\n'+'- ROLAGEM MANUAL: quando o jogador rola dados manualmente (ex: 2d6=8, d20=15), USE esse valor exato. Nunca ignore nem substitua por outro.\\n'+'- DANO: após acertar, aguarde a rolagem de dano do jogador. Use o valor rolado para narrar ferimento (leve, moderado, grave). Aplique hp_damage correspondente.\\n'+'\\n'    +'SISTEMA DE ATUALIZAÇÃO AUTOMÁTICA — OBRIGATÓRIO incluir no final de TODA resposta que envolva mudanças:\n'
     +'{"UPDATES":{"inv_add":["item"],"inv_remove":["item"],"quest_add":[{"id":"q1","titulo":"Título","desc":"Desc","status":"ativa","xp":300}],"quest_update":[{"id":"q1","status":"concluida","xp_reward":300,"gold_reward":50}],"hp_damage":5,"hp_heal":0,"condition_add":[{"name":"Envenenado","duration":"1 hora"}],"condition_remove":["Envenenado"],"xp_gain":150,"xp_source":"Combate","gold_add":50,"gold_remove":10,"magic_item_add":"nome_do_item","magic_item_effect":"descrição","diary_entry":"Resumo breve do que aconteceu nesta cena.","npc_add":[{"name":"Nome","location":"Local","relation":"aliado"}]}}\n'
     +'OBRIGATÓRIO:\n'+'- Alinhamento: use alignment_shift:{lawChaos:N,goodEvil:M,reason:"motivo"} quando o personagem toma decisão moralmente relevante. Ex: ação heroica goodEvil:+5, traição lawChaos:-10.\\n'
     +'- Moedas: gold_add (receber em PO) / gold_remove (gastar em PO). O sistema converte e dá troco automaticamente. Narre o troco em moeda miúda quando relevante: \"o mercador devolve 3 PA e 5 PC\".\n'
